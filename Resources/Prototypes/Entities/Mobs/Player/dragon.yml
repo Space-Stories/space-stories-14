@@ -199,6 +199,15 @@
   - type: GuideHelp
     guides:
     - MinorAntagonists
+  # Stories-DragonBrood-MindRadioChannel-Start
+  - type: IntrinsicRadioReceiver
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - STDragonBrood
+  - type: ActiveRadio
+    channels:
+    - STDragonBrood
+  # Stories-DragonBrood-MindRadioChannel-End
 
 - type: entity
   parent: BaseMobDragon
@@ -225,6 +234,15 @@
     damage:
       types:
         Piercing: 12
+  # Stories-DragonBrood-MindRadioChannel-Start
+  - type: IntrinsicRadioReceiver
+  - type: IntrinsicRadioTransmitter
+    channels:
+    - STDragonBrood
+  - type: ActiveRadio
+    channels:
+    - STDragonBrood
+  # Stories-DragonBrood-MindRadioChannel-End
 
 - type: entity
   parent: BaseAction

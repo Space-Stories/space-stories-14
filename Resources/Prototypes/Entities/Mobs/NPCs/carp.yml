@@ -198,6 +198,15 @@
     - type: Temperature
     - type: TemperatureDamage
       heatDamageThreshold: 1200
+    # Stories-DragonBrood-MindRadioChannel-Start
+    - type: IntrinsicRadioReceiver
+    - type: IntrinsicRadioTransmitter
+      channels:
+      - STDragonBrood
+    - type: ActiveRadio
+      channels:
+      - STDragonBrood
+    # Stories-DragonBrood-MindRadioChannel-End
 
 - type: entity
   id: MobCarpDungeon
