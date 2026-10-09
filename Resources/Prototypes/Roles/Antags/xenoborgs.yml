@@ -4,11 +4,14 @@
   antagonist: true
   setPreference: true
   objective: roles-antag-mothership-core-objective
-  requirements: # Stories-PlaytimeRequirements
+  guides: [ Xenoborgs ]
+  tags:
+  - OffStation
+  - Roundstart
+  requirements:
   - !type:RoleTimeRequirement
     role: JobBorg
-    time: 5h
-  guides: [ Xenoborgs ]
+    time: 18000  # 5 hrs
 
 - type: antagSpecifier
   parent: RestrictedAntag
@@ -22,11 +25,15 @@
   antagonist: true
   setPreference: true
   objective: roles-antag-xenoborg-objective
-  requirements: # Stories-PlaytimeRequirements
+  guides: [ Xenoborgs ]
+  tags:
+  - OffStation
+  - Roundstart
+  - Converted
+  requirements:
   - !type:RoleTimeRequirement
     role: JobBorg
-    time: 2h
-  guides: [ Xenoborgs ]
+    time: 18000  # 5 hrs
 
 - type: antagSpecifier
   abstract: true
