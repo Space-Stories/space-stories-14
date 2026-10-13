@@ -33,3 +33,30 @@
     canCollide: false
   - type: Transform
     anchored: true
+
+- type: entity
+  parent: ClothingNeckBase
+  id: STHereticAmberFocus
+  name: amber focus
+  description: A glass amulet with an eye frozen inside. It helps to focus on the Mansus.
+  components:
+  - type: StoriesHereticFocus
+  - type: Sprite
+    sprite: Clothing/Neck/Misc/bling.rsi
+    color: "#e0a030"
+  - type: Clothing
+    sprite: Clothing/Neck/Misc/bling.rsi
+
+- type: entity
+  parent: BaseItem
+  id: STHereticCodexCicatrix
+  name: Codex Cicatrix
+  description: A book bound in skin. Its pages whisper.
+  components:
+  - type: StoriesHereticCodex
+  - type: Sprite
+    sprite: Objects/Misc/books.rsi
+    state: book_icon
+    color: "#7a3b3b"
+  - type: Item
+    size: Normal
