@@ -52,19 +52,24 @@
     sprite: _Stories/Heretic/madness_mask.rsi
 
 - type: entity
-  id: STHereticAscensionAura
-  name: eldritch aura
-  description: The air around an ascended heretic shimmers with otherworldly power.
+  id: STHereticFireRingEffect
+  name: ring of fire
+  description: A smouldering ring of ashen fire.
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/aura.rsi
-    state: aura
-    drawdepth: Effects
+    sprite: _Stories/Heretic/fire_ring.rsi
+    color: "#ff7a22dd"
+    layers:
+    - state: ring
+      shader: unshaded
+    drawdepth: FloorObjects
+    noRot: true
   - type: PointLight
-    radius: 2
-    energy: 1.5
-    color: "#ff8a2b"
+    radius: 3.5
+    energy: 0.8
+    softness: 2
+    color: "#ff7a22"
 
 - type: entity
   id: STHereticFireEffect
@@ -73,12 +78,14 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: TimedDespawn
-    lifetime: 1
+    lifetime: 0.6
   - type: Sprite
-    sprite: Effects/fire.rsi
-    state: "2"
+    sprite: _Stories/Heretic/effects.rsi
+    layers:
+    - state: flame
+      shader: unshaded
     drawdepth: Effects
   - type: PointLight
-    radius: 1.5
-    energy: 1
+    radius: 1
+    energy: 0.5
     color: "#ff8a2b"

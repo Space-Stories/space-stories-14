@@ -94,11 +94,46 @@ public sealed partial class StoriesHereticFireWaveEvent : InstantActionEvent
     public float FireStacks = 5f;
 
     /// <summary>
-    /// Визуальный эффект пламени, расставляемый по конусу волны.
+    /// Языки пламени в случайных точках конуса (только визуал).
     /// </summary>
+    [DataField]
+    public StoriesHereticFlameEffects Flames = new() { Count = 24 };
+
+    /// <summary>
+    /// Ближайшее к еретику расстояние, на котором появляются языки пламени.
+    /// </summary>
+    [DataField]
+    public float FlameMinDistance = 0.5f;
+}
+
+/// <summary>
+/// Параметры россыпи маленьких языков пламени: сколько, какого размера и сколько живут.
+/// Только визуал, ничего не поджигает.
+/// </summary>
+[DataDefinition]
+public sealed partial class StoriesHereticFlameEffects
+{
     [DataField]
     public EntProtoId Effect = "STHereticFireEffect";
 
     [DataField]
-    public int EffectsPerStep = 5;
+    public int Count = 8;
+
+    [DataField]
+    public float MinScale = 0.9f;
+
+    [DataField]
+    public float MaxScale = 1.3f;
+
+    [DataField]
+    public float MinLifetime = 0.4f;
+
+    [DataField]
+    public float MaxLifetime = 0.8f;
+
+    /// <summary>
+    /// Наибольшее отклонение поворота языка пламени в обе стороны.
+    /// </summary>
+    [DataField]
+    public Angle MaxRotation = Angle.FromDegrees(25);
 }

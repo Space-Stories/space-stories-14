@@ -2,11 +2,13 @@ using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Actions;
 using Content.Shared.Dataset;
+using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
 using Robust.Shared.GameStates;
+using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -36,6 +38,8 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<StoriesHereticComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<StoriesHereticComponent, ComponentRemove>(OnRemove);
+        SubscribeLocalEvent<StoriesHereticComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<StoriesHereticComponent, ComponentGetStateAttemptEvent>(OnGetStateAttempt);
         SubscribeLocalEvent<StoriesHereticComponent, StoriesHereticOpenKnowledgeEvent>(OnOpenKnowledge);
 
@@ -121,8 +125,56 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     public void AddPoints(Entity<StoriesHereticComponent> ent, int amount)
     {
         ent.Comp.Points += amount;
+        ent.Comp.PointsGained += Math.Max(0, amount);
         Dirty(ent);
         _popup.PopupEntity(Loc.GetString("stories-heretic-points-gained", ("amount", amount)), ent, ent);
+        UpdateAura(ent);
+    }
+
+    /// <summary>
+    /// Как should_show_aura в tg: аура видна на поздней стадии пути, но не после Пира сов.
+    /// </summary>
+    public bool ShouldShowAura(StoriesHereticComponent comp)
+    {
+        return comp.PointsGained > comp.PointsToAura && comp.CanAscend;
+    }
+
+    /// <summary>
+    /// Создаёт или убирает ауру по <see cref="ShouldShowAura"/>. Повторный вызов не дублирует ауру.
+    /// </summary>
+    private void UpdateAura(Entity<StoriesHereticComponent> ent)
+    {
+        if (_net.IsClient)
+            return;
+
+        var exists = !TerminatingOrDeleted(ent.Comp.AuraEntity);
+        if (ShouldShowAura(ent.Comp) == exists)
+            return;
+
+        if (exists)
+        {
+            QueueDel(ent.Comp.AuraEntity);
+            ent.Comp.AuraEntity = null;
+            return;
+        }
+
+        ent.Comp.AuraEntity = SpawnAttachedTo(ent.Comp.Aura, new EntityCoordinates(ent, default));
+    }
+
+    private void OnRemove(Entity<StoriesHereticComponent> ent, ref ComponentRemove args)
+    {
+        if (_net.IsServer)
+            QueueDel(ent.Comp.AuraEntity);
+    }
+
+    private void OnExamined(Entity<StoriesHereticComponent> ent, ref ExaminedEvent args)
+    {
+        if (!ShouldShowAura(ent.Comp))
+            return;
+
+        args.PushMarkup(Loc.GetString("stories-heretic-aura-examine", ("ent", ent.Owner)));
+        if (ObjectivesComplete(ent.Comp))
+            args.PushMarkup(Loc.GetString("stories-heretic-aura-examine-ascend", ("ent", ent.Owner)));
     }
 
     public bool ObjectivesComplete(StoriesHereticComponent comp)

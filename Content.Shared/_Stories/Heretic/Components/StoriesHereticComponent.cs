@@ -98,4 +98,25 @@ public sealed partial class StoriesHereticComponent : Component
 
     [DataField]
     public EntProtoId KnowledgeAction = "STActionHereticKnowledge";
+
+    /// <summary>
+    /// Всего получено очков знаний за раунд (без стартовых). Траты не уменьшают.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public int PointsGained;
+
+    /// <summary>
+    /// Аура появляется, когда <see cref="PointsGained"/> превышает это значение (points_to_aura в tg).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public int PointsToAura = 8;
+
+    /// <summary>
+    /// Видимая всем аура еретика (heretic_aura в tg). Скрыта после Пира сов.
+    /// </summary>
+    [DataField]
+    public EntProtoId Aura = "STHereticAura";
+
+    [DataField]
+    public EntityUid? AuraEntity;
 }

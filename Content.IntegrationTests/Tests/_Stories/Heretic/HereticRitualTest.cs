@@ -1,5 +1,11 @@
 #pragma warning disable RA0002
 using Content.IntegrationTests.Fixtures;
+using Content.Server._Stories.Heretic.Ash;
+using Content.Server.Body.Components;
+using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
+using Content.Shared.Explosion.Components;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Damage;
@@ -144,6 +150,19 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(heretic.Comp.Ascended, Is.True);
             Assert.That(heretic.Comp.Rituals, Does.Not.Contain((EntProtoId) "STHereticRitualAshAscension"));
             Assert.That(SEntMan.Deleted(knife) || SEntMan.IsQueuedForDeletion(knife), Is.False, "Вещи трупа уничтожены");
+
+            // Как ash_final в tg: вдвое больше скачков Извержения, короче перезарядки, иммунитеты.
+            var volcano = FindAction(heretic, "STActionHereticVolcanoBlast");
+            var volcanoEvent = (StoriesHereticVolcanoBlastEvent) SEntMan.GetComponent<InstantActionComponent>(volcano).Event!;
+            Assert.That(volcanoEvent.Bounces, Is.EqualTo(10));
+            Assert.That(volcano.Comp.UseDelay, Is.EqualTo(TimeSpan.FromSeconds(30) * 0.66f));
+            Assert.That(FindAction(heretic, "STActionHereticRebirth").Comp.UseDelay, Is.EqualTo(TimeSpan.FromSeconds(60) * 0.16f));
+            Assert.That(SEntMan.GetComponent<ExplosionResistanceComponent>(heretic).DamageCoefficient, Is.Zero);
+            Assert.That(SEntMan.HasComponent<RespiratorComponent>(heretic), Is.False, "Вознёсшийся всё ещё дышит");
+
+            // Усиление не задело данные прототипа: новое действие с обычным числом скачков.
+            var fresh = SSpawn("STActionHereticVolcanoBlast");
+            Assert.That(((StoriesHereticVolcanoBlastEvent) SEntMan.GetComponent<InstantActionComponent>(fresh).Event!).Bounces, Is.EqualTo(5));
         });
 
         await Pair.RunTicksSync(1);
@@ -156,6 +175,54 @@ public sealed class HereticRitualTest : GameTest
             }
 
             Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Вознесение повторилось");
+        });
+    }
+
+    private Entity<ActionComponent> FindAction(EntityUid holder, string proto)
+    {
+        foreach (var action in Server.System<SharedActionsSystem>().GetActions(holder))
+        {
+            if (SEntMan.GetComponent<MetaDataComponent>(action).EntityPrototype?.ID == proto)
+                return action;
+        }
+
+        Assert.Fail($"Нет действия {proto}");
+        return default;
+    }
+
+    [Test]
+    public async Task FireRingFollowsAndExpires()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretic = EntityUid.Invalid;
+        var ring = EntityUid.Invalid;
+
+        await Server.WaitAssertion(() =>
+        {
+            heretic = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            SEntMan.AddComponent<StoriesHereticComponent>(heretic);
+            SEntMan.EventBus.RaiseLocalEvent(heretic, new StoriesHereticFireRingEvent { Duration = TimeSpan.FromSeconds(1) });
+            SEntMan.EventBus.RaiseLocalEvent(heretic, new StoriesHereticFireRingEvent { Duration = TimeSpan.FromSeconds(1) });
+
+            ring = SEntMan.GetComponent<StoriesHereticFireRingComponent>(heretic).RingEntity!.Value;
+            Assert.That(SEntMan.GetComponent<TransformComponent>(ring).ParentUid, Is.EqualTo(heretic));
+            var rings = 0;
+            var query = SEntMan.AllEntityQueryEnumerator<MetaDataComponent>();
+            while (query.MoveNext(out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "STHereticFireRingEffect")
+                    rings++;
+            }
+
+            Assert.That(rings, Is.EqualTo(1), "Повторный каст продублировал кольцо");
+        });
+
+        await RunSeconds(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<StoriesHereticFireRingComponent>(heretic), Is.False);
+            Assert.That(SEntMan.Deleted(ring), Is.True, "Кольцо осталось после окончания");
         });
     }
 }

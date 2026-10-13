@@ -2,8 +2,11 @@
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Examine;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
@@ -140,6 +143,52 @@ public sealed class HereticKnowledgeTest : GameTest
             var ascendedEnt = new Entity<StoriesHereticComponent>(ascendedUid, ascended);
             sys.SetAscended(ascendedEnt);
             Assert.That(sys.CanLearn(ascendedEnt, "STTestHereticKnowledgeFeast", out _), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task AuraAppearsLateAndHidesAfterFeast()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var sys = Server.System<StoriesHereticSystem>();
+        var examine = Server.System<ExamineSystemShared>();
+
+        await Server.WaitAssertion(() =>
+        {
+            // Как в tg: аура появляется, когда получено больше PointsToAura очков.
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            var examiner = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var auraText = FormattedMessage.RemoveMarkupOrThrow(Loc.GetString("stories-heretic-aura-examine", ("ent", uid)));
+
+            sys.AddPoints(heretic, heretic.Comp.PointsToAura);
+            Assert.That(heretic.Comp.AuraEntity, Is.Null, "Аура слишком рано");
+            Assert.That(examine.GetExamineText(uid, examiner).ToString(), Does.Not.Contain(auraText));
+
+            sys.AddPoints(heretic, 1);
+            var aura = heretic.Comp.AuraEntity!.Value;
+            Assert.That(SEntMan.GetComponent<TransformComponent>(aura).ParentUid, Is.EqualTo(uid));
+            Assert.That(examine.GetExamineText(uid, examiner).ToString(), Does.Contain(auraText));
+
+            sys.AddPoints(heretic, 1);
+            Assert.That(heretic.Comp.AuraEntity, Is.EqualTo(aura), "Аура продублировалась");
+
+            // Пир сов прячет ауру.
+            Assert.That(sys.TryLearn(heretic, "STTestHereticKnowledgeFeast"), Is.True);
+            Assert.That(heretic.Comp.AuraEntity, Is.Null);
+            Assert.That(SEntMan.Deleted(aura) || SEntMan.IsQueuedForDeletion(aura), Is.True);
+            Assert.That(examine.GetExamineText(uid, examiner).ToString(), Does.Not.Contain(auraText));
+
+            sys.AddPoints(heretic, 10);
+            Assert.That(heretic.Comp.AuraEntity, Is.Null, "Аура после Пира сов");
+
+            // Снятие компонента еретика убирает ауру.
+            var otherUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var other = new Entity<StoriesHereticComponent>(otherUid, SEntMan.AddComponent<StoriesHereticComponent>(otherUid));
+            sys.AddPoints(other, other.Comp.PointsToAura + 1);
+            var otherAura = other.Comp.AuraEntity!.Value;
+            SEntMan.RemoveComponent<StoriesHereticComponent>(otherUid);
+            Assert.That(SEntMan.Deleted(otherAura) || SEntMan.IsQueuedForDeletion(otherAura), Is.True);
         });
     }
 }

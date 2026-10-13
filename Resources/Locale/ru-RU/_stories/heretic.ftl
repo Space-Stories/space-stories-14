@@ -104,3 +104,9 @@ stories-heretic-ingredient-mask = дыхательная, противогазн
 stories-heretic-ingredient-stunbaton = станбатон
 stories-heretic-ingredient-liver = печень
 stories-guide-entry-heretic = Еретик
+stories-heretic-aura-examine = [color=#3fbf3f]Вокруг { GENDER($ent) ->
+    [female] неё
+    [epicene] них
+   *[other] него
+} трещит зелёный вихрь энергии.[/color]
+stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BASIC($ent, "сбрасывают", "сбрасывает") } смертную оболочку![/color]

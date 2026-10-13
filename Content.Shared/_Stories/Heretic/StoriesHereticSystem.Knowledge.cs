@@ -139,7 +139,10 @@ public sealed partial class StoriesHereticSystem
         }
 
         if (knowledge.LocksAscension)
+        {
             ent.Comp.CanAscend = false;
+            UpdateAura(ent);
+        }
 
         if (knowledge.GrantPoints > 0)
             AddPoints(ent, knowledge.GrantPoints);
