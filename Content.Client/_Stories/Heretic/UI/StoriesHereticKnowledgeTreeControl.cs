@@ -11,9 +11,9 @@ namespace Content.Client._Stories.Heretic.UI;
 /// </summary>
 public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
 {
-    private const float ColumnWidth = 210f;
+    private const float ColumnWidth = 320f;
     private const float RowHeight = 70f;
-    private const float NodeWidth = 190f;
+    private const float NodeWidth = 300f;
     private const float NodeHeight = 44f;
     private const float HeaderHeight = 30f;
 
