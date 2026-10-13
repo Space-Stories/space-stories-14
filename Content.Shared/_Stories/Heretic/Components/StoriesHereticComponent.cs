@@ -25,7 +25,7 @@ public sealed partial class StoriesHereticComponent : Component
     public HashSet<EntProtoId> Knowledge = new();
 
     /// <summary>
-    /// Число купленных (не стартовых) знаний — для цели «изучить N знаний».
+    /// Число купленных знаний (без стартовых и Пира сов) — для цели «изучить N знаний».
     /// </summary>
     [DataField, AutoNetworkedField]
     public int LearnedCount;

@@ -7,6 +7,7 @@ using Content.Shared.Actions;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
@@ -25,7 +26,9 @@ public sealed partial class StoriesHereticAshSystem
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private ChatSystem _chat = default!;
+    [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
+    [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
 
     private static readonly EntProtoId HallucinationEffect = "StatusEffectSeeingRainbow";
@@ -110,6 +113,14 @@ public sealed partial class StoriesHereticAshSystem
             || !proto.TryComp<StoriesHereticAshAscensionRitualComponent>(out var ritual, _factory))
             return;
 
+        if (args.Heretic.Comp.Ascended || !args.Heretic.Comp.CanAscend)
+        {
+            args.FailReason = Loc.GetString(args.Heretic.Comp.Ascended
+                ? "stories-heretic-ascension-done"
+                : "stories-heretic-learn-ascension-locked");
+            return;
+        }
+
         var corpses = new List<EntityUid>();
         foreach (var uid in args.Nearby)
         {
@@ -126,9 +137,28 @@ public sealed partial class StoriesHereticAshSystem
             return;
         }
 
+        foreach (var corpse in corpses)
+        {
+            DropEverything(corpse);
+        }
+
         args.Consumed.AddRange(corpses);
         Ascend(args.Heretic, ritual);
+        _heretic.RemoveRitual(args.Heretic, args.Ritual);
         args.Success = true;
+    }
+
+    private void DropEverything(EntityUid uid)
+    {
+        if (_inventory.TryGetContainerSlotEnumerator(uid, out var slots))
+        {
+            while (slots.NextItem(out _, out var slot))
+            {
+                _inventory.TryUnequip(uid, slot.Name, true, true);
+            }
+        }
+
+        _hands.DropAll(uid, checkActionBlocker: false, doDropInteraction: false);
     }
 
     private bool IsBurnt(EntityUid uid, FixedPoint2 threshold)

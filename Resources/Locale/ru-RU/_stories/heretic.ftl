@@ -5,6 +5,7 @@ stories-heretic-learn-path-chosen = Вы уже ступили на свой п�
 stories-heretic-learn-wrong-path = Это знание чуждо вашему пути.
 stories-heretic-learn-requires = Сначала постигните предшествующее знание.
 stories-heretic-learn-ascension-locked = Пир сов закрыл для вас путь Вознесения.
+stories-heretic-learn-feast-locked = Вы уже ступили на путь Вознесения.
 stories-heretic-learn-ascension-objectives = Сначала выполните свои цели.
 stories-heretic-learn-no-points = Недостаточно знаний Мансуса.
 stories-roles-antag-heretic-name = Еретик
@@ -88,6 +89,7 @@ stories-heretic-ash-rebirth = Вы вытягиваете жизнь из пла
 stories-heretic-ingredient-fire = спичка или зажигалка
 
 stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $count } сгоревших тел.
+stories-heretic-ascension-done = Вы уже вознеслись.
 stories-heretic-ash-ascension-announcement = Внимание! Обнаружен всплеск аномальной активности. { $name } вознёсся как Повелитель пепла. Огонь поглотит всех.
 stories-heretic-ingredient-glass-shard = осколок стекла
 stories-heretic-ingredient-candle = свеча

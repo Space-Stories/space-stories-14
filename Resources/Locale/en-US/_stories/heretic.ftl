@@ -5,6 +5,7 @@ stories-heretic-learn-path-chosen = You have already chosen your path.
 stories-heretic-learn-wrong-path = This knowledge is foreign to your path.
 stories-heretic-learn-requires = Learn the preceding knowledge first.
 stories-heretic-learn-ascension-locked = The Feast of Owls has closed the path of Ascension.
+stories-heretic-learn-feast-locked = You have already set foot on the path of Ascension.
 stories-heretic-learn-ascension-objectives = Complete your objectives first.
 stories-heretic-learn-no-points = Not enough knowledge of the Mansus.
 stories-roles-antag-heretic-name = Heretic
@@ -88,6 +89,7 @@ stories-heretic-ash-rebirth = You drain life from the flames. Victims: { $count 
 stories-heretic-ingredient-fire = matchstick or lighter
 
 stories-heretic-ash-ascension-corpses = The flame needs { $count } more burnt bodies.
+stories-heretic-ascension-done = You have already ascended.
 stories-heretic-ash-ascension-announcement = Attention! A surge of anomalous activity detected. { $name } has ascended as the Ashlord. Fire will consume everyone.
 stories-heretic-ingredient-glass-shard = glass shard
 stories-heretic-ingredient-candle = candle
