@@ -1,6 +1,8 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
@@ -17,6 +19,7 @@ public sealed partial class StoriesHereticInfluenceSystem : EntitySystem
 {
     [Dependency] private INetManager _net = default!;
     [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
@@ -68,7 +71,10 @@ public sealed partial class StoriesHereticInfluenceSystem : EntitySystem
             return;
 
         var coords = Transform(ent).Coordinates;
-        _heretic.AddPoints((args.User, heretic), ent.Comp.Points * _heretic.GetInfluenceMultiplier(args.User));
+        var points = ent.Comp.Points * _heretic.GetInfluenceMultiplier(args.User);
+        _heretic.AddPoints((args.User, heretic), points);
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"{ToPrettyString(args.User):user} harvested heretic influence {ToPrettyString(ent):target} for {points} points");
         _audio.PlayPvs(ent.Comp.HarvestSound, coords);
         Spawn(ent.Comp.PiercedPrototype, coords);
         QueueDel(ent);

@@ -6,6 +6,7 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Maps;
 using Content.Shared.Popups;
+using Content.Shared.Stacks;
 using Content.Shared.Tag;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
@@ -25,6 +26,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private TagSystem _tag = default!;
     [Dependency] private TurfSystem _turf = default!;
     [Dependency] private EntityWhitelistSystem _whitelist = default!;
@@ -156,9 +158,13 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 continue;
             }
 
+            // Из стопки ингредиент — одна единица, остальное остаётся на руне.
             foreach (var uid in _consumed)
             {
-                QueueDel(uid);
+                if (TryComp<StackComponent>(uid, out var stack) && stack.Count > 1)
+                    _stack.ReduceCount((uid, stack), 1);
+                else
+                    QueueDel(uid);
             }
 
             foreach (var result in ritual.Results)

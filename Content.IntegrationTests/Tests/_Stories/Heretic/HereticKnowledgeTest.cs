@@ -1,7 +1,9 @@
 #pragma warning disable RA0002
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Actions;
 using Content.Shared.Examine;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
@@ -105,6 +107,44 @@ public sealed class HereticKnowledgeTest : GameTest
 
             // Вознесение без выполненных целей недоступно.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeAscend"), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task LearnMessageOnlyFromHeretic()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var actions = Server.System<SharedActionsSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            var stranger = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+
+            void Send(EntityUid actor)
+            {
+                var msg = new StoriesHereticLearnMessage("STTestHereticKnowledgeRootA")
+                {
+                    Actor = actor,
+                    UiKey = StoriesHereticKnowledgeUiKey.Key,
+                    Entity = SEntMan.GetNetEntity(uid),
+                };
+                SEntMan.EventBus.RaiseLocalEvent(uid, (object) msg, true);
+            }
+
+            // Чужой клиент не может купить знание за еретика.
+            Send(stranger);
+            Assert.That(comp.Knowledge, Does.Not.Contain((EntProtoId) "STTestHereticKnowledgeRootA"));
+
+            Send(uid);
+            Assert.That(comp.Knowledge, Does.Contain((EntProtoId) "STTestHereticKnowledgeRootA"));
+
+            // Повторное добавление компонента не дублирует действия.
+            var before = actions.GetActions(uid).Count();
+            SEntMan.RemoveComponent<StoriesHereticComponent>(uid);
+            SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            Assert.That(actions.GetActions(uid).Count(), Is.EqualTo(before), "Старые действия остались дублями");
         });
     }
 
