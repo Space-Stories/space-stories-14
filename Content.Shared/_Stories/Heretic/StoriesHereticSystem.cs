@@ -132,6 +132,11 @@ public sealed partial class StoriesHereticSystem : EntitySystem
                && comp.HeadSacrificeCount >= comp.RequiredHeadSacrifices;
     }
 
+    public bool IsTarget(Entity<StoriesHereticComponent> ent, EntityUid uid)
+    {
+        return ent.Comp.Targets.Contains(GetNetEntity(uid));
+    }
+
     public void SetTargets(Entity<StoriesHereticComponent> ent, List<EntityUid> targets)
     {
         ent.Comp.Targets.Clear();

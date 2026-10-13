@@ -15,6 +15,7 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 {
     [Dependency] private AntagSelectionSystem _antag = default!;
     [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private StoriesHereticSacrificeSystem _sacrifice = default!;
     [Dependency] private TurfSystem _turf = default!;
 
     private const int TileAttempts = 10;
@@ -28,6 +29,9 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 
     private void OnAntagSelected(Entity<StoriesHereticRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
     {
+        if (TryComp<StoriesHereticComponent>(args.EntityUid, out var heretic))
+            _sacrifice.AssignTargets((args.EntityUid, heretic));
+
         var count = ent.Comp.InfluencesPerHeretic;
         if (!ent.Comp.InfluencesSpawned)
         {
