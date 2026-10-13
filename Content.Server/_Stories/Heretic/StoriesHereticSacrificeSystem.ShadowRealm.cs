@@ -6,6 +6,7 @@ using Content.Shared.Atmos;
 using Content.Shared.GameTicking;
 using Content.Shared.Maps;
 using Content.Shared.Popups;
+using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -78,7 +79,7 @@ public sealed partial class StoriesHereticSacrificeSystem
         }
 
         if (GetConfiguredRealmMap() is { } path
-            && _mapLoader.TryLoadMap(path, out _, out var grids)
+            && _mapLoader.TryLoadMap(path, out _, out var grids, new DeserializationOptions { InitializeMaps = true })
             && grids.Count > 0)
         {
             _realmGrid = grids.First();

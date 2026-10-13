@@ -4,6 +4,7 @@ using Content.Server._Stories.Heretic;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Damage;
+using Content.Server.Mind;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.GameObjects;
@@ -60,6 +61,31 @@ public sealed class HereticSacrificeTest : GameTest
             Assert.That(SEntMan.HasComponent<StoriesHereticShadowRealmComponent>(stranger), Is.False);
             Assert.That(SEntMan.GetComponent<TransformComponent>(stranger).MapID, Is.EqualTo(testMap.MapId),
                 "Жертва не вернулась из Теневого мира");
+        });
+    }
+
+    [Test]
+    public async Task RerollSkipsSacrificed()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var sacrifice = Server.System<StoriesHereticSacrificeSystem>();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+
+            var victim = SSpawnAtPosition("MobHuman", coords);
+            var former = SSpawnAtPosition("MobHuman", coords);
+            minds.TransferTo(minds.CreateMind(null), victim);
+            minds.TransferTo(minds.CreateMind(null), former);
+            SEntMan.AddComponent<StoriesHereticSacrificedComponent>(former);
+
+            sacrifice.AssignTargets(heretic);
+            Assert.That(heretic.Comp.Targets, Does.Contain(SEntMan.GetNetEntity(victim)));
+            Assert.That(heretic.Comp.Targets, Does.Not.Contain(SEntMan.GetNetEntity(former)));
         });
     }
 }

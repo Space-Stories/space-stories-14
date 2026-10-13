@@ -90,6 +90,8 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
         {
             if (uid == heretic.Owner
                 || HasComp<StoriesHereticComponent>(uid)
+                || HasComp<StoriesHereticSacrificedComponent>(uid)
+                || HasComp<StoriesHereticShadowRealmComponent>(uid)
                 || !_mobState.IsAlive(uid, mobState)
                 || !_mind.TryGetMind(uid, out var mindId, out _))
                 continue;
