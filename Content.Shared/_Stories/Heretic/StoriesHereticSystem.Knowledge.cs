@@ -79,6 +79,8 @@ public sealed partial class StoriesHereticSystem
             reason = Loc.GetString("stories-heretic-learn-unknown");
         else if (ent.Comp.Knowledge.Contains(id))
             reason = Loc.GetString("stories-heretic-learn-known");
+        else if (knowledge.LocksAscension && (ent.Comp.Ascended || KnowsAscension(ent.Comp)))
+            reason = Loc.GetString("stories-heretic-learn-feast-locked");
         else if (knowledge.ChoosesPath && ent.Comp.Path != null)
             reason = Loc.GetString("stories-heretic-learn-path-chosen");
         else if (!knowledge.ChoosesPath && knowledge.Path != null && knowledge.Path != ent.Comp.Path)
@@ -95,6 +97,11 @@ public sealed partial class StoriesHereticSystem
         return reason == null;
     }
 
+    private bool KnowsAscension(StoriesHereticComponent comp)
+    {
+        return comp.Knowledge.Any(id => TryGetKnowledge(id, out var known) && known.Ascension);
+    }
+
     public bool TryLearn(Entity<StoriesHereticComponent> ent, EntProtoId id)
     {
         if (!CanLearn(ent, id, out var reason))
@@ -105,7 +112,9 @@ public sealed partial class StoriesHereticSystem
 
         TryGetKnowledge(id, out var knowledge);
         ent.Comp.Points -= knowledge!.Cost;
-        ent.Comp.LearnedCount++;
+        if (!knowledge.LocksAscension)
+            ent.Comp.LearnedCount++;
+
         Grant(ent, id, knowledge);
         return true;
     }

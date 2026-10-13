@@ -1,3 +1,4 @@
+#pragma warning disable RA0002
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
@@ -56,6 +57,14 @@ public sealed class HereticKnowledgeTest : GameTest
     stage: 3
     cost: 0
     ascension: true
+
+- type: entity
+  id: STTestHereticKnowledgeFeast
+  components:
+  - type: StoriesHereticKnowledge
+    cost: 0
+    grantPoints: 5
+    locksAscension: true
 ";
 
     [Test]
@@ -93,6 +102,44 @@ public sealed class HereticKnowledgeTest : GameTest
 
             // Вознесение без выполненных целей недоступно.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeAscend"), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task FeastOfOwlsLocksAscension()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var sys = Server.System<StoriesHereticSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            // Пир сов: +5 очков, закрывает Вознесение и не идёт в цель «изучить N».
+            var feasterUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var feaster = SEntMan.AddComponent<StoriesHereticComponent>(feasterUid);
+            var feasterEnt = new Entity<StoriesHereticComponent>(feasterUid, feaster);
+            var points = feaster.Points;
+            Assert.That(sys.TryLearn(feasterEnt, "STTestHereticKnowledgeFeast"), Is.True);
+            Assert.That(feaster.CanAscend, Is.False);
+            Assert.That(feaster.LearnedCount, Is.Zero);
+            Assert.That(feaster.Points, Is.EqualTo(points + 5));
+
+            // Знание Вознесения уже изучено — Пир сов закрыт.
+            var ascenderUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var ascender = SEntMan.AddComponent<StoriesHereticComponent>(ascenderUid);
+            var ascenderEnt = new Entity<StoriesHereticComponent>(ascenderUid, ascender);
+            Assert.That(sys.TryLearn(ascenderEnt, "STTestHereticKnowledgeRootA"), Is.True);
+            ascender.LearnedCount = ascender.RequiredKnowledge;
+            ascender.SacrificeCount = ascender.RequiredSacrifices;
+            ascender.HeadSacrificeCount = ascender.RequiredHeadSacrifices;
+            Assert.That(sys.TryLearn(ascenderEnt, "STTestHereticKnowledgeAscend"), Is.True);
+            Assert.That(sys.CanLearn(ascenderEnt, "STTestHereticKnowledgeFeast", out _), Is.False);
+
+            // Уже вознёсшийся — тоже.
+            var ascendedUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var ascended = SEntMan.AddComponent<StoriesHereticComponent>(ascendedUid);
+            var ascendedEnt = new Entity<StoriesHereticComponent>(ascendedUid, ascended);
+            sys.SetAscended(ascendedEnt);
+            Assert.That(sys.CanLearn(ascendedEnt, "STTestHereticKnowledgeFeast", out _), Is.False);
         });
     }
 }
