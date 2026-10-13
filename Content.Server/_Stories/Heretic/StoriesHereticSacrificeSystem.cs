@@ -213,7 +213,7 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
 
         _rejuvenate.PerformRejuvenate(victim);
         EnsureComp<StoriesHereticSacrificedComponent>(victim);
-        SendToShadowRealm(victim);
+        SendToShadowRealm(victim, runeCoords);
         _popup.PopupEntity(Loc.GetString("stories-heretic-sacrifice-victim"), victim, victim, PopupType.LargeCaution);
     }
 

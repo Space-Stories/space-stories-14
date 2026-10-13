@@ -36,7 +36,7 @@ public sealed partial class StoriesHereticSacrificeSystem
         _nextPlatform = 0;
     }
 
-    private void SendToShadowRealm(EntityUid victim)
+    private void SendToShadowRealm(EntityUid victim, EntityCoordinates returnCoords)
     {
         if (!TryEnsureRealm(out var grid))
             return;
@@ -51,6 +51,7 @@ public sealed partial class StoriesHereticSacrificeSystem
         var realm = EnsureComp<StoriesHereticShadowRealmComponent>(victim);
         realm.ReturnTime = _timing.CurTime + realm.Duration;
         realm.NextDamage = _timing.CurTime + realm.DamageInterval;
+        realm.ReturnCoordinates = returnCoords;
 
         _transform.SetCoordinates(victim, new EntityCoordinates(grid.Value, new Vector2(center.X + 0.5f, center.Y + 0.5f)));
     }
@@ -59,11 +60,11 @@ public sealed partial class StoriesHereticSacrificeSystem
     {
         RemCompDeferred<StoriesHereticShadowRealmComponent>(ent);
 
-        if (_rule.TryGetRandomStationCoordinates(out var coords))
-        {
-            _transform.SetCoordinates(ent.Owner, coords);
-            _transform.AttachToGridOrMap(ent.Owner);
-        }
+        if (!_rule.TryGetRandomStationCoordinates(out var coords))
+            coords = ent.Comp.ReturnCoordinates;
+
+        _transform.SetCoordinates(ent.Owner, coords);
+        _transform.AttachToGridOrMap(ent.Owner);
 
         _popup.PopupEntity(Loc.GetString("stories-heretic-sacrifice-returned"), ent, ent, PopupType.Large);
     }
