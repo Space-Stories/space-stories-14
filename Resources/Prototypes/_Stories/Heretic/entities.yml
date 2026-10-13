@@ -1,0 +1,12 @@
+- type: entity
+  id: STHereticInfluence
+  name: reality smash
+  description: A tear in the fabric of reality.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Structures/Magic/Cult/rune.rsi
+    state: cult7
+    color: "#9b59d0"
+  - type: Clickable
+  - type: InteractionOutline
