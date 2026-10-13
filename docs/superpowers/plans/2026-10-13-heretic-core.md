@@ -140,7 +140,6 @@
   - `StoriesHereticSystem.SetTargets(Entity<StoriesHereticComponent> ent, List<EntityUid> targets)`
   - `StoriesHereticSystem.CycleTrackedTarget(Entity<StoriesHereticComponent> ent) : EntityUid?`
   - `StoriesHereticSystem.RemoveRitual(Entity<StoriesHereticComponent> ent, EntProtoId ritual)`
-  - `StoriesHereticSystem.LockAscension(Entity<StoriesHereticComponent> ent)`
   - `StoriesHereticSystem.SetAscended(Entity<StoriesHereticComponent> ent)`
   - `StoriesHereticSystem.MarkKnowledgeRitualUsed(Entity<StoriesHereticComponent> ent)`
   - `StoriesHereticSystem.TrackLimitedResult(Entity<StoriesHereticComponent> ent, EntProtoId ritual, EntityUid result)`
@@ -232,9 +231,6 @@ public sealed partial class StoriesHereticComponent : Component
     public int KnowledgeRitualPoints = 4;
 
     [DataField]
-    public int FeastOfOwlsPoints = 5;
-
-    [DataField]
     public int SacrificePoints = 2;
 
     [DataField]
@@ -305,6 +301,18 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
 
     [DataField]
     public ComponentRegistry AddComponents = new();
+
+    /// <summary>
+    /// Очки, выдаваемые при изучении (Пир сов).
+    /// </summary>
+    [DataField]
+    public int GrantPoints;
+
+    /// <summary>
+    /// Изучение навсегда закрывает Вознесение (Пир сов).
+    /// </summary>
+    [DataField]
+    public bool LocksAscension;
 }
 ```
 
@@ -365,7 +373,6 @@ public enum StoriesHereticRitualEffect : byte
     None,
     Sacrifice,
     Knowledge,
-    FeastOfOwls,
     RerollTargets,
     Ascension,
 }
@@ -490,7 +497,7 @@ namespace Content.Shared._Stories.Heretic.Events;
 public readonly record struct StoriesHereticKnowledgeLearnedEvent(EntProtoId Knowledge);
 
 /// <summary>
-/// Широковещательное событие для ритуалов с <see cref="StoriesHereticRitualEffect"/> (кроме Knowledge и FeastOfOwls).
+/// Широковещательное событие для ритуалов с <see cref="StoriesHereticRitualEffect"/> (кроме Knowledge).
 /// Обработчик проверяет условия, при успехе добавляет поглощаемые сущности в <see cref="Consumed"/>
 /// и ставит <see cref="Success"/>; при неудаче — <see cref="FailReason"/>.
 /// </summary>
@@ -759,12 +766,6 @@ public sealed partial class StoriesHereticSystem : EntitySystem
             Dirty(ent);
     }
 
-    public void LockAscension(Entity<StoriesHereticComponent> ent)
-    {
-        ent.Comp.CanAscend = false;
-        Dirty(ent);
-    }
-
     public void SetAscended(Entity<StoriesHereticComponent> ent)
     {
         ent.Comp.Ascended = true;
@@ -920,6 +921,12 @@ public sealed partial class StoriesHereticSystem
         {
             ent.Comp.Rituals.Add(ritual);
         }
+
+        if (knowledge.LocksAscension)
+            ent.Comp.CanAscend = false;
+
+        if (knowledge.GrantPoints > 0)
+            AddPoints(ent, knowledge.GrantPoints);
 
         EntityManager.AddComponents(ent, knowledge.AddComponents, removeExisting: false);
 
@@ -1674,12 +1681,12 @@ git commit -m "feat(heretic): game rule, antag role, objectives, preset"
 - Test: `Content.IntegrationTests/Tests/_Stories/Heretic/HereticRitualTest.cs`
 
 **Interfaces:**
-- Consumes: Task 1 API (`TrackLimitedResult`, `CountLimitedResults`, `RemoveRitual`, `AddPoints`, `LockAscension`, `MarkKnowledgeRitualUsed`), `StoriesHereticRitualEffectEvent`.
+- Consumes: Task 1 API (`TrackLimitedResult`, `CountLimitedResults`, `RemoveRitual`, `AddPoints`, `MarkKnowledgeRitualUsed`), `StoriesHereticRitualEffectEvent`.
 - Produces:
   - `StoriesHereticRitualSystem.TryPerform(Entity<StoriesHereticComponent> heretic, EntityUid rune) : bool` — сервер.
   - `StoriesHereticRitualSystem.Matches(StoriesHereticIngredient ingredient, EntityUid uid) : bool`.
   - Прототип `STHereticRune`, действие `STActionHereticDrawRune`, стартовое знание `STHereticKnowledgeRunes`.
-  - Стартовые ритуалы `STHereticRitualKnowledge`, `STHereticRitualFeastOfOwls` (выдаются знанием `STHereticKnowledgeRunes`).
+  - Стартовый ритуал `STHereticRitualKnowledge` (выдаётся знанием `STHereticKnowledgeRunes`) и знание-узел `STHereticKnowledgeFeastOfOwls`.
 
 - [ ] **Step 1: Падающий тест ритуала**
 
@@ -1989,12 +1996,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 _heretic.AddPoints(heretic, heretic.Comp.KnowledgeRitualPoints);
                 return true;
 
-            case StoriesHereticRitualEffect.FeastOfOwls:
-                _heretic.LockAscension(heretic);
-                _heretic.RemoveRitual(heretic, ritualId);
-                _heretic.AddPoints(heretic, heretic.Comp.FeastOfOwlsPoints);
-                return true;
-
             default:
                 var ev = new StoriesHereticRitualEffectEvent(heretic, rune, ritualId, effect, _nearby, _consumed);
                 RaiseLocalEvent(ref ev);
@@ -2133,8 +2134,21 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
     - STActionHereticDrawRune
     rituals:
     - STHereticRitualKnowledge
-    - STHereticRitualFeastOfOwls
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFeastOfOwls
+  name: Feast of Owls
+  description: Gain 5 knowledge points at once, but forever lose the chance to ascend.
+  components:
+  - type: StoriesHereticKnowledge
+    cost: 0
+    stage: 1
+    grantPoints: 5
+    locksAscension: true
 ```
+
+Пир сов — узел дерева, а не ритуал: ритуал без ингредиентов срабатывал бы при любой активации руны.
 
 `Resources/Prototypes/_Stories/Heretic/rituals.yml`:
 ```yaml
@@ -2153,15 +2167,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
   components:
   - type: StoriesHereticRitual
     effect: Knowledge
-
-- type: entity
-  parent: STHereticRitualBase
-  id: STHereticRitualFeastOfOwls
-  name: Feast of Owls
-  description: Gain great knowledge at once, but forever lose the chance to ascend.
-  components:
-  - type: StoriesHereticRitual
-    effect: FeastOfOwls
 ```
 
 - [ ] **Step 4: Локализация рун и ритуалов**
@@ -5562,8 +5567,8 @@ ent-STHereticKnowledgeAshAscension = Обряд Повелителя пепла
     .desc = Сожгите три тела на руне и вознеситесь. Требует выполненных целей.
 ent-STHereticRitualKnowledge = Ритуал знаний
     .desc = Соберите четыре предмета, которых требует Мансус. Можно провести один раз.
-ent-STHereticRitualFeastOfOwls = Пир сов
-    .desc = Получите много знаний разом, но навсегда лишитесь Вознесения.
+ent-STHereticKnowledgeFeastOfOwls = Пир сов
+    .desc = Получите 5 очков знаний разом, но навсегда лишитесь Вознесения.
 ent-STHereticRitualAmberFocus = Янтарный фокус
     .desc = Лист стекла и пара глаз.
 ent-STHereticRitualCodex = Кодекс Цикатрикс
