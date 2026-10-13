@@ -5,6 +5,7 @@
   - type: GameRule
     minPlayers: 30
   - type: StoriesHereticRule
+    shadowRealmMap: /Maps/_Stories/Nonstations/heretic_shadow_realm.yml
   - type: AntagObjectives
     objectives:
     - STHereticObjectiveKnowledge
