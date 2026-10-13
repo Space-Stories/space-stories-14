@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Database;
 using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
 
@@ -53,6 +54,10 @@ public sealed partial class StoriesHereticSystem
 
     private void OnLearnMessage(Entity<StoriesHereticComponent> ent, ref StoriesHereticLearnMessage args)
     {
+        // У BUI нет проверки взаимодействия, поэтому покупать может только сам еретик.
+        if (args.Actor != ent.Owner)
+            return;
+
         TryLearn(ent, args.Knowledge);
     }
 
@@ -116,6 +121,7 @@ public sealed partial class StoriesHereticSystem
             ent.Comp.LearnedCount++;
 
         Grant(ent, id, knowledge);
+        _adminLog.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(ent):user} learned heretic knowledge {id}");
         return true;
     }
 

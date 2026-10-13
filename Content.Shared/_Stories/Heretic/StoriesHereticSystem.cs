@@ -1,6 +1,8 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Actions;
+using Content.Shared.Administration.Logs;
+using Content.Shared.Database;
 using Content.Shared.Dataset;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
@@ -24,6 +26,7 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -73,8 +76,9 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         if (_actions.AddAction(ent, ent.Comp.KnowledgeAction) is { } knowledgeAction)
             ent.Comp.GrantedActions.Add(knowledgeAction);
 
+        // Без проверки взаимодействия: знания изучаются и в наручниках, как в tg. Чужие сообщения отсекает OnLearnMessage.
         EnsureComp<UserInterfaceComponent>(ent);
-        _ui.SetUi(ent.Owner, StoriesHereticKnowledgeUiKey.Key, new InterfaceData(KnowledgeBuiType));
+        _ui.SetUi(ent.Owner, StoriesHereticKnowledgeUiKey.Key, new InterfaceData(KnowledgeBuiType, requireInputValidation: false));
 
         foreach (var (id, knowledge) in AllKnowledge)
         {
@@ -165,6 +169,15 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     {
         if (_net.IsServer)
             QueueDel(ent.Comp.AuraEntity);
+
+        // Повторная выдача компонента (админ, ForceMakeAntag) создаёт новый — старые действия не должны остаться дублями.
+        if (TerminatingOrDeleted(ent))
+            return;
+
+        foreach (var action in ent.Comp.GrantedActions)
+        {
+            _actions.RemoveAction(ent.Owner, action);
+        }
     }
 
     private void OnExamined(Entity<StoriesHereticComponent> ent, ref ExaminedEvent args)
@@ -209,7 +222,10 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         for (var i = 0; i < ent.Comp.Targets.Count; i++)
         {
             ent.Comp.TrackedTarget = (ent.Comp.TrackedTarget + 1) % ent.Comp.Targets.Count;
-            if (TryGetEntity(ent.Comp.Targets[ent.Comp.TrackedTarget], out var target) && !TerminatingOrDeleted(target))
+            // На paused-карте (крио) цель недостижима — сердце её пропускает.
+            if (TryGetEntity(ent.Comp.Targets[ent.Comp.TrackedTarget], out var target)
+                && !TerminatingOrDeleted(target)
+                && !Paused(target.Value))
             {
                 Dirty(ent);
                 return target;
@@ -217,6 +233,18 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         }
 
         return null;
+    }
+
+    public void RemoveTarget(Entity<StoriesHereticComponent> ent, EntityUid target)
+    {
+        if (ent.Comp.Targets.Remove(GetNetEntity(target)))
+            Dirty(ent);
+    }
+
+    public void SetRequiredHeadSacrifices(Entity<StoriesHereticComponent> ent, int required)
+    {
+        ent.Comp.RequiredHeadSacrifices = required;
+        Dirty(ent);
     }
 
     public void RegisterSacrifice(Entity<StoriesHereticComponent> ent, EntityUid victim, bool head)
@@ -227,6 +255,8 @@ public sealed partial class StoriesHereticSystem : EntitySystem
             ent.Comp.HeadSacrificeCount++;
 
         Dirty(ent);
+        _adminLog.Add(LogType.Action, LogImpact.High,
+            $"{ToPrettyString(ent):user} sacrificed {ToPrettyString(victim):target} (head: {head})");
         AddPoints(ent, head ? ent.Comp.HeadSacrificePoints : ent.Comp.SacrificePoints);
     }
 
@@ -240,6 +270,7 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     {
         ent.Comp.Ascended = true;
         Dirty(ent);
+        _adminLog.Add(LogType.Action, LogImpact.Extreme, $"{ToPrettyString(ent):user} ascended as a heretic");
     }
 
     public void MarkKnowledgeRitualUsed(Entity<StoriesHereticComponent> ent)
