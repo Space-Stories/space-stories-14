@@ -1,0 +1,10 @@
+- type: dataset
+  id: STHereticKnowledgeRitualTags
+  values:
+  - Knife
+  - Candle
+  - Book
+  - GlassShard
+  - Matchstick
+  - Write
+  - Sheet

@@ -1,0 +1,6 @@
+- type: entity
+  abstract: true
+  id: STHereticKnowledgeBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticKnowledge

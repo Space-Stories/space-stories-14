@@ -1,0 +1,9 @@
+stories-heretic-points-gained = You gain knowledge of the Mansus: +{ $amount }.
+stories-heretic-learn-unknown = No such knowledge exists.
+stories-heretic-learn-known = You already possess this knowledge.
+stories-heretic-learn-path-chosen = You have already chosen your path.
+stories-heretic-learn-wrong-path = This knowledge is foreign to your path.
+stories-heretic-learn-requires = Learn the preceding knowledge first.
+stories-heretic-learn-ascension-locked = The Feast of Owls has closed the path of Ascension.
+stories-heretic-learn-ascension-objectives = Complete your objectives first.
+stories-heretic-learn-no-points = Not enough knowledge of the Mansus.
