@@ -72,3 +72,7 @@ stories-heretic-direction-SouthWest = на юго-западе
 stories-heretic-direction-West = на западе
 stories-heretic-direction-NorthWest = на северо-западе
 stories-heretic-direction-Invalid = прямо здесь
+
+stories-heretic-pierced-examine = [color=#c0392b]От одного взгляда на это кружится голова.[/color]
+stories-heretic-pierced-examine-heretic = Вы уже испили знание из этого разлома.
+stories-heretic-pierced-touch = Что-то по ту сторону хватает вас!

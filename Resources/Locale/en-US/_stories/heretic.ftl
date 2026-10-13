@@ -72,3 +72,7 @@ stories-heretic-direction-SouthWest = to the south-west
 stories-heretic-direction-West = to the west
 stories-heretic-direction-NorthWest = to the north-west
 stories-heretic-direction-Invalid = right here
+
+stories-heretic-pierced-examine = [color=#c0392b]Just looking at it makes your head spin.[/color]
+stories-heretic-pierced-examine-heretic = You have already drunk the knowledge from this tear.
+stories-heretic-pierced-touch = Something on the other side grabs you!

@@ -66,4 +66,18 @@ public sealed partial class StoriesHereticSystem
 
         return false;
     }
+
+    /// <summary>
+    /// Множитель очков за влияние: раскрытый Кодекс в руке удваивает их.
+    /// </summary>
+    public int GetInfluenceMultiplier(EntityUid uid)
+    {
+        foreach (var held in _hands.EnumerateHeld(uid))
+        {
+            if (TryComp<StoriesHereticCodexComponent>(held, out var codex) && codex.Open)
+                return codex.InfluenceMultiplier;
+        }
+
+        return 1;
+    }
 }

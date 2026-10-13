@@ -1,15 +1,41 @@
 - type: entity
   id: STHereticInfluence
   name: reality smash
-  description: A tear in the fabric of reality.
+  description: A tear in the fabric of reality. Something whispers from the other side.
   categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
   components:
+  - type: StoriesHereticInfluence
   - type: Sprite
     sprite: Structures/Magic/Cult/rune.rsi
     state: cult7
     color: "#9b59d0"
+    visible: false
+    drawdepth: Effects
   - type: Clickable
   - type: InteractionOutline
+  - type: Transform
+    anchored: true
+
+- type: entity
+  id: STHereticPiercedReality
+  name: pierced reality
+  description: A wound in the world. Looking at it hurts.
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StoriesHereticPiercedReality
+  - type: Sprite
+    sprite: Structures/Magic/Cult/rune.rsi
+    state: cult7
+    color: "#c0392b"
+    drawdepth: Effects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
 
 - type: entity
   id: STHereticRune
