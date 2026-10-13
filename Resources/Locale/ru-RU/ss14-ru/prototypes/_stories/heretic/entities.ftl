@@ -94,3 +94,7 @@ ent-STHereticObjectiveSacrifice = Принести жертву
     .desc = Цель: принести в жертву определённое число целей.
 ent-STHereticObjectiveHeadSacrifice = Принести в жертву главу отдела
     .desc = Цель: принести в жертву главу отдела.
+ent-STHereticAscensionAura = потусторонняя аура
+    .desc = Воздух вокруг вознёсшегося еретика дрожит от потусторонней силы.
+ent-STHereticFireEffect = пепельное пламя
+    .desc = Пепельный огонь.

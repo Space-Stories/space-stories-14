@@ -13,6 +13,7 @@ using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -62,6 +63,8 @@ public sealed partial class StoriesHereticAshSystem
                 continue;
 
             ring.NextPulse = now + ring.Interval;
+            SpawnRingEffects((uid, ring));
+
             _mobs.Clear();
             _lookup.GetEntitiesInRange(Transform(uid).Coordinates, ring.Radius, _mobs);
             foreach (var mob in _mobs)
@@ -184,9 +187,25 @@ public sealed partial class StoriesHereticAshSystem
         _damageable.SetDamageModifierSetId(heretic.Owner, ritual.DamageModifierSet);
         _statusEffects.TrySetStatusEffectDuration(heretic, PressureImmunityEffect);
 
+        if (ritual.Aura is { } aura)
+            SpawnAttachedTo(aura, new EntityCoordinates(heretic, Vector2.Zero));
+
         _chat.DispatchGlobalAnnouncement(Loc.GetString(ritual.Announcement, ("name", Name(heretic))),
             colorOverride: ritual.AnnouncementColor);
         _audio.PlayGlobal(ritual.Sound, Filter.Broadcast(), true);
+    }
+
+    /// <summary>
+    /// Языки пламени по окружности кольца. Только визуал: поджигает сам импульс кольца.
+    /// </summary>
+    private void SpawnRingEffects(Entity<StoriesHereticFireRingComponent> ring)
+    {
+        var center = _transform.GetMapCoordinates(ring);
+        for (var i = 0; i < ring.Comp.EffectCount; i++)
+        {
+            var angle = new Angle(MathF.Tau * i / ring.Comp.EffectCount);
+            Spawn(ring.Comp.Effect, center.Offset(angle.ToWorldVec() * ring.Comp.Radius));
+        }
     }
 
     private void OnFireRing(Entity<StoriesHereticComponent> ent, ref StoriesHereticFireRingEvent args)
@@ -224,6 +243,25 @@ public sealed partial class StoriesHereticAshSystem
 
             _damageable.TryChangeDamage(mob.Owner, args.Damage, origin: ent);
             Ignite(mob, args.FireStacks);
+        }
+
+        SpawnWaveEffects(_transform.GetMapCoordinates(ent), facing, args);
+    }
+
+    /// <summary>
+    /// Языки пламени по конусу волны: на каждом шаге дальности несколько точек поперёк конуса.
+    /// </summary>
+    private void SpawnWaveEffects(MapCoordinates origin, Vector2 facing, StoriesHereticFireWaveEvent args)
+    {
+        var halfAngle = Angle.FromDegrees(args.HalfAngleDegrees);
+        for (var distance = 1; distance <= (int) args.Range; distance++)
+        {
+            for (var i = 0; i < args.EffectsPerStep; i++)
+            {
+                var t = args.EffectsPerStep == 1 ? 0.5f : (float) i / (args.EffectsPerStep - 1);
+                var angle = new Angle(halfAngle.Theta * (2 * t - 1));
+                Spawn(args.Effect, origin.Offset(angle.RotateVec(facing) * distance));
+            }
         }
     }
 }

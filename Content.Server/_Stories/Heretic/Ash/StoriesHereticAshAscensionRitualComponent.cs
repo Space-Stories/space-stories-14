@@ -31,4 +31,10 @@ public sealed partial class StoriesHereticAshAscensionRitualComponent : Componen
 
     [DataField]
     public SoundSpecifier? Sound = new SoundPathSpecifier("/Audio/Ambience/Antag/ling_alert.ogg");
+
+    /// <summary>
+    /// Аура вознёсшегося, прикрепляемая к еретику (как heretic_aura в tg).
+    /// </summary>
+    [DataField]
+    public EntProtoId? Aura = "STHereticAscensionAura";
 }

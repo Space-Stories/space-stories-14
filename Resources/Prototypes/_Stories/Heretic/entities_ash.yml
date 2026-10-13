@@ -50,3 +50,35 @@
     state: icon
   - type: Clothing
     sprite: _Stories/Heretic/madness_mask.rsi
+
+- type: entity
+  id: STHereticAscensionAura
+  name: eldritch aura
+  description: The air around an ascended heretic shimmers with otherworldly power.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/aura.rsi
+    state: aura
+    drawdepth: Effects
+  - type: PointLight
+    radius: 2
+    energy: 1.5
+    color: "#ff8a2b"
+
+- type: entity
+  id: STHereticFireEffect
+  name: eldritch flame
+  description: Ashen fire.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 1
+  - type: Sprite
+    sprite: Effects/fire.rsi
+    state: "2"
+    drawdepth: Effects
+  - type: PointLight
+    radius: 1.5
+    energy: 1
+    color: "#ff8a2b"

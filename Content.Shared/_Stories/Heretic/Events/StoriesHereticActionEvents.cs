@@ -92,4 +92,13 @@ public sealed partial class StoriesHereticFireWaveEvent : InstantActionEvent
 
     [DataField]
     public float FireStacks = 5f;
+
+    /// <summary>
+    /// Визуальный эффект пламени, расставляемый по конусу волны.
+    /// </summary>
+    [DataField]
+    public EntProtoId Effect = "STHereticFireEffect";
+
+    [DataField]
+    public int EffectsPerStep = 5;
 }
