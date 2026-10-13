@@ -4,6 +4,7 @@ using Content.IntegrationTests.Fixtures;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Examine;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
@@ -115,10 +116,18 @@ public sealed class HereticKnowledgeTest : GameTest
     {
         var testMap = await Pair.CreateTestMap();
         var actions = Server.System<SharedActionsSystem>();
+        var ui = Server.System<SharedUserInterfaceSystem>();
+        var holder = EntityUid.Invalid;
+        var before = 0;
+        var beforeEntities = 0;
+
+        int ActionEntities(EntityUid uid) =>
+            SEntMan.GetComponent<ActionsContainerComponent>(uid).Container.ContainedEntities.Count;
 
         await Server.WaitAssertion(() =>
         {
             var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            holder = uid;
             var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
             var stranger = SSpawnAtPosition("MobHuman", testMap.GridCoords);
 
@@ -140,11 +149,24 @@ public sealed class HereticKnowledgeTest : GameTest
             Send(uid);
             Assert.That(comp.Knowledge, Does.Contain((EntProtoId) "STTestHereticKnowledgeRootA"));
 
+            // Чужой не может открыть окно знаний еретика (проверка ввода у него отключена).
+            ui.OpenUi(uid, StoriesHereticKnowledgeUiKey.Key, stranger);
+            Assert.That(ui.IsUiOpen(uid, StoriesHereticKnowledgeUiKey.Key, stranger), Is.False);
+
             // Повторное добавление компонента не дублирует действия.
-            var before = actions.GetActions(uid).Count();
+            before = actions.GetActions(uid).Count();
+            beforeEntities = ActionEntities(uid);
+            Assert.That(beforeEntities, Is.GreaterThan(0));
             SEntMan.RemoveComponent<StoriesHereticComponent>(uid);
             SEntMan.AddComponent<StoriesHereticComponent>(uid);
             Assert.That(actions.GetActions(uid).Count(), Is.EqualTo(before), "Старые действия остались дублями");
+        });
+
+        // Удаление сущностей старых действий отложено до конца тика.
+        await Pair.RunTicksSync(5);
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(ActionEntities(holder), Is.EqualTo(beforeEntities), "Сущности старых действий остались в контейнере");
         });
     }
 

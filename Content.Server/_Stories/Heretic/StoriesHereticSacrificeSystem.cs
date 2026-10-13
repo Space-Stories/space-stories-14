@@ -1,7 +1,6 @@
 using Content.Server.Chat.Managers;
 using Content.Server.Popups;
 using Content.Server.Revolutionary.Components;
-using Content.Server.Station.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
@@ -44,7 +43,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private RejuvenateSystem _rejuvenate = default!;
     [Dependency] private StoriesHereticRuleSystem _rule = default!;
-    [Dependency] private StationSystem _station = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
@@ -98,13 +96,22 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
                 || HasComp<StoriesHereticComponent>(uid)
                 || HasComp<StoriesHereticSacrificedComponent>(uid)
                 || HasComp<StoriesHereticShadowRealmComponent>(uid)
-                || !_mobState.IsAlive(uid, mobState)
-                || !_mind.TryGetMind(uid, out var mindId, out _)
-                || _station.GetOwningStation(uid) == null)
+                || !_rule.IsOnStation(uid))
                 continue;
 
-            _jobs.MindTryGetJobId(mindId, out var job);
-            _candidates.Add((uid, job, IsHead(uid)));
+            // Тело главы — законная жертва, даже если глава в крите или без разума (ушёл в госта).
+            // Остальных берём только живых и с игроком.
+            var head = IsHead(uid);
+            ProtoId<JobPrototype>? job = null;
+            if (_mind.TryGetMind(uid, out var mindId, out _))
+                _jobs.MindTryGetJobId(mindId, out job);
+            else if (!head)
+                continue;
+
+            if (!head && !_mobState.IsAlive(uid, mobState))
+                continue;
+
+            _candidates.Add((uid, job, head));
         }
 
         _random.Shuffle(_candidates);
@@ -126,7 +133,7 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
     }
 
     /// <summary>
-    /// Живых глав на станции не осталось — цель «жертва главы» невыполнима, снимаем её, чтобы Вознесение оставалось достижимым.
+    /// Глав на станции не осталось — цель «жертва главы» невыполнима, снимаем её, чтобы Вознесение оставалось достижимым.
     /// </summary>
     private void WaiveHeadSacrifice(Entity<StoriesHereticComponent> heretic)
     {

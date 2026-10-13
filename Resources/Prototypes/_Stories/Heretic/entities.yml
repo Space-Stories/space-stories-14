@@ -99,3 +99,6 @@
     radius: 1.5
     energy: 0.8
     color: "#4fd65a"
+  - type: Tag
+    tags:
+    - HideContextMenu

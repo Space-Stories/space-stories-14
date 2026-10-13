@@ -196,7 +196,7 @@ public sealed partial class StoriesHereticAshSystem
 
         _damageable.SetDamageModifierSetId(heretic.Owner, ritual.DamageModifierSet);
         _statusEffects.TrySetStatusEffectDuration(heretic, PressureImmunityEffect);
-        EntityManager.AddComponents(heretic, ritual.AddComponents, removeExisting: false);
+        EntityManager.AddComponents(heretic, ritual.AddComponents, removeExisting: true);
         if (ritual.RemoveBreathing)
             RemComp<RespiratorComponent>(heretic);
 

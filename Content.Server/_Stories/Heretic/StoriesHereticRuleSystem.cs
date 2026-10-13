@@ -27,13 +27,6 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
     [Dependency] private StationSystem _station = default!;
     [Dependency] private TurfSystem _turf = default!;
 
-    private const int TileAttempts = 30;
-
-    /// <summary>
-    /// Минимальное парциальное давление кислорода, кПа (safe_oxygen_min в tg).
-    /// </summary>
-    private const float MinOxygenPressure = 16f;
-
     public override void Initialize()
     {
         base.Initialize();
@@ -63,7 +56,7 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 
         for (var i = 0; i < count; i++)
         {
-            if (TryGetRandomStationCoordinates(out var coords))
+            if (TryGetRandomStationCoordinates(out var coords, ent.Comp))
                 Spawn(ent.Comp.InfluencePrototype, coords);
         }
     }
@@ -71,17 +64,16 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
     /// <summary>
     /// Случайная безопасная плитка станции: проходимая, с пригодным воздухом, не на улетевшем шаттле.
     /// </summary>
-    public bool TryGetRandomStationCoordinates(out EntityCoordinates coords)
+    public bool TryGetRandomStationCoordinates(out EntityCoordinates coords, StoriesHereticRuleComponent? rule = null)
     {
-        for (var i = 0; i < TileAttempts; i++)
+        rule ??= EntityQuery<StoriesHereticRuleComponent>().FirstOrDefault() ?? new StoriesHereticRuleComponent();
+
+        for (var i = 0; i < rule.TileAttempts; i++)
         {
             if (!TryFindRandomTile(out var index, out var station, out var grid, out coords))
                 continue;
 
-            // Шаттлы станции в FTL или у ЦК — на другой карте, чем основная сетка.
-            if (HasComp<FTLComponent>(grid)
-                || _station.GetLargestGrid(station.Value) is not { } main
-                || Transform(grid).MapID != Transform(main).MapID)
+            if (!IsOnStationMap(station.Value, grid))
                 continue;
 
             if (_turf.GetTileRef(coords) is not { } tile || _turf.IsSpace(tile))
@@ -90,7 +82,7 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
             if (_turf.IsTileBlocked(tile, CollisionGroup.Impassable))
                 continue;
 
-            if (!IsBreathable(_atmosphere.GetTileMixture(grid, null, index)))
+            if (!IsBreathable(_atmosphere.GetTileMixture(grid, null, index), rule.MinOxygenPressure))
                 continue;
 
             return true;
@@ -100,14 +92,36 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
         return false;
     }
 
-    private bool IsBreathable(GasMixture? air)
+    /// <summary>
+    /// Находится ли сущность на станции и на её основной карте (не на шаттле в FTL или у ЦК).
+    /// </summary>
+    public bool IsOnStation(EntityUid uid)
+    {
+        return _station.GetOwningStation(uid) is { } station
+               && Transform(uid).GridUid is { } grid
+               && IsOnStationMap(station, grid);
+    }
+
+    /// <summary>
+    /// Шаттлы станции в FTL или у ЦК — на другой карте, чем основная сетка.
+    /// </summary>
+    private bool IsOnStationMap(EntityUid station, EntityUid grid)
+    {
+        if (HasComp<FTLComponent>(grid))
+            return false;
+
+        return _station.GetLargestGrid(station) is not { } main
+               || Transform(grid).MapID == Transform(main).MapID;
+    }
+
+    private bool IsBreathable(GasMixture? air, float minOxygenPressure)
     {
         if (air == null || air.TotalMoles <= 0f)
             return false;
 
         var oxygen = air.Pressure * air.GetMoles(Gas.Oxygen) / air.TotalMoles;
         return air.Pressure is >= Atmospherics.WarningLowPressure and <= Atmospherics.WarningHighPressure
-               && oxygen >= MinOxygenPressure;
+               && oxygen >= minOxygenPressure;
     }
 
     protected override void AppendRoundEndText(EntityUid uid,

@@ -48,6 +48,9 @@ public sealed class HereticProgressTest : GameTest
             Assert.That(SEntMan.GetComponent<MetaDataComponent>(headObjective).EntityName,
                 Is.EqualTo(Loc.GetString("stories-heretic-objective-head-sacrifice", ("count", 0))));
 
+            // Счётчик меняется уже после последнего чтения прогресса — снимок обязан сохранить OnMindRemoved.
+            heretic.LearnedCount = 5;
+
             // Тело утрачено (гиб) — прогресс и Вознесение берутся со снимка роли.
             SDeleteNow(body);
             Assert.That(mind.OwnedEntity, Is.Not.EqualTo(body));
@@ -55,6 +58,7 @@ public sealed class HereticProgressTest : GameTest
             Assert.That(objectives.IsCompleted(headObjective, (mindId, mind)));
             Assert.That(progress.TryGetProgress(mindId, mind, out var snapshot));
             Assert.That(snapshot!.Ascended);
+            Assert.That(snapshot.LearnedCount, Is.EqualTo(5), "Снимок не сохранён при уходе разума");
         });
     }
 }

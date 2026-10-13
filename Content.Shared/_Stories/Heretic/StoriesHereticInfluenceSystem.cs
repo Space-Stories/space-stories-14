@@ -17,9 +17,9 @@ namespace Content.Shared._Stories.Heretic;
 
 public sealed partial class StoriesHereticInfluenceSystem : EntitySystem
 {
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IRobustRandom _random = default!;
-    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private DamageableSystem _damageable = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;

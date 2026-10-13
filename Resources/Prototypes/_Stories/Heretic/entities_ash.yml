@@ -70,6 +70,9 @@
     energy: 0.8
     softness: 2
     color: "#ff7a22"
+  - type: Tag
+    tags:
+    - HideContextMenu
 
 - type: entity
   id: STHereticFireEffect
@@ -85,7 +88,6 @@
     - state: flame
       shader: unshaded
     drawdepth: Effects
-  - type: PointLight
-    radius: 1
-    energy: 0.5
-    color: "#ff8a2b"
+  - type: Tag
+    tags:
+    - HideContextMenu

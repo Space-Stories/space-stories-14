@@ -5,6 +5,7 @@ using Content.Shared.Administration;
 using Content.Shared.Antag;
 using Content.Shared.Database;
 using Content.Shared.Mind.Components;
+using Content.Shared.Roles;
 using Content.Shared.Verbs;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -19,6 +20,7 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
 {
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private AntagSelectionSystem _antag = default!;
+    [Dependency] private SharedRoleSystem _roles = default!;
 
     private static readonly EntProtoId HereticRule = "STHeretic";
     private static readonly ProtoId<AntagSpecifierPrototype> HereticSpecifier = "STHereticSpecifier";
@@ -37,9 +39,10 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
             return;
 
         // Повторная выдача пересоздала бы компонент и сбросила прогресс.
-        if (!HasComp<MindContainerComponent>(args.Target)
+        if (!TryComp<MindContainerComponent>(args.Target, out var container)
             || !TryComp<ActorComponent>(args.Target, out var targetActor)
-            || HasComp<StoriesHereticComponent>(args.Target))
+            || HasComp<StoriesHereticComponent>(args.Target)
+            || container.Mind is { } mindId && _roles.MindHasRole<StoriesHereticRoleComponent>(mindId))
             return;
 
         var target = targetActor.PlayerSession;
