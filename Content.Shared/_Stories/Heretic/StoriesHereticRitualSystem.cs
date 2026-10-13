@@ -128,27 +128,33 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         _nearby.Remove(heretic);
         _nearby.Remove(rune);
 
+        // Подсказка берётся от ритуала, к которому игрок подошёл ближе всего:
+        // очки = число выполненных условий, при равенстве — первый.
         string? failReason = null;
+        var bestScore = 0;
         foreach (var ritualId in new List<EntProtoId>(heretic.Comp.Rituals))
         {
             if (!ProtoMan.TryIndex(ritualId, out var proto)
                 || !proto.TryComp<StoriesHereticRitualComponent>(out var ritual, _factory))
                 continue;
 
+            if (!TryMatch(ritual.Ingredients, out var missing, out var matched))
+            {
+                RecordFailure(missing, matched);
+                continue;
+            }
+
             if (ritual.Limit is { } limit && _heretic.CountLimitedResults(heretic, ritualId) >= limit)
             {
-                failReason ??= Loc.GetString("stories-heretic-ritual-limit");
+                RecordFailure(Loc.GetString("stories-heretic-ritual-limit"), matched + 1);
                 continue;
             }
 
-            if (!TryMatch(ritual.Ingredients, out var missing))
+            if (!TryRunEffect(heretic, rune, ritualId, ritual.Effect, out var effectFail, out var effectScore))
             {
-                failReason ??= missing;
+                RecordFailure(effectFail, matched + effectScore);
                 continue;
             }
-
-            if (!TryRunEffect(heretic, rune, ritualId, ritual.Effect, ref failReason))
-                continue;
 
             foreach (var uid in _consumed)
             {
@@ -169,14 +175,30 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
 
         _popup.PopupEntity(failReason ?? Loc.GetString("stories-heretic-ritual-nothing"), rune, heretic);
         return false;
+
+        void RecordFailure(string? reason, int score)
+        {
+            if (reason == null || score <= bestScore)
+                return;
+
+            failReason = reason;
+            bestScore = score;
+        }
     }
 
+    /// <summary>
+    /// <paramref name="score"/> — сколько условий эффекта выполнено (для выбора подсказки при неудаче).
+    /// </summary>
     private bool TryRunEffect(Entity<StoriesHereticComponent> heretic,
         EntityUid rune,
         EntProtoId ritualId,
         StoriesHereticRitualEffect effect,
-        ref string? failReason)
+        out string? failReason,
+        out int score)
     {
+        failReason = null;
+        score = 0;
+
         switch (effect)
         {
             case StoriesHereticRitualEffect.None:
@@ -186,25 +208,19 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 if (heretic.Comp.KnowledgeRitualUsed)
                     return false;
 
+                ProtoId<TagPrototype>? missingTag = null;
                 foreach (var tag in heretic.Comp.KnowledgeRitualTags)
                 {
-                    var found = false;
-                    foreach (var uid in _nearby)
-                    {
-                        if (_used.Contains(uid) || !_tag.HasTag(uid, tag))
-                            continue;
+                    if (TryUseTagged(tag))
+                        score++;
+                    else
+                        missingTag ??= tag;
+                }
 
-                        _used.Add(uid);
-                        _consumed.Add(uid);
-                        found = true;
-                        break;
-                    }
-
-                    if (found)
-                        continue;
-
-                    failReason ??= Loc.GetString("stories-heretic-ritual-missing",
-                        ("item", Loc.GetString($"stories-heretic-tag-{tag.Id}")),
+                if (missingTag is { } missing)
+                {
+                    failReason = Loc.GetString("stories-heretic-ritual-missing",
+                        ("item", Loc.GetString($"stories-heretic-tag-{missing.Id}")),
                         ("amount", 1));
                     return false;
                 }
@@ -217,18 +233,40 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             default:
                 var ev = new StoriesHereticRitualEffectEvent(heretic, rune, ritualId, effect, _nearby, _consumed);
                 RaiseLocalEvent(ref ev);
-                if (!ev.Success)
-                    failReason ??= ev.FailReason;
+                if (ev.Success)
+                    return true;
 
-                return ev.Success;
+                // Обработчик ставит FailReason только если нашёл, с чем работать (тело на руне и т.п.).
+                failReason = ev.FailReason;
+                score = 1;
+                return false;
         }
     }
 
-    private bool TryMatch(List<StoriesHereticIngredient> ingredients, out string? missing)
+    private bool TryUseTagged(ProtoId<TagPrototype> tag)
+    {
+        foreach (var uid in _nearby)
+        {
+            if (_used.Contains(uid) || !_tag.HasTag(uid, tag))
+                continue;
+
+            _used.Add(uid);
+            _consumed.Add(uid);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// <paramref name="matched"/> — число полностью найденных ингредиентов.
+    /// </summary>
+    private bool TryMatch(List<StoriesHereticIngredient> ingredients, out string? missing, out int matched)
     {
         _used.Clear();
         _consumed.Clear();
         missing = null;
+        matched = 0;
 
         foreach (var ingredient in ingredients)
         {
@@ -248,15 +286,17 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             }
 
             if (found >= ingredient.Amount)
+            {
+                matched++;
                 continue;
+            }
 
-            missing = Loc.GetString("stories-heretic-ritual-missing",
+            missing ??= Loc.GetString("stories-heretic-ritual-missing",
                 ("item", Loc.GetString(ingredient.Name)),
                 ("amount", ingredient.Amount - found));
-            return false;
         }
 
-        return true;
+        return missing == null;
     }
 
     public bool Matches(StoriesHereticIngredient ingredient, EntityUid uid)
