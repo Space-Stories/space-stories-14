@@ -100,3 +100,5 @@ ent-STHereticFireRingEffect = огненное кольцо
     .desc = Тлеющее кольцо пепельного огня.
 ent-STHereticFireEffect = пепельное пламя
     .desc = Пепельный огонь.
+ent-STHereticShadowRealmSpawn = точка появления в Теневом мире
+    .desc = Здесь появляются жертвы, отправленные в Теневой мир.

@@ -102,3 +102,17 @@
   - type: Tag
     tags:
     - HideContextMenu
+
+- type: entity
+  parent: MarkerBase
+  id: STHereticShadowRealmSpawn
+  name: shadow realm spawn
+  description: Where sacrifice victims appear in the Shadow Realm.
+  components:
+  - type: StoriesHereticShadowRealmSpawn
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    layers:
+    - state: green
+    - sprite: _Stories/Heretic/knowledge.rsi
+      state: node_side

@@ -11,6 +11,7 @@ using Robust.Shared.EntitySerialization;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Random;
 using Robust.Shared.Utility;
 
 namespace Content.Server._Stories.Heretic;
@@ -29,6 +30,7 @@ public sealed partial class StoriesHereticSacrificeSystem
 
     private Entity<MapGridComponent>? _realmGrid;
     private bool _realmFromFile;
+    private readonly List<EntityCoordinates> _realmSpawns = new();
     private int _nextPlatform;
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
@@ -43,11 +45,16 @@ public sealed partial class StoriesHereticSacrificeSystem
         if (!TryEnsureRealm(out var grid))
             return;
 
-        var center = Vector2i.Zero;
-        if (!_realmFromFile)
+        EntityCoordinates destination;
+        if (_realmFromFile)
         {
-            center = new Vector2i(_nextPlatform++ * PlatformSpacing, 0);
+            destination = PickRealmSpawn(grid.Value);
+        }
+        else
+        {
+            var center = new Vector2i(_nextPlatform++ * PlatformSpacing, 0);
             BuildPlatform(grid.Value, center);
+            destination = new EntityCoordinates(grid.Value, new Vector2(center.X + 0.5f, center.Y + 0.5f));
         }
 
         var realm = EnsureComp<StoriesHereticShadowRealmComponent>(victim);
@@ -55,7 +62,26 @@ public sealed partial class StoriesHereticSacrificeSystem
         realm.NextDamage = _timing.CurTime + realm.DamageInterval;
         realm.ReturnCoordinates = returnCoords;
 
-        _transform.SetCoordinates(victim, new EntityCoordinates(grid.Value, new Vector2(center.X + 0.5f, center.Y + 0.5f)));
+        _transform.SetCoordinates(victim, destination);
+        _transform.AttachToGridOrMap(victim);
+    }
+
+    /// <summary>
+    /// Случайная точка появления, расставленная маппером на сетке Теневого мира; без точек — центр сетки.
+    /// </summary>
+    private EntityCoordinates PickRealmSpawn(EntityUid grid)
+    {
+        _realmSpawns.Clear();
+        var query = EntityQueryEnumerator<StoriesHereticShadowRealmSpawnComponent, TransformComponent>();
+        while (query.MoveNext(out _, out _, out var xform))
+        {
+            if (xform.GridUid == grid)
+                _realmSpawns.Add(xform.Coordinates);
+        }
+
+        return _realmSpawns.Count > 0
+            ? _random.Pick(_realmSpawns)
+            : new EntityCoordinates(grid, new Vector2(0.5f, 0.5f));
     }
 
     private void ReturnFromRealm(Entity<StoriesHereticShadowRealmComponent> ent)
