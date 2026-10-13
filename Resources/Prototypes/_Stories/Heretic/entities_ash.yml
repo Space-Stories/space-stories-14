@@ -20,3 +20,34 @@
         Slash: 17
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+
+- type: entity
+  parent: ClothingEyesBase
+  id: STHereticAshenEyes
+  name: ashen eyes
+  description: A smouldering band worn over the eyes. Through it you see the warmth of the living.
+  components:
+  - type: Sprite
+    sprite: Clothing/Eyes/Glasses/thermal.rsi
+    color: "#d9792b"
+  - type: Clothing
+    sprite: Clothing/Eyes/Glasses/thermal.rsi
+  - type: StoriesHereticFocus
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+
+- type: entity
+  parent: ClothingMaskGas
+  id: STHereticMadnessMask
+  name: mask of madness
+  description: A grinning mask. Those who see it lose their minds.
+  components:
+  - type: StoriesHereticMadnessMask
+  - type: Sprite
+    sprite: Clothing/Mask/goldenmask.rsi
+    state: icon-despair
+  - type: Clothing
+    sprite: Clothing/Mask/goldenmask.rsi

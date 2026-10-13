@@ -93,3 +93,42 @@
     requires: [ STHereticKnowledgeAshFieryBlade ]
     actions:
     - STActionHereticRebirth
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshenEyes
+  name: Ashen Eyes
+  description: Forge a band that shows you the warmth of the living. It also works as a focus.
+  components:
+  - type: StoriesHereticKnowledge
+    stage: 3
+    requires: [ STHereticKnowledgeAshPassage ]
+    rituals:
+    - STHereticRitualAshenEyes
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeMadnessMask
+  name: Mask of Madness
+  description: Those around the wearer lose stamina and see things that are not there.
+  components:
+  - type: StoriesHereticKnowledge
+    stage: 5
+    requires: [ STHereticKnowledgeAshVolcano ]
+    rituals:
+    - STHereticRitualMadnessMask
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshAscension
+  name: "Ashlord's Rite"
+  description: Burn three corpses on a rune and ascend. Requires completed objectives.
+  components:
+  - type: StoriesHereticKnowledge
+    path: STHereticPathAsh
+    stage: 8
+    cost: 2
+    ascension: true
+    requires: [ STHereticKnowledgeAshRebirth ]
+    rituals:
+    - STHereticRitualAshAscension

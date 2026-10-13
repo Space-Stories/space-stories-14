@@ -70,3 +70,38 @@
         types:
           Heat: 300
   - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticFireRing
+  name: Ring of Fire
+  description: Surround yourself with fire for a minute.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 90
+  - type: Sprite
+    sprite: Objects/Magic/magicactions.rsi
+    layers:
+    - state: fireball
+  - type: InstantAction
+    event: !type:StoriesHereticFireRingEvent
+
+- type: entity
+  id: STActionHereticFireWave
+  name: Wave of Flame
+  description: Unleash a wave of fire in front of you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: Objects/Magic/magicactions.rsi
+    layers:
+    - state: fireball
+  - type: InstantAction
+    event: !type:StoriesHereticFireWaveEvent
+      damage:
+        types:
+          Heat: 20

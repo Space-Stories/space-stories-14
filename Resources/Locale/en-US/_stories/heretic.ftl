@@ -86,3 +86,11 @@ stories-heretic-ui-node = { $name } ({ $cost })
 
 stories-heretic-ash-rebirth = You drain life from the flames. Victims: { $count }.
 stories-heretic-ingredient-fire = matchstick or lighter
+
+stories-heretic-ash-ascension-corpses = The flame needs { $count } more burnt bodies.
+stories-heretic-ash-ascension-announcement = Attention! A surge of anomalous activity detected. { $name } has ascended as the Ashlord. Fire will consume everyone.
+stories-heretic-ingredient-glass-shard = glass shard
+stories-heretic-ingredient-candle = candle
+stories-heretic-ingredient-mask = breath, gas or sterile mask
+stories-heretic-ingredient-stunbaton = stun baton
+stories-heretic-ingredient-liver = liver
