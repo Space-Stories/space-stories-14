@@ -8,9 +8,9 @@
     itemIconStyle: NoItem
     checkCanInteract: false
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: spell_default
+    - state: eye
   - type: InstantAction
     event: !type:StoriesHereticOpenKnowledgeEvent
 
@@ -24,9 +24,9 @@
     itemIconStyle: NoItem
     useDelay: 1
   - type: Sprite
-    sprite: Structures/Magic/Cult/rune.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: cult3
+    - state: draw_rune
   - type: TargetAction
     range: 1.5
   - type: WorldTargetAction
@@ -44,9 +44,9 @@
     sound: !type:SoundPathSpecifier
       path: /Audio/Magic/disintegrate.ogg
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: blink
+    - state: mansus_grasp
   - type: TargetAction
     range: 1.5
     interactOnMiss: false
@@ -69,8 +69,8 @@
     useDelay: 10
     checkCanInteract: false
   - type: Sprite
-    sprite: Interface/Actions/devour.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: icon
+    - state: living_heart
   - type: InstantAction
     event: !type:StoriesHereticLivingHeartEvent

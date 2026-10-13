@@ -9,9 +9,9 @@
     useDelay: 15
     checkCanInteract: false
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: jaunt
+    - state: ash_shift
   - type: InstantAction
     event: !type:PolymorphActionEvent
       protoId: STHereticAshJaunt
@@ -27,9 +27,9 @@
     itemIconStyle: NoItem
     useDelay: 30
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: fireball
+    - state: flames
   - type: InstantAction
     event: !type:StoriesHereticVolcanoBlastEvent
       damage:
@@ -50,9 +50,9 @@
     itemIconStyle: NoItem
     useDelay: 60
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: repulse
+    - state: smoke
   - type: InstantAction
     event: !type:StoriesHereticRebirthEvent
       healPerTarget:
@@ -81,9 +81,9 @@
     itemIconStyle: NoItem
     useDelay: 90
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: fireball
+    - state: fire_ring
   - type: InstantAction
     event: !type:StoriesHereticFireRingEvent
 
@@ -97,9 +97,9 @@
     itemIconStyle: NoItem
     useDelay: 30
   - type: Sprite
-    sprite: Objects/Magic/magicactions.rsi
+    sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: fireball
+    - state: flames
   - type: InstantAction
     event: !type:StoriesHereticFireWaveEvent
       damage:

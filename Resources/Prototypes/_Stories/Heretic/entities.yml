@@ -8,9 +8,8 @@
   components:
   - type: StoriesHereticInfluence
   - type: Sprite
-    sprite: Structures/Magic/Cult/rune.rsi
-    state: cult7
-    color: "#9b59d0"
+    sprite: _Stories/Heretic/effects.rsi
+    state: reality_smash
     visible: false
     drawdepth: Effects
   - type: Clickable
@@ -28,9 +27,8 @@
   components:
   - type: StoriesHereticPiercedReality
   - type: Sprite
-    sprite: Structures/Magic/Cult/rune.rsi
-    state: cult7
-    color: "#c0392b"
+    sprite: _Stories/Heretic/effects.rsi
+    state: pierced_illusion
     drawdepth: Effects
   - type: Clickable
   - type: InteractionOutline
@@ -47,10 +45,9 @@
   components:
   - type: StoriesHereticRune
   - type: Sprite
-    sprite: Structures/Magic/Cult/rune.rsi
-    state: cult3
+    sprite: _Stories/Heretic/rune.rsi
+    state: transmutation_rune
     color: "#4bd36a"
-    scale: 1.5, 1.5
     drawdepth: FloorObjects
   - type: Clickable
   - type: InteractionOutline
@@ -68,10 +65,10 @@
   components:
   - type: StoriesHereticFocus
   - type: Sprite
-    sprite: Clothing/Neck/Misc/bling.rsi
-    color: "#e0a030"
+    sprite: _Stories/Heretic/amber_focus.rsi
+    state: icon
   - type: Clothing
-    sprite: Clothing/Neck/Misc/bling.rsi
+    sprite: _Stories/Heretic/amber_focus.rsi
 
 - type: entity
   parent: BaseItem
@@ -81,8 +78,7 @@
   components:
   - type: StoriesHereticCodex
   - type: Sprite
-    sprite: Objects/Misc/books.rsi
-    state: book_icon
-    color: "#7a3b3b"
+    sprite: _Stories/Heretic/codex.rsi
+    state: icon
   - type: Item
     size: Normal

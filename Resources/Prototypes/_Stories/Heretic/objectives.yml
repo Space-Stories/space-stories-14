@@ -11,8 +11,8 @@
     difficulty: 1
     issuer: STHeretic
     icon:
-      sprite: Objects/Magic/magicactions.rsi
-      state: spell_default
+      sprite: _Stories/Heretic/actions.rsi
+      state: eye
 
 - type: entity
   parent: STBaseHereticObjective
