@@ -94,3 +94,4 @@ stories-heretic-ingredient-candle = candle
 stories-heretic-ingredient-mask = breath, gas or sterile mask
 stories-heretic-ingredient-stunbaton = stun baton
 stories-heretic-ingredient-liver = liver
+stories-guide-entry-heretic = Heretic
