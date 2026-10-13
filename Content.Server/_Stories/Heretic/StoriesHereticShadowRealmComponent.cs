@@ -1,4 +1,5 @@
 using Content.Shared.Damage;
+using Robust.Shared.Map;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Server._Stories.Heretic;
@@ -23,6 +24,9 @@ public sealed partial class StoriesHereticShadowRealmComponent : Component
     {
         DamageDict = new() { { "Cold", 4 } },
     };
+
+    [DataField]
+    public EntityCoordinates ReturnCoordinates;
 
     [DataField]
     public TimeSpan HallucinationTime = TimeSpan.FromSeconds(6);
