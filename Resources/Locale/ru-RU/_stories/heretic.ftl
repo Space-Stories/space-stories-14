@@ -1,0 +1,9 @@
+stories-heretic-points-gained = Вы получаете знания Мансуса: +{ $amount }.
+stories-heretic-learn-unknown = Такого знания не существует.
+stories-heretic-learn-known = Вы уже обладаете этим знанием.
+stories-heretic-learn-path-chosen = Вы уже ступили на свой путь.
+stories-heretic-learn-wrong-path = Это знание чуждо вашему пути.
+stories-heretic-learn-requires = Сначала постигните предшествующее знание.
+stories-heretic-learn-ascension-locked = Пир сов закрыл для вас путь Вознесения.
+stories-heretic-learn-ascension-objectives = Сначала выполните свои цели.
+stories-heretic-learn-no-points = Недостаточно знаний Мансуса.

@@ -1,0 +1,98 @@
+using Content.IntegrationTests.Fixtures;
+using Content.Shared._Stories.Heretic;
+using Content.Shared._Stories.Heretic.Components;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Prototypes;
+
+namespace Content.IntegrationTests.Tests._Stories.Heretic;
+
+[TestFixture]
+public sealed class HereticKnowledgeTest : GameTest
+{
+    [TestPrototypes]
+    private const string Prototypes = @"
+- type: Tag
+  id: STTestHereticPathA
+
+- type: Tag
+  id: STTestHereticPathB
+
+- type: entity
+  id: STTestHereticKnowledgeStart
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+
+- type: entity
+  id: STTestHereticKnowledgeRootA
+  components:
+  - type: StoriesHereticKnowledge
+    path: STTestHereticPathA
+    choosesPath: true
+    stage: 1
+
+- type: entity
+  id: STTestHereticKnowledgeRootB
+  components:
+  - type: StoriesHereticKnowledge
+    path: STTestHereticPathB
+    choosesPath: true
+    stage: 1
+
+- type: entity
+  id: STTestHereticKnowledgeA2
+  components:
+  - type: StoriesHereticKnowledge
+    path: STTestHereticPathA
+    stage: 2
+    requires: [ STTestHereticKnowledgeRootA ]
+
+- type: entity
+  id: STTestHereticKnowledgeAscend
+  components:
+  - type: StoriesHereticKnowledge
+    path: STTestHereticPathA
+    stage: 3
+    cost: 0
+    ascension: true
+";
+
+    [Test]
+    public async Task LearningRules()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var sys = Server.System<StoriesHereticSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            var ent = new Entity<StoriesHereticComponent>(uid, comp);
+
+            // Стартовое знание выдано бесплатно и не считается купленным.
+            Assert.That(comp.Knowledge, Does.Contain((EntProtoId) "STTestHereticKnowledgeStart"));
+            Assert.That(comp.LearnedCount, Is.Zero);
+            Assert.That(comp.Points, Is.EqualTo(1));
+
+            // Без корня пути следующая ступень недоступна.
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeA2"), Is.False);
+
+            // Выбор пути списывает очко и фиксирует путь.
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeRootA"), Is.True);
+            Assert.That(comp.Points, Is.Zero);
+            Assert.That(comp.Path?.Id, Is.EqualTo("STTestHereticPathA"));
+            Assert.That(comp.LearnedCount, Is.EqualTo(1));
+
+            // Второй корень закрыт.
+            sys.AddPoints(ent, 5);
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeRootB"), Is.False);
+
+            // Следующая ступень своего пути доступна.
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeA2"), Is.True);
+
+            // Вознесение без выполненных целей недоступно.
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeAscend"), Is.False);
+        });
+    }
+}
