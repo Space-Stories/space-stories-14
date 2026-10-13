@@ -58,4 +58,30 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(rituals.TryPerform(heretic, rune), Is.False);
         });
     }
+
+    [Test]
+    public async Task AshBladeRitual()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            var heretic = new Entity<StoriesHereticComponent>(uid, comp);
+
+            Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeAshRoot"), Is.True);
+            Assert.That(comp.Rituals, Does.Contain((EntProtoId) "STHereticRitualAshBlade"));
+
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            SSpawnAtPosition("KitchenKnife", coords);
+            SSpawnAtPosition("Lighter", coords);
+
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualAshBlade"), Is.EqualTo(1));
+        });
+    }
 }

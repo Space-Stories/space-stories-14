@@ -83,3 +83,6 @@ stories-heretic-ui-path = Путь: { $path }
 stories-heretic-ui-ritual = Ритуал знаний требует: { $items }
 stories-heretic-ui-column-general = Общие
 stories-heretic-ui-node = { $name } ({ $cost })
+
+stories-heretic-ash-rebirth = Вы вытягиваете жизнь из пламени. Жертв: { $count }.
+stories-heretic-ingredient-fire = спичка или зажигалка

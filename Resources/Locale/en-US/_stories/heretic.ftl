@@ -83,3 +83,6 @@ stories-heretic-ui-path = Path: { $path }
 stories-heretic-ui-ritual = The Ritual of Knowledge requires: { $items }
 stories-heretic-ui-column-general = General
 stories-heretic-ui-node = { $name } ({ $cost })
+
+stories-heretic-ash-rebirth = You drain life from the flames. Victims: { $count }.
+stories-heretic-ingredient-fire = matchstick or lighter

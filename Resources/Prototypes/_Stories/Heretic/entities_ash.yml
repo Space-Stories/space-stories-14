@@ -1,0 +1,22 @@
+- type: entity
+  parent: BaseKnife
+  id: STHereticBladeAsh
+  name: ashen blade
+  description: A curved blade that smells of smoke. Breaking it carries you away through the Mansus.
+  components:
+  - type: StoriesHereticBlade
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/cult_dagger.rsi
+    state: icon
+    color: "#d9792b"
+  - type: Item
+    sprite: Objects/Weapons/Melee/cult_dagger.rsi
+    size: Normal
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 17
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
