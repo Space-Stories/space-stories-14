@@ -78,11 +78,18 @@ stories-heretic-pierced-examine-heretic = You have already drunk the knowledge f
 stories-heretic-pierced-touch = Something on the other side grabs you!
 
 stories-heretic-ui-title = Mansus knowledge
-stories-heretic-ui-points = Knowledge points: { $points }
-stories-heretic-ui-path = Path: { $path }
+stories-heretic-ui-points = ◆ { $points } knowledge { $points ->
+    [one] point
+   *[other] points
+}
+stories-heretic-ui-path = Path:
 stories-heretic-ui-ritual = The Ritual of Knowledge requires: { $items }
 stories-heretic-ui-column-general = General
-stories-heretic-ui-node = { $name } ({ $cost })
+stories-heretic-ui-cost = ◆ { $cost }
+stories-heretic-ui-tooltip-cost = Cost: ◆ { $cost }
+stories-heretic-ui-learned = Learned.
+stories-heretic-ui-available = Click to learn.
+stories-heretic-ui-locked = Not available yet.
 
 stories-heretic-ash-rebirth = You drain life from the flames. Victims: { $count }.
 stories-heretic-ingredient-fire = matchstick or lighter

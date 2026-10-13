@@ -26,6 +26,9 @@
   description: Gain 5 knowledge points at once, but forever lose the chance to ascend.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: eye
     cost: 0
     stage: 1
     grantPoints: 5

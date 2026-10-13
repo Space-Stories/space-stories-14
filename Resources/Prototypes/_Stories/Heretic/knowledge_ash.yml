@@ -5,6 +5,9 @@
   description: Step onto the Path of Ash. Learn to forge ashen blades from a knife and a flame.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/ash_blade.rsi
+      state: icon
     path: STHereticPathAsh
     choosesPath: true
     stage: 1
@@ -18,6 +21,9 @@
   description: Your Mansus Grasp blinds its victim.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: grasp_ash
     path: STHereticPathAsh
     stage: 2
     requires: [ STHereticKnowledgeAshRoot ]
@@ -32,6 +38,9 @@
   description: A short jaunt through walls. Works while cuffed.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: ash_shift
     path: STHereticPathAsh
     stage: 3
     requires: [ STHereticKnowledgeAshGrasp ]
@@ -45,6 +54,9 @@
   description: Your Grasp marks victims. A blade strike on a marked victim sets them ablaze, and the mark spreads to those nearby.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: mansus_grasp
     path: STHereticPathAsh
     stage: 4
     cost: 2
@@ -61,6 +73,9 @@
   description: A beam of fire that jumps between creatures.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: flames
     path: STHereticPathAsh
     stage: 5
     requires: [ STHereticKnowledgeAshMark ]
@@ -74,6 +89,9 @@
   description: Your blades set their victims on fire.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: blade_upgrade_ash
     path: STHereticPathAsh
     stage: 6
     cost: 2
@@ -88,6 +106,9 @@
   description: Drain life from everyone burning around you.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: fire_ring
     path: STHereticPathAsh
     stage: 7
     requires: [ STHereticKnowledgeAshFieryBlade ]
@@ -101,6 +122,9 @@
   description: Forge a band that shows you the warmth of the living. It also works as a focus.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/ashen_eyes.rsi
+      state: icon
     stage: 3
     requires: [ STHereticKnowledgeAshPassage ]
     rituals:
@@ -113,6 +137,9 @@
   description: Those around the wearer lose stamina and see things that are not there.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/madness_mask.rsi
+      state: icon
     stage: 5
     requires: [ STHereticKnowledgeAshVolcano ]
     rituals:
@@ -125,6 +152,9 @@
   description: Burn three corpses on a rune and ascend. Requires completed objectives.
   components:
   - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: node_finished
     path: STHereticPathAsh
     stage: 8
     cost: 2
