@@ -82,3 +82,20 @@
     state: icon
   - type: Item
     size: Normal
+
+- type: entity
+  id: STHereticAura
+  name: eldritch aura
+  description: A crackling green vortex of otherworldly energy.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/aura.rsi
+    layers:
+    - state: aura
+      shader: unshaded
+    drawdepth: Effects
+  - type: PointLight
+    radius: 1.5
+    energy: 0.8
+    color: "#4fd65a"

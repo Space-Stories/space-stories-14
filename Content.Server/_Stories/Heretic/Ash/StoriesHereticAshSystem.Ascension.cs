@@ -1,9 +1,11 @@
 using System.Numerics;
+using Content.Server.Body.Components;
 using Content.Server.Chat.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
@@ -11,11 +13,14 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
+using Content.Shared.Sprite;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+using Robust.Shared.Spawners;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.Heretic.Ash;
@@ -23,6 +28,7 @@ namespace Content.Server._Stories.Heretic.Ash;
 public sealed partial class StoriesHereticAshSystem
 {
     [Dependency] private IComponentFactory _factory = default!;
+    [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -30,6 +36,7 @@ public sealed partial class StoriesHereticAshSystem
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private SharedScaleVisualsSystem _scale = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
 
     private static readonly EntProtoId HallucinationEffect = "StatusEffectSeeingRainbow";
@@ -39,6 +46,7 @@ public sealed partial class StoriesHereticAshSystem
     {
         SubscribeLocalEvent<StoriesHereticRitualEffectEvent>(OnRitualEffect);
         SubscribeLocalEvent<StoriesHereticComponent, StoriesHereticFireRingEvent>(OnFireRing);
+        SubscribeLocalEvent<StoriesHereticFireRingComponent, ComponentShutdown>(OnFireRingShutdown);
         SubscribeLocalEvent<StoriesHereticComponent, StoriesHereticFireWaveEvent>(OnFireWave);
         SubscribeLocalEvent<StoriesHereticMadnessMaskComponent, GotEquippedEvent>(OnMaskEquipped);
         SubscribeLocalEvent<StoriesHereticMadnessMaskComponent, GotUnequippedEvent>(OnMaskUnequipped);
@@ -184,11 +192,13 @@ public sealed partial class StoriesHereticAshSystem
             _actions.AddAction(heretic, action);
         }
 
+        EmpowerActions(heretic, ritual);
+
         _damageable.SetDamageModifierSetId(heretic.Owner, ritual.DamageModifierSet);
         _statusEffects.TrySetStatusEffectDuration(heretic, PressureImmunityEffect);
-
-        if (ritual.Aura is { } aura)
-            SpawnAttachedTo(aura, new EntityCoordinates(heretic, Vector2.Zero));
+        EntityManager.AddComponents(heretic, ritual.AddComponents, removeExisting: false);
+        if (ritual.RemoveBreathing)
+            RemComp<RespiratorComponent>(heretic);
 
         _chat.DispatchGlobalAnnouncement(Loc.GetString(ritual.Announcement, ("name", Name(heretic))),
             colorOverride: ritual.AnnouncementColor);
@@ -196,15 +206,46 @@ public sealed partial class StoriesHereticAshSystem
     }
 
     /// <summary>
-    /// Языки пламени по окружности кольца. Только визуал: поджигает сам импульс кольца.
+    /// Усиливает уже изученные действия: «Извержение вулкана» прыгает дальше, перезарядки короче.
+    /// </summary>
+    private void EmpowerActions(EntityUid heretic, StoriesHereticAshAscensionRitualComponent ritual)
+    {
+        foreach (var action in _actions.GetActions(heretic))
+        {
+            if (TryComp<InstantActionComponent>(action, out var instant)
+                && instant.Event is StoriesHereticVolcanoBlastEvent volcano)
+                volcano.Bounces = (int) MathF.Round(volcano.Bounces * ritual.VolcanoBounceMultiplier);
+
+            if (MetaData(action).EntityPrototype is { } proto
+                && ritual.CooldownMultipliers.TryGetValue(proto.ID, out var multiplier)
+                && action.Comp.UseDelay is { } delay)
+                _actions.SetUseDelay(action.AsNullable(), delay * multiplier);
+        }
+    }
+
+    /// <summary>
+    /// Маленькие языки пламени со случайным размером, поворотом и временем жизни. Только визуал.
+    /// </summary>
+    private void SpawnFlame(StoriesHereticFlameEffects flames, MapCoordinates coords)
+    {
+        var rotation = new Angle(_random.NextFloat((float) -flames.MaxRotation.Theta, (float) flames.MaxRotation.Theta));
+        var flame = Spawn(flames.Effect, coords, rotation: rotation);
+        _scale.SetSpriteScale(flame, new Vector2(_random.NextFloat(flames.MinScale, flames.MaxScale)));
+
+        if (TryComp<TimedDespawnComponent>(flame, out var despawn))
+            despawn.Lifetime = _random.NextFloat(flames.MinLifetime, flames.MaxLifetime);
+    }
+
+    /// <summary>
+    /// Языки пламени в случайных точках возле окружности кольца, не привязанных к сетке.
     /// </summary>
     private void SpawnRingEffects(Entity<StoriesHereticFireRingComponent> ring)
     {
         var center = _transform.GetMapCoordinates(ring);
-        for (var i = 0; i < ring.Comp.EffectCount; i++)
+        for (var i = 0; i < ring.Comp.Flames.Count; i++)
         {
-            var angle = new Angle(MathF.Tau * i / ring.Comp.EffectCount);
-            Spawn(ring.Comp.Effect, center.Offset(angle.ToWorldVec() * ring.Comp.Radius));
+            var distance = ring.Comp.Radius + _random.NextFloat(-ring.Comp.FlameSpread, ring.Comp.FlameSpread);
+            SpawnFlame(ring.Comp.Flames, center.Offset(_random.NextAngle().ToWorldVec() * distance));
         }
     }
 
@@ -217,6 +258,17 @@ public sealed partial class StoriesHereticAshSystem
         var ring = EnsureComp<StoriesHereticFireRingComponent>(ent);
         ring.EndTime = _timing.CurTime + args.Duration;
         ring.NextPulse = _timing.CurTime;
+
+        if (!TerminatingOrDeleted(ring.RingEntity))
+            return;
+
+        ring.RingEntity = SpawnAttachedTo(ring.RingEffect, new EntityCoordinates(ent, Vector2.Zero));
+        _scale.SetSpriteScale(ring.RingEntity.Value, new Vector2(ring.Radius / ring.RingSpriteRadius));
+    }
+
+    private void OnFireRingShutdown(Entity<StoriesHereticFireRingComponent> ent, ref ComponentShutdown args)
+    {
+        QueueDel(ent.Comp.RingEntity);
     }
 
     private void OnFireWave(Entity<StoriesHereticComponent> ent, ref StoriesHereticFireWaveEvent args)
@@ -249,19 +301,16 @@ public sealed partial class StoriesHereticAshSystem
     }
 
     /// <summary>
-    /// Языки пламени по конусу волны: на каждом шаге дальности несколько точек поперёк конуса.
+    /// Языки пламени в случайных точках конуса волны, не привязанных к сетке.
     /// </summary>
     private void SpawnWaveEffects(MapCoordinates origin, Vector2 facing, StoriesHereticFireWaveEvent args)
     {
-        var halfAngle = Angle.FromDegrees(args.HalfAngleDegrees);
-        for (var distance = 1; distance <= (int) args.Range; distance++)
+        var halfAngle = (float) Angle.FromDegrees(args.HalfAngleDegrees).Theta;
+        for (var i = 0; i < args.Flames.Count; i++)
         {
-            for (var i = 0; i < args.EffectsPerStep; i++)
-            {
-                var t = args.EffectsPerStep == 1 ? 0.5f : (float) i / (args.EffectsPerStep - 1);
-                var angle = new Angle(halfAngle.Theta * (2 * t - 1));
-                Spawn(args.Effect, origin.Offset(angle.RotateVec(facing) * distance));
-            }
+            var angle = new Angle(_random.NextFloat(-halfAngle, halfAngle));
+            var distance = _random.NextFloat(args.FlameMinDistance, args.Range);
+            SpawnFlame(args.Flames, origin.Offset(angle.RotateVec(facing) * distance));
         }
     }
 }

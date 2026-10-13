@@ -69,3 +69,10 @@
     actions:
     - STActionHereticFireRing
     - STActionHereticFireWave
+    cooldownMultipliers:
+      STActionHereticVolcanoBlast: 0.66
+      STActionHereticRebirth: 0.16
+    addComponents:
+    - type: ExplosionResistance
+      damageCoefficient: 0
+      worn: false
