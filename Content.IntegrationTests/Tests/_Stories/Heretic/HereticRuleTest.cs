@@ -1,13 +1,17 @@
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Content.Server.Administration.Managers;
 using Content.Server.GameTicking;
 using Content.Server.Mind;
 using Content.Server.Roles;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Administration;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Mind;
+using Content.Shared.Verbs;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
@@ -66,6 +70,47 @@ public sealed class HereticRuleTest : GameTest
             Assert.That(SEntMan.TryGetComponent<StoriesHereticComponent>(player, out var heretic));
             Assert.That(heretic!.KnowledgeRitualTags, Has.Count.EqualTo(4), "MapInit еретика не отработал");
             Assert.That(SEntMan.GetComponent<MindComponent>(mind).Objectives, Has.Count.EqualTo(3));
+        });
+    }
+
+    [Test]
+    public async Task AdminVerbMakesHereticThroughRule()
+    {
+        var pair = Pair;
+        var server = pair.Server;
+        var ticker = server.System<GameTicker>();
+        var mindSys = server.System<MindSystem>();
+        var roleSys = server.System<RoleSystem>();
+        var verbs = server.System<Content.Server.Verbs.VerbSystem>();
+        var admins = server.ResolveDependency<IAdminManager>();
+
+        await server.WaitPost(() =>
+        {
+            ticker.ToggleReadyAll(true);
+            ticker.StartRound();
+        });
+        await pair.RunTicksSync(10);
+
+        Assert.That(ticker.RunLevel, Is.EqualTo(GameRunLevel.InRound));
+        var player = pair.Player!.AttachedEntity!.Value;
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(admins.HasAdminFlag(pair.Player!, AdminFlags.Fun), "Тестовый игрок не админ");
+
+            // Админ делает еретиком себя: верб есть и проходит через правило STHeretic.
+            var verb = verbs.GetLocalVerbs(player, player, typeof(Verb))
+                .Single(v => v.Text == Loc.GetString("stories-heretic-admin-verb-make"));
+            verbs.ExecuteVerb(verb, player, player, true);
+
+            var mind = mindSys.GetMind(player)!.Value;
+            Assert.That(roleSys.MindIsAntagonist(mind));
+            Assert.That(SEntMan.HasComponent<StoriesHereticComponent>(player));
+            Assert.That(SEntMan.GetComponent<MindComponent>(mind).Objectives, Has.Count.EqualTo(3));
+
+            // Повторно верб не предлагается: иначе прогресс сбросился бы.
+            Assert.That(verbs.GetLocalVerbs(player, player, typeof(Verb))
+                .Any(v => v.Text == Loc.GetString("stories-heretic-admin-verb-make")), Is.False);
         });
     }
 }
