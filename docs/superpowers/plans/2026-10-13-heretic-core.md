@@ -5604,3 +5604,253 @@ Run: YAML-линтер → без ошибок.
 git add Resources/Prototypes/_Stories/Heretic Resources/Prototypes/Guidebook/antagonist.yml Resources/ServerInfo/_Stories/Heretic.xml Resources/Locale
 git commit -m "feat(heretic): guidebook and Russian entity names"
 ```
+
+---
+
+### Task 12: Спрайты из tgstation
+
+Спрайты Еретика берутся из tgstation (лицензия CC-BY-SA 3.0 — разрешена разделом «License Compatibility», п. 2 лицензии Space Stories). Коммит tgstation зафиксирован: `ca79910d79497cf1ab56ebcf8db52a7289a3d412`.
+
+**Files:**
+- Create: `Tools/_Stories/dmi_to_rsi.py` (конвертер DMI → RSI, пригодится для следующих путей)
+- Create: `Resources/Textures/_Stories/Heretic/*.rsi` (см. таблицу)
+- Modify: `Content.Shared/_Stories/Vision/Events/VisionEvents.cs` (зрение из слота шеи — для медальона Пепельных глаз, как в tg)
+- Modify: все YAML Еретика, где стоят заглушки-спрайты
+- Modify: `docs/superpowers/specs/2026-10-13-heretic-core-design.md` (Пепельные глаза снова медальон)
+
+**Interfaces:**
+- Consumes: прототипы из задач 1–10.
+- Produces: RSI в `Resources/Textures/_Stories/Heretic/`.
+
+- [ ] **Step 1: Конвертер**
+
+`Tools/_Stories/dmi_to_rsi.py`:
+```python
+#!/usr/bin/env python3
+"""
+Конвертирует состояния BYOND DMI в RSI (Robust Toolbox).
+
+Использование:
+  python Tools/_Stories/dmi_to_rsi.py <file.dmi> <out.rsi> "<copyright>" <dmi_state>[=<rsi_state>] ...
+
+Если RSI уже существует, состояния добавляются или заменяются (размер кадра должен совпадать).
+Требуется Pillow.
+"""
+import json
+import math
+import re
+import sys
+from pathlib import Path
+
+from PIL import Image
+
+
+def parse_description(desc):
+    width = int(re.search(r"width = (\d+)", desc).group(1))
+    height = int(re.search(r"height = (\d+)", desc).group(1))
+    states = []
+    current = None
+    for raw in desc.splitlines():
+        line = raw.strip()
+        match = re.match(r'state = "(.*)"', line)
+        if match:
+            current = {"name": match.group(1), "dirs": 1, "frames": 1, "delay": None}
+            states.append(current)
+            continue
+        if current is None:
+            continue
+        match = re.match(r"(dirs|frames) = (\d+)", line)
+        if match:
+            current[match.group(1)] = int(match.group(2))
+            continue
+        match = re.match(r"delay = (.*)", line)
+        if match:
+            current["delay"] = [float(x) for x in match.group(1).split(",")]
+    return width, height, states
+
+
+def main():
+    if len(sys.argv) < 5:
+        sys.exit(__doc__)
+
+    dmi_path, out_path, copyright_text, *specs = sys.argv[1:]
+    sheet = Image.open(dmi_path)
+    width, height, states = parse_description(sheet.info["Description"])
+    sheet = sheet.convert("RGBA")
+    sheet_columns = sheet.width // width
+
+    # В DMI кадры идут подряд по всем состояниям; внутри состояния — кадр за кадром, в кадре — все направления.
+    # При повторяющихся именах берётся первое состояние.
+    offsets = {}
+    index = 0
+    for state in states:
+        offsets.setdefault(state["name"], (index, state))
+        index += state["dirs"] * state["frames"]
+
+    out_dir = Path(out_path)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    meta_path = out_dir / "meta.json"
+    if meta_path.exists():
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        if meta["size"] != {"x": width, "y": height}:
+            sys.exit(f"{out_path}: size {meta['size']} != {width}x{height}")
+    else:
+        meta = {"version": 1, "license": "CC-BY-SA-3.0", "copyright": copyright_text,
+                "size": {"x": width, "y": height}, "states": []}
+
+    for spec in specs:
+        source, _, target = spec.partition("=")
+        target = target or source
+        if source not in offsets:
+            sys.exit(f"{dmi_path}: no state '{source}'")
+
+        start, state = offsets[source]
+        dirs, frames = state["dirs"], state["frames"]
+        total = dirs * frames
+        columns = math.ceil(math.sqrt(total))
+        rows = math.ceil(total / columns)
+        image = Image.new("RGBA", (columns * width, rows * height))
+
+        # RSI: сначала все кадры направления 0, затем направления 1 и т.д.; сетка слева направо, сверху вниз.
+        for direction in range(dirs):
+            for frame in range(frames):
+                source_index = start + frame * dirs + direction
+                sx, sy = (source_index % sheet_columns) * width, (source_index // sheet_columns) * height
+                tile = sheet.crop((sx, sy, sx + width, sy + height))
+                target_index = direction * frames + frame
+                image.paste(tile, ((target_index % columns) * width, (target_index // columns) * height))
+
+        image.save(out_dir / f"{target}.png")
+
+        entry = {"name": target}
+        if dirs != 1:
+            entry["directions"] = dirs
+        if frames > 1:
+            delay = state["delay"] or [1.0] * frames
+            entry["delays"] = [[round(d / 10, 3) for d in delay] for _ in range(dirs)]
+
+        meta["states"] = [s for s in meta["states"] if s["name"] != target] + [entry]
+
+    meta_path.write_text(json.dumps(meta, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+- [ ] **Step 2: Скачать DMI и сконвертировать**
+
+DMI — внешние файлы, поэтому качаем их во временную папку вне репозитория и передаём пути аргументами (Bash, из корня репозитория):
+```bash
+TG=ca79910d79497cf1ab56ebcf8db52a7289a3d412
+DMI="$(mktemp -d)"
+for p in icons/effects/eldritch.dmi icons/effects/96x96.dmi icons/obj/antags/eldritch.dmi icons/mob/actions/actions_ecult.dmi \
+         icons/obj/weapons/khopesh.dmi icons/mob/inhands/64x64_lefthand.dmi icons/mob/inhands/64x64_righthand.dmi \
+         icons/obj/clothing/neck.dmi icons/mob/clothing/neck.dmi icons/obj/clothing/masks.dmi icons/mob/clothing/mask.dmi; do
+  curl -sfL -o "$DMI/$(echo $p | tr / _)" "https://raw.githubusercontent.com/tgstation/tgstation/$TG/$p"
+done
+
+C="Taken from tgstation at https://github.com/tgstation/tgstation/commit/$TG"
+T=Resources/Textures/_Stories/Heretic
+py() { python -P -E Tools/_Stories/dmi_to_rsi.py "$@"; }
+
+py "$DMI/icons_effects_96x96.dmi"              $T/rune.rsi          "$C" transmutation_rune
+py "$DMI/icons_effects_eldritch.dmi"           $T/effects.rsi       "$C" reality_smash pierced_illusion
+py "$DMI/icons_obj_antags_eldritch.dmi"        $T/codex.rsi         "$C" book=icon
+py "$DMI/icons_obj_clothing_neck.dmi"          $T/amber_focus.rsi   "$C" eldritch_necklace=icon
+py "$DMI/icons_mob_clothing_neck.dmi"          $T/amber_focus.rsi   "$C" eldritch_necklace=equipped-NECK
+py "$DMI/icons_obj_antags_eldritch.dmi"        $T/ashen_eyes.rsi    "$C" eye_medalion=icon
+py "$DMI/icons_mob_clothing_neck.dmi"          $T/ashen_eyes.rsi    "$C" eye_medalion=equipped-NECK
+py "$DMI/icons_obj_clothing_masks.dmi"         $T/madness_mask.rsi  "$C" mad_mask=icon
+py "$DMI/icons_mob_clothing_mask.dmi"          $T/madness_mask.rsi  "$C" mad_mask=equipped-MASK
+py "$DMI/icons_obj_weapons_khopesh.dmi"        $T/ash_blade.rsi     "$C" ash_blade=icon
+py "$DMI/icons_mob_inhands_64x64_lefthand.dmi" $T/ash_blade_inhand.rsi "$C" ash_blade=inhand-left
+py "$DMI/icons_mob_inhands_64x64_righthand.dmi" $T/ash_blade_inhand.rsi "$C" ash_blade=inhand-right
+py "$DMI/icons_mob_actions_actions_ecult.dmi"  $T/actions.rsi       "$C" eye mansus_grasp ash_shift flames smoke fire_ring
+py "$DMI/icons_effects_eldritch.dmi"           $T/actions.rsi       "$C" small_rune_1=draw_rune
+py "$DMI/icons_obj_antags_eldritch.dmi"        $T/actions.rsi       "$C" living_heart
+rm -rf "$DMI"
+```
+Expected: команды завершаются без вывода; в `Resources/Textures/_Stories/Heretic/` 9 папок `.rsi`, в каждой `meta.json` и PNG.
+
+- [ ] **Step 3: Зрение из слота шеи (медальон Пепельных глаз, как в tg)**
+
+`Content.Shared/_Stories/Vision/Events/VisionEvents.cs`, свойство `TargetSlots` в `RefreshVisionEvent`:
+```csharp
+    public SlotFlags TargetSlots => SlotFlags.EYES | SlotFlags.HEAD | SlotFlags.MASK | SlotFlags.OUTERCLOTHING | SlotFlags.NECK;
+```
+Это файл форка, пометки `// Stories-...` не нужны.
+
+- [ ] **Step 4: Заменить заглушки в YAML**
+
+`entities.yml`:
+- `STHereticRune` → `Sprite`: `sprite: _Stories/Heretic/rune.rsi`, `state: transmutation_rune`, `color: "#4bd36a"`, `drawdepth: FloorObjects`; строку `scale` удалить (спрайт 96×96 уже покрывает 3×3).
+- `STHereticInfluence` → `sprite: _Stories/Heretic/effects.rsi`, `state: reality_smash`, строку `color` удалить, `visible: false` оставить.
+- `STHereticPiercedReality` → `sprite: _Stories/Heretic/effects.rsi`, `state: pierced_illusion`, строку `color` удалить.
+- `STHereticAmberFocus` → `Sprite: sprite: _Stories/Heretic/amber_focus.rsi`, `state: icon` (без `color`); `Clothing: sprite: _Stories/Heretic/amber_focus.rsi`.
+- `STHereticCodexCicatrix` → `sprite: _Stories/Heretic/codex.rsi`, `state: icon`, без `color`.
+
+`entities_ash.yml`:
+- `STHereticBladeAsh` → `Sprite: sprite: _Stories/Heretic/ash_blade.rsi`, `state: icon`, без `color`; `Item: sprite: _Stories/Heretic/ash_blade_inhand.rsi`.
+- `STHereticAshenEyes` → заменить целиком:
+```yaml
+- type: entity
+  parent: ClothingNeckBase
+  id: STHereticAshenEyes
+  name: warm eldritch medallion
+  description: A smouldering medallion with an eye. Through it you see the warmth of the living.
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/ashen_eyes.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Stories/Heretic/ashen_eyes.rsi
+  - type: StoriesHereticFocus
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+```
+- `STHereticMadnessMask` → `Sprite: sprite: _Stories/Heretic/madness_mask.rsi`, `state: icon`; `Clothing: sprite: _Stories/Heretic/madness_mask.rsi`.
+
+Действия (`actions.yml`, `actions_ash.yml`) — в каждом `Sprite` поставить `sprite: _Stories/Heretic/actions.rsi` и состояние:
+
+| Действие | state |
+|---|---|
+| `STActionHereticKnowledge` | `eye` |
+| `STActionHereticDrawRune` | `draw_rune` |
+| `STActionHereticGrasp` | `mansus_grasp` |
+| `STActionHereticLivingHeart` | `living_heart` |
+| `STActionHereticAshPassage` | `ash_shift` |
+| `STActionHereticVolcanoBlast` | `flames` |
+| `STActionHereticRebirth` | `smoke` |
+| `STActionHereticFireRing` | `fire_ring` |
+| `STActionHereticFireWave` | `flames` |
+
+`objectives.yml` → иконка `STBaseHereticObjective`: `sprite: _Stories/Heretic/actions.rsi`, `state: eye`.
+
+Русские имена: в `Resources/Locale/ru-RU/ss14-ru/prototypes/_stories/heretic/entities.ftl` заменить строку `ent-STHereticAshenEyes`:
+```ftl
+ent-STHereticAshenEyes = тёплый потусторонний медальон
+    .desc = Тлеющий медальон с глазом. Сквозь него видно тепло живых.
+```
+В `Resources/ServerInfo/_Stories/Heretic.xml` заменить «Пепельных глаз» на «тёплого медальона».
+
+- [ ] **Step 5: Спецификация**
+
+В `docs/superpowers/specs/2026-10-13-heretic-core-design.md`, раздел 6, строка «Пепельные глаза»: «→ медальон на шею с тепловым зрением (как в tg; зрение форка научено работать из слота шеи). Служит фокусом». Раздел 10, пункт «Текстуры»: «Спрайты взяты из tgstation (CC-BY-SA 3.0, коммит `ca79910d`), конвертер — `Tools/_Stories/dmi_to_rsi.py`».
+
+- [ ] **Step 6: Проверка**
+
+Run: `dotnet build -c Debug` → `0 Error(s)`.
+Run: YAML-линтер → без ошибок (он проверяет, что RSI и состояния существуют).
+Run: `dotnet test ... --filter "FullyQualifiedName~Heretic|FullyQualifiedName~EntityTest"` → PASS.
+Ручная проверка (Task 8, Step 7): руна зелёная 3×3, влияния анимированы, клинок виден в руке, медальон и маска видны на персонаже, у действий иконки tg.
+
+- [ ] **Step 7: Коммит**
+
+```bash
+git add Tools/_Stories/dmi_to_rsi.py Resources/Textures/_Stories/Heretic Content.Shared/_Stories/Vision/Events/VisionEvents.cs Resources/Prototypes/_Stories/Heretic Resources/Locale Resources/ServerInfo/_Stories/Heretic.xml docs/superpowers/specs
+git commit -m "feat(heretic): sprites from tgstation (CC-BY-SA 3.0)"
+```
