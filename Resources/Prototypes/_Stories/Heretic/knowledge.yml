@@ -30,3 +30,27 @@
     stage: 1
     grantPoints: 5
     locksAscension: true
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAmberFocus
+  name: Amber Focus
+  description: You know how to create a focus from glass and eyes.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    rituals:
+    - STHereticRitualAmberFocus
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeCodex
+  name: Codex Cicatrix
+  description: You know how to bind the Codex. An open Codex doubles influences, speeds up runes and works as a focus.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    rituals:
+    - STHereticRitualCodex

@@ -13,3 +13,37 @@
   components:
   - type: StoriesHereticRitual
     effect: Knowledge
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualAmberFocus
+  name: Amber Focus
+  description: A glass sheet and a pair of eyes.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-glass-sheet
+      prototypes: [ SheetGlass ]
+    - name: stories-heretic-ingredient-eyes
+      organCategory: Eyes
+    results:
+    - STHereticAmberFocus
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualCodex
+  name: Codex Cicatrix
+  description: A book, a writing tool and hide or leather.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-book
+      whitelist:
+        tags: [ Book ]
+    - name: stories-heretic-ingredient-pen
+      whitelist:
+        tags: [ Write ]
+    - name: stories-heretic-ingredient-hide
+      prototypes: [ MaterialHideBear, MaterialHideCorgi, ClothingHandsGlovesLeather ]
+    results:
+    - STHereticCodexCicatrix
