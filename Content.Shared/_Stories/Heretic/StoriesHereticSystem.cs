@@ -7,6 +7,7 @@ using Content.Shared.Dataset;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
 using Robust.Shared.GameStates;
@@ -23,14 +24,15 @@ namespace Content.Shared._Stories.Heretic;
 /// </summary>
 public sealed partial class StoriesHereticSystem : EntitySystem
 {
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IRobustRandom _random = default!;
-    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private InventorySystem _inventory = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
@@ -177,6 +179,8 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         foreach (var action in ent.Comp.GrantedActions)
         {
             _actions.RemoveAction(ent.Owner, action);
+            // RemoveAction лишь отвязывает действие от владельца, сущность остаётся в контейнере.
+            PredictedQueueDel(action);
         }
     }
 

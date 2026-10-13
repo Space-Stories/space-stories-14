@@ -19,6 +19,18 @@ public sealed partial class StoriesHereticRuleComponent : Component
     public bool InfluencesSpawned;
 
     /// <summary>
+    /// Сколько раз пробовать найти безопасную плитку станции.
+    /// </summary>
+    [DataField]
+    public int TileAttempts = 30;
+
+    /// <summary>
+    /// Минимальное парциальное давление кислорода, кПа (safe_oxygen_min в tg).
+    /// </summary>
+    [DataField]
+    public float MinOxygenPressure = 16f;
+
+    /// <summary>
     /// Готовая карта Теневого мира от маппера. Если не задана — генерируется в коде.
     /// </summary>
     [DataField]

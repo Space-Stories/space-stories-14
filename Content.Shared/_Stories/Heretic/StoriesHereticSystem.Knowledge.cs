@@ -31,6 +31,7 @@ public sealed partial class StoriesHereticSystem
             subs =>
             {
                 subs.Event<StoriesHereticLearnMessage>(OnLearnMessage);
+                subs.Event<BoundUIOpenedEvent>(OnKnowledgeOpened);
             });
 
         CacheKnowledge();
@@ -52,10 +53,19 @@ public sealed partial class StoriesHereticSystem
         }
     }
 
+    /// <summary>
+    /// Без проверки взаимодействия окно мог бы открыть любой клиент — закрываем его всем, кроме самого еретика.
+    /// </summary>
+    private void OnKnowledgeOpened(Entity<StoriesHereticComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        if (args.Actor != ent.Owner)
+            _ui.CloseUi(ent.Owner, args.UiKey, args.Actor);
+    }
+
     private void OnLearnMessage(Entity<StoriesHereticComponent> ent, ref StoriesHereticLearnMessage args)
     {
-        // У BUI нет проверки взаимодействия, поэтому покупать может только сам еретик.
-        if (args.Actor != ent.Owner)
+        // У BUI нет проверки взаимодействия, поэтому покупать может только сам еретик, и не в беспамятстве.
+        if (args.Actor != ent.Owner || _mobState.IsIncapacitated(ent))
             return;
 
         TryLearn(ent, args.Knowledge);

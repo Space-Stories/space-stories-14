@@ -3,7 +3,9 @@ using System.Numerics;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared._Stories.Holy;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
@@ -26,6 +28,7 @@ namespace Content.Shared._Stories.Heretic;
 
 public sealed partial class StoriesHereticGraspSystem : EntitySystem
 {
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -195,6 +198,7 @@ public sealed partial class StoriesHereticGraspSystem : EntitySystem
                 || _turf.IsTileBlocked(tile, CollisionGroup.Impassable))
                 continue;
 
+            _adminLog.Add(LogType.Action, LogImpact.Medium, $"{ToPrettyString(user):user} teleported with heretic blade {ToPrettyString(ent):blade}");
             _audio.PlayPvs(ent.Comp.BreakSound, user);
             _transform.SetCoordinates(user, coords);
             _transform.AttachToGridOrMap(user);
