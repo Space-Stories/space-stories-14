@@ -16,7 +16,8 @@ public readonly record struct StoriesHereticKnowledgeLearnedEvent(EntProtoId Kno
 /// <summary>
 /// Широковещательное событие для ритуалов с <see cref="StoriesHereticRitualEffect"/> (кроме Knowledge).
 /// Обработчик проверяет условия, при успехе добавляет поглощаемые сущности в <see cref="Consumed"/>
-/// и ставит <see cref="Success"/>; при неудаче — <see cref="FailReason"/>.
+/// и ставит <see cref="Success"/>; при неудаче — <see cref="FailReason"/>, но только если на руне нашлось,
+/// с чем работать (иначе подсказку даст другой ритуал).
 /// </summary>
 [ByRefEvent]
 public record struct StoriesHereticRitualEffectEvent(

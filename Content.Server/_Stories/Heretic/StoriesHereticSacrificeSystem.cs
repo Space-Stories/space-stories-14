@@ -195,8 +195,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
             args.Success = true;
             return;
         }
-
-        args.FailReason ??= Loc.GetString("stories-heretic-sacrifice-no-body");
     }
 
     private bool CanBeSacrificed(EntityUid uid)

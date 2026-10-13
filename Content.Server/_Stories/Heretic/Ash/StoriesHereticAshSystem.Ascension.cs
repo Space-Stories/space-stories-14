@@ -133,7 +133,8 @@ public sealed partial class StoriesHereticAshSystem
 
         if (corpses.Count < ritual.Corpses)
         {
-            args.FailReason = Loc.GetString("stories-heretic-ash-ascension-corpses", ("count", ritual.Corpses - corpses.Count));
+            if (corpses.Count > 0)
+                args.FailReason = Loc.GetString("stories-heretic-ash-ascension-corpses", ("count", ritual.Corpses - corpses.Count));
             return;
         }
 

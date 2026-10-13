@@ -53,7 +53,6 @@ stories-heretic-grasp-blocked = Святая сила отталкивает Х�
 stories-heretic-blade-no-place = Мансусу некуда вас перенести.
 stories-heretic-sacrifice-not-target = Мансус не примет эту жертву.
 stories-heretic-sacrifice-resisting = Жертва ещё сопротивляется.
-stories-heretic-sacrifice-no-body = На руне нет жертвы.
 stories-heretic-sacrifice-victim = Вас утягивает сквозь завесу реальности...
 stories-heretic-sacrifice-returned = Вы возвращаетесь. Вы не помните, кто это сделал.
 stories-heretic-ingredient-poppy = мак
