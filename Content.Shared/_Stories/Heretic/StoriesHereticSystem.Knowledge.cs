@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Stories.Heretic;
@@ -11,6 +12,16 @@ public sealed partial class StoriesHereticSystem
     private readonly List<(EntProtoId Id, StoriesHereticKnowledgeComponent Comp)> _knowledge = new();
 
     public IReadOnlyList<(EntProtoId Id, StoriesHereticKnowledgeComponent Comp)> AllKnowledge => _knowledge;
+
+    public bool KnowsKnowledge(Entity<StoriesHereticComponent> ent, EntProtoId id)
+    {
+        return ent.Comp.Knowledge.Contains(id);
+    }
+
+    public IReadOnlyList<ProtoId<TagPrototype>> GetKnowledgeRitualTags(Entity<StoriesHereticComponent> ent)
+    {
+        return ent.Comp.KnowledgeRitualTags;
+    }
 
     private void InitializeKnowledge()
     {

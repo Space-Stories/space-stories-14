@@ -76,3 +76,10 @@ stories-heretic-direction-Invalid = прямо здесь
 stories-heretic-pierced-examine = [color=#c0392b]От одного взгляда на это кружится голова.[/color]
 stories-heretic-pierced-examine-heretic = Вы уже испили знание из этого разлома.
 stories-heretic-pierced-touch = Что-то по ту сторону хватает вас!
+
+stories-heretic-ui-title = Знания Мансуса
+stories-heretic-ui-points = Очки знаний: { $points }
+stories-heretic-ui-path = Путь: { $path }
+stories-heretic-ui-ritual = Ритуал знаний требует: { $items }
+stories-heretic-ui-column-general = Общие
+stories-heretic-ui-node = { $name } ({ $cost })

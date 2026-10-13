@@ -76,3 +76,10 @@ stories-heretic-direction-Invalid = right here
 stories-heretic-pierced-examine = [color=#c0392b]Just looking at it makes your head spin.[/color]
 stories-heretic-pierced-examine-heretic = You have already drunk the knowledge from this tear.
 stories-heretic-pierced-touch = Something on the other side grabs you!
+
+stories-heretic-ui-title = Mansus knowledge
+stories-heretic-ui-points = Knowledge points: { $points }
+stories-heretic-ui-path = Path: { $path }
+stories-heretic-ui-ritual = The Ritual of Knowledge requires: { $items }
+stories-heretic-ui-column-general = General
+stories-heretic-ui-node = { $name } ({ $cost })
