@@ -1,0 +1,18 @@
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualAshBlade
+  name: Ashen Blade
+  description: A knife and a match or lighter.
+  components:
+  - type: StoriesHereticRitual
+    limit: 3
+    ingredients:
+    - name: stories-heretic-ingredient-knife
+      whitelist:
+        tags: [ Knife ]
+    - name: stories-heretic-ingredient-fire
+      whitelist:
+        tags: [ Matchstick ]
+      prototypes: [ Lighter ]
+    results:
+    - STHereticBladeAsh

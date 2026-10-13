@@ -1,0 +1,72 @@
+- type: entity
+  id: STActionHereticAshPassage
+  name: Ashen Passage
+  description: Dissolve into ash for a moment and pass through walls. Works even while cuffed.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 15
+    checkCanInteract: false
+  - type: Sprite
+    sprite: Objects/Magic/magicactions.rsi
+    layers:
+    - state: jaunt
+  - type: InstantAction
+    event: !type:PolymorphActionEvent
+      protoId: STHereticAshJaunt
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticVolcanoBlast
+  name: Volcano Blast
+  description: A beam of fire that jumps between creatures that are not yet burning.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: Objects/Magic/magicactions.rsi
+    layers:
+    - state: fireball
+  - type: InstantAction
+    event: !type:StoriesHereticVolcanoBlastEvent
+      damage:
+        types:
+          Heat: 10
+      selfHeal:
+        types:
+          Heat: -5
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticRebirth
+  name: Nightwatcher's Rebirth
+  description: Drain life from everyone burning around you. Burning victims in critical condition die.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 60
+  - type: Sprite
+    sprite: Objects/Magic/magicactions.rsi
+    layers:
+    - state: repulse
+  - type: InstantAction
+    event: !type:StoriesHereticRebirthEvent
+      healPerTarget:
+        types:
+          Blunt: -3
+          Slash: -3
+          Piercing: -3
+          Heat: -2.5
+          Cold: -2.5
+          Shock: -2.5
+          Caustic: -2.5
+          Poison: -10
+          Asphyxiation: -10
+      finishDamage:
+        types:
+          Heat: 300
+  - type: StoriesHereticRequiresFocus
