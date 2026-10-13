@@ -47,3 +47,6 @@ stories-heretic-ingredient-eyes = глаза
 stories-heretic-ingredient-book = книга
 stories-heretic-ingredient-pen = пишущий предмет
 stories-heretic-ingredient-hide = шкура или кожа
+
+stories-heretic-grasp-blocked = Святая сила отталкивает Хватку!
+stories-heretic-blade-no-place = Мансусу некуда вас перенести.

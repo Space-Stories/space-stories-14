@@ -31,3 +31,29 @@
     range: 1.5
   - type: WorldTargetAction
     event: !type:StoriesHereticDrawRuneEvent
+
+- type: entity
+  id: STActionHereticGrasp
+  name: Mansus Grasp
+  description: Touch a creature to stagger it with the power of the Mansus. Also erases transmutation runes.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+    sound: !type:SoundPathSpecifier
+      path: /Audio/Magic/disintegrate.ogg
+  - type: Sprite
+    sprite: Objects/Magic/magicactions.rsi
+    layers:
+    - state: blink
+  - type: TargetAction
+    range: 1.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    event: !type:StoriesHereticGraspEvent
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+      - StoriesHereticRune
