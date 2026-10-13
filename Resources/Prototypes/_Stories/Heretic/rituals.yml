@@ -23,7 +23,7 @@
   - type: StoriesHereticRitual
     ingredients:
     - name: stories-heretic-ingredient-glass-sheet
-      prototypes: [ SheetGlass ]
+      prototypes: [ SheetGlass, SheetGlass1, SheetGlass10 ]
     - name: stories-heretic-ingredient-eyes
       organCategory: Eyes
     results:
