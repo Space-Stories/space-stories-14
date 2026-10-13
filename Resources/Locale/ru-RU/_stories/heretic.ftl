@@ -86,3 +86,11 @@ stories-heretic-ui-node = { $name } ({ $cost })
 
 stories-heretic-ash-rebirth = Вы вытягиваете жизнь из пламени. Жертв: { $count }.
 stories-heretic-ingredient-fire = спичка или зажигалка
+
+stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $count } сгоревших тел.
+stories-heretic-ash-ascension-announcement = Внимание! Обнаружен всплеск аномальной активности. { $name } вознёсся как Повелитель пепла. Огонь поглотит всех.
+stories-heretic-ingredient-glass-shard = осколок стекла
+stories-heretic-ingredient-candle = свеча
+stories-heretic-ingredient-mask = дыхательная, противогазная или стерильная маска
+stories-heretic-ingredient-stunbaton = станбатон
+stories-heretic-ingredient-liver = печень
