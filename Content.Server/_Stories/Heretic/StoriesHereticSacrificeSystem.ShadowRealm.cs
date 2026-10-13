@@ -4,6 +4,7 @@ using System.Numerics;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.GameTicking;
+using Content.Shared.Gravity;
 using Content.Shared.Maps;
 using Content.Shared.Popups;
 using Robust.Shared.EntitySerialization;
@@ -64,6 +65,10 @@ public sealed partial class StoriesHereticSacrificeSystem
         if (!_rule.TryGetRandomStationCoordinates(out var coords))
             coords = ent.Comp.ReturnCoordinates;
 
+        // Станции и руны больше нет — жертва остаётся в Теневом мире без урона.
+        if (!coords.IsValid(EntityManager))
+            return;
+
         _transform.SetCoordinates(ent.Owner, coords);
         _transform.AttachToGridOrMap(ent.Owner);
 
@@ -89,6 +94,11 @@ public sealed partial class StoriesHereticSacrificeSystem
         {
             var mapUid = _map.CreateMap(out var mapId);
             _atmosphere.SetMapAtmosphere(mapUid, false, CreateAir());
+
+            var gravity = EnsureComp<GravityComponent>(mapUid);
+            gravity.Enabled = true;
+            gravity.Inherent = true;
+            Dirty(mapUid, gravity);
 
             var light = EnsureComp<MapLightComponent>(mapUid);
             light.AmbientLightColor = RealmLight;

@@ -23,7 +23,10 @@ stories-heretic-path-STHereticPathAsh = Пепел
 stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
 stories-heretic-objective-knowledge = Изучить { $count } знаний Мансуса.
 stories-heretic-objective-sacrifice = Принести в жертву { $count } целей.
-stories-heretic-objective-head-sacrifice = Принести в жертву главу отдела ({ $count }).
+stories-heretic-objective-head-sacrifice = { $count ->
+    [0] Жертва главы отдела не требуется: живых глав на станции не осталось.
+   *[other] Принести в жертву главу отдела ({ $count }).
+}
 
 stories-heretic-rune-need-pen = Нужна ручка или другой пишущий предмет в активной руке.
 stories-heretic-rune-bad-tile = Здесь нельзя начертить руну.
@@ -110,3 +113,7 @@ stories-heretic-aura-examine = [color=#3fbf3f]Вокруг { GENDER($ent) ->
    *[other] него
 } трещит зелёный вихрь энергии.[/color]
 stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BASIC($ent, "сбрасывают", "сбрасывает") } смертную оболочку![/color]
+stories-heretic-sacrifice-already = Эта душа уже принадлежит Мансусу.
+stories-heretic-head-sacrifice-waived = Мансус не видит на станции живых глав. Жертва главы для Вознесения больше не требуется.
+stories-heretic-admin-verb-make = Сделать еретиком
+stories-heretic-admin-verb-make-message = Делает цель еретиком: цели, задачи и роль выдаются через правило «Еретик».
