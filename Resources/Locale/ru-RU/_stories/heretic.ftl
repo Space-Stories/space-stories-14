@@ -23,3 +23,19 @@ stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
 stories-heretic-objective-knowledge = Изучить { $count } знаний Мансуса.
 stories-heretic-objective-sacrifice = Принести в жертву { $count } целей.
 stories-heretic-objective-head-sacrifice = Принести в жертву главу отдела ({ $count }).
+
+stories-heretic-rune-need-pen = Нужна ручка или другой пишущий предмет в активной руке.
+stories-heretic-rune-bad-tile = Здесь нельзя начертить руну.
+stories-heretic-rune-too-close = Слишком близко к другой руне.
+stories-heretic-ritual-success = Руна вспыхивает, и ритуал свершается.
+stories-heretic-ritual-nothing = Руна безмолвствует: ни один ритуал не подходит.
+stories-heretic-ritual-limit = Мансус не даст вам больше таких предметов.
+stories-heretic-ritual-missing = Не хватает: { $item } ×{ $amount }.
+stories-heretic-tag-Knife = нож
+stories-heretic-tag-Candle = свеча
+stories-heretic-tag-Book = книга
+stories-heretic-tag-GlassShard = осколок стекла
+stories-heretic-tag-Matchstick = спичка
+stories-heretic-tag-Write = пишущий предмет
+stories-heretic-tag-Sheet = лист материала
+stories-heretic-ingredient-knife = нож

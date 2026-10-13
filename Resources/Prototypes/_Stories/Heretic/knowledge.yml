@@ -4,3 +4,29 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: StoriesHereticKnowledge
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeRunes
+  name: Mansus transmutation
+  description: You know how to draw transmutation runes and perform simple rituals.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    actions:
+    - STActionHereticDrawRune
+    rituals:
+    - STHereticRitualKnowledge
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFeastOfOwls
+  name: Feast of Owls
+  description: Gain 5 knowledge points at once, but forever lose the chance to ascend.
+  components:
+  - type: StoriesHereticKnowledge
+    cost: 0
+    stage: 1
+    grantPoints: 5
+    locksAscension: true

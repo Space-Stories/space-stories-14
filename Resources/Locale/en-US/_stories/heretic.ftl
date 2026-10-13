@@ -23,3 +23,19 @@ stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
 stories-heretic-objective-sacrifice = Sacrifice { $count } targets.
 stories-heretic-objective-head-sacrifice = Sacrifice a head of staff ({ $count }).
+
+stories-heretic-rune-need-pen = You need a pen or another writing tool in your active hand.
+stories-heretic-rune-bad-tile = You cannot draw a rune here.
+stories-heretic-rune-too-close = Too close to another rune.
+stories-heretic-ritual-success = The rune flares and the ritual is complete.
+stories-heretic-ritual-nothing = The rune stays silent: no ritual fits.
+stories-heretic-ritual-limit = The Mansus will not grant you more of these.
+stories-heretic-ritual-missing = Missing: { $item } ×{ $amount }.
+stories-heretic-tag-Knife = knife
+stories-heretic-tag-Candle = candle
+stories-heretic-tag-Book = book
+stories-heretic-tag-GlassShard = glass shard
+stories-heretic-tag-Matchstick = matchstick
+stories-heretic-tag-Write = writing tool
+stories-heretic-tag-Sheet = material sheet
+stories-heretic-ingredient-knife = knife

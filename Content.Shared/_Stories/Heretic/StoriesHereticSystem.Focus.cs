@@ -5,4 +5,10 @@ public sealed partial class StoriesHereticSystem
     private void InitializeFocus()
     {
     }
+
+    // Temporary stub, replaced by Task 4.
+    public bool HasOpenCodex(EntityUid uid)
+    {
+        return false;
+    }
 }
