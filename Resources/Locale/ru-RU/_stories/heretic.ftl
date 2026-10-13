@@ -94,3 +94,4 @@ stories-heretic-ingredient-candle = свеча
 stories-heretic-ingredient-mask = дыхательная, противогазная или стерильная маска
 stories-heretic-ingredient-stunbaton = станбатон
 stories-heretic-ingredient-liver = печень
+stories-guide-entry-heretic = Еретик
