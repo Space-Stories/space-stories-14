@@ -51,6 +51,7 @@ public sealed partial class StoriesHereticInfluenceSystem : EntitySystem
         {
             BreakOnMove = true,
             BreakOnDamage = true,
+            DuplicateCondition = DuplicateConditions.SameTarget,
         });
     }
 
@@ -61,6 +62,9 @@ public sealed partial class StoriesHereticInfluenceSystem : EntitySystem
 
         args.Handled = true;
         if (_net.IsClient || !TryComp<StoriesHereticComponent>(args.User, out var heretic))
+            return;
+
+        if (TerminatingOrDeleted(ent) || EntityManager.IsQueuedForDeletion(ent))
             return;
 
         var coords = Transform(ent).Coordinates;
