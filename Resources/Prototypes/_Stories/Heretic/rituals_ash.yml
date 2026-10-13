@@ -13,7 +13,7 @@
     - name: stories-heretic-ingredient-fire
       whitelist:
         tags: [ Matchstick ]
-      prototypes: [ Lighter ]
+      prototypes: [ Lighter, CheapLighter ]
     results:
     - STHereticBladeAsh
 
