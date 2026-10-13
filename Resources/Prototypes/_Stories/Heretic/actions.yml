@@ -57,3 +57,20 @@
       components:
       - MobState
       - StoriesHereticRune
+
+- type: entity
+  id: STActionHereticLivingHeart
+  name: Living Heart
+  description: Listen to your heart to find the next sacrifice target. Others can hear it beat.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+    checkCanInteract: false
+  - type: Sprite
+    sprite: Interface/Actions/devour.rsi
+    layers:
+    - state: icon
+  - type: InstantAction
+    event: !type:StoriesHereticLivingHeartEvent
