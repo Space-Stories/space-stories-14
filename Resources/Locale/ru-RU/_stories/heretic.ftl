@@ -78,11 +78,19 @@ stories-heretic-pierced-examine-heretic = Вы уже испили знание 
 stories-heretic-pierced-touch = Что-то по ту сторону хватает вас!
 
 stories-heretic-ui-title = Знания Мансуса
-stories-heretic-ui-points = Очки знаний: { $points }
-stories-heretic-ui-path = Путь: { $path }
+stories-heretic-ui-points = ◆ { $points } { $points ->
+    [one] очко
+    [few] очка
+   *[other] очков
+} знаний
+stories-heretic-ui-path = Путь:
 stories-heretic-ui-ritual = Ритуал знаний требует: { $items }
 stories-heretic-ui-column-general = Общие
-stories-heretic-ui-node = { $name } ({ $cost })
+stories-heretic-ui-cost = ◆ { $cost }
+stories-heretic-ui-tooltip-cost = Цена: ◆ { $cost }
+stories-heretic-ui-learned = Изучено.
+stories-heretic-ui-available = Нажмите, чтобы изучить.
+stories-heretic-ui-locked = Пока недоступно.
 
 stories-heretic-ash-rebirth = Вы вытягиваете жизнь из пламени. Жертв: { $count }.
 stories-heretic-ingredient-fire = спичка или зажигалка

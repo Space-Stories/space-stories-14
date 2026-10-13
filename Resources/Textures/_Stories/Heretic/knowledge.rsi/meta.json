@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/commit/ca79910d79497cf1ab56ebcf8db52a7289a3d412",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "node_ash"
+    },
+    {
+      "name": "node_flesh"
+    },
+    {
+      "name": "node_rust"
+    },
+    {
+      "name": "node_void"
+    },
+    {
+      "name": "node_blade"
+    },
+    {
+      "name": "node_cosmos"
+    },
+    {
+      "name": "node_lock"
+    },
+    {
+      "name": "node_moon"
+    },
+    {
+      "name": "node_side"
+    },
+    {
+      "name": "node_finished"
+    },
+    {
+      "name": "node_locked"
+    },
+    {
+      "name": "grasp_ash"
+    },
+    {
+      "name": "blade_upgrade_ash"
+    }
+  ]
+}

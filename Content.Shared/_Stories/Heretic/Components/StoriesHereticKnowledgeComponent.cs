@@ -1,5 +1,6 @@
 using Content.Shared.Tag;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Utility;
 
 namespace Content.Shared._Stories.Heretic.Components;
 
@@ -20,6 +21,12 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
 
     [DataField]
     public int Stage;
+
+    /// <summary>
+    /// Иконка знания в дереве поверх печати пути. <c>null</c> — только печать.
+    /// </summary>
+    [DataField]
+    public SpriteSpecifier? Icon;
 
     /// <summary>
     /// Нужно знать хотя бы одно из перечисленных (ИЛИ). Пустой список — без требований.

@@ -45,8 +45,8 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
             .OrderBy(p => p)
             .ToList();
 
-        var columns = new List<string> { Loc.GetString("stories-heretic-ui-column-general") };
-        columns.AddRange(paths.Select(p => Loc.GetString($"stories-heretic-path-{p}")));
+        var columns = new List<StoriesHereticKnowledgeColumn> { new(null, Loc.GetString("stories-heretic-ui-column-general")) };
+        columns.AddRange(paths.Select(p => new StoriesHereticKnowledgeColumn(p, Loc.GetString($"stories-heretic-path-{p}"))));
 
         var nodes = new List<StoriesHereticKnowledgeNode>();
         foreach (var (id, knowledge) in system.AllKnowledge)
@@ -69,6 +69,8 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
                 knowledge.Cost,
                 column,
                 knowledge.Stage,
+                knowledge.Path?.Id,
+                knowledge.Icon,
                 knowledge.Requires.Select(r => r.Id).ToList(),
                 state,
                 state == StoriesHereticNodeState.Learned ? null : reason));
@@ -82,6 +84,6 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
             ? null
             : string.Join(", ", system.GetKnowledgeRitualTags(ent).Select(t => Loc.GetString($"stories-heretic-tag-{t.Id}")));
 
-        _window.UpdateState(heretic.Points, pathName, ritualItems, columns, nodes);
+        _window.UpdateState(heretic.Points, heretic.Path?.Id, pathName, ritualItems, columns, nodes);
     }
 }
