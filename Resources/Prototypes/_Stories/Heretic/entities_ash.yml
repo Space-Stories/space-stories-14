@@ -6,11 +6,10 @@
   components:
   - type: StoriesHereticBlade
   - type: Sprite
-    sprite: Objects/Weapons/Melee/cult_dagger.rsi
+    sprite: _Stories/Heretic/ash_blade.rsi
     state: icon
-    color: "#d9792b"
   - type: Item
-    sprite: Objects/Weapons/Melee/cult_dagger.rsi
+    sprite: _Stories/Heretic/ash_blade_inhand.rsi
     size: Normal
   - type: MeleeWeapon
     wideAnimationRotation: -135
@@ -22,16 +21,16 @@
       path: /Audio/Weapons/bladeslice.ogg
 
 - type: entity
-  parent: ClothingEyesBase
+  parent: ClothingNeckBase
   id: STHereticAshenEyes
-  name: ashen eyes
-  description: A smouldering band worn over the eyes. Through it you see the warmth of the living.
+  name: warm eldritch medallion
+  description: A smouldering medallion with an eye. Through it you see the warmth of the living.
   components:
   - type: Sprite
-    sprite: Clothing/Eyes/Glasses/thermal.rsi
-    color: "#d9792b"
+    sprite: _Stories/Heretic/ashen_eyes.rsi
+    state: icon
   - type: Clothing
-    sprite: Clothing/Eyes/Glasses/thermal.rsi
+    sprite: _Stories/Heretic/ashen_eyes.rsi
   - type: StoriesHereticFocus
   - type: VisionProvider
     isActive: true
@@ -47,7 +46,7 @@
   components:
   - type: StoriesHereticMadnessMask
   - type: Sprite
-    sprite: Clothing/Mask/goldenmask.rsi
-    state: icon-despair
+    sprite: _Stories/Heretic/madness_mask.rsi
+    state: icon
   - type: Clothing
-    sprite: Clothing/Mask/goldenmask.rsi
+    sprite: _Stories/Heretic/madness_mask.rsi
