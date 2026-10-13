@@ -1,0 +1,15 @@
+- type: entity
+  abstract: true
+  id: STHereticRitualBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticRitual
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualKnowledge
+  name: Ritual of Knowledge
+  description: Gather the four items the Mansus demands to gain knowledge. Can be performed once.
+  components:
+  - type: StoriesHereticRitual
+    effect: Knowledge

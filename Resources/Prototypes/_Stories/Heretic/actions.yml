@@ -13,3 +13,21 @@
     - state: spell_default
   - type: InstantAction
     event: !type:StoriesHereticOpenKnowledgeEvent
+
+- type: entity
+  id: STActionHereticDrawRune
+  name: Draw transmutation rune
+  description: Use a writing tool in your active hand to draw a transmutation rune.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 1
+  - type: Sprite
+    sprite: Structures/Magic/Cult/rune.rsi
+    layers:
+    - state: cult3
+  - type: TargetAction
+    range: 1.5
+  - type: WorldTargetAction
+    event: !type:StoriesHereticDrawRuneEvent

@@ -10,3 +10,26 @@
     color: "#9b59d0"
   - type: Clickable
   - type: InteractionOutline
+
+- type: entity
+  id: STHereticRune
+  name: transmutation rune
+  description: A carefully drawn circle of eldritch symbols.
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StoriesHereticRune
+  - type: Sprite
+    sprite: Structures/Magic/Cult/rune.rsi
+    state: cult3
+    color: "#4bd36a"
+    scale: 1.5, 1.5
+    drawdepth: FloorObjects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Transform
+    anchored: true
