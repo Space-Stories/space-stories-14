@@ -31,3 +31,4 @@
     antagPrototype: STHeretic
     exclusiveAntag: true
     roleType: SoloAntagonist
+  - type: StoriesHereticRole

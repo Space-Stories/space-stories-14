@@ -5,9 +5,13 @@ using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Damage;
 using Content.Server.Mind;
+using Content.Server.Revolutionary.Components;
+using Content.Server.Roles;
+using Content.Shared.Station.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs.Systems;
 using Robust.Shared.GameObjects;
+using Robust.UnitTesting.Pool;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
@@ -73,6 +77,7 @@ public sealed class HereticSacrificeTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
+            MakeStation(testMap);
             var coords = testMap.GridCoords;
             var uid = SSpawnAtPosition("MobHuman", coords);
             var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
@@ -86,6 +91,90 @@ public sealed class HereticSacrificeTest : GameTest
             sacrifice.AssignTargets(heretic);
             Assert.That(heretic.Comp.Targets, Does.Contain(SEntMan.GetNetEntity(victim)));
             Assert.That(heretic.Comp.Targets, Does.Not.Contain(SEntMan.GetNetEntity(former)));
+        });
+    }
+
+    /// <summary>
+    /// Делает сетку тестовой карты частью «станции» для выбора целей.
+    /// </summary>
+    private void MakeStation(TestMapData map)
+    {
+        SEntMan.EnsureComponent<StationMemberComponent>(map.Grid).Station = map.MapUid;
+    }
+
+    [Test]
+    public async Task HeadIsCommandStaffBody()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var sacrifice = Server.System<StoriesHereticSacrificeSystem>();
+        var damageable = Server.System<DamageableSystem>();
+        var minds = Server.System<MindSystem>();
+        var roles = Server.System<RoleSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+
+            // Должность командования без CommandStaff (синий щит) — не глава.
+            var blueshield = SSpawnAtPosition("MobHuman", coords);
+            var mind = minds.CreateMind(null);
+            minds.TransferTo(mind, blueshield);
+            roles.MindAddJobRole(mind, silent: true, jobPrototype: "STBlueshield");
+            Assert.That(sacrifice.IsHead(blueshield), Is.False);
+
+            // Глава без разума (ушёл в госта) засчитывается как глава.
+            var head = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<CommandStaffComponent>(head);
+            Assert.That(sacrifice.IsHead(head));
+
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            damageable.TryChangeDamage(head, new DamageSpecifier { DamageDict = new() { { "Blunt", 300 } } }, true);
+            heretics.SetTargets(heretic, new() { head });
+
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(heretic.Comp.HeadSacrificeCount, Is.EqualTo(1));
+        });
+    }
+
+    [Test]
+    public async Task TargetsOnStationAndHeadWaiver()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var otherMap = await Pair.CreateTestMap();
+        var sacrifice = Server.System<StoriesHereticSacrificeSystem>();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            MakeStation(testMap);
+            var coords = testMap.GridCoords;
+
+            // Живых глав нет — требование жертвы главы снимается.
+            var first = SSpawnAtPosition("MobHuman", coords);
+            var firstHeretic = new Entity<StoriesHereticComponent>(first, SEntMan.AddComponent<StoriesHereticComponent>(first));
+            var crew = SSpawnAtPosition("MobHuman", coords);
+            minds.TransferTo(minds.CreateMind(null), crew);
+            sacrifice.AssignTargets(firstHeretic);
+            Assert.That(firstHeretic.Comp.RequiredHeadSacrifices, Is.Zero);
+
+            // Глава на станции есть — цель-глава выдаётся; кандидат вне станции (ЦК, шаттл) — нет.
+            var head = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<CommandStaffComponent>(head);
+            minds.TransferTo(minds.CreateMind(null), head);
+            var offStation = SSpawnAtPosition("MobHuman", otherMap.GridCoords);
+            minds.TransferTo(minds.CreateMind(null), offStation);
+
+            var second = SSpawnAtPosition("MobHuman", coords);
+            var secondHeretic = new Entity<StoriesHereticComponent>(second, SEntMan.AddComponent<StoriesHereticComponent>(second));
+            sacrifice.AssignTargets(secondHeretic);
+            Assert.That(secondHeretic.Comp.RequiredHeadSacrifices, Is.EqualTo(1));
+            Assert.That(secondHeretic.Comp.Targets, Does.Contain(SEntMan.GetNetEntity(head)));
+            Assert.That(secondHeretic.Comp.Targets, Does.Contain(SEntMan.GetNetEntity(crew)));
+            Assert.That(secondHeretic.Comp.Targets, Does.Not.Contain(SEntMan.GetNetEntity(offStation)));
         });
     }
 }

@@ -23,7 +23,10 @@ stories-heretic-path-STHereticPathAsh = Ash
 stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
 stories-heretic-objective-sacrifice = Sacrifice { $count } targets.
-stories-heretic-objective-head-sacrifice = Sacrifice a head of staff ({ $count }).
+stories-heretic-objective-head-sacrifice = { $count ->
+    [0] No head of staff sacrifice required: there are no living heads left on the station.
+   *[other] Sacrifice a head of staff ({ $count }).
+}
 
 stories-heretic-rune-need-pen = You need a pen or another writing tool in your active hand.
 stories-heretic-rune-bad-tile = You cannot draw a rune here.
@@ -105,3 +108,7 @@ stories-heretic-ingredient-liver = liver
 stories-guide-entry-heretic = Heretic
 stories-heretic-aura-examine = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } crackling with a swirling green vortex of energy.[/color]
 stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } shedding { POSS-ADJ($ent) } mortal shell![/color]
+stories-heretic-sacrifice-already = This soul already belongs to the Mansus.
+stories-heretic-head-sacrifice-waived = The Mansus sees no living heads of staff on the station. A head sacrifice is no longer required to ascend.
+stories-heretic-admin-verb-make = Make heretic
+stories-heretic-admin-verb-make-message = Makes the target a heretic: targets, objectives and the role are granted through the Heretic rule.

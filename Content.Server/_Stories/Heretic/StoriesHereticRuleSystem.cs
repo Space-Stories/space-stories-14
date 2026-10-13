@@ -1,12 +1,17 @@
 using System.Linq;
 using Content.Server.Antag;
+using Content.Server.Atmos.EntitySystems;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
+using Content.Server.Station.Systems;
+using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Atmos;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Maps;
 using Content.Shared.Mind;
 using Content.Shared.Physics;
+using Content.Shared.Shuttles.Components;
 using Robust.Shared.Map;
 
 namespace Content.Server._Stories.Heretic;
@@ -14,11 +19,20 @@ namespace Content.Server._Stories.Heretic;
 public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHereticRuleComponent>
 {
     [Dependency] private AntagSelectionSystem _antag = default!;
+    [Dependency] private AtmosphereSystem _atmosphere = default!;
+    [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private StoriesHereticObjectiveSystem _objectives = default!;
     [Dependency] private StoriesHereticSacrificeSystem _sacrifice = default!;
+    [Dependency] private StationSystem _station = default!;
     [Dependency] private TurfSystem _turf = default!;
 
-    private const int TileAttempts = 10;
+    private const int TileAttempts = 30;
+
+    /// <summary>
+    /// Минимальное парциальное давление кислорода, кПа (safe_oxygen_min в tg).
+    /// </summary>
+    private const float MinOxygenPressure = 16f;
 
     public override void Initialize()
     {
@@ -29,6 +43,14 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 
     private void OnAntagSelected(Entity<StoriesHereticRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
     {
+        // Новый еретик не должен оставаться целью уже выбранных.
+        var query = EntityQueryEnumerator<StoriesHereticComponent>();
+        while (query.MoveNext(out var other, out var otherComp))
+        {
+            if (other != args.EntityUid)
+                _heretic.RemoveTarget((other, otherComp), args.EntityUid);
+        }
+
         if (TryComp<StoriesHereticComponent>(args.EntityUid, out var heretic))
             _sacrifice.AssignTargets((args.EntityUid, heretic));
 
@@ -47,13 +69,19 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
     }
 
     /// <summary>
-    /// Случайная проходимая плитка станции.
+    /// Случайная безопасная плитка станции: проходимая, с пригодным воздухом, не на улетевшем шаттле.
     /// </summary>
     public bool TryGetRandomStationCoordinates(out EntityCoordinates coords)
     {
         for (var i = 0; i < TileAttempts; i++)
         {
-            if (!TryFindRandomTile(out _, out _, out _, out coords))
+            if (!TryFindRandomTile(out var index, out var station, out var grid, out coords))
+                continue;
+
+            // Шаттлы станции в FTL или у ЦК — на другой карте, чем основная сетка.
+            if (HasComp<FTLComponent>(grid)
+                || _station.GetLargestGrid(station.Value) is not { } main
+                || Transform(grid).MapID != Transform(main).MapID)
                 continue;
 
             if (_turf.GetTileRef(coords) is not { } tile || _turf.IsSpace(tile))
@@ -62,11 +90,24 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
             if (_turf.IsTileBlocked(tile, CollisionGroup.Impassable))
                 continue;
 
+            if (!IsBreathable(_atmosphere.GetTileMixture(grid, null, index)))
+                continue;
+
             return true;
         }
 
         coords = EntityCoordinates.Invalid;
         return false;
+    }
+
+    private bool IsBreathable(GasMixture? air)
+    {
+        if (air == null || air.TotalMoles <= 0f)
+            return false;
+
+        var oxygen = air.Pressure * air.GetMoles(Gas.Oxygen) / air.TotalMoles;
+        return air.Pressure is >= Atmospherics.WarningLowPressure and <= Atmospherics.WarningHighPressure
+               && oxygen >= MinOxygenPressure;
     }
 
     protected override void AppendRoundEndText(EntityUid uid,
@@ -81,9 +122,9 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 
         foreach (var (mindId, data, name) in heretics)
         {
+            // Прогресс берётся со снимка роли, если тело еретика утрачено.
             if (!TryComp<MindComponent>(mindId, out var mind)
-                || mind.OwnedEntity is not { } body
-                || !TryComp<StoriesHereticComponent>(body, out var heretic))
+                || !_objectives.TryGetProgress(mindId, mind, out var heretic))
             {
                 args.AddLine(Loc.GetString("stories-heretic-round-end-lost", ("name", name), ("user", data.UserName)));
                 continue;

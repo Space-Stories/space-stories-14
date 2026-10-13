@@ -1,4 +1,7 @@
+using Content.Server.Chat.Managers;
 using Content.Server.Popups;
+using Content.Server.Revolutionary.Components;
+using Content.Server.Station.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
@@ -18,6 +21,7 @@ using Content.Shared.Roles.Jobs;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -26,6 +30,7 @@ namespace Content.Server._Stories.Heretic;
 
 public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
 {
+    [Dependency] private IChatManager _chat = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -35,18 +40,19 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
     [Dependency] private SharedJobSystem _jobs = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private StoriesHereticObjectiveSystem _objectives = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private RejuvenateSystem _rejuvenate = default!;
     [Dependency] private StoriesHereticRuleSystem _rule = default!;
+    [Dependency] private StationSystem _station = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
 
-    private static readonly ProtoId<DepartmentPrototype> CommandDepartment = "Command";
     private static readonly ProtoId<DepartmentPrototype> SecurityDepartment = "Security";
     private static readonly EntProtoId HallucinationEffect = "StatusEffectSeeingRainbow";
     private static readonly EntProtoId MessPrototype = "PuddleBlood";
 
-    private readonly List<(EntityUid Uid, ProtoId<JobPrototype>? Job)> _candidates = new();
+    private readonly List<(EntityUid Uid, ProtoId<JobPrototype>? Job, bool Head)> _candidates = new();
 
     public override void Initialize()
     {
@@ -93,33 +99,51 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
                 || HasComp<StoriesHereticSacrificedComponent>(uid)
                 || HasComp<StoriesHereticShadowRealmComponent>(uid)
                 || !_mobState.IsAlive(uid, mobState)
-                || !_mind.TryGetMind(uid, out var mindId, out _))
+                || !_mind.TryGetMind(uid, out var mindId, out _)
+                || _station.GetOwningStation(uid) == null)
                 continue;
 
             _jobs.MindTryGetJobId(mindId, out var job);
-            _candidates.Add((uid, job));
+            _candidates.Add((uid, job, IsHead(uid)));
         }
 
         _random.Shuffle(_candidates);
 
         var picked = new List<EntityUid>();
-        TryPick(picked, job => InDepartment(job, CommandDepartment));
-        TryPick(picked, job => InDepartment(job, SecurityDepartment));
+        var headPicked = TryPick(picked, c => c.Head);
+        TryPick(picked, c => InDepartment(c.Job, SecurityDepartment));
         if (GetPrimaryDepartment(heretic) is { } own)
-            TryPick(picked, job => InDepartment(job, own));
+            TryPick(picked, c => InDepartment(c.Job, own));
 
         while (picked.Count < heretic.Comp.TargetCount && TryPick(picked, _ => true))
         {
         }
 
         _heretic.SetTargets(heretic, picked);
+
+        if (!headPicked && heretic.Comp.HeadSacrificeCount < heretic.Comp.RequiredHeadSacrifices)
+            WaiveHeadSacrifice(heretic);
     }
 
-    private bool TryPick(List<EntityUid> picked, Func<ProtoId<JobPrototype>?, bool> predicate)
+    /// <summary>
+    /// Живых глав на станции не осталось — цель «жертва главы» невыполнима, снимаем её, чтобы Вознесение оставалось достижимым.
+    /// </summary>
+    private void WaiveHeadSacrifice(Entity<StoriesHereticComponent> heretic)
+    {
+        _heretic.SetRequiredHeadSacrifices(heretic, 0);
+
+        if (_mind.TryGetMind(heretic, out var mindId, out var mind))
+            _objectives.RefreshTitles(mindId, mind);
+
+        if (TryComp<ActorComponent>(heretic, out var actor))
+            _chat.DispatchServerMessage(actor.PlayerSession, Loc.GetString("stories-heretic-head-sacrifice-waived"));
+    }
+
+    private bool TryPick(List<EntityUid> picked, Func<(EntityUid Uid, ProtoId<JobPrototype>? Job, bool Head), bool> predicate)
     {
         for (var i = 0; i < _candidates.Count; i++)
         {
-            if (!predicate(_candidates[i].Job))
+            if (!predicate(_candidates[i]))
                 continue;
 
             picked.Add(_candidates[i].Uid);
@@ -146,11 +170,13 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
         return department.ID;
     }
 
+    /// <summary>
+    /// Глава — тело с <see cref="CommandStaffComponent"/> (как у целей предателя): не зависит от разума,
+    /// поэтому засчитывается и для тела, покинутого игроком.
+    /// </summary>
     public bool IsHead(EntityUid uid)
     {
-        return _mind.TryGetMind(uid, out var mindId, out _)
-               && _jobs.MindTryGetJobId(mindId, out var job)
-               && InDepartment(job, CommandDepartment);
+        return HasComp<CommandStaffComponent>(uid);
     }
 
     #endregion
@@ -182,6 +208,13 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
             if (!_heretic.IsTarget(heretic, uid))
             {
                 args.FailReason ??= Loc.GetString("stories-heretic-sacrifice-not-target");
+                continue;
+            }
+
+            // Ту же жертву нельзя засчитать второму еретику.
+            if (HasComp<StoriesHereticSacrificedComponent>(uid))
+            {
+                args.FailReason ??= Loc.GetString("stories-heretic-sacrifice-already");
                 continue;
             }
 
