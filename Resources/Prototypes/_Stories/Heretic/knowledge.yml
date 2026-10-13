@@ -54,3 +54,15 @@
     cost: 0
     rituals:
     - STHereticRitualCodex
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeBreakOfDawn
+  name: Break of Dawn
+  description: The Mansus Grasp staggers, knocks down and confuses its victim.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    actions:
+    - STActionHereticGrasp

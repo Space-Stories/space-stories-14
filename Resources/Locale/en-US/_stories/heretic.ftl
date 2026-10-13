@@ -47,3 +47,6 @@ stories-heretic-ingredient-eyes = eyes
 stories-heretic-ingredient-book = book
 stories-heretic-ingredient-pen = writing tool
 stories-heretic-ingredient-hide = hide or leather
+
+stories-heretic-grasp-blocked = Holy power repels the Grasp!
+stories-heretic-blade-no-place = The Mansus has nowhere to take you.
