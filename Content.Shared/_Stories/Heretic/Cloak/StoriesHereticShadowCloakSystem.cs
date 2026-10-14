@@ -63,15 +63,17 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         // Повторное нажатие снимает плащ вручную.
         if (TryComp<StoriesHereticShadowCloakComponent>(uid, out var active))
         {
-            var remaining = TimeSpan.Zero;
-            if (action != null && TryComp<ActionComponent>(action, out var actionComp) && actionComp.Cooldown is { } cd)
-                remaining = cd.End - _timing.CurTime;
+            var remaining = active.EndTime - _timing.CurTime;
+            var cooldown = remaining > active.MinCooldown ? remaining : active.MinCooldown;
 
             RemCompDeferred<StoriesHereticShadowCloakComponent>(uid);
             _popup.PopupClient(Loc.GetString("stories-heretic-cloak-off"), uid, uid);
-            SetCooldown(active.Action ?? action, remaining > active.MinCooldown ? remaining : active.MinCooldown);
+            // PerformAction после обработчика сбрасывает перезарядку и ставит UseDelay, поэтому задержка задаётся через него.
+            _actions.SetUseDelay(active.Action ?? action, cooldown);
             return;
         }
+
+        _actions.SetUseDelay(action, args.MinCooldown);
 
         var cloak = new StoriesHereticShadowCloakComponent
         {
@@ -147,7 +149,12 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         if (!args.DamageIncreased || args.DamageDelta == null || _net.IsClient)
             return;
 
-        ent.Comp.DamageTaken += (float) args.DamageDelta.GetTotal();
+        foreach (var value in args.DamageDelta.DamageDict.Values)
+        {
+            if (value > 0)
+                ent.Comp.DamageTaken += (float) value;
+        }
+
         if (ent.Comp.DamageTaken < ent.Comp.DamageThreshold)
             return;
 

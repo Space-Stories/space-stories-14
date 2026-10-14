@@ -6,14 +6,23 @@ using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
 [TestFixture]
 public sealed class HereticCloakTest : GameTest
 {
+    private static readonly EntProtoId ActionProto = "STActionHereticShadowCloak";
+
     [Test]
     public async Task CloakHidesAndBreaksOnDamage()
     {
@@ -29,6 +38,10 @@ public sealed class HereticCloakTest : GameTest
             heretic = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             observer = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             SEntMan.AddComponent<StoriesHereticComponent>(heretic);
+            // Поднимаем порог крита, чтобы плащ срывался именно уроном, а не сменой состояния.
+            var thresholds = Server.System<MobThresholdSystem>();
+            thresholds.SetMobStateThreshold(heretic, 1000, MobState.Critical);
+            thresholds.SetMobStateThreshold(heretic, 2000, MobState.Dead);
             realName = SEntMan.GetComponent<MetaDataComponent>(heretic).EntityName;
             baseSpeed = SEntMan.GetComponent<MovementSpeedModifierComponent>(heretic).CurrentSprintSpeed;
 
@@ -55,6 +68,42 @@ public sealed class HereticCloakTest : GameTest
         {
             Assert.That(SEntMan.HasComponent<StoriesHereticShadowCloakComponent>(heretic), Is.False, "Плащ не сорван уроном");
             Assert.That(Identity.Name(heretic, SEntMan, observer), Is.EqualTo(realName));
+            Assert.That(SEntMan.GetComponent<MobStateComponent>(heretic).CurrentState, Is.EqualTo(MobState.Alive));
+        });
+    }
+
+    [Test]
+    public async Task ManualRemovalKeepsRemainingCooldown()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var actions = Server.System<SharedActionsSystem>();
+        var timing = Server.ResolveDependency<IGameTiming>();
+        var heretic = EntityUid.Invalid;
+        Entity<ActionComponent> action = default;
+
+        await Server.WaitAssertion(() =>
+        {
+            heretic = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            SEntMan.AddComponent<StoriesHereticComponent>(heretic);
+            var uid = actions.AddAction(heretic, ActionProto);
+            Assert.That(uid, Is.Not.Null);
+            action = (uid!.Value, SEntMan.GetComponent<ActionComponent>(uid.Value));
+
+            actions.PerformAction(heretic, action);
+            Assert.That(SEntMan.HasComponent<StoriesHereticShadowCloakComponent>(heretic));
+            SEntMan.GetComponent<StoriesHereticShadowCloakComponent>(heretic).EndTime = timing.CurTime + TimeSpan.FromSeconds(120);
+
+            actions.PerformAction(heretic, action);
+        });
+
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<StoriesHereticShadowCloakComponent>(heretic), Is.False);
+            var cd = SEntMan.GetComponent<ActionComponent>(action).Cooldown;
+            Assert.That(cd, Is.Not.Null);
+            Assert.That((cd!.Value.End - timing.CurTime).TotalSeconds, Is.GreaterThan(100));
         });
     }
 }

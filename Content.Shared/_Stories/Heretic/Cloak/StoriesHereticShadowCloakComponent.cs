@@ -25,13 +25,13 @@ public sealed partial class StoriesHereticShadowCloakComponent : Component
     [DataField]
     public EntityUid? Action;
 
-    [DataField]
+    [DataField, AutoNetworkedField]
     public EntityUid? Smoke;
 
-    [DataField]
+    [DataField, AutoNetworkedField]
     public bool HadIdentityBlocker;
 
-    [DataField]
+    [DataField, AutoNetworkedField]
     public bool HadFootstepTag;
 
     [DataField]
