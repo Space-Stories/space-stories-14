@@ -1,5 +1,6 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Access.Systems;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Bed.Sleep;
@@ -13,6 +14,7 @@ using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stunnable;
 using Content.Shared.Tag;
+using Content.Shared.Verbs;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
@@ -53,6 +55,8 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         // После блокаторов личности (своих и в одежде): иначе их отмена показала бы имя с ID-карты.
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SeeIdentityAttemptEvent>(OnSeeIdentity,
             after: new[] { typeof(IdentitySystem), typeof(InventorySystem) });
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, GetVerbsEvent<ExamineVerb>>(OnExamineVerbs,
+            after: new[] { typeof(IdExaminableSystem) });
     }
 
     private void OnCloakAction(Entity<StoriesHereticComponent> ent, ref StoriesHereticShadowCloakEvent args)
@@ -151,6 +155,18 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
 
         args.Uncancel();
         args.NameOverride = Loc.GetString("stories-heretic-cloak-voice");
+    }
+
+    /// <summary>
+    /// Осмотр «ID» читает карту из слота напрямую, мимо системы личности, — в дыму плаща его не разглядеть.
+    /// </summary>
+    private void OnExamineVerbs(Entity<StoriesHereticShadowCloakComponent> ent, ref GetVerbsEvent<ExamineVerb> args)
+    {
+        if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
+            return;
+
+        var idText = Loc.GetString("id-examinable-component-verb-text");
+        args.Verbs.RemoveWhere(verb => verb.Text == idText);
     }
 
     private void OnRefreshSpeed(Entity<StoriesHereticShadowCloakComponent> ent, ref RefreshMovementSpeedModifiersEvent args)

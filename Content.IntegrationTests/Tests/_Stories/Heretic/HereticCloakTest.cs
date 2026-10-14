@@ -1,5 +1,7 @@
 #pragma warning disable RA0002
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Content.Shared.Verbs;
 using Content.Shared.Access.Systems;
 using Content.Shared.Inventory;
 using Content.Shared._Stories.Heretic.Cloak;
@@ -65,6 +67,7 @@ public sealed class HereticCloakTest : GameTest
             Assert.That(Identity.Name(heretic, SEntMan, observer),
                 Is.EqualTo(Server.ResolveDependency<ILocalizationManager>().GetString("stories-heretic-cloak-voice")), "Плащ не скрыл имя с ID-карты");
             Assert.That(SEntMan.GetComponent<MovementSpeedModifierComponent>(heretic).CurrentSprintSpeed, Is.GreaterThan(baseSpeed));
+            Assert.That(HasIdExamineVerb(heretic, observer), Is.False, "Осмотр «ID» выдаёт имя и должность под плащом");
 
             damageable.TryChangeDamage(heretic, new DamageSpecifier { DamageDict = new() { { "Blunt", 30 } } }, true);
             damageable.TryChangeDamage(heretic, new DamageSpecifier { DamageDict = new() { { "Blunt", 70 } } }, true);
@@ -77,7 +80,15 @@ public sealed class HereticCloakTest : GameTest
             Assert.That(SEntMan.HasComponent<StoriesHereticShadowCloakComponent>(heretic), Is.False, "Плащ не сорван уроном");
             Assert.That(Identity.Name(heretic, SEntMan, observer), Is.EqualTo(realName));
             Assert.That(SEntMan.GetComponent<MobStateComponent>(heretic).CurrentState, Is.EqualTo(MobState.Alive));
+            Assert.That(HasIdExamineVerb(heretic, observer), Is.True, "Осмотр «ID» не вернулся после плаща");
         });
+    }
+
+    private bool HasIdExamineVerb(EntityUid target, EntityUid user)
+    {
+        var text = Server.ResolveDependency<ILocalizationManager>().GetString("id-examinable-component-verb-text");
+        return Server.System<SharedVerbSystem>().GetLocalVerbs(target, user, typeof(ExamineVerb), force: true)
+            .Any(verb => verb.Text == text);
     }
 
     [Test]
