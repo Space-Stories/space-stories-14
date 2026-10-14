@@ -195,3 +195,19 @@ public sealed partial class StoriesHereticExpandSightEvent : InstantActionEvent
     [DataField]
     public float Zoom = 1.5f;
 }
+
+/// <summary>ЭМИ-импульс Сталкера вокруг себя.</summary>
+public sealed partial class StoriesHereticEldritchEmpEvent : InstantActionEvent
+{
+    [DataField]
+    public float Range = 6f;
+
+    [DataField]
+    public float Energy = 50000f;
+
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(15);
+}
+
+/// <summary>Смена облика Сталкера: первый раз открывает меню выбора, потом превращает в выбранный облик.</summary>
+public sealed partial class StoriesHereticStalkerShapeshiftEvent : InstantActionEvent;

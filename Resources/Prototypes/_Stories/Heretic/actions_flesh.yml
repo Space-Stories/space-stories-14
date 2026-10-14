@@ -63,3 +63,59 @@
     whitelist:
       components:
       - MobState
+
+# Действия Сталкера: без StoriesHereticRequiresFocus, моб не еретик.
+- type: entity
+  id: STActionHereticStalkerEmp
+  name: Eldritch EMP
+  description: Release an electromagnetic pulse that disables electronics around you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: shatter
+  - type: InstantAction
+    event: !type:StoriesHereticEldritchEmpEvent
+      range: 6
+      energy: 50000
+      duration: 15
+
+- type: entity
+  id: STActionHereticStalkerJaunt
+  name: Ethereal Jaunt
+  description: Dissolve into ash for a moment and pass through walls.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 15
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: voidblink
+  - type: InstantAction
+    event: !type:PolymorphActionEvent
+      protoId: STHereticAshJauntLong
+
+- type: entity
+  id: STActionHereticStalkerShapeshift
+  name: Shapeshift
+  description: Choose a lesser form once, then take it whenever you wish.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 5
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: blood_siphon
+  - type: InstantAction
+    event: !type:StoriesHereticStalkerShapeshiftEvent

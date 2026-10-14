@@ -6,6 +6,11 @@ using Content.Server._Stories.Heretic;
 using Content.Server._Stories.Heretic.Flesh;
 using Content.Server._Stories.Heretic.Ghouls;
 using Content.Shared.Body;
+using Content.Shared._Stories.Heretic.Flesh;
+using Content.Server.Polymorph.Components;
+using Content.Shared.Power.Components;
+using Content.Shared.Power.EntitySystems;
+using Content.Shared.Mind.Components;
 using Content.Shared.Body.Components;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Mind;
@@ -667,6 +672,99 @@ public sealed class HereticFleshTest : GameTest
                 SEntMan.EventBus.RaiseLocalEvent(prophet, ev);
                 Assert.That(eye.TargetZoom.X, Is.EqualTo(i == 0 ? 1.5f : 1f).Within(0.001f));
             }
+        });
+    }
+
+    [Test]
+    public async Task LonelyRitualSummonsStalker()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic.Comp.Points = 20;
+            foreach (var id in new[]
+                     {
+                         "Root", "Grasp", "Imperfect", "Mark", "Knitting", "Raw", "BleedingSteel", "Lonely",
+                     })
+            {
+                Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFlesh" + id), Is.True, id);
+            }
+
+            Assert.That(heretic.Comp.Rituals, Does.Contain((EntProtoId) "STHereticRitualStalker"));
+
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            SSpawnAtPosition("FoodMeat", coords);
+            SSpawnAtPosition("FoodMeat", coords);
+            SSpawnAtPosition("Pen", coords);
+            SSpawnAtPosition("Paper", coords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Двух кусков мяса хватило");
+
+            SSpawnAtPosition("FoodMeat", coords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+
+            var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent, MetaDataComponent>();
+            Assert.That(query.MoveNext(out _, out _, out var meta), Is.True, "Моб не призван");
+            Assert.That(meta.EntityPrototype?.ID, Is.EqualTo("STHereticMobStalker"));
+        });
+    }
+
+    [Test]
+    public async Task StalkerEmpDrainsBatteriesInRange()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var battery = Server.System<SharedBatterySystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var stalker = SSpawnAtPosition("STHereticMobStalker", coords);
+            var cell = SSpawnAtPosition("PowerCellHigh", coords);
+            var far = SSpawnAtPosition("PowerCellHigh", coords.Offset(new System.Numerics.Vector2(20, 0)));
+            var before = battery.GetCharge((cell, SEntMan.GetComponent<BatteryComponent>(cell)));
+            Assert.That(before, Is.GreaterThan(0f));
+
+            var ev = new StoriesHereticEldritchEmpEvent { Range = 6f, Energy = 50000f, Duration = System.TimeSpan.FromSeconds(15) };
+            SEntMan.EventBus.RaiseLocalEvent(stalker, ev, true);
+
+            Assert.That(ev.Handled, Is.True);
+            Assert.That(battery.GetCharge((cell, SEntMan.GetComponent<BatteryComponent>(cell))), Is.LessThan(before), "Батарея в радиусе не разрядилась");
+            Assert.That(battery.GetCharge((far, SEntMan.GetComponent<BatteryComponent>(far))), Is.EqualTo(before), "Дальняя батарея разрядилась");
+        });
+    }
+
+    [Test]
+    public async Task StalkerFormChoiceMorphsOnceIntoCat()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var stalker = SSpawnAtPosition("STHereticMobStalker", testMap.GridCoords);
+            var mindId = minds.CreateMind(ServerSession!.UserId);
+            minds.TransferTo(mindId, stalker);
+
+            var form = SEntMan.GetComponent<StoriesHereticStalkerFormComponent>(stalker);
+            Assert.That(form.Chosen, Is.Null);
+
+            // Неизвестный облик игнорируется.
+            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticAshJaunt"), true);
+            Assert.That(form.Chosen, Is.Null);
+
+            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticStalkerFormCat"), true);
+            Assert.That(form.Chosen?.Id, Is.EqualTo("STHereticStalkerFormCat"));
+
+            var mind = SEntMan.GetComponent<MindComponent>(mindId);
+            var body = mind.OwnedEntity!.Value;
+            Assert.That(body, Is.Not.EqualTo(stalker));
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(body).EntityPrototype?.ID, Is.EqualTo("MobCat"));
+            Assert.That(SEntMan.HasComponent<PolymorphedEntityComponent>(body));
         });
     }
 }

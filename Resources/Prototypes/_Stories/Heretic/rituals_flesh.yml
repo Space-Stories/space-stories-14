@@ -48,3 +48,25 @@
       reagents: [ Blood, InsectBlood, CopperBlood, AmmoniaBlood, Slime ]
   - type: StoriesHereticSummonRitual
     mob: STHereticMobRawProphet
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualStalker
+  name: Lonely Ritual
+  description: Three pieces of raw meat, a pen and a sheet of paper. Summons the Stalker.
+  components:
+  - type: StoriesHereticRitual
+    effect: Summon
+    ingredients:
+    - name: stories-heretic-ingredient-meat
+      amount: 3
+      whitelist:
+        tags: [ Meat ]
+    - name: stories-heretic-ingredient-pen
+      whitelist:
+        tags: [ Write ]
+    - name: stories-heretic-ingredient-paper
+      whitelist:
+        tags: [ Paper ]
+  - type: StoriesHereticSummonRitual
+    mob: STHereticMobStalker

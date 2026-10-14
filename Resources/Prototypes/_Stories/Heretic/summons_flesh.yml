@@ -98,3 +98,126 @@
   - type: InstantAction
     event: !type:StoriesHereticExpandSightEvent
       zoom: 1.5
+
+- type: entity
+  id: STHereticMobStalker
+  parent:
+  - BaseSimpleMob
+  - MobCombat
+  - STHereticSummonBase
+  name: Stalker
+  description: An abomination assembled from assorted remains. Its shape shifts a little every time you blink.
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/stalker.rsi
+    layers:
+    - state: icon
+  - type: Damageable
+    damageModifierSet: STHereticSummonDamageModifierSet
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      150: Dead
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 17
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+  - type: ActionGrant
+    actions:
+    - STActionHereticStalkerEmp
+    - STActionHereticStalkerJaunt
+    - STActionHereticStalkerShapeshift
+  - type: StoriesHereticStalkerForm
+    forms:
+    - polymorph: STHereticStalkerFormCat
+      mob: MobCat
+      name: stories-heretic-stalker-form-cat
+    - polymorph: STHereticStalkerFormCorgi
+      mob: MobCorgi
+      name: stories-heretic-stalker-form-corgi
+    - polymorph: STHereticStalkerFormMouse
+      mob: MobMouse
+      name: stories-heretic-stalker-form-mouse
+    - polymorph: STHereticStalkerFormFox
+      mob: MobFox
+      name: stories-heretic-stalker-form-fox
+    - polymorph: STHereticStalkerFormCarp
+      mob: MobCarp
+      name: stories-heretic-stalker-form-carp
+  - type: UserInterface
+    interfaces:
+      enum.StoriesHereticStalkerFormUiKey.Key:
+        type: StoriesHereticStalkerFormBoundUserInterface
+  - type: GhostRole
+    name: stories-heretic-ghost-role-stalker-name
+    description: stories-heretic-ghost-role-stalker-desc
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener
+
+# Облики Сталкера: штатный возврат даёт действие полиморфа (forced: false).
+- type: polymorph
+  id: STHereticStalkerFormCat
+  configuration:
+    entity: MobCat
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
+
+- type: polymorph
+  id: STHereticStalkerFormCorgi
+  configuration:
+    entity: MobCorgi
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
+
+- type: polymorph
+  id: STHereticStalkerFormMouse
+  configuration:
+    entity: MobMouse
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
+
+- type: polymorph
+  id: STHereticStalkerFormFox
+  configuration:
+    entity: MobFox
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
+
+- type: polymorph
+  id: STHereticStalkerFormCarp
+  configuration:
+    entity: MobCarp
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
