@@ -45,6 +45,15 @@ public sealed partial class StoriesHereticComponent : Component
     [DataField, AutoNetworkedField]
     public int HeadSacrificeCount;
 
+    /// <summary>
+    /// Призванные монстры, чью роль занял игрок. Гули не считаются (Paradise).
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public int SummonCount;
+
+    [DataField, AutoNetworkedField]
+    public int RequiredSummons;
+
     [DataField, AutoNetworkedField]
     public int RequiredKnowledge = 6;
 

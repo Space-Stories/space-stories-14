@@ -165,6 +165,9 @@ public sealed partial class StoriesHereticSystem
         if (knowledge.GrantPoints > 0)
             AddPoints(ent, knowledge.GrantPoints);
 
+        if (knowledge.RequiredSummons > ent.Comp.RequiredSummons)
+            ent.Comp.RequiredSummons = knowledge.RequiredSummons;
+
         EntityManager.AddComponents(ent, knowledge.AddComponents, removeExisting: false);
 
         var ev = new StoriesHereticKnowledgeLearnedEvent(id);

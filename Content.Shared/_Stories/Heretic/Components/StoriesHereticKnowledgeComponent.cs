@@ -77,4 +77,16 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
     /// </summary>
     [DataField]
     public bool LocksAscension;
+
+    /// <summary>
+    /// Цели, которые получает разум еретика при изучении (Принцип Голода — «Призвать монстров»).
+    /// </summary>
+    [DataField]
+    public List<EntProtoId> Objectives = new();
+
+    /// <summary>
+    /// Сколько призывов нужно для Вознесения после изучения. Больший из известных порогов побеждает.
+    /// </summary>
+    [DataField]
+    public int RequiredSummons;
 }

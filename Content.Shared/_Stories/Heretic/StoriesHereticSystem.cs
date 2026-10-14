@@ -198,7 +198,8 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     {
         return comp.LearnedCount >= comp.RequiredKnowledge
                && comp.SacrificeCount >= comp.RequiredSacrifices
-               && comp.HeadSacrificeCount >= comp.RequiredHeadSacrifices;
+               && comp.HeadSacrificeCount >= comp.RequiredHeadSacrifices
+               && comp.SummonCount >= comp.RequiredSummons;
     }
 
     public bool IsTarget(Entity<StoriesHereticComponent> ent, EntityUid uid)
@@ -248,6 +249,12 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     public void SetRequiredHeadSacrifices(Entity<StoriesHereticComponent> ent, int required)
     {
         ent.Comp.RequiredHeadSacrifices = required;
+        Dirty(ent);
+    }
+
+    public void RegisterSummon(Entity<StoriesHereticComponent> ent)
+    {
+        ent.Comp.SummonCount++;
         Dirty(ent);
     }
 

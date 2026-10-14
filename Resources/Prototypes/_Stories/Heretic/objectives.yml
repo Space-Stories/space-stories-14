@@ -37,3 +37,11 @@
   - type: StoriesHereticObjectiveCondition
     kind: HeadSacrifice
     title: stories-heretic-objective-head-sacrifice
+
+- type: entity
+  parent: STBaseHereticObjective
+  id: STHereticObjectiveSummon
+  components:
+  - type: StoriesHereticObjectiveCondition
+    kind: Summon
+    title: stories-heretic-objective-summon

@@ -32,5 +32,11 @@ public sealed partial class StoriesHereticRoleComponent : Component
     public int RequiredHeadSacrifices;
 
     [DataField]
+    public int SummonCount;
+
+    [DataField]
+    public int RequiredSummons;
+
+    [DataField]
     public bool Ascended;
 }

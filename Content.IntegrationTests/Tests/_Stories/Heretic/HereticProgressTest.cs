@@ -1,8 +1,10 @@
 #pragma warning disable RA0002
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic;
 using Content.Server.Mind;
 using Content.Server.Roles;
+using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Mind;
 using Content.Shared.Objectives.Systems;
@@ -14,6 +16,49 @@ namespace Content.IntegrationTests.Tests._Stories.Heretic;
 [TestFixture]
 public sealed class HereticProgressTest : GameTest
 {
+    [TestPrototypes]
+    private const string Prototypes = @"
+- type: entity
+  id: STTestHereticKnowledgeSummoner
+  components:
+  - type: StoriesHereticKnowledge
+    requiredSummons: 2
+    objectives: [ STHereticObjectiveSummon ]
+";
+
+    [Test]
+    public async Task KnowledgeAddsSummonObjective()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var minds = Server.System<SharedMindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var mindId = minds.CreateMind(null);
+            minds.TransferTo(mindId, uid);
+            Server.System<RoleSystem>().MindAddRole(mindId, "STMindRoleHeretic");
+            var ent = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+
+            heretics.AddPoints(ent, 5);
+            Assert.That(heretics.TryLearn(ent, "STTestHereticKnowledgeSummoner"), Is.True);
+            Assert.That(ent.Comp.RequiredSummons, Is.EqualTo(2));
+
+            var mind = SEntMan.GetComponent<MindComponent>(mindId);
+            Assert.That(mind.Objectives.Any(o => SEntMan.GetComponent<MetaDataComponent>(o).EntityPrototype?.ID == "STHereticObjectiveSummon"));
+
+            ent.Comp.SacrificeCount = ent.Comp.RequiredSacrifices;
+            ent.Comp.HeadSacrificeCount = ent.Comp.RequiredHeadSacrifices;
+            ent.Comp.LearnedCount = ent.Comp.RequiredKnowledge;
+            Assert.That(heretics.ObjectivesComplete(ent.Comp), Is.False, "Цель призывов не учтена");
+
+            heretics.RegisterSummon(ent);
+            heretics.RegisterSummon(ent);
+            Assert.That(heretics.ObjectivesComplete(ent.Comp), Is.True);
+        });
+    }
+
     [Test]
     public async Task ProgressSurvivesBodyLoss()
     {
