@@ -1,3 +1,4 @@
+using Content.Server._Stories.Heretic.Organs;
 using Content.Server.Chat.Managers;
 using Content.Server.Popups;
 using Content.Server.Revolutionary.Components;
@@ -39,6 +40,7 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
     [Dependency] private SharedJobSystem _jobs = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private StoriesHereticCorruptedOrganSystem _organs = default!;
     [Dependency] private StoriesHereticObjectiveSystem _objectives = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private RejuvenateSystem _rejuvenate = default!;
@@ -252,6 +254,11 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
             Spawn(MessPrototype, runeCoords);
 
         _rejuvenate.PerformRejuvenate(victim);
+
+        // Как curse_organs в tg: только у жертвы с разумом; выпавшие органы годятся для ритуалов.
+        if (_mind.TryGetMind(victim, out _, out _) && _organs.CurseOrgans(victim, runeCoords) > 0)
+            _popup.PopupCoordinates(Loc.GetString("stories-heretic-organs-forced-out", ("victim", victim)), runeCoords, PopupType.MediumCaution);
+
         EnsureComp<StoriesHereticSacrificedComponent>(victim);
         SendToShadowRealm(victim, runeCoords);
         _popup.PopupEntity(Loc.GetString("stories-heretic-sacrifice-victim"), victim, victim, PopupType.LargeCaution);

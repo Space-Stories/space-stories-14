@@ -1,0 +1,76 @@
+- type: entity
+  parent: OrganHumanEyes
+  id: STHereticCorruptedEyes
+  name: corrupt orbs
+  description: Wide dilated pupils and no iris. Something behind them is looking back.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Eyes
+
+- type: entity
+  parent: OrganHumanTongue
+  id: STHereticCorruptedTongue
+  name: corrupt tongue
+  description: Covered in shimmering dots, like stars.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Tongue
+
+- type: entity
+  parent: OrganHumanLiver
+  id: STHereticCorruptedLiver
+  name: corrupt liver
+  description: It throbs and bubbles.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Liver
+
+- type: entity
+  parent: OrganHumanStomach
+  id: STHereticCorruptedStomach
+  name: corrupt stomach
+  description: It hungers for something other than food.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Stomach
+
+- type: entity
+  parent: OrganHumanHeart
+  id: STHereticCorruptedHeart
+  name: corrupt heart
+  description: It beats out of time with anything living.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Heart
+
+- type: entity
+  parent: OrganHumanLungs
+  id: STHereticCorruptedLungs
+  name: corrupt lungs
+  description: They exhale what they never inhaled.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Lungs
+
+- type: entity
+  parent: OrganHumanAppendix
+  id: STHereticCorruptedAppendix
+  name: corrupt appendix
+  description: Something moves inside.
+  components:
+  - type: Sprite
+    color: "#8a3fd1"
+  - type: StoriesHereticCorruptedOrgan
+    kind: Appendix
