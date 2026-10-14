@@ -87,7 +87,7 @@
   - type: Sprite
     sprite: _Stories/Heretic/actions.rsi
     layers:
-    - state: smoke
+    - state: ninja_cloak
   - type: StoriesHereticRequiresFocus
   - type: InstantAction
     event: !type:StoriesHereticShadowCloakEvent

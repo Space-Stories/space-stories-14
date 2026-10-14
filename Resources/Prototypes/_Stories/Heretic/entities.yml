@@ -117,17 +117,14 @@
     - sprite: _Stories/Heretic/knowledge.rsi
       state: node_side
 
-# Пока Task 12 не перенёс tg curse, дым берёт существующий спрайт и красит его в фиолетовый.
 - type: entity
   id: STHereticShadowCloakSmoke
   name: dark smoke
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Effects/spookysmoke.rsi
-    state: spookysmoke
-    color: "#7a3fb0"
-    scale: 0.6, 0.6
+    sprite: _Stories/Heretic/effects.rsi
+    state: curse
     drawdepth: Overdoors
     noRot: true
   - type: PointLight
@@ -149,12 +146,11 @@
   - type: TimedDespawn
     lifetime: 0.3
   - type: Sprite
-    sprite: Effects/explosion.rsi
-    scale: 0.4, 0.4
+    sprite: _Stories/Heretic/curse_blast.rsi
     drawdepth: Effects
     noRot: true
     layers:
-    - state: explosionfast
+    - state: curse_blast
       shader: unshaded
   - type: Tag
     tags:

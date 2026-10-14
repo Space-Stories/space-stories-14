@@ -38,7 +38,7 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
 
     private static readonly ProtoId<TagPrototype> FootstepTag = "FootstepSound";
     private static readonly EntProtoId SlowdownEffect = "STHereticShadowCloakSlowdownStatusEffect";
-    private static readonly SoundSpecifier ActivateSound = new SoundPathSpecifier("/Audio/Magic/staff_animation.ogg");
+    private static readonly SoundSpecifier ActivateSound = new SoundCollectionSpecifier("STHereticCurse");
 
     public override void Initialize()
     {
