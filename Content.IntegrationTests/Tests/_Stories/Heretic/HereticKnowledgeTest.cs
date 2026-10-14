@@ -6,6 +6,7 @@ using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Examine;
+using Content.Shared.Tag;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
@@ -71,6 +72,31 @@ public sealed class HereticKnowledgeTest : GameTest
     cost: 0
     grantPoints: 5
     locksAscension: true
+
+- type: entity
+  id: STTestHereticKnowledgeGraspB
+  components:
+  - type: StoriesHereticKnowledge
+    path: STTestHereticPathB
+    stage: 2
+    pathLocked: true
+    requires: [ STTestHereticKnowledgeRootB ]
+
+- type: entity
+  id: STTestHereticKnowledgeBridgeAB
+  components:
+  - type: StoriesHereticKnowledge
+    stage: 3
+    bridge: [ STTestHereticPathA, STTestHereticPathB ]
+    requires: [ STTestHereticKnowledgeA2 ]
+
+- type: entity
+  id: STTestHereticKnowledgeB3
+  components:
+  - type: StoriesHereticKnowledge
+    path: STTestHereticPathB
+    stage: 3
+    requires: [ STTestHereticKnowledgeGraspB, STTestHereticKnowledgeBridgeAB ]
 ";
 
     [Test]
@@ -108,6 +134,33 @@ public sealed class HereticKnowledgeTest : GameTest
 
             // Вознесение без выполненных целей недоступно.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeAscend"), Is.False);
+        });
+    }
+
+    [Test]
+    public async Task CrossPathThroughBridge()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var sys = Server.System<StoriesHereticSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var ent = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            sys.AddPoints(ent, 10);
+
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeRootA"), Is.True);
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeA2"), Is.True);
+
+            // Закрытое знание чужого пути нельзя даже при выполненных требованиях.
+            Assert.That(sys.CanLearn(ent, "STTestHereticKnowledgeGraspB", out _), Is.False);
+
+            // Без моста узел чужого пути закрыт требованиями.
+            Assert.That(sys.CanLearn(ent, "STTestHereticKnowledgeB3", out _), Is.False);
+
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeBridgeAB"), Is.True);
+            Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeB3"), Is.True, "Мост не открыл знание соседнего пути");
+            Assert.That(ent.Comp.Path, Is.EqualTo((ProtoId<TagPrototype>) "STTestHereticPathA"), "Переход сменил путь");
         });
     }
 

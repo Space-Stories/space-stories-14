@@ -43,6 +43,20 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
     [DataField]
     public bool Ascension;
 
+    /// <summary>
+    /// Знание только для последователей своего пути (Хватка, Метка, улучшение клинка).
+    /// Корень (<see cref="ChoosesPath"/>) и <see cref="Ascension"/> закрыты для чужих путей всегда.
+    /// Остальные знания пути доступны с чужого пути через мосты — как в дереве Paradise.
+    /// </summary>
+    [DataField]
+    public bool PathLocked;
+
+    /// <summary>
+    /// Побочное знание между двумя соседними путями кольца. Только для раскладки окна: доступ задаёт <see cref="Requires"/>.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<TagPrototype>> Bridge = new();
+
     [DataField]
     public List<EntProtoId> Actions = new();
 

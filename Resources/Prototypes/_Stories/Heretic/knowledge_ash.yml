@@ -25,6 +25,7 @@
       sprite: _Stories/Heretic/knowledge.rsi
       state: grasp_ash
     path: STHereticPathAsh
+    pathLocked: true
     stage: 2
     requires: [ STHereticKnowledgeAshRoot ]
     addComponents:
@@ -58,6 +59,7 @@
       sprite: _Stories/Heretic/actions.rsi
       state: mansus_grasp
     path: STHereticPathAsh
+    pathLocked: true
     stage: 4
     cost: 2
     requires: [ STHereticKnowledgeAshPassage ]
@@ -93,6 +95,7 @@
       sprite: _Stories/Heretic/knowledge.rsi
       state: blade_upgrade_ash
     path: STHereticPathAsh
+    pathLocked: true
     stage: 6
     cost: 2
     requires: [ STHereticKnowledgeAshVolcano ]
