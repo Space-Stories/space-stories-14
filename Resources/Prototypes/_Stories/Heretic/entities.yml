@@ -139,3 +139,23 @@
   parent: StatusEffectSlowdown
   id: STHereticShadowCloakSlowdownStatusEffect
   name: shadow cloak broken slowdown
+
+- type: entity
+  id: STHereticCurseBlast
+  name: curse blast
+  description: A flash of cursed fire.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.3
+  - type: Sprite
+    sprite: Effects/explosion.rsi
+    scale: 0.4, 0.4
+    drawdepth: Effects
+    noRot: true
+    layers:
+    - state: explosionfast
+      shader: unshaded
+  - type: Tag
+    tags:
+    - HideContextMenu

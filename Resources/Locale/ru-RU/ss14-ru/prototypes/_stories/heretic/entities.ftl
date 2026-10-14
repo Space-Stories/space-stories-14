@@ -123,3 +123,5 @@ ent-STHereticCorruptedLungs = испорченные лёгкие
     .desc = Выдыхают то, чего не вдыхали.
 ent-STHereticCorruptedAppendix = испорченный аппендикс
     .desc = Внутри что-то шевелится.
+ent-STHereticCurseBlast = проклятая вспышка
+    .desc = Вспышка проклятого пламени.

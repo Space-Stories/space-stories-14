@@ -59,13 +59,37 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         var count = Math.Min(_random.Next(2, 5), _candidates.Count);
         for (var i = 0; i < count; i++)
         {
-            Replace(container, _candidates[i].Organ, _candidates[i].Corrupted, dropAt);
+            Replace(victim, container, _candidates[i].Organ, _candidates[i].Corrupted, dropAt);
         }
 
-        if (count > 0)
-            EnsureComp<StoriesHereticCorruptedBodyComponent>(victim);
-
         return count;
+    }
+
+    /// <summary>
+    /// Заменяет орган указанной категории испорченным. Для тестов и админов; <see cref="CurseOrgans"/> выбирает случайно.
+    /// </summary>
+    public bool TryCurseOrgan(EntityUid victim, ProtoId<OrganCategoryPrototype> category, EntityCoordinates dropAt)
+    {
+        if (!_containers.TryGetContainer(victim, BodyComponent.ContainerID, out var container))
+            return false;
+
+        foreach (var organ in container.ContainedEntities)
+        {
+            if (!TryComp<OrganComponent>(organ, out var comp) || comp.Category != category
+                || HasComp<StoriesHereticCorruptedOrganComponent>(organ))
+                continue;
+
+            foreach (var (replaced, corrupted) in Replacements)
+            {
+                if (replaced != category)
+                    continue;
+
+                Replace(victim, container, organ, corrupted, dropAt);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -73,11 +97,12 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
     /// </summary>
     public bool IsSuppressed(EntityUid body)
     {
-        return _solutions.TryGetSolution(body, BloodstreamComponent.DefaultBloodSolutionName, out _, out var blood)
-               && blood.GetReagentQuantity(new(HolyWater, null)) > 0;
+        var solution = CompOrNull<BloodstreamComponent>(body)?.BloodSolutionName ?? BloodstreamComponent.DefaultBloodSolutionName;
+        return _solutions.TryGetSolution(body, solution, out _, out var blood)
+               && blood.GetReagentQuantity(new ReagentId(HolyWater, null)) > 0;
     }
 
-    private void Replace(BaseContainer container, EntityUid old, EntProtoId corrupted, EntityCoordinates dropAt)
+    private void Replace(EntityUid body, BaseContainer container, EntityUid old, EntProtoId corrupted, EntityCoordinates dropAt)
     {
         var parent = CompOrNull<ChildOrganComponent>(old)?.Parent;
         // Старый орган остаётся ребёнком родителя после извлечения — разрываем связь явно.
@@ -88,5 +113,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         _containers.Insert(organ, container);
         if (parent != null && HasComp<ChildOrganComponent>(organ))
             _relations.Relate(parent.Value, organ);
+
+        EnsureComp<StoriesHereticCorruptedBodyComponent>(body);
     }
 }
