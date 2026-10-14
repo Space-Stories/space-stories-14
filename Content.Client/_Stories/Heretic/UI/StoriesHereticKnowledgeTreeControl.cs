@@ -18,6 +18,7 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
     private const float LineThickness = 3f;
 
     private readonly Dictionary<string, StoriesHereticKnowledgeNodeControl> _controls = new();
+    private readonly Vector2[] _quad = new Vector2[4];
     private IReadOnlyList<StoriesHereticKnowledgeColumn> _columns = Array.Empty<StoriesHereticKnowledgeColumn>();
 
     public event Action<string>? OnLearn;
@@ -104,15 +105,20 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
 
     /// <summary>
     /// <see cref="DrawingHandleBase.DrawLine"/> рисует только 1 px, поэтому толстая линия — полоса из двух треугольников.
+    /// Вершины пишутся в заранее созданный массив: выражение коллекции в <c>Span</c> компилируется
+    /// в InlineArray, который не проходит проверку песочницы клиента (клиент не загрузится).
     /// </summary>
-    private static void DrawThickLine(DrawingHandleScreen handle, Vector2 from, Vector2 to, float thickness, Color color)
+    private void DrawThickLine(DrawingHandleScreen handle, Vector2 from, Vector2 to, float thickness, Color color)
     {
         var direction = to - from;
         if (direction.LengthSquared() < 0.01f)
             return;
 
         var normal = new Vector2(-direction.Y, direction.X) / direction.Length() * (thickness / 2);
-        Span<Vector2> vertices = [from + normal, from - normal, to + normal, to - normal];
-        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleStrip, vertices, color);
+        _quad[0] = from + normal;
+        _quad[1] = from - normal;
+        _quad[2] = to + normal;
+        _quad[3] = to - normal;
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleStrip, _quad, color);
     }
 }
