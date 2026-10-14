@@ -349,12 +349,16 @@ public sealed class HereticFleshTest : GameTest
             var target = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<StoriesHereticFleshMarkComponent>(heretic);
             var bloodstream = SEntMan.GetComponent<BloodstreamComponent>(target);
-            var before = bloodstream.BleedAmount;
+            // Контроль: цель, получившая только тот же Slash. Сам урон тоже вызывает кровотечение.
+            var control = SSpawnAtPosition("MobHuman", coords);
+            var heretic2 = SEntMan.GetComponent<StoriesHereticFleshMarkComponent>(heretic);
+            Server.System<DamageableSystem>().TryChangeDamage(control, heretic2.Damage, true);
+            var controlBleed = SEntMan.GetComponent<BloodstreamComponent>(control).BleedAmount;
 
             var ev = new StoriesHereticMarkTriggeredEvent(heretic, target, "STHereticPathFlesh", 0);
             SEntMan.EventBus.RaiseEvent(EventSource.Local, ref ev);
 
-            Assert.That(bloodstream.BleedAmount, Is.EqualTo(before + 8f));
+            Assert.That(bloodstream.BleedAmount, Is.EqualTo(Math.Min(bloodstream.MaxBleedAmount, controlBleed + 8f)), "+8 от метки поверх кровотечения от Slash, не выше MaxBleedAmount");
             Assert.That(SEntMan.GetComponent<DamageableComponent>(target).Damage.DamageDict.TryGetValue("Slash", out var slash) && slash > 0, Is.True);
         });
     }
