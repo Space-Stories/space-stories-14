@@ -10,6 +10,7 @@ using Content.Shared.Mind;
 using Content.Shared.Objectives.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
+using Robust.Shared.Network;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
@@ -53,8 +54,10 @@ public sealed class HereticProgressTest : GameTest
             ent.Comp.LearnedCount = ent.Comp.RequiredKnowledge;
             Assert.That(heretics.ObjectivesComplete(ent.Comp), Is.False, "Цель призывов не учтена");
 
-            heretics.RegisterSummon(ent);
-            heretics.RegisterSummon(ent);
+            var player = new NetUserId(Guid.NewGuid());
+            Assert.That(heretics.RegisterSummon(ent, player), Is.True);
+            Assert.That(heretics.RegisterSummon(ent, player), Is.False, "Один игрок засчитан дважды");
+            Assert.That(heretics.RegisterSummon(ent, new NetUserId(Guid.NewGuid())), Is.True);
             Assert.That(heretics.ObjectivesComplete(ent.Comp), Is.True);
         });
     }

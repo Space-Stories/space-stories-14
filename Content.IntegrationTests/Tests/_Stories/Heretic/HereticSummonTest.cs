@@ -110,6 +110,8 @@ public sealed class HereticSummonTest : GameTest
         var damageable = Server.System<DamageableSystem>();
         var heretic = default(Entity<StoriesHereticComponent>);
         var mob = EntityUid.Invalid;
+        var rune = EntityUid.Invalid;
+        var mindId = EntityUid.Invalid;
 
         await Server.WaitAssertion(() =>
         {
@@ -118,17 +120,39 @@ public sealed class HereticSummonTest : GameTest
             heretic = (uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
             heretic.Comp.Rituals.Clear();
             heretic.Comp.Rituals.Add("STTestHereticRitualSummon");
-            var rune = SSpawnAtPosition("STHereticRune", coords);
+            rune = SSpawnAtPosition("STHereticRune", coords);
             SSpawnAtPosition("KitchenKnife", coords);
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
 
             var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent>();
             query.MoveNext(out mob, out _);
 
-            var mindId = minds.CreateMind(null);
+            mindId = minds.CreateMind(ServerSession!.UserId);
             minds.TransferTo(mindId, mob);
             Assert.That(heretic.Comp.SummonCount, Is.EqualTo(1), "Призыв не засчитан");
+            Assert.That(Server.System<StoriesHereticSystem>().IsServant(mob, heretic), Is.True, "Призыв не слуга хозяина");
             Assert.That(SEntMan.GetComponent<StoriesHereticSummonComponent>(mob).Bound, Is.True);
+        });
+
+        // Поглощённый нож удаляется в конце тика — иначе второй ритуал нашёл бы его снова.
+        await Pair.RunTicksSync(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            // Тот же игрок во втором призыве цель не продвигает.
+            SSpawnAtPosition("KitchenKnife", testMap.GridCoords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            var second = EntityUid.Invalid;
+            var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent>();
+            while (query.MoveNext(out var uid2, out _))
+            {
+                if (uid2 != mob)
+                    second = uid2;
+            }
+
+            minds.TransferTo(mindId, second);
+            Assert.That(SEntMan.GetComponent<StoriesHereticSummonComponent>(second).Bound, Is.True);
+            Assert.That(heretic.Comp.SummonCount, Is.EqualTo(1), "Один игрок засчитан дважды");
 
             damageable.TryChangeDamage(mob, new DamageSpecifier { DamageDict = new() { { "Blunt", 1000 } } }, true);
         });

@@ -1,6 +1,7 @@
 using Content.Shared.Dataset;
 using Content.Shared.Tag;
 using Robust.Shared.GameStates;
+using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
@@ -50,6 +51,12 @@ public sealed partial class StoriesHereticComponent : Component
     /// </summary>
     [DataField, AutoNetworkedField]
     public int SummonCount;
+
+    /// <summary>
+    /// Игроки, уже засчитанные в <see cref="SummonCount"/>.
+    /// </summary>
+    [DataField]
+    public HashSet<NetUserId> SummonedPlayers = new();
 
     [DataField, AutoNetworkedField]
     public int RequiredSummons;

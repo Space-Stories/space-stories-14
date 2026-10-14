@@ -252,10 +252,32 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         Dirty(ent);
     }
 
-    public void RegisterSummon(Entity<StoriesHereticComponent> ent)
+    /// <summary>
+    /// Засчитывает призыв, занятый игроком. Каждый игрок считается один раз: иначе смерть и повторный призыв накручивали бы цель.
+    /// </summary>
+    public bool RegisterSummon(Entity<StoriesHereticComponent> ent, NetUserId player)
     {
+        if (!ent.Comp.SummonedPlayers.Add(player))
+            return false;
+
         ent.Comp.SummonCount++;
         Dirty(ent);
+        return true;
+    }
+
+    public void MakeServant(EntityUid uid, EntityUid master)
+    {
+        var servant = EnsureComp<StoriesHereticServantComponent>(uid);
+        servant.Master = master;
+        Dirty(uid, servant);
+    }
+
+    /// <summary>
+    /// Слуга (призыв или гуль) любого еретика или, если указан <paramref name="master"/>, именно этого.
+    /// </summary>
+    public bool IsServant(EntityUid uid, EntityUid? master = null)
+    {
+        return TryComp<StoriesHereticServantComponent>(uid, out var servant) && (master == null || servant.Master == master);
     }
 
     public void RegisterSacrifice(Entity<StoriesHereticComponent> ent, EntityUid victim, bool head)

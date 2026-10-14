@@ -6,6 +6,8 @@ using Content.Shared.Stacks;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Administration.Logs;
+using Content.Shared.Database;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Popups;
@@ -17,6 +19,7 @@ namespace Content.Server._Stories.Heretic.Summons;
 
 public sealed partial class StoriesHereticSummonSystem : EntitySystem
 {
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private IChatManager _chat = default!;
     [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -46,11 +49,6 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         }
     }
 
-    public bool IsServantOf(EntityUid servant, EntityUid master)
-    {
-        return TryComp<StoriesHereticSummonComponent>(servant, out var summon) && summon.Master == master;
-    }
-
     private void OnRitualEffect(ref StoriesHereticRitualEffectEvent args)
     {
         if (args.Effect != StoriesHereticRitualEffect.Summon
@@ -62,6 +60,7 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         var summon = EnsureComp<StoriesHereticSummonComponent>(mob);
         summon.Master = args.Heretic;
         summon.ExpireTime = _timing.CurTime + summon.ClaimTime;
+        _heretic.MakeServant(mob, args.Heretic);
         foreach (var uid in args.Consumed)
         {
             if (HasComp<PuddleComponent>(uid))
@@ -74,6 +73,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         }
 
         _popup.PopupEntity(Loc.GetString("stories-heretic-summon-waiting"), mob, args.Heretic);
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(args.Heretic):user} summoned {ToPrettyString(mob):target}");
         args.Success = true;
     }
 
@@ -83,9 +84,12 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             return;
 
         ent.Comp.Bound = true;
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(ent):player} took the summon role of {ToPrettyString(ent.Comp.Master):user}");
         if (TryComp<StoriesHereticComponent>(ent.Comp.Master, out var heretic))
         {
-            _heretic.RegisterSummon((ent.Comp.Master.Value, heretic));
+            if (args.Mind.Comp.UserId is { } player)
+                _heretic.RegisterSummon((ent.Comp.Master.Value, heretic), player);
             _popup.PopupEntity(Loc.GetString("stories-heretic-summon-claimed", ("mob", ent.Owner)), ent.Comp.Master.Value, ent.Comp.Master.Value, PopupType.Medium);
         }
 
@@ -123,6 +127,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         }
 
         ent.Comp.Ingredients.Clear();
+        _adminLog.Add(LogType.Action, LogImpact.Low,
+            $"Summon {ToPrettyString(ent):target} of {ToPrettyString(ent.Comp.Master):user} collapsed ({message.Id})");
         _popup.PopupCoordinates(Loc.GetString(message, ("mob", ent.Owner)), coords, PopupType.MediumCaution);
         QueueDel(ent);
     }
