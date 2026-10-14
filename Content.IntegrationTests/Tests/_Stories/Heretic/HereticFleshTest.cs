@@ -614,8 +614,6 @@ public sealed class HereticFleshTest : GameTest
         {
             var coords = testMap.GridCoords;
             prophet = SSpawnAtPosition("STHereticMobRawProphet", coords);
-            // Без занятой роли призыв схлопывается по таймеру.
-            SEntMan.GetComponent<StoriesHereticSummonComponent>(prophet).Bound = true;
             target = SSpawnAtPosition("MobHuman", coords);
             shielded = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<MindShieldComponent>(shielded);
@@ -635,6 +633,7 @@ public sealed class HereticFleshTest : GameTest
         {
             Assert.That(SEntMan.GetComponent<ActiveRadioComponent>(target).Channels, Does.Contain(channel));
             Assert.That(SEntMan.GetComponent<IntrinsicRadioTransmitterComponent>(target).Channels, Does.Contain(channel));
+            Assert.That(SEntMan.GetComponent<ActiveRadioComponent>(prophet).Channels, Does.Contain(channel), "У пророка нет канала");
             Assert.That(SEntMan.HasComponent<ActiveRadioComponent>(shielded), Is.False, "Майндшилд не защитил от связи");
 
             Server.System<DamageableSystem>().TryChangeDamage(prophet, new DamageSpecifier { DamageDict = new() { { "Blunt", 500 } } }, true);

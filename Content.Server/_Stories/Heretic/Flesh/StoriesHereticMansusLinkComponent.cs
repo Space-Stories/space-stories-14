@@ -1,11 +1,9 @@
 namespace Content.Server._Stories.Heretic.Flesh;
 
 /// <summary>
-/// На цели Связи Мансуса: к какому пророку она привязана.
+/// Маркер на цели Связи Мансуса: связь держит пророк (см. <see cref="StoriesHereticRawProphetComponent.Linked"/>).
 /// </summary>
 [RegisterComponent, Access(typeof(StoriesHereticFleshSystem))]
 public sealed partial class StoriesHereticMansusLinkComponent : Component
 {
-    [DataField]
-    public EntityUid Prophet;
 }

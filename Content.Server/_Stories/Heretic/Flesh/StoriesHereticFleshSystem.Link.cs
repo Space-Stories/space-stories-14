@@ -30,6 +30,7 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void InitializeLink()
     {
+        SubscribeLocalEvent<StoriesHereticRawProphetComponent, MapInitEvent>(OnProphetMapInit);
         SubscribeLocalEvent<StoriesHereticRawProphetComponent, MindAddedMessage>(OnProphetMindAdded);
         SubscribeLocalEvent<StoriesHereticRawProphetComponent, MobStateChangedEvent>(OnProphetMobState);
         SubscribeLocalEvent<StoriesHereticRawProphetComponent, ComponentShutdown>(OnProphetShutdown);
@@ -54,6 +55,11 @@ public sealed partial class StoriesHereticFleshSystem
             active.Channels.Remove(MansusChannel);
     }
 
+    private void OnProphetMapInit(Entity<StoriesHereticRawProphetComponent> ent, ref MapInitEvent args)
+    {
+        GrantMansus(ent);
+    }
+
     private void OnProphetMindAdded(Entity<StoriesHereticRawProphetComponent> ent, ref MindAddedMessage args)
     {
         if (_summons.GetMaster(ent) is not { } master || TerminatingOrDeleted(master))
@@ -76,7 +82,8 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void BreakLinks(Entity<StoriesHereticRawProphetComponent> ent)
     {
-        if (ent.Comp.Master is { } master && !TerminatingOrDeleted(master))
+        RevokeMansus(ent);
+        if (ent.Comp.Master is { } master && !TerminatingOrDeleted(master) && !HasOtherProphet(ent, master))
             RevokeMansus(master);
         ent.Comp.Master = null;
 
@@ -92,6 +99,19 @@ public sealed partial class StoriesHereticFleshSystem
             _chat.TryEmoteWithChat(target, ScreamEmote);
             _stun.TryAddParalyzeDuration(target, ent.Comp.BreakParalyze);
         }
+    }
+
+    // Канал хозяина нужен, пока жив другой пророк того же хозяина.
+    private bool HasOtherProphet(Entity<StoriesHereticRawProphetComponent> ent, EntityUid master)
+    {
+        var query = EntityQueryEnumerator<StoriesHereticRawProphetComponent>();
+        while (query.MoveNext(out var uid, out var other))
+        {
+            if (uid != ent.Owner && other.Master == master && !TerminatingOrDeleted(uid) && !_mobState.IsDead(uid))
+                return true;
+        }
+
+        return false;
     }
 
     private bool CanLink(Entity<StoriesHereticRawProphetComponent> ent, EntityUid target)
@@ -129,7 +149,7 @@ public sealed partial class StoriesHereticFleshSystem
 
         args.Handled = true;
         GrantMansus(target);
-        EnsureComp<StoriesHereticMansusLinkComponent>(target).Prophet = ent;
+        EnsureComp<StoriesHereticMansusLinkComponent>(target);
         ent.Comp.Linked.Add(target);
         _popup.PopupEntity(Loc.GetString("stories-heretic-mansus-link-linked"), target, target, PopupType.MediumCaution);
     }

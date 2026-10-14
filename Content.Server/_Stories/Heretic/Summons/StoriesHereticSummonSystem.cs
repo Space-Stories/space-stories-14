@@ -43,6 +43,7 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<StoriesHereticRitualEffectEvent>(OnRitualEffect);
+        SubscribeLocalEvent<StoriesHereticSummonComponent, MapInitEvent>(OnSummonMapInit);
         SubscribeLocalEvent<StoriesHereticSummonComponent, MindAddedMessage>(OnMindAdded);
         SubscribeLocalEvent<StoriesHereticSummonComponent, MobStateChangedEvent>(OnMobStateChanged);
     }
@@ -145,6 +146,12 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             if (limb.Parents[i] is >= 0 and var parent && parent < spawned.Count)
                 _relations.Relate(spawned[parent], spawned[i]);
         }
+    }
+
+    // Моб, созданный не ритуалом (админ-спавн), тоже получает срок ожидания игрока.
+    private void OnSummonMapInit(Entity<StoriesHereticSummonComponent> ent, ref MapInitEvent args)
+    {
+        ent.Comp.ExpireTime = _timing.CurTime + ent.Comp.ClaimTime;
     }
 
     public EntityUid? GetMaster(EntityUid summon) => CompOrNull<StoriesHereticSummonComponent>(summon)?.Master;

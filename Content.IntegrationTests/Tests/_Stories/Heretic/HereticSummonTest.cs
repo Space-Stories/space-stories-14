@@ -67,6 +67,27 @@ public sealed class HereticSummonTest : GameTest
     }
 
     [Test]
+    public async Task DirectlySpawnedSummonSurvivesThenExpires()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var timing = Server.ResolveDependency<IGameTiming>();
+        var mob = EntityUid.Invalid;
+
+        await Server.WaitAssertion(() => mob = SSpawnAtPosition("STTestHereticSummonMob", testMap.GridCoords));
+        await Pair.RunTicksSync(5);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.Deleted(mob) || SEntMan.IsQueuedForDeletion(mob), Is.False, "Моб схлопнулся сразу");
+            SEntMan.GetComponent<StoriesHereticSummonComponent>(mob).ExpireTime = timing.CurTime;
+        });
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.Deleted(mob) || SEntMan.IsQueuedForDeletion(mob), Is.True, "Моб не схлопнулся по сроку"));
+    }
+
+    [Test]
     public async Task UnclaimedSummonReturnsIngredients()
     {
         var testMap = await Pair.CreateTestMap();
