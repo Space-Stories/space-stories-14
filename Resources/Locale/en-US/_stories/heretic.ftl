@@ -105,6 +105,7 @@ stories-heretic-ingredient-candle = candle
 stories-heretic-ingredient-mask = breath, gas or sterile mask
 stories-heretic-ingredient-stunbaton = stun baton
 stories-heretic-ingredient-liver = liver
+stories-heretic-ingredient-blood = pool of blood
 stories-guide-entry-heretic = Heretic
 stories-heretic-aura-examine = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } crackling with a swirling green vortex of energy.[/color]
 stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } shedding { POSS-ADJ($ent) } mortal shell![/color]

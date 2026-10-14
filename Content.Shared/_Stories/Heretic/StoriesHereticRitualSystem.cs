@@ -1,7 +1,10 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Body;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DoAfter;
+using Content.Shared.Fluids.Components;
+using Content.Shared.FixedPoint;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Maps;
@@ -26,6 +29,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private TagSystem _tag = default!;
     [Dependency] private TurfSystem _turf = default!;
@@ -319,6 +323,20 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             && TryComp<OrganComponent>(uid, out var organ)
             && organ.Category == ingredient.OrganCategory)
             return true;
+
+        if (ingredient.Reagents != null
+            && TryComp<PuddleComponent>(uid, out var puddle)
+            && _solutions.TryGetSolution(uid, puddle.SolutionName, out _, out var solution))
+        {
+            var amount = FixedPoint2.Zero;
+            foreach (var reagent in ingredient.Reagents)
+            {
+                amount += solution.GetTotalPrototypeQuantity(reagent);
+            }
+
+            if (amount >= ingredient.ReagentAmount)
+                return true;
+        }
 
         return false;
     }

@@ -1,4 +1,6 @@
 using Content.Shared.Body;
+using Content.Shared.Chemistry.Reagent;
+using Content.Shared.FixedPoint;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
 
@@ -34,6 +36,15 @@ public sealed partial class StoriesHereticIngredient
 
     [DataField]
     public ProtoId<OrganCategoryPrototype>? OrganCategory;
+
+    /// <summary>
+    /// Лужа на руне, в которой не меньше <see cref="ReagentAmount"/> любого из реагентов (кровь, пепел, рвота).
+    /// </summary>
+    [DataField]
+    public List<ProtoId<ReagentPrototype>>? Reagents;
+
+    [DataField]
+    public FixedPoint2 ReagentAmount = 10;
 
     [DataField]
     public int Amount = 1;

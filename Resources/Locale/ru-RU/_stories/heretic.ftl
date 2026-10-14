@@ -106,6 +106,7 @@ stories-heretic-ingredient-candle = свеча
 stories-heretic-ingredient-mask = дыхательная, противогазная или стерильная маска
 stories-heretic-ingredient-stunbaton = станбатон
 stories-heretic-ingredient-liver = печень
+stories-heretic-ingredient-blood = лужа крови
 stories-guide-entry-heretic = Еретик
 stories-heretic-aura-examine = [color=#3fbf3f]Вокруг { GENDER($ent) ->
     [female] неё

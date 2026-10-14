@@ -8,7 +8,9 @@ using Content.Shared.Actions.Components;
 using Content.Shared.Explosion.Components;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Chemistry.Components;
 using Content.Shared.Damage;
+using Content.Shared.Fluids;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Mobs.Systems;
@@ -38,7 +40,45 @@ public sealed class HereticRitualTest : GameTest
         tags: [ Knife ]
     results:
     - STTestHereticResult
+
+- type: entity
+  id: STTestHereticRitualBlood
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-blood
+      reagents: [ Blood ]
+    results:
+    - STTestHereticResult
 ";
+
+    [Test]
+    public async Task BloodPuddleIngredient()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var puddles = Server.System<SharedPuddleSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            comp.Rituals.Clear();
+            comp.Rituals.Add("STTestHereticRitualBlood");
+            var heretic = new Entity<StoriesHereticComponent>(uid, comp);
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+
+            // 5 ед. мало.
+            Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 5), out _, sound: false), Is.True);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False);
+
+            // Лужа на тайле сливается в одну: 5 + 10 = 15 ед.
+            Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out var puddle, sound: false), Is.True);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(SEntMan.Deleted(puddle) || SEntMan.IsQueuedForDeletion(puddle), Is.True, "Лужа не поглощена");
+        });
+    }
 
     [Test]
     public async Task RecipeConsumesAndRespectsLimit()
