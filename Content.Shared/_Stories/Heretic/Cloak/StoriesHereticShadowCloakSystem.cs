@@ -7,6 +7,7 @@ using Content.Shared.Chat;
 using Content.Shared.Damage.Systems;
 using Content.Shared.IdentityManagement;
 using Content.Shared.IdentityManagement.Components;
+using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
@@ -46,9 +47,12 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, TransformSpeakerNameEvent>(OnSpeakerName);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshSpeed);
-        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, DamageChangedEvent>(OnDamage);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, DamageDealtEvent>(OnDamage);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, MobStateChangedEvent>(OnMobState);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SleepStateChangedEvent>(OnSleep);
+        // После блокаторов личности (своих и в одежде): иначе их отмена показала бы имя с ID-карты.
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SeeIdentityAttemptEvent>(OnSeeIdentity,
+            after: new[] { typeof(IdentitySystem), typeof(InventorySystem) });
     }
 
     private void OnCloakAction(Entity<StoriesHereticComponent> ent, ref StoriesHereticShadowCloakEvent args)
@@ -67,7 +71,7 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
             var cooldown = remaining > active.MinCooldown ? remaining : active.MinCooldown;
 
             RemCompDeferred<StoriesHereticShadowCloakComponent>(uid);
-            _popup.PopupClient(Loc.GetString("stories-heretic-cloak-off"), uid, uid);
+            _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-off"), uid, uid);
             // PerformAction после обработчика сбрасывает перезарядку и ставит UseDelay, поэтому задержка задаётся через него.
             _actions.SetUseDelay(active.Action ?? action, cooldown);
             return;
@@ -103,7 +107,7 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         _speed.RefreshMovementSpeedModifiers(uid);
 
         _audio.PlayPredicted(ActivateSound, uid, uid);
-        _popup.PopupPredicted(Loc.GetString("stories-heretic-cloak-on"),
+        _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-on"),
             Loc.GetString("stories-heretic-cloak-on-others", ("ent", uid)),
             uid,
             uid);
@@ -136,6 +140,19 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         args.VoiceName = Loc.GetString("stories-heretic-cloak-voice");
     }
 
+    /// <summary>
+    /// Отменённая проверка личности показывает имя с ID-карты (PresumedName), поэтому плащ снимает отмену
+    /// и подменяет имя — как в чате.
+    /// </summary>
+    private void OnSeeIdentity(Entity<StoriesHereticShadowCloakComponent> ent, ref SeeIdentityAttemptEvent args)
+    {
+        if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
+            return;
+
+        args.Uncancel();
+        args.NameOverride = Loc.GetString("stories-heretic-cloak-voice");
+    }
+
     private void OnRefreshSpeed(Entity<StoriesHereticShadowCloakComponent> ent, ref RefreshMovementSpeedModifiersEvent args)
     {
         if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
@@ -144,18 +161,18 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         args.ModifySpeed(ent.Comp.SpeedMultiplier, ent.Comp.SpeedMultiplier);
     }
 
-    private void OnDamage(Entity<StoriesHereticShadowCloakComponent> ent, ref DamageChangedEvent args)
+    private void OnDamage(Entity<StoriesHereticShadowCloakComponent> ent, ref DamageDealtEvent args)
     {
-        if (!args.DamageIncreased || args.DamageDelta == null || _net.IsClient)
+        if (_net.IsClient)
             return;
 
-        foreach (var value in args.DamageDelta.DamageDict.Values)
+        foreach (var value in args.Damage.DamageDict.Values)
         {
             if (value > 0)
                 ent.Comp.DamageTaken += (float) value;
         }
 
-        if (ent.Comp.DamageTaken < ent.Comp.DamageThreshold)
+        if (!args.Damage.AnyPositive() || ent.Comp.DamageTaken < ent.Comp.DamageThreshold)
             return;
 
         if (_random.Prob(Math.Min(1f, ent.Comp.DamageTaken / 100f)))

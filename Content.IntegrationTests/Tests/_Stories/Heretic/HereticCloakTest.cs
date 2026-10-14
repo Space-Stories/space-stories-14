@@ -1,5 +1,7 @@
 #pragma warning disable RA0002
 using Content.IntegrationTests.Fixtures;
+using Content.Shared.Access.Systems;
+using Content.Shared.Inventory;
 using Content.Shared._Stories.Heretic.Cloak;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
@@ -13,6 +15,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -43,6 +46,10 @@ public sealed class HereticCloakTest : GameTest
             thresholds.SetMobStateThreshold(heretic, 1000, MobState.Critical);
             thresholds.SetMobStateThreshold(heretic, 2000, MobState.Dead);
             realName = SEntMan.GetComponent<MetaDataComponent>(heretic).EntityName;
+            // С ID-картой личность без плаща — имя с карты; плащ должен скрыть и его.
+            var id = SSpawnAtPosition("PassengerIDCard", testMap.GridCoords);
+            Assert.That(Server.System<SharedIdCardSystem>().TryChangeFullName(id, realName));
+            Assert.That(Server.System<InventorySystem>().TryEquip(heretic, id, "id", silent: true, force: true));
             baseSpeed = SEntMan.GetComponent<MovementSpeedModifierComponent>(heretic).CurrentSprintSpeed;
 
             var ev = new StoriesHereticShadowCloakEvent { Performer = heretic };
@@ -55,7 +62,8 @@ public sealed class HereticCloakTest : GameTest
         await Server.WaitAssertion(() =>
         {
             Assert.That(SEntMan.HasComponent<StoriesHereticShadowCloakComponent>(heretic));
-            Assert.That(Identity.Name(heretic, SEntMan, observer), Is.Not.EqualTo(realName));
+            Assert.That(Identity.Name(heretic, SEntMan, observer),
+                Is.EqualTo(Server.ResolveDependency<ILocalizationManager>().GetString("stories-heretic-cloak-voice")), "Плащ не скрыл имя с ID-карты");
             Assert.That(SEntMan.GetComponent<MovementSpeedModifierComponent>(heretic).CurrentSprintSpeed, Is.GreaterThan(baseSpeed));
 
             damageable.TryChangeDamage(heretic, new DamageSpecifier { DamageDict = new() { { "Blunt", 30 } } }, true);
