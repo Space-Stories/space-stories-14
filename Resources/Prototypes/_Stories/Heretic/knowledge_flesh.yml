@@ -16,3 +16,20 @@
     - STHereticObjectiveSummon
     rituals:
     - STHereticRitualFleshBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshGrasp
+  name: Grasp of Flesh
+  description: Your Mansus Grasp raises the dead as ghouls - once per corpse. Ghouls are withered and fragile (25 health).
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: grasp_flesh
+    path: STHereticPathFlesh
+    pathLocked: true
+    stage: 2
+    requires: [ STHereticKnowledgeFleshRoot ]
+    addComponents:
+    - type: StoriesHereticGraspGhoul
