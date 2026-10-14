@@ -32,3 +32,13 @@
     exclusiveAntag: true
     roleType: SoloAntagonist
   - type: StoriesHereticRole
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: STMindRoleHereticMonster
+  name: Heretic Monster Role
+  components:
+  - type: MindRole
+    antagPrototype: STHeretic
+    exclusiveAntag: false
+    roleType: TeamAntagonist
