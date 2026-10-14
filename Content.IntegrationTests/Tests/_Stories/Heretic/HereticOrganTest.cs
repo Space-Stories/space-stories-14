@@ -7,10 +7,12 @@ using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Damage.Components;
 using Content.Shared.Inventory;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
@@ -118,5 +120,27 @@ public sealed class HereticOrganTest : GameTest
         await RunTicksSync(2);
         Assert.That(SEntMan.Deleted(organ), "Орган не взорвался");
         Assert.That(SEntMan.HasComponent<StoriesHereticCorruptedBodyComponent>(victim), Is.False, "Маркер тела не снят");
+    }
+
+    [Test]
+    public async Task CorruptedHeartDrainsStamina()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var organs = Server.System<StoriesHereticCorruptedOrganSystem>();
+        var containers = Server.System<SharedContainerSystem>();
+        var timing = Server.ResolveDependency<IGameTiming>();
+        EntityUid victim = default;
+
+        await Server.WaitAssertion(() =>
+        {
+            victim = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            Assert.That(organs.TryCurseOrgan(victim, "Heart", testMap.GridCoords), Is.True);
+            var heart = containers.GetContainer(victim, BodyComponent.ContainerID).ContainedEntities
+                .Single(SEntMan.HasComponent<StoriesHereticCorruptedOrganComponent>);
+            SEntMan.GetComponent<StoriesHereticCorruptedOrganComponent>(heart).NextEffect = timing.CurTime;
+        });
+
+        await RunSeconds(2);
+        Assert.That(SEntMan.GetComponent<StaminaComponent>(victim).StaminaDamage, Is.GreaterThan(0));
     }
 }

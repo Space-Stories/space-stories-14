@@ -13,6 +13,12 @@ public sealed partial class StoriesHereticCorruptedOrganComponent : Component
     public TimeSpan NextEffect;
 
     /// <summary>
+    /// Желудок: до этого момента голод не ускоряется (выпита кровь).
+    /// </summary>
+    [DataField]
+    public TimeSpan SatedUntil;
+
+    /// <summary>
     /// Шанс взорваться при извлечении из живого тела.
     /// </summary>
     [DataField]
