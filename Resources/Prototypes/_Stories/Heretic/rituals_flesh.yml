@@ -1,0 +1,16 @@
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualFleshBlade
+  name: Bloody Blade
+  description: A knife and a pool of blood.
+  components:
+  - type: StoriesHereticRitual
+    limit: 4
+    ingredients:
+    - name: stories-heretic-ingredient-knife
+      whitelist:
+        tags: [ Knife ]
+    - name: stories-heretic-ingredient-blood
+      reagents: [ Blood, InsectBlood, CopperBlood, AmmoniaBlood, Slime ]
+    results:
+    - STHereticBladeFlesh

@@ -24,6 +24,7 @@ stories-heretic-round-end-ascended = [color=#58a65c]{ $name } ({ $user }) воз
 stories-heretic-round-end-lost = { $name } ({ $user }) — тело еретика утрачено.
 stories-heretic-path-none = не выбран
 stories-heretic-path-STHereticPathAsh = Пепел
+stories-heretic-path-STHereticPathFlesh = Плоть
 stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
 stories-heretic-objective-knowledge = Изучить { $count } знаний Мансуса.
 stories-heretic-objective-summon = Призвать монстров Мансуса: { $count }.

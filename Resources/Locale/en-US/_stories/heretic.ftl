@@ -24,6 +24,7 @@ stories-heretic-round-end-ascended = [color=#58a65c]{ $name } ({ $user }) ascend
 stories-heretic-round-end-lost = { $name } ({ $user }) — the heretic's body was lost.
 stories-heretic-path-none = none
 stories-heretic-path-STHereticPathAsh = Ash
+stories-heretic-path-STHereticPathFlesh = Flesh
 stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
 stories-heretic-objective-summon = Summon { $count } Mansus monsters.

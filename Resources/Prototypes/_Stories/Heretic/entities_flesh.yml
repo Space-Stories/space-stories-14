@@ -1,0 +1,21 @@
+- type: entity
+  parent: BaseKnife
+  id: STHereticBladeFlesh
+  name: bloody blade
+  description: A sickle-shaped blade born from a mutilated creature of flesh. Breaking it carries you away through the Mansus.
+  components:
+  - type: StoriesHereticBlade
+  - type: Sprite
+    sprite: _Stories/Heretic/flesh_blade.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Heretic/flesh_blade_inhand.rsi
+    size: Normal
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 17
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg

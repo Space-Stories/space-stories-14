@@ -1,0 +1,18 @@
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshRoot
+  name: Principle of Hunger
+  description: Step onto the Path of Flesh. Learn to forge bloody blades from a knife and a pool of blood. You will also be tasked with summoning monsters.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/flesh_blade.rsi
+      state: icon
+    path: STHereticPathFlesh
+    choosesPath: true
+    stage: 1
+    requiredSummons: 2
+    objectives:
+    - STHereticObjectiveSummon
+    rituals:
+    - STHereticRitualFleshBlade
