@@ -12,7 +12,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
-using Content.Shared.Speech;
+using Content.Shared.StatusEffectNew;
 using Robust.Server.Player;
 using Robust.Shared.Prototypes;
 
@@ -29,6 +29,7 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private MobThresholdSystem _thresholds = default!;
     [Dependency] private RejuvenateSystem _rejuvenate = default!;
+    [Dependency] private StatusEffectsSystem _statusEffects = default!;
 
     private static readonly EntProtoId ServeMaster = "STHereticObjectiveServeMaster";
 
@@ -41,7 +42,6 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticGhoulComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<StoriesHereticRaisedComponent, MobStateChangedEvent>(OnRaisedMobStateChanged);
-        SubscribeLocalEvent<StoriesHereticGhoulComponent, SpeakAttemptEvent>(OnSpeakAttempt);
         InitializeRitual();
     }
 
@@ -84,7 +84,8 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
     /// </summary>
     private string? GetRaiseFailure(EntityUid master, EntityUid corpse, ProtoId<ConversionPrototype> conversion, int limit, bool needSoul)
     {
-        if (CountGhouls(master, conversion) >= limit)
+        // Ожидающие игрока предложения тоже занимают слот: иначе их можно наплодить сверх лимита.
+        if (CountGhouls(master, conversion) + CountOffers(master, conversion) >= limit)
             return Loc.GetString("stories-heretic-ghoul-limit");
         if (!HasComp<HumanoidProfileComponent>(corpse) || !_mobState.IsDead(corpse))
             return Loc.GetString("stories-heretic-ghoul-invalid");
@@ -96,6 +97,19 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         if (!_conversion.CanConvert(corpse, conversion, master))
             return Loc.GetString("stories-heretic-ghoul-protected");
         return null;
+    }
+
+    private int CountOffers(EntityUid master, ProtoId<ConversionPrototype> conversion)
+    {
+        var count = 0;
+        var query = EntityQueryEnumerator<StoriesHereticGhoulOfferComponent>();
+        while (query.MoveNext(out _, out var offer))
+        {
+            if (offer.Master == master && offer.Conversion == conversion)
+                count++;
+        }
+
+        return count;
     }
 
     public bool HasSoul(EntityUid corpse)
@@ -113,6 +127,9 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
 
         _thresholds.SetMobStateThreshold(ent, ent.Comp.CritThreshold, MobState.Critical);
         _thresholds.SetMobStateThreshold(ent, ent.Comp.DeadThreshold, MobState.Dead);
+
+        if (ent.Comp.StatusEffect is { } effect)
+            _statusEffects.TrySetStatusEffectDuration(ent, effect);
     }
 
     /// <summary>
@@ -123,6 +140,9 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
     {
         if (TerminatingOrDeleted(ent))
             return;
+
+        if (ent.Comp.StatusEffect is { } effect)
+            _statusEffects.TryRemoveStatusEffect(ent, effect);
 
         RemComp<StoriesHereticServantComponent>(ent);
         _adminLog.Add(LogType.Action, LogImpact.Medium, $"{ToPrettyString(ent):target} is no longer a ghoul");
@@ -163,12 +183,6 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
             if (ProtoMan.TryIndex<ConversionPrototype>(id, out var proto) && proto.Components.ContainsKey(Factory.GetComponentName<StoriesHereticGhoulComponent>()))
                 _conversion.TryRevert(ent, id);
         }
-    }
-
-    private void OnSpeakAttempt(EntityUid uid, StoriesHereticGhoulComponent comp, SpeakAttemptEvent args)
-    {
-        if (comp.Mute)
-            args.Cancel();
     }
 
     private void OnExamined(Entity<StoriesHereticGhoulComponent> ent, ref ExaminedEvent args)

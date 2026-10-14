@@ -1,4 +1,5 @@
 using Content.Shared.FixedPoint;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic.Ghouls;
 
@@ -16,8 +17,8 @@ public sealed partial class StoriesHereticGhoulComponent : Component
     public FixedPoint2 DeadThreshold;
 
     /// <summary>
-    /// Безгласный мертвец не может говорить.
+    /// Бессрочный статус-эффект на время службы (немота Безгласного мертвеца): снимается вместе с гулем.
     /// </summary>
     [DataField]
-    public bool Mute;
+    public EntProtoId? StatusEffect;
 }

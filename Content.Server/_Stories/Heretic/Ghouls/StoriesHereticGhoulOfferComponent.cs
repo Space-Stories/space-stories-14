@@ -22,6 +22,12 @@ public sealed partial class StoriesHereticGhoulOfferComponent : Component
     [DataField]
     public EntProtoId Refund;
 
+    /// <summary>
+    /// Предложение закрыто штатно (взято, истекло, труп оживлён): возвращать мак при снятии компонента не нужно.
+    /// </summary>
+    [DataField]
+    public bool Settled;
+
     [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan ExpireTime;
 }

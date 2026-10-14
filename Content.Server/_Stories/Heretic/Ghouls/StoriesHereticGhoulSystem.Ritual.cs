@@ -1,9 +1,13 @@
 using Content.Server.Ghost.Roles.Components;
+using Content.Server.Ghost.Roles.Raffles;
+using Content.Shared.Ghost.Roles.Raffles;
+using Content.Shared.Mobs;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Humanoid;
 using Content.Shared.Mind.Components;
 using Content.Shared.Popups;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.Heretic.Ghouls;
@@ -15,10 +19,14 @@ public sealed partial class StoriesHereticGhoulSystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
 
+    private static readonly ProtoId<GhostRoleRaffleSettingsPrototype> OfferRaffle = "short";
+
     private void InitializeRitual()
     {
         SubscribeLocalEvent<StoriesHereticRitualEffectEvent>(OnRitualEffect);
         SubscribeLocalEvent<StoriesHereticGhoulOfferComponent, MindAddedMessage>(OnOfferMindAdded);
+        SubscribeLocalEvent<StoriesHereticGhoulOfferComponent, MobStateChangedEvent>(OnOfferMobStateChanged);
+        SubscribeLocalEvent<StoriesHereticGhoulOfferComponent, EntityTerminatingEvent>(OnOfferTerminating);
     }
 
     public override void Update(float frameTime)
@@ -33,10 +41,8 @@ public sealed partial class StoriesHereticGhoulSystem
                 continue;
 
             // Никто не откликнулся: труп остаётся трупом, мак возвращается.
-            var coords = Transform(uid).Coordinates;
-            Spawn(offer.Refund, coords);
-            _popup.PopupCoordinates(Loc.GetString("stories-heretic-flesh-imperfect-expired"), coords, PopupType.MediumCaution);
-            EndOffer(uid);
+            _popup.PopupCoordinates(Loc.GetString("stories-heretic-flesh-imperfect-expired"), Transform(uid).Coordinates, PopupType.MediumCaution);
+            EndOffer(uid, true);
         }
     }
 
@@ -49,6 +55,7 @@ public sealed partial class StoriesHereticGhoulSystem
 
         var limit = ritual.Limit + (args.Heretic.Comp.Ascended ? ritual.AscendedBonus : 0);
         EntityUid? soulless = null;
+        var busy = false;
         foreach (var uid in args.Nearby)
         {
             if (HasComp<HumanoidProfileComponent>(uid) && !HasComp<StoriesHereticRaisedComponent>(uid) && _mobState.IsDead(uid))
@@ -65,19 +72,20 @@ public sealed partial class StoriesHereticGhoulSystem
                     continue;
                 }
 
-                soulless ??= uid;
+                if (HasComp<StoriesHereticGhoulOfferComponent>(uid))
+                    busy = true;
+                else
+                    soulless ??= uid;
             }
         }
 
         if (soulless is not { } corpse)
         {
-            args.FailReason ??= Loc.GetString("stories-heretic-flesh-imperfect-no-body");
+            args.FailReason ??= Loc.GetString(busy ? "stories-heretic-flesh-imperfect-busy" : "stories-heretic-flesh-imperfect-no-body");
             return;
         }
 
         var failure = GetRaiseFailure(args.Heretic, corpse, ritual.Conversion, limit, false);
-        if (failure == null && HasComp<StoriesHereticGhoulOfferComponent>(corpse))
-            failure = Loc.GetString("stories-heretic-flesh-imperfect-busy");
         if (failure != null)
         {
             args.FailReason = failure;
@@ -97,6 +105,7 @@ public sealed partial class StoriesHereticGhoulSystem
         role.RoleDescription = Loc.GetString("stories-heretic-flesh-voiceless-description");
         role.RoleRules = Loc.GetString("stories-heretic-flesh-voiceless-rules");
         role.MindRoles = new();
+        role.RaffleConfig = new GhostRoleRaffleConfig(ProtoMan.Index(OfferRaffle).Settings);
 
         _popup.PopupEntity(Loc.GetString("stories-heretic-flesh-imperfect-offered"), corpse, args.Heretic);
         args.Success = true;
@@ -105,13 +114,44 @@ public sealed partial class StoriesHereticGhoulSystem
     private void OnOfferMindAdded(Entity<StoriesHereticGhoulOfferComponent> ent, ref MindAddedMessage args)
     {
         var offer = ent.Comp;
-        // Лимит мог занять другой ритуал или Хватка за 5 минут — тогда игрок остаётся в трупе.
-        TryRaise(offer.Master, ent, offer.Conversion, offer.Limit, out _);
-        EndOffer(ent);
+        var (master, conversion, limit) = (offer.Master, offer.Conversion, offer.Limit);
+        // Закрываем до подсчёта: само предложение не должно занимать слот лимита.
+        var coords = Transform(ent).Coordinates;
+        var refund = offer.Refund;
+        EndOffer(ent, false);
+        if (TryRaise(master, ent, conversion, limit, out var reason))
+            return;
+
+        // Лимит заняли за 5 минут или труп испортился: игрок остаётся в трупе, мак возвращается.
+        Spawn(refund, coords);
+        if (args.Mind.Comp.UserId is { } user && _player.TryGetSessionById(user, out var session))
+            _chat.DispatchServerMessage(session, reason);
     }
 
-    private void EndOffer(EntityUid corpse)
+    private void OnOfferMobStateChanged(Entity<StoriesHereticGhoulOfferComponent> ent, ref MobStateChangedEvent args)
     {
+        if (args.OldMobState == MobState.Dead && args.NewMobState != MobState.Dead)
+            EndOffer(ent, true);
+    }
+
+    private void OnOfferTerminating(Entity<StoriesHereticGhoulOfferComponent> ent, ref EntityTerminatingEvent args)
+    {
+        // Штатно закрытое предложение уже разобрано. Иначе труп удалён или разорван: мак ляжет на его последнее место.
+        if (ent.Comp.Settled || Transform(ent).MapUid is not { } map || TerminatingOrDeleted(map))
+            return;
+
+        Spawn(ent.Comp.Refund, Transform(ent).Coordinates);
+    }
+
+    private void EndOffer(EntityUid corpse, bool refund)
+    {
+        if (!TryComp<StoriesHereticGhoulOfferComponent>(corpse, out var offer))
+            return;
+
+        offer.Settled = true;
+        if (refund)
+            Spawn(offer.Refund, Transform(corpse).Coordinates);
+
         RemComp<StoriesHereticGhoulOfferComponent>(corpse);
         RemComp<GhostRoleComponent>(corpse);
         RemComp<GhostTakeoverAvailableComponent>(corpse);

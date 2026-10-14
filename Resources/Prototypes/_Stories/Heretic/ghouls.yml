@@ -26,6 +26,6 @@
   - type: StoriesHereticGhoul
     critThreshold: 50
     deadThreshold: 100
-    mute: true
+    statusEffect: StatusEffectMuted
   mindRoles:
   - STMindRoleHereticGhoul

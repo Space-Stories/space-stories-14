@@ -15,6 +15,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Speech;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Fluids;
 using Content.Shared.Mind;
@@ -192,6 +193,7 @@ public sealed class HereticFleshTest : GameTest
             var speak = new SpeakAttemptEvent(corpse);
             SEntMan.EventBus.RaiseLocalEvent(corpse, speak, true);
             Assert.That(speak.Cancelled, Is.True, "Безгласный мертвец заговорил");
+            Assert.That(Server.System<StatusEffectsSystem>().HasStatusEffect(corpse, "StatusEffectMuted"), Is.True, "Нет эффекта немоты");
         });
     }
 
@@ -214,6 +216,7 @@ public sealed class HereticFleshTest : GameTest
 
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             Assert.That(SEntMan.HasComponent<GhostRoleComponent>(corpse), Is.True, "Нет призрачной роли");
+            Assert.That(SEntMan.GetComponent<GhostRoleComponent>(corpse).RaffleConfig, Is.Not.Null, "Роль без розыгрыша");
             Assert.That(heretics.IsServant(corpse, uid), Is.False);
             Assert.That(CountPoppies(), Is.EqualTo(0));
 
@@ -285,6 +288,49 @@ public sealed class HereticFleshTest : GameTest
             heretic.Comp.Ascended = true;
             Assert.That(rituals.TryPerform(heretic, rune), Is.True, "После Вознесения лимит 6");
             Assert.That(heretics.IsServant(third, uid), Is.True);
+        });
+    }
+
+    [Test]
+    public async Task ImperfectOffersCountTowardLimit()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = LearnImperfect(SSpawnAtPosition("MobHuman", coords));
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            var corpses = new[] { DeadCorpse(coords, false), DeadCorpse(coords, false), DeadCorpse(coords, false) };
+            for (var i = 0; i < 3; i++)
+                SSpawnAtPosition("FoodPoppy", coords);
+
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True, "Предложение 1");
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True, "Предложение 2 на следующем свободном трупе");
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False, "3-е предложение сверх лимита 2");
+            Assert.That(corpses.Count(c => SEntMan.HasComponent<StoriesHereticGhoulOfferComponent>(c)), Is.EqualTo(2));
+        });
+    }
+
+    [Test]
+    public async Task ImperfectOfferRefundsWhenCorpseDeleted()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = LearnImperfect(SSpawnAtPosition("MobHuman", coords));
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            var corpse = DeadCorpse(coords, false);
+            SSpawnAtPosition("FoodPoppy", coords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(CountPoppies(), Is.EqualTo(0));
+
+            SEntMan.DeleteEntity(corpse);
+            Assert.That(CountPoppies(), Is.EqualTo(1), "Мак не вернулся после удаления трупа");
         });
     }
 }
