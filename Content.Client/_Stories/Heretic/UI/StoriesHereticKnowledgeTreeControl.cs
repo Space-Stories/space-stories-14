@@ -70,9 +70,18 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
         // Подложка колонки — тёмный тон пути, под заголовком — черта цвета пути.
         for (var i = 0; i < _columns.Count; i++)
         {
-            var palette = StoriesHereticPalette.Get(_columns[i].Path);
+            var column = _columns[i];
             var left = i * columnWidth + 4 * UIScale;
             var right = (i + 1) * columnWidth - 4 * UIScale;
+            if (column.BridgeTo != null)
+            {
+                var mid = (left + right) / 2;
+                handle.DrawRect(new UIBox2(left, 0, mid, PixelSize.Y), StoriesHereticPalette.Get(column.Path).Dark.WithAlpha(0.25f));
+                handle.DrawRect(new UIBox2(mid, 0, right, PixelSize.Y), StoriesHereticPalette.Get(column.BridgeTo).Dark.WithAlpha(0.25f));
+                continue;
+            }
+
+            var palette = StoriesHereticPalette.Get(column.Path);
             handle.DrawRect(new UIBox2(left, 0, right, PixelSize.Y), palette.Dark.WithAlpha(0.35f));
             handle.DrawRect(new UIBox2(left, (HeaderHeight - 4) * UIScale, right, (HeaderHeight - 2) * UIScale), palette.Accent.WithAlpha(0.6f));
         }

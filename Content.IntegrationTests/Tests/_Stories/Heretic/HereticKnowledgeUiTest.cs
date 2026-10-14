@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections.Generic;
 using Content.Client._Stories.Heretic.UI;
 using Content.IntegrationTests.Fixtures;
 using Content.Shared._Stories.Heretic.Components;
@@ -16,6 +17,33 @@ public sealed class HereticKnowledgeUiTest : GameTest
     private static readonly ResPath KnowledgeRsi = new("/Textures/_Stories/Heretic/knowledge.rsi");
 
     private static readonly string[] Paths = ["Ash", "Flesh", "Void", "Rust", "Blade", "Cosmos", "Lock", "Moon"];
+
+    [Test]
+    public async Task RingColumnsFollowParadiseOrder()
+    {
+        await Pair.Client.WaitAssertion(() =>
+        {
+            var columns = StoriesHereticRing.BuildColumns(
+                ["STHereticPathVoid", "STHereticPathAsh", "STHereticPathBlade", "STHereticPathFlesh"],
+                [("STHereticPathFlesh", "STHereticPathVoid"), ("STHereticPathBlade", "STHereticPathVoid"), ("STHereticPathFlesh", "STHereticPathLock")]);
+
+            Assert.That(columns, Is.EqualTo(new List<(string?, string?)>
+            {
+                (null, null),
+                ("STHereticPathAsh", null),
+                ("STHereticPathFlesh", "STHereticPathLock"), // полумост: соседа нет, мост прижат к нашему пути с его стороны
+                ("STHereticPathFlesh", null),
+                ("STHereticPathFlesh", "STHereticPathVoid"),
+                ("STHereticPathVoid", null),
+                ("STHereticPathVoid", "STHereticPathBlade"),
+                ("STHereticPathBlade", null),
+            }));
+
+            Assert.That(StoriesHereticRing.ColumnOf(columns, null, ["STHereticPathVoid", "STHereticPathFlesh"]), Is.EqualTo(4));
+            Assert.That(StoriesHereticRing.ColumnOf(columns, "STHereticPathBlade", []), Is.EqualTo(7));
+            Assert.That(StoriesHereticRing.ColumnOf(columns, null, []), Is.EqualTo(0));
+        });
+    }
 
     [Test]
     public async Task KnowledgeWindowBuilds()
