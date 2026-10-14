@@ -88,3 +88,21 @@
     requires: [ STHereticKnowledgeFleshMark ]
     addComponents:
     - type: StoriesHereticBladeBleed
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshKnitting
+  name: Knit Flesh
+  description: Learn to mend your servants with a touch. You can also pull organs out of humanoids without surgery - 3 seconds from a corpse, 15 from the living (not the heart or lungs). "But they did not stay out of my reach for long. With every step the screams grew, until at last I learned to drown them out."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: mad_touch
+    path: STHereticPathFlesh
+    stage: 5
+    requires: [ STHereticKnowledgeFleshMark ]
+    actions:
+    - STActionHereticKnitFlesh
+    addComponents:
+    - type: StoriesHereticKnitFlesh

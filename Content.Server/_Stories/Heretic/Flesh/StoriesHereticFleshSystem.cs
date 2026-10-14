@@ -25,6 +25,8 @@ public sealed partial class StoriesHereticFleshSystem : EntitySystem
     {
         base.Initialize();
 
+        InitializeKnit();
+
         SubscribeLocalEvent<StoriesHereticGraspGhoulComponent, StoriesHereticGraspHitEvent>(OnGraspGhoul);
         SubscribeLocalEvent<StoriesHereticMarkTriggeredEvent>(OnMarkTriggered);
         SubscribeLocalEvent<StoriesHereticBladeBleedComponent, StoriesHereticBladeHitEvent>(OnBladeBleedHit);

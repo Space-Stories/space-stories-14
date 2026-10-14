@@ -26,6 +26,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private DetachableOrganSystem _detachable = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private Flesh.StoriesHereticFleshSystem _flesh = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -48,6 +49,8 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
 
     private void OnGetVerbs(Entity<BodyComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
+        _flesh.AddExtractVerbs(ent, ref args);
+
         if (!args.CanInteract || !args.CanAccess
             || !CanDismember(args.User, ent)
             || !_containers.TryGetContainer(ent, BodyComponent.ContainerID, out var container))

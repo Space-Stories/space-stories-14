@@ -1,0 +1,23 @@
+- type: entity
+  id: STActionHereticKnitFlesh
+  name: Knit Flesh
+  description: Touch one of your servants to mend their wounds. Works only on your own ghouls and summons.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 20
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: mad_touch
+  - type: TargetAction
+    range: 1.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    event: !type:StoriesHereticKnitFleshEvent
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+  - type: StoriesHereticRequiresFocus

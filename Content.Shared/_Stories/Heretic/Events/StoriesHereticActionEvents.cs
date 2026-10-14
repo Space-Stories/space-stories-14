@@ -31,6 +31,9 @@ public sealed partial class StoriesHereticGraspEvent : EntityTargetActionEvent
     public TimeSpan SlurTime = TimeSpan.FromSeconds(5);
 }
 
+/// <summary>Сшить плоть: касание лечит слугу еретика.</summary>
+public sealed partial class StoriesHereticKnitFleshEvent : EntityTargetActionEvent;
+
 public sealed partial class StoriesHereticLivingHeartEvent : InstantActionEvent
 {
     [DataField]

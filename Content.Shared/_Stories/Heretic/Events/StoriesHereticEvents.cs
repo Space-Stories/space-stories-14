@@ -82,3 +82,7 @@ public sealed partial class StoriesHereticBladeBreakDoAfterEvent : SimpleDoAfter
 /// <summary>Расчленение трупа клинком; отделяемый орган передаётся как <c>used</c> DoAfter.</summary>
 [Serializable, NetSerializable]
 public sealed partial class StoriesHereticDismemberDoAfterEvent : SimpleDoAfterEvent;
+
+/// <summary>Извлечение органа заклинанием «Сшить плоть»; орган передаётся как <c>used</c> DoAfter.</summary>
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticKnitExtractDoAfterEvent : SimpleDoAfterEvent;

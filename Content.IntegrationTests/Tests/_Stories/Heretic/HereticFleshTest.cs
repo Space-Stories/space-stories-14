@@ -4,6 +4,7 @@ using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic;
 using Content.Server._Stories.Heretic.Flesh;
 using Content.Server._Stories.Heretic.Ghouls;
+using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Mind;
@@ -18,6 +19,9 @@ using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Speech;
+using Content.Shared.Verbs;
+using Robust.Shared.Containers;
+using Robust.Shared.Localization;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Fluids;
@@ -386,6 +390,74 @@ public sealed class HereticFleshTest : GameTest
             before = bloodstream.BleedAmount;
             SEntMan.EventBus.RaiseLocalEvent(heretic, ref ev);
             Assert.That(bloodstream.BleedAmount, Is.EqualTo(before), "По мёртвым без эффекта");
+        });
+    }
+    [Test]
+    public async Task KnitFleshHealsServantOnly()
+    {
+        var testMap = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = SSpawnAtPosition("MobHuman", coords);
+            var servant = SSpawnAtPosition("MobHuman", coords);
+            var stranger = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<StoriesHereticKnitFleshComponent>(heretic);
+            Server.System<StoriesHereticSystem>().MakeServant(servant, heretic);
+            var dmg = new DamageSpecifier { DamageDict = new() { { "Blunt", 30 } } };
+            Server.System<DamageableSystem>().TryChangeDamage(servant, dmg, true);
+            Server.System<DamageableSystem>().TryChangeDamage(stranger, dmg, true);
+
+            float Blunt(EntityUid uid) => (float) SEntMan.GetComponent<DamageableComponent>(uid).Damage.DamageDict["Blunt"];
+
+            var ev = new StoriesHereticKnitFleshEvent { Performer = heretic, Target = stranger };
+            SEntMan.EventBus.RaiseLocalEvent(heretic, (object) ev);
+            Assert.That(ev.Handled, Is.False, "Чужих не лечим и перезарядку не тратим");
+            Assert.That(Blunt(stranger), Is.EqualTo(30f));
+
+            ev = new StoriesHereticKnitFleshEvent { Performer = heretic, Target = servant };
+            SEntMan.EventBus.RaiseLocalEvent(heretic, (object) ev);
+            Assert.That(ev.Handled, Is.True);
+            Assert.That(Blunt(servant), Is.EqualTo(20f));
+        });
+    }
+
+    [Test]
+    public async Task KnitFleshVerbsAndExtraction()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var verbs = Server.System<SharedVerbSystem>();
+        var knit = Server.System<StoriesHereticFleshSystem>();
+        var containers = Server.System<SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = SSpawnAtPosition("MobHuman", coords);
+            var victim = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<StoriesHereticKnitFleshComponent>(heretic);
+            SEntMan.AddComponent<StoriesHereticComponent>(heretic).Ascended = true;
+            var loc = Server.ResolveDependency<ILocalizationManager>();
+            var liver = loc.GetString("stories-heretic-knit-verb", ("part", loc.GetString("stories-heretic-knit-part-Liver")));
+            var heart = loc.GetString("stories-heretic-knit-verb", ("part", loc.GetString("stories-heretic-knit-part-Heart")));
+
+            bool Has(string text) => verbs.GetLocalVerbs(victim, heretic, typeof(AlternativeVerb), force: true).Any(v => v.Text == text);
+
+            Assert.That(Has(heart), Is.False, "Сердце у живого не достать");
+            Assert.That(Has(liver), Is.True, "Печень у живого можно");
+
+            Server.System<DamageableSystem>().TryChangeDamage(victim, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            Assert.That(Has(heart), Is.True, "Сердце у трупа можно");
+            Assert.That(Has(liver), Is.True);
+
+            EntityUid? Find(string cat) => containers.GetContainer(victim, BodyComponent.ContainerID).ContainedEntities
+                .Cast<EntityUid?>().FirstOrDefault(o => SEntMan.GetComponent<OrganComponent>(o!.Value).Category == cat);
+
+            Assert.That(Find("Brain"), Is.Not.Null);
+            var organ = Find("Liver")!.Value;
+            Assert.That(knit.Extract(heretic, victim, organ), Is.True);
+            Assert.That(Find("Liver"), Is.Null, "Печень осталась в теле");
         });
     }
 }
