@@ -8,7 +8,7 @@ namespace Content.Shared._Stories.Heretic.Components;
 /// <summary>
 /// Метка пути на цели. Срабатывает от удара клинком того же пути.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), AutoGenerateComponentPause]
 public sealed partial class StoriesHereticMarkComponent : Component
 {
     [DataField, AutoNetworkedField]
