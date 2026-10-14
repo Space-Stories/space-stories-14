@@ -137,3 +137,33 @@ public sealed partial class StoriesHereticFlameEffects
     [DataField]
     public Angle MaxRotation = Angle.FromDegrees(25);
 }
+
+public sealed partial class StoriesHereticShadowCloakEvent : InstantActionEvent
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromMinutes(3);
+
+    [DataField]
+    public TimeSpan MinCooldown = TimeSpan.FromSeconds(6);
+
+    [DataField]
+    public TimeSpan InterruptCooldown = TimeSpan.FromMinutes(3);
+
+    [DataField]
+    public float SpeedMultiplier = 1.25f;
+
+    [DataField]
+    public float DamageThreshold = 25f;
+
+    [DataField]
+    public TimeSpan InterruptKnockdown = TimeSpan.FromSeconds(0.5);
+
+    [DataField]
+    public float InterruptSlowdown = 0.5f;
+
+    [DataField]
+    public TimeSpan InterruptSlowTime = TimeSpan.FromMinutes(2);
+
+    [DataField]
+    public EntProtoId Smoke = "STHereticShadowCloakSmoke";
+}

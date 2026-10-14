@@ -94,3 +94,15 @@
     cost: 0
     actions:
     - STActionHereticLivingHeart
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeShadowCloak
+  name: Cloak of Shadow
+  description: Hide your identity in purple smoke. Faster movement, quiet steps. Requires a focus.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    actions:
+    - STActionHereticShadowCloak

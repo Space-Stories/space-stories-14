@@ -116,3 +116,26 @@
     - state: green
     - sprite: _Stories/Heretic/knowledge.rsi
       state: node_side
+
+# Пока Task 12 не перенёс tg curse, дым берёт существующий спрайт и красит его в фиолетовый.
+- type: entity
+  id: STHereticShadowCloakSmoke
+  name: dark smoke
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Effects/spookysmoke.rsi
+    state: spookysmoke
+    color: "#7a3fb0"
+    scale: 0.6, 0.6
+    drawdepth: Overdoors
+    noRot: true
+  - type: PointLight
+    color: "#7a3fb0"
+    radius: 1.5
+    energy: 0.6
+
+- type: entity
+  parent: StatusEffectSlowdown
+  id: STHereticShadowCloakSlowdownStatusEffect
+  name: shadow cloak broken slowdown

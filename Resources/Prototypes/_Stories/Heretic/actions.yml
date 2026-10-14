@@ -74,3 +74,20 @@
     - state: living_heart
   - type: InstantAction
     event: !type:StoriesHereticLivingHeartEvent
+
+- type: entity
+  id: STActionHereticShadowCloak
+  name: Cloak of Shadow
+  description: Disappear into the shadows for three minutes. Taking damage may break the cloak.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 6
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: smoke
+  - type: StoriesHereticRequiresFocus
+  - type: InstantAction
+    event: !type:StoriesHereticShadowCloakEvent
