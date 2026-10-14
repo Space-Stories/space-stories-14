@@ -4,12 +4,15 @@ using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Atmos;
 using Content.Shared.Body;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Database;
 using Content.Shared.Dataset;
 using Content.Shared.Examine;
 using Content.Shared.Medical;
@@ -30,6 +33,7 @@ namespace Content.Server._Stories.Heretic.Organs;
 
 public sealed partial class StoriesHereticCorruptedOrganSystem
 {
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private DamageableSystem _damageable = default!;
@@ -53,12 +57,12 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
     /// <summary>
     /// Реагенты, которые испорченная печень подмешивает в выпитое. SpaceMirage в проекте нет — отброшен.
     /// </summary>
-    private static readonly string[] LiverReagents = ["Rum", "Vodka", "Happiness", "MindbreakerToxin", "Laughter"];
+    private static readonly ProtoId<ReagentPrototype>[] LiverReagents = ["Rum", "Vodka", "Happiness", "MindbreakerToxin", "Laughter"];
 
     /// <summary>
     /// Реагенты крови (как у лужи крови): выпив любой из них, испорченный желудок на время успокаивается.
     /// </summary>
-    private static readonly string[] BloodReagents = ["Blood", "InsectBlood", "CopperBlood", "AmmoniaBlood"];
+    private static readonly ProtoId<ReagentPrototype>[] BloodReagents = ["Blood", "InsectBlood", "CopperBlood", "AmmoniaBlood"];
 
     // Миазмов в этом форке нет — вместо них аммиак (тоже вонючее облако).
     private static readonly Gas[] CoughGases = [Gas.Ammonia, Gas.Plasma];
@@ -69,6 +73,9 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
     private static readonly TimeSpan AppendixKnockdown = TimeSpan.FromSeconds(0.5);
 
     private TimeSpan _nextSecond;
+
+    private readonly HashSet<Entity<DamageableComponent>> _burstTargets = new();
+    private readonly HashSet<Entity<StoriesHereticComponent>> _watchers = new();
 
     // База голода человека -1/60 в секунду; ещё -2/60 даёт итоговые x3.
     private const float StomachExtraHunger = -2f / 60f;
@@ -92,6 +99,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
     {
         base.Initialize();
 
+        SubscribeLocalEvent<StoriesHereticCorruptedOrganComponent, OrganGotInsertedEvent>(OnInserted);
         SubscribeLocalEvent<StoriesHereticCorruptedOrganComponent, OrganGotRemovedEvent>(OnRemoved);
         SubscribeLocalEvent<StoriesHereticCorruptedBodyComponent, AccentGetEvent>(OnAccent);
         SubscribeLocalEvent<StoriesHereticCorruptedBodyComponent, IngestingEvent>(OnIngesting);
@@ -112,6 +120,12 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         return false;
     }
 
+    // И проклятие, и пересадка: тело с испорченным органом получает маркер.
+    private void OnInserted(Entity<StoriesHereticCorruptedOrganComponent> ent, ref OrganGotInsertedEvent args)
+    {
+        EnsureComp<StoriesHereticCorruptedBodyComponent>(args.Target);
+    }
+
     private void OnRemoved(Entity<StoriesHereticCorruptedOrganComponent> ent, ref OrganGotRemovedEvent args)
     {
         var body = args.Target;
@@ -128,10 +142,15 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         var coords = _transform.GetMapCoordinates(body);
         var heat = new DamageSpecifier();
         heat.DamageDict["Heat"] = BurstHeat;
-        foreach (var target in _lookup.GetEntitiesInRange<DamageableComponent>(coords, BurstRange))
+        _burstTargets.Clear();
+        _lookup.GetEntitiesInRange(coords, BurstRange, _burstTargets);
+        foreach (var target in _burstTargets)
         {
             _damageable.TryChangeDamage(target.AsNullable(), heat, origin: ent);
         }
+
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"Corrupted organ {ToPrettyString(ent):entity} burst out of {ToPrettyString(body):target}, dealing {BurstHeat} Heat to {_burstTargets.Count} entities");
 
         Spawn(BlastEffect, coords);
         _popup.PopupEntity(Loc.GetString("stories-heretic-organs-burst", ("organ", ent.Owner)), body, PopupType.MediumCaution);
@@ -193,7 +212,9 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
 
     private EntityUid? FindWatchedHeretic(EntityUid body)
     {
-        foreach (var heretic in _lookup.GetEntitiesInRange<StoriesHereticComponent>(_transform.GetMapCoordinates(body), EyesRange))
+        _watchers.Clear();
+        _lookup.GetEntitiesInRange(_transform.GetMapCoordinates(body), EyesRange, _watchers);
+        foreach (var heretic in _watchers)
         {
             if (heretic.Owner != body && _heretic.HasFocus(heretic) && _examine.InRangeUnOccluded(body, heretic, EyesRange))
                 return heretic;

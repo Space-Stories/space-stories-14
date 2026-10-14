@@ -2,6 +2,7 @@ using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Metabolism;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
@@ -13,6 +14,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
 {
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private MetabolizerSystem _metabolizer = default!;
     [Dependency] private OrganRelationSystem _relations = default!;
     [Dependency] private SharedSolutionContainerSystem _solutions = default!;
 
@@ -59,7 +61,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         var count = Math.Min(_random.Next(2, 5), _candidates.Count);
         for (var i = 0; i < count; i++)
         {
-            Replace(victim, container, _candidates[i].Organ, _candidates[i].Corrupted, dropAt);
+            Replace(container, _candidates[i].Organ, _candidates[i].Corrupted, dropAt);
         }
 
         return count;
@@ -84,7 +86,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
                 if (replaced != category)
                     continue;
 
-                Replace(victim, container, organ, corrupted, dropAt);
+                Replace(container, organ, corrupted, dropAt);
                 return true;
             }
         }
@@ -102,7 +104,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
                && blood.GetReagentQuantity(new ReagentId(HolyWater, null)) > 0;
     }
 
-    private void Replace(EntityUid body, BaseContainer container, EntityUid old, EntProtoId corrupted, EntityCoordinates dropAt)
+    private void Replace(BaseContainer container, EntityUid old, EntProtoId corrupted, EntityCoordinates dropAt)
     {
         var parent = CompOrNull<ChildOrganComponent>(old)?.Parent;
         // Старый орган остаётся ребёнком родителя после извлечения — разрываем связь явно.
@@ -110,13 +112,32 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         _containers.Remove(old, container, destination: dropAt);
 
         var organ = Spawn(corrupted, dropAt);
+        CopySpeciesData(old, organ);
         // Расписание эффектов (сердце) начинается с момента проклятия, а не с первого тика.
         if (TryComp<StoriesHereticCorruptedOrganComponent>(organ, out var comp) && comp.Kind == StoriesHereticCorruptedOrganKind.Heart)
             comp.NextEffect = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(6, 46));
         _containers.Insert(organ, container);
         if (parent != null && HasComp<ChildOrganComponent>(organ))
             _relations.Relate(parent.Value, organ);
+    }
 
-        EnsureComp<StoriesHereticCorruptedBodyComponent>(body);
+    /// <summary>
+    /// Испорченные органы — наследники человеческих. Чтобы вокс или мотылёк не начали метаболизировать
+    /// как человек, переносим с заменённого органа видовые типы метаболизма и особую пищу желудка.
+    /// </summary>
+    private void CopySpeciesData(EntityUid old, EntityUid organ)
+    {
+        if (TryComp<MetabolizerComponent>(old, out var oldMetabolizer) && TryComp<MetabolizerComponent>(organ, out var metabolizer))
+        {
+            metabolizer.MetabolizerTypes?.Clear();
+            foreach (var type in oldMetabolizer.MetabolizerTypes ?? [])
+            {
+                _metabolizer.TryAddMetabolizerType((organ, metabolizer), type);
+            }
+        }
+
+        // Весь компонент: его поля (особая пища) закрыты для записи извне StomachSystem.
+        if (TryComp<StomachComponent>(old, out var stomach) && HasComp<StomachComponent>(organ))
+            CopyComp(old, organ, stomach);
     }
 }

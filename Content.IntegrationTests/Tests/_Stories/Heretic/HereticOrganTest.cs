@@ -9,6 +9,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage.Components;
 using Content.Shared.Inventory;
+using Content.Shared.Metabolism;
 using Content.Shared.StatusEffectNew;
 using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
@@ -144,5 +145,48 @@ public sealed class HereticOrganTest : GameTest
 
         await RunSeconds(2);
         Assert.That(SEntMan.GetComponent<StaminaComponent>(victim).StaminaDamage, Is.GreaterThan(0));
+    }
+
+    [Test]
+    public async Task CorruptedOrgansKeepSpeciesMetabolism()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var organs = Server.System<StoriesHereticCorruptedOrganSystem>();
+        var containers = Server.System<SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var vox = SSpawnAtPosition("MobVox", testMap.GridCoords);
+            var container = containers.GetContainer(vox, BodyComponent.ContainerID);
+            EntityUid Organ(string category) => container.ContainedEntities
+                .Single(o => SEntMan.GetComponent<OrganComponent>(o).Category == category);
+
+            var lungTypes = SEntMan.GetComponent<MetabolizerComponent>(Organ("Lungs")).MetabolizerTypes!.ToHashSet();
+            Assert.That(organs.TryCurseOrgan(vox, "Lungs", testMap.GridCoords), Is.True);
+            Assert.That(organs.TryCurseOrgan(vox, "Stomach", testMap.GridCoords), Is.True);
+
+            var lungs = Organ("Lungs");
+            Assert.That(SEntMan.HasComponent<StoriesHereticCorruptedOrganComponent>(lungs));
+            Assert.That(SEntMan.GetComponent<MetabolizerComponent>(lungs).MetabolizerTypes, Is.EquivalentTo(lungTypes), "Лёгкие вокса стали человеческими");
+
+            var stomach = SEntMan.GetComponent<StomachComponent>(Organ("Stomach"));
+            Assert.That(stomach.SpecialDigestible, Is.Not.Null, "Желудок вокса разучился есть мусор");
+            Assert.That(stomach.IsSpecialDigestibleExclusive, Is.False);
+        });
+    }
+
+    [Test]
+    public async Task TransplantedCorruptedOrganMarksBody()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var containers = Server.System<SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var body = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var organ = SSpawnAtPosition("STHereticCorruptedAppendix", testMap.GridCoords);
+            Assert.That(containers.Insert(organ, containers.GetContainer(body, BodyComponent.ContainerID)));
+            Assert.That(SEntMan.HasComponent<StoriesHereticCorruptedBodyComponent>(body), "Пересаженный орган не работает");
+        });
     }
 }
