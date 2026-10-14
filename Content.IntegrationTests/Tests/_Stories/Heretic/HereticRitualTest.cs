@@ -1,4 +1,5 @@
 #pragma warning disable RA0002
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic.Ash;
 using Content.Server.Body.Components;
@@ -42,6 +43,16 @@ public sealed class HereticRitualTest : GameTest
     - STTestHereticResult
 
 - type: entity
+  id: STTestHereticRitualArm
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-arm
+      organCategory: ArmLeft
+    results:
+    - STTestHereticResult
+
+- type: entity
   id: STTestHereticRitualBlood
   components:
   - type: StoriesHereticRitual
@@ -77,6 +88,37 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out var puddle, sound: false), Is.True);
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             Assert.That(SEntMan.Deleted(puddle) || SEntMan.IsQueuedForDeletion(puddle), Is.True, "Лужа не поглощена");
+        });
+    }
+
+    [Test]
+    public async Task DetachedLimbIsOrganIngredient()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var dismember = Server.System<Content.Server._Stories.Heretic.StoriesHereticDismemberSystem>();
+        var containers = Server.System<Robust.Shared.Containers.SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            comp.Rituals.Clear();
+            comp.Rituals.Add("STTestHereticRitualArm");
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+
+            var corpse = SSpawnAtPosition("MobHuman", coords);
+            Server.System<DamageableSystem>().TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            Assert.That(rituals.TryPerform((uid, comp), rune), Is.False, "Целое тело засчитано как рука");
+
+            var arm = containers.GetContainer(corpse, Content.Shared.Body.BodyComponent.ContainerID).ContainedEntities
+                .First(o => SEntMan.GetComponent<Content.Shared.Body.OrganComponent>(o).Category == "ArmLeft");
+            var detached = dismember.Dismember(corpse, arm);
+            Assert.That(detached, Is.Not.Null);
+
+            Assert.That(rituals.TryPerform((uid, comp), rune), Is.True, "Отделённая рука не засчитана");
+            Assert.That(SEntMan.Deleted(detached!.Value) || SEntMan.IsQueuedForDeletion(detached.Value), Is.True, "Рука не поглощена");
         });
     }
 

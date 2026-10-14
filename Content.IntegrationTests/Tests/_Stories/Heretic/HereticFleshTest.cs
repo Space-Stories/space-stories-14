@@ -1,4 +1,5 @@
 #pragma warning disable RA0002
+using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic;
@@ -20,6 +21,8 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Speech;
 using Content.Shared.Verbs;
+using Content.Shared.Weapons.Melee.Events;
+using Content.Server._Stories.Heretic.Summons;
 using Robust.Shared.Containers;
 using Robust.Shared.Localization;
 using Content.Shared.StatusEffectNew;
@@ -458,6 +461,81 @@ public sealed class HereticFleshTest : GameTest
             var organ = Find("Liver")!.Value;
             Assert.That(knit.Extract(heretic, victim, organ), Is.True);
             Assert.That(Find("Liver"), Is.Null, "Печень осталась в теле");
+        });
+    }
+
+    [Test]
+    public async Task RawRitualSummonsProphet()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var dismember = Server.System<StoriesHereticDismemberSystem>();
+        var puddles = Server.System<SharedPuddleSystem>();
+        var containers = Server.System<SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic.Comp.Points = 20;
+            foreach (var id in new[]
+                     {
+                         "Root", "Grasp", "Imperfect", "Mark", "Knitting", "Raw",
+                     })
+            {
+                Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFlesh" + id), Is.True, id);
+            }
+
+            Assert.That(heretic.Comp.Rituals, Does.Contain((EntProtoId) "STHereticRitualRawProphet"));
+
+            var corpse = SSpawnAtPosition("MobHuman", coords);
+            Server.System<DamageableSystem>().TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            EntityUid Find(string cat) => containers.GetContainer(corpse, BodyComponent.ContainerID).ContainedEntities
+                .First(o => SEntMan.GetComponent<OrganComponent>(o).Category == cat);
+
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            Assert.That(containers.Remove(Find("Eyes"), containers.GetContainer(corpse, BodyComponent.ContainerID), destination: coords), Is.True);
+            Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Без руки ритуал сработал");
+
+            Assert.That(dismember.Dismember(corpse, Find("ArmLeft")), Is.Not.Null);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+
+            var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent, MetaDataComponent>();
+            Assert.That(query.MoveNext(out _, out _, out var meta), Is.True, "Моб не призван");
+            Assert.That(meta.EntityPrototype?.ID, Is.EqualTo("STHereticMobRawProphet"));
+        });
+    }
+
+    [Test]
+    public async Task FocusedAttackBonusGrowsAndResets()
+    {
+        var testMap = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var prophet = SSpawnAtPosition("STHereticMobRawProphet", coords);
+            var a = SSpawnAtPosition("MobHuman", coords);
+            var b = SSpawnAtPosition("MobHuman", coords);
+
+            float Hit(EntityUid target)
+            {
+                var ev = new MeleeHitEvent(new HashSet<EntityUid> { target }, prophet, prophet, new DamageSpecifier(), null);
+                SEntMan.EventBus.RaiseLocalEvent(prophet, ev);
+                return ev.BonusDamage.DamageDict.GetValueOrDefault("Blunt").Float();
+            }
+
+            Assert.That(Hit(a), Is.EqualTo(0f));
+            Assert.That(Hit(a), Is.EqualTo(2f));
+            Assert.That(Hit(a), Is.EqualTo(4f));
+            for (var i = 0; i < 10; i++)
+                Hit(a);
+            Assert.That(Hit(a), Is.EqualTo(10f), "Потолок бонуса");
+            Assert.That(Hit(b), Is.EqualTo(0f), "Смена цели не сбросила бонус");
+            Assert.That(Hit(b), Is.EqualTo(2f));
         });
     }
 }

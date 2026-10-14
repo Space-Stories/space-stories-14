@@ -1,0 +1,55 @@
+# Общий набор сопротивлений призывов Плоти.
+- type: damageModifierSet
+  id: STHereticSummonDamageModifierSet
+  coefficients:
+    Blunt: 0.7
+    Slash: 0.7
+    Piercing: 0.7
+    Heat: 0.7
+    Cold: 0.7
+    Shock: 0.7
+    Poison: 0
+    Asphyxiation: 0
+
+- type: entity
+  id: STHereticMobRawProphet
+  parent:
+  - BaseSimpleMob
+  - MobCombat
+  - STHereticSummonBase
+  name: Raw Prophet
+  description: An abomination stitched together from several severed arms and one swollen, orphaned eye.
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/raw_prophet.rsi
+    layers:
+    - state: icon
+  - type: Damageable
+    damageModifierSet: STHereticSummonDamageModifierSet
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      65: Dead
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 7
+  - type: StoriesHereticFocusedAttack
+    bonus: 2
+    maxBonus: 10
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+  - type: ActionGrant
+    actions:
+    - STActionHereticRawProphetJaunt
+    - STActionHereticRawProphetBlind
+  - type: GhostRole
+    name: stories-heretic-ghost-role-raw-prophet-name
+    description: stories-heretic-ghost-role-raw-prophet-desc
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener

@@ -21,3 +21,45 @@
       components:
       - MobState
   - type: StoriesHereticRequiresFocus
+
+# Действия Сырого пророка: без StoriesHereticRequiresFocus, моб не еретик.
+- type: entity
+  id: STActionHereticRawProphetJaunt
+  name: Ethereal Jaunt
+  description: Dissolve into ash for a moment and pass through walls. Twice as long as the heretic's passage.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 15
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: ash_shift
+  - type: InstantAction
+    event: !type:PolymorphActionEvent
+      protoId: STHereticAshJauntLong
+
+- type: entity
+  id: STActionHereticRawProphetBlind
+  name: Blinding
+  description: Strike a creature within sight blind for 10 seconds.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 20
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: eye
+  - type: TargetAction
+    range: 10
+  - type: EntityTargetAction
+    event: !type:StoriesHereticEldritchBlindEvent
+      duration: 10
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState

@@ -30,3 +30,21 @@
     conversion: STHereticGhoulVoiceless
     limit: 2
     ascendedBonus: 4
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualRawProphet
+  name: Raw Ritual
+  description: A pair of eyes, a left arm and a pool of blood. Summons the Raw Prophet.
+  components:
+  - type: StoriesHereticRitual
+    effect: Summon
+    ingredients:
+    - name: stories-heretic-ingredient-eyes
+      organCategory: Eyes
+    - name: stories-heretic-ingredient-arm
+      organCategory: ArmLeft
+    - name: stories-heretic-ingredient-blood
+      reagents: [ Blood, InsectBlood, CopperBlood, AmmoniaBlood, Slime ]
+  - type: StoriesHereticSummonRitual
+    mob: STHereticMobRawProphet

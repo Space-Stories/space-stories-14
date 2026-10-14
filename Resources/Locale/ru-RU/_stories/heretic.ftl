@@ -134,3 +134,4 @@ stories-heretic-dismember-part-ArmLeft = левую руку
 stories-heretic-dismember-part-ArmRight = правую руку
 stories-heretic-dismember-part-LegLeft = левую ногу
 stories-heretic-dismember-part-LegRight = правую ногу
+stories-heretic-ingredient-arm = левая рука

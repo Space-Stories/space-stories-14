@@ -84,8 +84,7 @@
     pathLocked: true
     stage: 7
     cost: 2
-    # TODO-PR-b: Task 8 переставит на STHereticKnowledgeFleshRaw
-    requires: [ STHereticKnowledgeFleshMark ]
+    requires: [ STHereticKnowledgeFleshRaw ]
     addComponents:
     - type: StoriesHereticBladeBleed
 
@@ -106,3 +105,19 @@
     - STActionHereticKnitFlesh
     addComponents:
     - type: StoriesHereticKnitFlesh
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshRaw
+  name: Raw Ritual
+  description: Learn the ritual of the Raw Prophet. Eyes, a left arm and a pool of blood on the rune summon a ghost-role prophet with long ethereal jaunt, thermal vision and a blinding spell. "I could not go on alone. I summoned the Lanky Man to help me see more. The screams... once unending, fell silent at the mere sight of him. Nothing was out of reach."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: summon_raw_prophet
+    path: STHereticPathFlesh
+    stage: 6
+    requires: [ STHereticKnowledgeFleshKnitting ]
+    rituals:
+    - STHereticRitualRawProphet

@@ -1,6 +1,9 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Body;
+using Content.Shared.Body.Components;
+using Content.Shared.Mobs.Components;
+using Robust.Shared.Containers;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DoAfter;
 using Content.Shared.Fluids.Components;
@@ -21,6 +24,7 @@ namespace Content.Shared._Stories.Heretic;
 
 public sealed partial class StoriesHereticRitualSystem : EntitySystem
 {
+    [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -323,6 +327,18 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             && TryComp<OrganComponent>(uid, out var organ)
             && organ.Category == ingredient.OrganCategory)
             return true;
+
+        // Отделённая часть тела (DetachedBody) — сущность без MobState, орган лежит в её контейнере.
+        if (ingredient.OrganCategory != null
+            && !HasComp<MobStateComponent>(uid)
+            && _containers.TryGetContainer(uid, BodyComponent.ContainerID, out var bodyOrgans))
+        {
+            foreach (var contained in bodyOrgans.ContainedEntities)
+            {
+                if (TryComp<OrganComponent>(contained, out var inner) && inner.Category == ingredient.OrganCategory)
+                    return true;
+            }
+        }
 
         if (ingredient.Reagents != null
             && TryComp<PuddleComponent>(uid, out var puddle)

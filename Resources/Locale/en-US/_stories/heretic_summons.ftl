@@ -4,3 +4,5 @@ stories-heretic-summon-claimed = Your call was heard: { $mob } has come to serve
 stories-heretic-summon-briefing = You are a creature that came through the Mansus Gate. Your master is { $master }. Serve them at any cost.
 stories-heretic-summon-unclaimed = { CAPITALIZE($mob) } never found a soul and dissolves.
 stories-heretic-summon-collapse = { CAPITALIZE($mob) } collapses in on itself!
+stories-heretic-ghost-role-raw-prophet-name = Raw Prophet
+stories-heretic-ghost-role-raw-prophet-desc = An abomination stitched together from several severed arms and one swollen, orphaned eye. Serve your master.

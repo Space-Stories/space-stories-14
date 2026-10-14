@@ -34,6 +34,13 @@ public sealed partial class StoriesHereticGraspEvent : EntityTargetActionEvent
 /// <summary>Сшить плоть: касание лечит слугу еретика.</summary>
 public sealed partial class StoriesHereticKnitFleshEvent : EntityTargetActionEvent;
 
+/// <summary>Ослепление Сырого пророка: цель слепнет на <see cref="Duration"/>.</summary>
+public sealed partial class StoriesHereticEldritchBlindEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(10);
+}
+
 public sealed partial class StoriesHereticLivingHeartEvent : InstantActionEvent
 {
     [DataField]

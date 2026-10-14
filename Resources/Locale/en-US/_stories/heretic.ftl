@@ -129,3 +129,4 @@ stories-heretic-dismember-part-ArmLeft = left arm
 stories-heretic-dismember-part-ArmRight = right arm
 stories-heretic-dismember-part-LegLeft = left leg
 stories-heretic-dismember-part-LegRight = right leg
+stories-heretic-ingredient-arm = left arm
