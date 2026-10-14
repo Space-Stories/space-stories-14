@@ -45,6 +45,22 @@
     },
     {
       "name": "blade_upgrade_ash"
+    },
+    {
+      "name": "grasp_flesh"
+    },
+    {
+      "name": "blade_upgrade_flesh"
+    },
+    {
+      "name": "ghoul_voiceless"
+    },
+    {
+      "name": "summon_raw_prophet"
+    },
+    {
+      "name": "summon_stalker",
+      "directions": 4
     }
   ]
 }
