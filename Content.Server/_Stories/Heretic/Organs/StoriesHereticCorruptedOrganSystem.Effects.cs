@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Components;
+using Content.Server.Body.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Atmos;
@@ -94,6 +95,7 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         SubscribeLocalEvent<StoriesHereticCorruptedOrganComponent, OrganGotRemovedEvent>(OnRemoved);
         SubscribeLocalEvent<StoriesHereticCorruptedBodyComponent, AccentGetEvent>(OnAccent);
         SubscribeLocalEvent<StoriesHereticCorruptedBodyComponent, IngestingEvent>(OnIngesting);
+        SubscribeLocalEvent<StoriesHereticCorruptedBodyComponent, InhaledGasEvent>(OnInhaled);
     }
 
     private bool HasKind(EntityUid body, StoriesHereticCorruptedOrganKind? kind)
@@ -181,11 +183,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
                     }
 
                     break;
-                case StoriesHereticCorruptedOrganKind.Lungs when second && HasComp<RespiratorComponent>(body)
-                    && !IsSuppressed(body) && _random.Prob(LungsChance):
-                    _atmosphere.GetContainingMixture(body, excite: true)?.AdjustMoles(_random.Pick(CoughGases), LungsMoles);
-                    _popup.PopupEntity(Loc.GetString("stories-heretic-organs-lungs-cough"), body, body, PopupType.MediumCaution);
-                    break;
                 case StoriesHereticCorruptedOrganKind.Appendix when second && !IsSuppressed(body) && _random.Prob(AppendixChance):
                     _vomit.Vomit(body);
                     _stun.TryKnockdown(body, AppendixKnockdown);
@@ -219,6 +216,17 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         }
 
         args.Message = string.Join(' ', words);
+    }
+
+    // Один вдох — один бросок шанса.
+    private void OnInhaled(Entity<StoriesHereticCorruptedBodyComponent> ent, ref InhaledGasEvent args)
+    {
+        if (!HasKind(ent, StoriesHereticCorruptedOrganKind.Lungs) || !_mobState.IsAlive(ent) || IsSuppressed(ent)
+            || !HasComp<RespiratorComponent>(ent) || !_random.Prob(LungsChance))
+            return;
+
+        _atmosphere.GetContainingMixture(ent.Owner, excite: true)?.AdjustMoles(_random.Pick(CoughGases), LungsMoles);
+        _popup.PopupEntity(Loc.GetString("stories-heretic-organs-lungs-cough"), ent, ent, PopupType.MediumCaution);
     }
 
     private static bool ContainsBlood(Solution split) => BloodReagents.Any(r => split.ContainsReagent(r, null));

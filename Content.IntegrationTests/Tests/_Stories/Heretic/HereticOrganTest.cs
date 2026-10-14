@@ -137,7 +137,9 @@ public sealed class HereticOrganTest : GameTest
             Assert.That(organs.TryCurseOrgan(victim, "Heart", testMap.GridCoords), Is.True);
             var heart = containers.GetContainer(victim, BodyComponent.ContainerID).ContainedEntities
                 .Single(SEntMan.HasComponent<StoriesHereticCorruptedOrganComponent>);
-            SEntMan.GetComponent<StoriesHereticCorruptedOrganComponent>(heart).NextEffect = timing.CurTime;
+            var comp = SEntMan.GetComponent<StoriesHereticCorruptedOrganComponent>(heart);
+            Assert.That(comp.NextEffect, Is.GreaterThan(timing.CurTime), "Расписание сердца не начато при проклятии");
+            comp.NextEffect = timing.CurTime;
         });
 
         await RunSeconds(2);

@@ -110,6 +110,9 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         _containers.Remove(old, container, destination: dropAt);
 
         var organ = Spawn(corrupted, dropAt);
+        // Расписание эффектов (сердце) начинается с момента проклятия, а не с первого тика.
+        if (TryComp<StoriesHereticCorruptedOrganComponent>(organ, out var comp) && comp.Kind == StoriesHereticCorruptedOrganKind.Heart)
+            comp.NextEffect = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(6, 46));
         _containers.Insert(organ, container);
         if (parent != null && HasComp<ChildOrganComponent>(organ))
             _relations.Relate(parent.Value, organ);
