@@ -1,5 +1,8 @@
 using Content.Server.Chat.Managers;
 using Content.Server.Popups;
+using Content.Server.Stack;
+using Content.Shared.Fluids.Components;
+using Content.Shared.Stacks;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
@@ -19,6 +22,7 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private StackSystem _stack = default!;
 
     public override void Initialize()
     {
@@ -60,7 +64,12 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         summon.ExpireTime = _timing.CurTime + summon.ClaimTime;
         foreach (var uid in args.Consumed)
         {
-            if (MetaData(uid).EntityPrototype is { } ingredient)
+            if (HasComp<PuddleComponent>(uid))
+                continue;
+
+            if (TryComp<StackComponent>(uid, out var stack))
+                summon.Stacks.Add(stack.StackTypeId);
+            else if (MetaData(uid).EntityPrototype is { } ingredient)
                 summon.Ingredients.Add(ingredient.ID);
         }
 
@@ -95,7 +104,19 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
     /// </summary>
     private void Collapse(Entity<StoriesHereticSummonComponent> ent, LocId message)
     {
+        // Уже схлопнулся (смерть и таймер в один тик). Очередь удаления не проверяем: моба могли разгибать до обработчика.
+        if (ent.Comp.Collapsed || TerminatingOrDeleted(ent))
+            return;
+
+        ent.Comp.Collapsed = true;
+
         var coords = Transform(ent).Coordinates;
+        foreach (var stack in ent.Comp.Stacks)
+        {
+            _stack.SpawnAtPosition(1, stack, coords);
+        }
+
+        ent.Comp.Stacks.Clear();
         foreach (var ingredient in ent.Comp.Ingredients)
         {
             Spawn(ingredient, coords);

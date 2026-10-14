@@ -1,3 +1,4 @@
+using Content.Shared.Stacks;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
@@ -19,6 +20,13 @@ public sealed partial class StoriesHereticSummonComponent : Component
     [DataField]
     public List<EntProtoId> Ingredients = new();
 
+    /// <summary>
+    /// Типы поглощённых стопок: ритуал забирает одну единицу, её же и возвращаем (иначе Spawn по прототипу дал бы стопку целиком).
+    /// Лужи не возвращаются вовсе.
+    /// </summary>
+    [DataField]
+    public List<ProtoId<StackPrototype>> Stacks = new();
+
     [DataField]
     public TimeSpan ClaimTime = TimeSpan.FromMinutes(5);
 
@@ -30,4 +38,9 @@ public sealed partial class StoriesHereticSummonComponent : Component
     /// </summary>
     [DataField]
     public bool Bound;
+
+    /// <summary>
+    /// Схлопывание уже произошло, повторно не срабатывать.
+    /// </summary>
+    public bool Collapsed;
 }

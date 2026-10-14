@@ -3,9 +3,9 @@ using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic.Summons;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
-using Content.Shared.Mind;
-using Content.Shared.Mobs.Systems;
 using Content.Shared.Damage;
+using Content.Shared.Mind;
+using Content.Shared.Stacks;
 using Content.Shared.Damage.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Timing;
@@ -37,6 +37,17 @@ public sealed class HereticSummonTest : GameTest
     - name: stories-heretic-ingredient-knife
       whitelist:
         tags: [ Knife ]
+  - type: StoriesHereticSummonRitual
+    mob: STTestHereticSummonMob
+
+- type: entity
+  id: STTestHereticRitualSummonStack
+  components:
+  - type: StoriesHereticRitual
+    effect: Summon
+    ingredients:
+    - name: stories-heretic-ingredient-glass
+      prototypes: [ SheetGlass ]
   - type: StoriesHereticSummonRitual
     mob: STTestHereticSummonMob
 ";
@@ -128,6 +139,52 @@ public sealed class HereticSummonTest : GameTest
         {
             Assert.That(SEntMan.Deleted(mob) || SEntMan.IsQueuedForDeletion(mob), Is.True, "Мёртвый призыв не схлопнулся");
             Assert.That(CountKnives(), Is.EqualTo(1), "Призыв не выронил ингредиенты");
+        });
+    }
+
+    [Test]
+    public async Task StackIngredientReturnsOnlyOneUnit()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var timing = Server.ResolveDependency<IGameTiming>();
+        var original = EntityUid.Invalid;
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            comp.Rituals.Clear();
+            comp.Rituals.Add("STTestHereticRitualSummonStack");
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            original = SSpawnAtPosition("SheetGlass", coords);
+            var stack = SEntMan.GetComponent<StackComponent>(original);
+            Assert.That(stack.Count, Is.GreaterThan(1));
+
+            Assert.That(rituals.TryPerform((uid, comp), rune), Is.True);
+            Assert.That(SEntMan.GetComponent<StackComponent>(original).Count, Is.EqualTo(stack.Count));
+
+            var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent>();
+            Assert.That(query.MoveNext(out _, out var summon), Is.True);
+            summon.ExpireTime = timing.CurTime;
+        });
+
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            var total = 0;
+            var query = SEntMan.AllEntityQueryEnumerator<StackComponent>();
+            while (query.MoveNext(out var uid, out var stack))
+            {
+                if (stack.StackTypeId == "Glass" && !SEntMan.IsQueuedForDeletion(uid))
+                    total += stack.Count;
+            }
+
+            var originalCount = SEntMan.GetComponent<StackComponent>(original).Count;
+            Assert.That(originalCount, Is.EqualTo(29), "стопка на руне");
+            Assert.That(total, Is.EqualTo(30), "стекло продублировано или потеряно");
         });
     }
 }
