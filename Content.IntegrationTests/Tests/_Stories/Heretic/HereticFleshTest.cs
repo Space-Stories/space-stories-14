@@ -35,7 +35,9 @@ public sealed class HereticFleshTest : GameTest
             Server.System<RoleSystem>().MindAddRole(mindId, "STMindRoleHeretic");
             var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
 
+            var points = heretic.Comp.Points;
             Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshRoot"), Is.True);
+            Assert.That(heretic.Comp.Points, Is.EqualTo(points - 1), "Корень стоит 1 очко");
             Assert.That(heretic.Comp.Path?.Id, Is.EqualTo("STHereticPathFlesh"));
             Assert.That(heretic.Comp.RequiredSummons, Is.EqualTo(2));
             Assert.That(heretic.Comp.Rituals, Does.Contain((EntProtoId) "STHereticRitualFleshBlade"));
@@ -55,6 +57,7 @@ public sealed class HereticFleshTest : GameTest
             SSpawnAtPosition("KitchenKnife", coords);
             Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
             Assert.That(rituals.TryPerform(heretic, rune), Is.False, "5-й клинок сверх лимита");
+            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(4));
         });
     }
 }

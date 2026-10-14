@@ -2,7 +2,7 @@
   parent: STHereticKnowledgeBase
   id: STHereticKnowledgeFleshRoot
   name: Principle of Hunger
-  description: Step onto the Path of Flesh. Learn to forge bloody blades from a knife and a pool of blood. You will also be tasked with summoning monsters.
+  description: Step onto the Path of Flesh. Learn to forge bloody blades from a knife and a pool of blood. You will also be tasked with summoning monsters. "Hundreds of us starved, but not me... I found strength in my greed."
   components:
   - type: StoriesHereticKnowledge
     icon:
