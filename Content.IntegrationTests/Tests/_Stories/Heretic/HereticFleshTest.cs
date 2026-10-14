@@ -2,7 +2,9 @@
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic;
+using Content.Server._Stories.Heretic.Flesh;
 using Content.Server._Stories.Heretic.Ghouls;
+using Content.Shared.Body.Components;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Mind;
 using Content.Server.Roles;
@@ -10,6 +12,7 @@ using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -331,6 +334,54 @@ public sealed class HereticFleshTest : GameTest
 
             SEntMan.DeleteEntity(corpse);
             Assert.That(CountPoppies(), Is.EqualTo(1), "Мак не вернулся после удаления трупа");
+        });
+    }
+
+    [Test]
+    public async Task FleshMarkAddsBleedingAndSlash()
+    {
+        var testMap = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = SSpawnAtPosition("MobHuman", coords);
+            var target = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<StoriesHereticFleshMarkComponent>(heretic);
+            var bloodstream = SEntMan.GetComponent<BloodstreamComponent>(target);
+            var before = bloodstream.BleedAmount;
+
+            var ev = new StoriesHereticMarkTriggeredEvent(heretic, target, "STHereticPathFlesh", 0);
+            SEntMan.EventBus.RaiseEvent(EventSource.Local, ref ev);
+
+            Assert.That(bloodstream.BleedAmount, Is.EqualTo(before + 8f));
+            Assert.That(SEntMan.GetComponent<DamageableComponent>(target).Damage.DamageDict.TryGetValue("Slash", out var slash) && slash > 0, Is.True);
+        });
+    }
+
+    [Test]
+    public async Task BleedingSteelAddsBleedingOnlyToLiving()
+    {
+        var testMap = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = SSpawnAtPosition("MobHuman", coords);
+            var blade = SSpawnAtPosition("STHereticBladeFlesh", coords);
+            var target = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<StoriesHereticBladeBleedComponent>(heretic);
+            var bloodstream = SEntMan.GetComponent<BloodstreamComponent>(target);
+            var before = bloodstream.BleedAmount;
+
+            var ev = new StoriesHereticBladeHitEvent(heretic, target, blade);
+            SEntMan.EventBus.RaiseLocalEvent(heretic, ref ev);
+            Assert.That(bloodstream.BleedAmount, Is.EqualTo(before + 4f));
+
+            Server.System<DamageableSystem>().TryChangeDamage(target, new DamageSpecifier { DamageDict = new() { { "Blunt", 500 } } }, true);
+            before = bloodstream.BleedAmount;
+            SEntMan.EventBus.RaiseLocalEvent(heretic, ref ev);
+            Assert.That(bloodstream.BleedAmount, Is.EqualTo(before), "По мёртвым без эффекта");
         });
     }
 }
