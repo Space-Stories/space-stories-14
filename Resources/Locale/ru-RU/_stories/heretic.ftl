@@ -117,3 +117,5 @@ stories-heretic-sacrifice-already = Эта душа уже принадлежи�
 stories-heretic-head-sacrifice-waived = Мансус не видит на станции живых глав. Жертва главы для Вознесения больше не требуется.
 stories-heretic-admin-verb-make = Сделать еретиком
 stories-heretic-admin-verb-make-message = Делает цель еретиком: цели, задачи и роль выдаются через правило «Еретик».
+stories-heretic-admin-verb-arrivals = Игрок на шаттле прибытия: на нём роль антагониста не выдаётся. Дождитесь стыковки.
+stories-heretic-admin-verb-failed = Не удалось сделать игрока еретиком: он в призраке, на шаттле прибытия или не гуманоид.

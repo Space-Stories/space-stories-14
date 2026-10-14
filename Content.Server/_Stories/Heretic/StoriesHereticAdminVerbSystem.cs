@@ -1,5 +1,8 @@
 using Content.Server.Administration.Managers;
 using Content.Server.Antag;
+using Content.Server.Popups;
+using Content.Server.Shuttles.Systems;
+using Content.Shared.Popups;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Administration;
 using Content.Shared.Antag;
@@ -20,6 +23,8 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
 {
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private AntagSelectionSystem _antag = default!;
+    [Dependency] private ArrivalsSystem _arrivals = default!;
+    [Dependency] private PopupSystem _popup = default!;
     [Dependency] private SharedRoleSystem _roles = default!;
 
     private static readonly EntProtoId HereticRule = "STHeretic";
@@ -46,15 +51,27 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
             return;
 
         var target = targetActor.PlayerSession;
+        var targetUid = args.Target;
+        var admin = args.User;
         var name = Loc.GetString("stories-heretic-admin-verb-make");
+        // Апстрим не выдаёт антагов на шаттле прибытия и молча снимает выбор — показываем причину сразу.
+        var onArrivals = _arrivals.IsOnArrivals((targetUid, null));
         args.Verbs.Add(new Verb
         {
             Text = name,
             Category = VerbCategory.Antag,
             Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Stories/Heretic/actions.rsi"), "eye"),
-            Act = () => _antag.ForceMakeAntag<StoriesHereticRuleComponent>(target, HereticRule, HereticSpecifier),
+            Act = () =>
+            {
+                _antag.ForceMakeAntag<StoriesHereticRuleComponent>(target, HereticRule, HereticSpecifier);
+                if (!HasComp<StoriesHereticComponent>(targetUid))
+                    _popup.PopupEntity(Loc.GetString("stories-heretic-admin-verb-failed"), admin, admin, PopupType.MediumCaution);
+            },
             Impact = LogImpact.High,
-            Message = string.Join(": ", name, Loc.GetString("stories-heretic-admin-verb-make-message")),
+            Disabled = onArrivals,
+            Message = onArrivals
+                ? Loc.GetString("stories-heretic-admin-verb-arrivals")
+                : string.Join(": ", name, Loc.GetString("stories-heretic-admin-verb-make-message")),
         });
     }
 }

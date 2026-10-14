@@ -112,3 +112,5 @@ stories-heretic-sacrifice-already = This soul already belongs to the Mansus.
 stories-heretic-head-sacrifice-waived = The Mansus sees no living heads of staff on the station. A head sacrifice is no longer required to ascend.
 stories-heretic-admin-verb-make = Make heretic
 stories-heretic-admin-verb-make-message = Makes the target a heretic: targets, objectives and the role are granted through the Heretic rule.
+stories-heretic-admin-verb-arrivals = The player is on the arrivals shuttle: antagonist roles are not granted there. Wait until it docks.
+stories-heretic-admin-verb-failed = Could not make the player a heretic: they are a ghost, on the arrivals shuttle or not a humanoid.
