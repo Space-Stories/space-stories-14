@@ -9,7 +9,6 @@ using Content.Shared.Actions.Components;
 using Content.Shared.Atmos.Components;
 using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
-using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
@@ -33,9 +32,7 @@ public sealed partial class StoriesHereticAshSystem
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private ChatSystem _chat = default!;
-    [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
-    [Dependency] private InventorySystem _inventory = default!;
     [Dependency] private SharedScaleVisualsSystem _scale = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
 
@@ -151,26 +148,13 @@ public sealed partial class StoriesHereticAshSystem
 
         foreach (var corpse in corpses)
         {
-            DropEverything(corpse);
+            _heretic.DropEverything(corpse);
         }
 
         args.Consumed.AddRange(corpses);
         Ascend(args.Heretic, ritual);
         _heretic.RemoveRitual(args.Heretic, args.Ritual);
         args.Success = true;
-    }
-
-    private void DropEverything(EntityUid uid)
-    {
-        if (_inventory.TryGetContainerSlotEnumerator(uid, out var slots))
-        {
-            while (slots.NextItem(out _, out var slot))
-            {
-                _inventory.TryUnequip(uid, slot.Name, true, true);
-            }
-        }
-
-        _hands.DropAll(uid, checkActionBlocker: false, doDropInteraction: false);
     }
 
     private bool IsBurnt(EntityUid uid, FixedPoint2 threshold)

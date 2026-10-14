@@ -1,5 +1,6 @@
 using Content.Shared.Actions;
 using Content.Shared.Damage;
+using Content.Shared.Polymorph;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 
@@ -211,3 +212,37 @@ public sealed partial class StoriesHereticEldritchEmpEvent : InstantActionEvent
 
 /// <summary>Смена облика Сталкера: первый раз открывает меню выбора, потом превращает в выбранный облик.</summary>
 public sealed partial class StoriesHereticStalkerShapeshiftEvent : InstantActionEvent;
+
+/// <summary>
+/// «Сбросить форму» вознёсшегося на Пути Плоти: превращение во Владыку Ночи и ужас свидетелей вокруг.
+/// Обратно — штатным действием возврата полиморфа.
+/// </summary>
+public sealed partial class StoriesHereticShedFormEvent : InstantActionEvent
+{
+    [DataField]
+    public ProtoId<PolymorphPrototype> Polymorph = "STHereticLordOfNight";
+
+    [DataField]
+    public float FearRange = 9f;
+
+    [DataField]
+    public float FearChance = 0.25f;
+
+    [DataField]
+    public TimeSpan JitterTime = TimeSpan.FromSeconds(60);
+
+    [DataField]
+    public TimeSpan StutterTime = TimeSpan.FromSeconds(60);
+
+    [DataField]
+    public TimeSpan DizzyTime = TimeSpan.FromSeconds(30);
+
+    [DataField]
+    public EntProtoId StutterEffect = "StatusEffectStutter";
+
+    [DataField]
+    public EntProtoId DizzyEffect = "StatusEffectWoozy";
+
+    [DataField]
+    public LocId FearMessage = "stories-heretic-lord-fear";
+}

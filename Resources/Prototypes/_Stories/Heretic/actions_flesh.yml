@@ -22,6 +22,25 @@
       - MobState
   - type: StoriesHereticRequiresFocus
 
+- type: entity
+  id: STActionHereticShedForm
+  name: Shed Form
+  description: Shed your fragile form and become the Lord of the Night. Revert with the polymorph action.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: worm_ascend
+  - type: InstantAction
+    event: !type:StoriesHereticShedFormEvent
+  - type: SpeakOnAction
+    sentence: stories-heretic-shed-form-speech
+
 # Действия Сырого пророка: без StoriesHereticRequiresFocus, моб не еретик.
 - type: entity
   id: STActionHereticRawProphetJaunt

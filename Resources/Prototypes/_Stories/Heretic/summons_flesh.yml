@@ -203,3 +203,81 @@
   id: STHereticStalkerFormCarp
   configuration:
     entity: MobCarp
+
+# Владыка Ночи: форма вознёсшегося еретика Плоти, не призыв. Без Pullable — его нельзя тянуть;
+# без MobCollision — проходит сквозь толпу и никого не толкает.
+- type: entity
+  id: STHereticMobLordOfNight
+  parent:
+  - BaseMob
+  - MobCombat
+  name: Lord of the Night
+  description: An abomination made of dozens and dozens of severed and mangled limbs, clinging to one another.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/lord_of_night.rsi
+    layers:
+    - state: icon
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 1000
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Damageable
+  - type: Injurable
+    damageContainer: Biological
+  - type: DamageOverlay
+  - type: MobState
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      1000: Dead
+  - type: HealthExaminable
+    examinableTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+    - Cold
+    - Caustic
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 4.5
+  - type: MeleeWeapon
+    hidden: true
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh1.ogg
+    damage:
+      types:
+        Slash: 40
+        Structural: 150
+  - type: StoriesHereticArmEater
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener
+    - StunImmune
+
+- type: polymorph
+  id: STHereticLordOfNight
+  configuration:
+    entity: STHereticMobLordOfNight
+    transferName: true
+    inventory: Drop
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    revertOnCrit: false
+    revertConfirmationPopup: false
+    allowRepeatedMorphs: false
+    delay: 10

@@ -32,6 +32,7 @@ public sealed partial class StoriesHereticFleshSystem : EntitySystem
         InitializeKnit();
         InitializeLink();
         InitializeStalker();
+        InitializeAscension();
 
         SubscribeLocalEvent<StoriesHereticGraspGhoulComponent, StoriesHereticGraspHitEvent>(OnGraspGhoul);
         SubscribeLocalEvent<StoriesHereticMarkTriggeredEvent>(OnMarkTriggered);

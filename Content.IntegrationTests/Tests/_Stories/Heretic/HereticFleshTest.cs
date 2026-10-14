@@ -26,6 +26,9 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Speech;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
+using Content.Shared.Interaction;
 using Content.Shared.Mindshield.Components;
 using Content.Shared.Radio;
 using Content.Shared.Radio.Components;
@@ -801,6 +804,134 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(mobState.IsDead(stalker), Is.True, "Сталкер не умер после смерти облика");
             Assert.That(summon.Collapsed, Is.True, "Призыв не схлопнулся");
             Assert.That(SEntMan.Deleted(stalker) || SEntMan.EntityQuery<MetaDataComponent>().Any(m => m.EntityPrototype?.ID == "Pen"), Is.True);
+        });
+    }
+
+    [Test]
+    public async Task FleshAscensionNeedsFourCorpsesAndLiftsLimits()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var damageable = Server.System<DamageableSystem>();
+        var actions = Server.System<SharedActionsSystem>();
+        var puddles = Server.System<SharedPuddleSystem>();
+        var minds = Server.System<MindSystem>();
+        var status = Server.System<StatusEffectsSystem>();
+        var heretic = default(Entity<StoriesHereticComponent>);
+        var mindId = EntityUid.Invalid;
+        var rune = EntityUid.Invalid;
+
+        EntityUid SpawnCorpse()
+        {
+            var corpse = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            damageable.TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            return corpse;
+        }
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            mindId = minds.CreateMind(null);
+            minds.TransferTo(mindId, uid);
+            heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic.Comp.Points = 30;
+            foreach (var id in new[] { "Root", "Grasp", "Imperfect", "Mark", "Knitting", "Raw", "BleedingSteel", "Lonely" })
+                Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFlesh" + id), Is.True, id);
+
+            heretic.Comp.SummonCount = heretic.Comp.RequiredSummons;
+            heretic.Comp.SacrificeCount = heretic.Comp.RequiredSacrifices;
+            heretic.Comp.HeadSacrificeCount = heretic.Comp.RequiredHeadSacrifices;
+            heretic.Comp.LearnedCount = heretic.Comp.RequiredKnowledge;
+            Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshAscension"), Is.True);
+            Assert.That(heretic.Comp.Rituals, Does.Contain((EntProtoId) "STHereticRitualFleshAscension"));
+
+            rune = SSpawnAtPosition("STHereticRune", coords);
+            var corpses = new List<EntityUid> { SpawnCorpse(), SpawnCorpse(), SpawnCorpse() };
+
+            // Трёх трупов мало: подсказка о недостающем.
+            var nearby = new HashSet<EntityUid>(corpses);
+            var ev = new StoriesHereticRitualEffectEvent(heretic, rune, "STHereticRitualFleshAscension",
+                StoriesHereticRitualEffect.Ascension, nearby, new List<EntityUid>());
+            SEntMan.EventBus.RaiseEvent(EventSource.Local, ref ev);
+            Assert.That(ev.Success, Is.False);
+            Assert.That(ev.FailReason, Is.EqualTo(Loc.GetString("stories-heretic-flesh-ascension-corpses", ("count", 1))));
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False);
+            Assert.That(heretic.Comp.Ascended, Is.False);
+
+            corpses.Add(SpawnCorpse());
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(heretic.Comp.Ascended, Is.True);
+            Assert.That(heretic.Comp.Rituals, Does.Not.Contain((EntProtoId) "STHereticRitualFleshAscension"));
+            Assert.That(corpses.All(c => SEntMan.Deleted(c) || SEntMan.IsQueuedForDeletion(c)), "Трупы не поглощены");
+
+            // Повтор невозможен: ритуала больше нет.
+            for (var i = 0; i < 4; i++)
+                SpawnCorpse();
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Вознесение повторилось");
+
+            // Клинки без лимита (лимит до Вознесения — 4).
+            for (var i = 1; i <= 5; i++)
+            {
+                SSpawnAtPosition("KitchenKnife", coords);
+                Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
+                Assert.That(rituals.TryPerform(heretic, rune), Is.True, $"Клинок {i}");
+            }
+
+            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(5));
+
+            // «Сбросить форму»: Владыка Ночи со штатным возвратом и ужасом свидетеля.
+            var witness = SSpawnAtPosition("MobHuman", coords);
+            Entity<ActionComponent>? shed = null;
+            foreach (var action in actions.GetActions(heretic))
+            {
+                if (SEntMan.GetComponent<MetaDataComponent>(action).EntityPrototype?.ID == "STActionHereticShedForm")
+                    shed = action;
+            }
+
+            Assert.That(shed, Is.Not.Null, "Нет действия «Сбросить форму»");
+            var shedEvent = (StoriesHereticShedFormEvent) SEntMan.GetComponent<InstantActionComponent>(shed!.Value).Event!;
+            shedEvent.FearChance = 1f;
+            actions.PerformAction(heretic.Owner, shed.Value, predicted: false);
+
+            var lord = SEntMan.GetComponent<MindComponent>(mindId).OwnedEntity!.Value;
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(lord).EntityPrototype?.ID, Is.EqualTo("STHereticMobLordOfNight"));
+            Assert.That(SEntMan.GetComponent<PolymorphedEntityComponent>(lord).Action, Is.Not.Null, "Нет действия возврата");
+            Assert.That(status.HasStatusEffect(witness, "StatusEffectStutter"), Is.True, "Свидетель не напуган");
+        });
+    }
+
+    [Test]
+    public async Task LordOfNightEatsDetachedArm()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var damageable = Server.System<DamageableSystem>();
+        var dismember = Server.System<StoriesHereticDismemberSystem>();
+        var interaction = Server.System<SharedInteractionSystem>();
+        var containers = Server.System<SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var lord = SSpawnAtPosition("STHereticMobLordOfNight", coords);
+            damageable.TryChangeDamage(lord, new DamageSpecifier { DamageDict = new() { { "Slash", 600 } } }, true);
+
+            var corpse = SSpawnAtPosition("MobHuman", coords);
+            damageable.TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            EntityUid Find(string cat) => containers.GetContainer(corpse, BodyComponent.ContainerID).ContainedEntities
+                .First(o => SEntMan.GetComponent<OrganComponent>(o).Category == cat);
+
+            var leg = dismember.Dismember(corpse, Find("LegLeft"))!.Value;
+            interaction.UserInteraction(lord, SEntMan.GetComponent<TransformComponent>(leg).Coordinates, leg);
+            Assert.That(SEntMan.Deleted(leg) || SEntMan.IsQueuedForDeletion(leg), Is.False, "Съедена нога");
+
+            var arm = dismember.Dismember(corpse, Find("ArmLeft"))!.Value;
+            interaction.UserInteraction(lord, SEntMan.GetComponent<TransformComponent>(arm).Coordinates, arm);
+            Assert.That(SEntMan.Deleted(arm) || SEntMan.IsQueuedForDeletion(arm), Is.True, "Рука не съедена");
+
+            // 50% от 1000: по 250 Brute и Burn, ожога нет — остаётся 350.
+            Assert.That(SEntMan.GetComponent<DamageableComponent>(lord).TotalDamage.Float(), Is.EqualTo(350f).Within(0.1f));
         });
     }
 }

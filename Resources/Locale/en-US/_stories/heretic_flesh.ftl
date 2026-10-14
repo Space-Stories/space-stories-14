@@ -22,3 +22,8 @@ stories-heretic-knit-part-Ears = the ears
 stories-chat-radio-heretic-mansus-link = Mansus Link
 stories-heretic-mansus-link-blocked = The mind resists the link!
 stories-heretic-mansus-link-linked = A foreign whisper creeps into your head.
+
+stories-heretic-flesh-ascension-corpses = The hymn needs { $count } more dead bodies.
+stories-heretic-flesh-ascension-announcement = Ever coiling vortex. Reality unfolded. ARMS OUTREACHED, THE LORD OF THE NIGHT, { $name } has ascended! Fear the ever twisting hand!
+stories-heretic-shed-form-speech = REALITY UNCOIL!
+stories-heretic-lord-fear = You glimpse the Gates of the Mansus, and your mind cracks.

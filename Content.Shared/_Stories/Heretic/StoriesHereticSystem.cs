@@ -299,6 +299,22 @@ public sealed partial class StoriesHereticSystem : EntitySystem
             Dirty(ent);
     }
 
+    /// <summary>
+    /// Снимает с тела всю одежду и роняет вещи из рук: трупы для Вознесения поглощаются без вещей.
+    /// </summary>
+    public void DropEverything(EntityUid uid)
+    {
+        if (_inventory.TryGetContainerSlotEnumerator(uid, out var slots))
+        {
+            while (slots.NextItem(out _, out var slot))
+            {
+                _inventory.TryUnequip(uid, slot.Name, true, true);
+            }
+        }
+
+        _hands.DropAll(uid, checkActionBlocker: false, doDropInteraction: false);
+    }
+
     public void SetAscended(Entity<StoriesHereticComponent> ent)
     {
         ent.Comp.Ascended = true;

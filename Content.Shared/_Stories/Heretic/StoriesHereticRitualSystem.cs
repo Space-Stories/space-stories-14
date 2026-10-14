@@ -160,7 +160,9 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 continue;
             }
 
-            if (ritual.Limit is { } limit && _heretic.CountLimitedResults(heretic, ritualId) >= limit)
+            if (ritual.Limit is { } limit
+                && !(ritual.AscendedUnlimited && heretic.Comp.Ascended)
+                && _heretic.CountLimitedResults(heretic, ritualId) >= limit)
             {
                 RecordFailure(Loc.GetString("stories-heretic-ritual-limit"), matched + 1);
                 continue;

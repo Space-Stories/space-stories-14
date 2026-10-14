@@ -21,6 +21,12 @@ public sealed partial class StoriesHereticRitualComponent : Component
     [DataField]
     public int? Limit;
 
+    /// <summary>
+    /// После Вознесения <see cref="Limit"/> не действует (клинки Плоти).
+    /// </summary>
+    [DataField]
+    public bool AscendedUnlimited;
+
     [DataField]
     public StoriesHereticRitualEffect Effect = StoriesHereticRitualEffect.None;
 }

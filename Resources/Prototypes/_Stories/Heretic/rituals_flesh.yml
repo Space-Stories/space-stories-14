@@ -6,6 +6,7 @@
   components:
   - type: StoriesHereticRitual
     limit: 4
+    ascendedUnlimited: true
     ingredients:
     - name: stories-heretic-ingredient-knife
       whitelist:
@@ -70,3 +71,15 @@
         tags: [ Paper ]
   - type: StoriesHereticSummonRitual
     mob: STHereticMobStalker
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualFleshAscension
+  name: Priest's Final Hymn
+  description: Four humanoid corpses on the rune.
+  components:
+  - type: StoriesHereticRitual
+    effect: Ascension
+  - type: StoriesHereticFleshAscensionRitual
+    actions:
+    - STActionHereticShedForm

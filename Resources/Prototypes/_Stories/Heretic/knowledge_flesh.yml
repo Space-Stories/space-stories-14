@@ -137,3 +137,21 @@
     requires: [ STHereticKnowledgeFleshBleedingSteel ]
     rituals:
     - STHereticRitualStalker
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshAscension
+  name: Priest's Final Hymn
+  description: Sacrifice four humanoid corpses on a rune and ascend. Requires completed objectives. Your ghoul limits grow, your blades become unlimited, and you learn to shed your form to become the Lord of the Night. "With the knowledge of the Marshal, my power had peaked. The throne was open to claim. Men of this world, hear me, for the time has come! The Marshal guides my army! Reality will bend to THE LORD OF THE NIGHT or be unraveled! WITNESS MY ASCENSION!"
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: node_finished
+    path: STHereticPathFlesh
+    stage: 9
+    cost: 2
+    ascension: true
+    requires: [ STHereticKnowledgeFleshLonely ]
+    rituals:
+    - STHereticRitualFleshAscension
