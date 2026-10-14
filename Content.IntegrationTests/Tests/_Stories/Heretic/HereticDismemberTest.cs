@@ -37,4 +37,15 @@ public sealed class HereticDismemberTest : GameTest
                 .Any(o => SEntMan.GetComponent<OrganComponent>(o).Category == "Head"), Is.False, "Голова осталась");
         });
     }
+
+    [Test]
+    public async Task PartNamesLocalized()
+    {
+        var loc = Server.ResolveDependency<Robust.Shared.Localization.ILocalizationManager>();
+        await Server.WaitAssertion(() =>
+        {
+            foreach (var cat in new[] { "Head", "ArmLeft", "ArmRight", "LegLeft", "LegRight" })
+                Assert.That(loc.HasString($"stories-heretic-dismember-part-{cat}"), Is.True, cat);
+        });
+    }
 }

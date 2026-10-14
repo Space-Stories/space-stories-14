@@ -5,6 +5,7 @@ using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Humanoid;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Verbs;
@@ -45,8 +46,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
     private void OnGetVerbs(Entity<BodyComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         if (!args.CanInteract || !args.CanAccess
-            || !HasComp<StoriesHereticComponent>(args.User)
-            || !CanDismember(ent) || !HasBlade(args.User)
+            || !CanDismember(args.User, ent)
             || !_containers.TryGetContainer(ent, BodyComponent.ContainerID, out var container))
             return;
 
@@ -59,7 +59,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
                 continue;
 
             var part = organ;
-            var name = Name(part);
+            var name = PartName(part);
             args.Verbs.Add(new AlternativeVerb
             {
                 Text = Loc.GetString("stories-heretic-dismember-verb", ("part", name)),
@@ -69,9 +69,18 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
         }
     }
 
-    private bool CanDismember(EntityUid corpse)
+    private bool CanDismember(EntityUid user, EntityUid corpse)
     {
-        return _mobState.IsDead(corpse) && !HasComp<StoriesHereticShadowRealmComponent>(corpse);
+        return HasComp<StoriesHereticComponent>(user)
+               && HasBlade(user)
+               && HasComp<HumanoidProfileComponent>(corpse)
+               && _mobState.IsDead(corpse)
+               && !HasComp<StoriesHereticShadowRealmComponent>(corpse);
+    }
+
+    private string PartName(EntityUid organ)
+    {
+        return Loc.GetString($"stories-heretic-dismember-part-{Comp<OrganComponent>(organ).Category}");
     }
 
     private bool HasBlade(EntityUid user)
@@ -95,7 +104,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
 
     public bool TryDismember(EntityUid user, EntityUid corpse, EntityUid organ)
     {
-        if (!CanDismember(corpse) || !IsDismemberable(organ) || !IsInBody(corpse, organ))
+        if (!CanDismember(user, corpse) || !IsDismemberable(organ) || !IsInBody(corpse, organ))
             return false;
 
         return _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager,
@@ -107,6 +116,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
             used: organ)
         {
             BreakOnMove = true,
+            DistanceThreshold = 1.5f,
             NeedHand = true,
             DuplicateCondition = DuplicateConditions.SameTarget | DuplicateConditions.SameEvent,
         });
@@ -118,7 +128,10 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
             return;
 
         args.Handled = true;
-        var name = Name(organ);
+        if (!CanDismember(args.User, ent))
+            return;
+
+        var name = PartName(organ);
         if (Dismember(ent, organ) == null)
             return;
 
@@ -130,7 +143,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
     /// <summary>Мгновенно отделяет орган от трупа. Живому телу ничего не делает.</summary>
     public EntityUid? Dismember(EntityUid corpse, EntityUid organ)
     {
-        if (!CanDismember(corpse) || !IsDismemberable(organ) || !IsInBody(corpse, organ))
+        if (!_mobState.IsDead(corpse) || !IsDismemberable(organ) || !IsInBody(corpse, organ))
             return null;
 
         return _detachable.Detach(organ);
