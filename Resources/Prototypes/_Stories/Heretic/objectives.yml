@@ -45,3 +45,9 @@
   - type: StoriesHereticObjectiveCondition
     kind: Summon
     title: stories-heretic-objective-summon
+
+- type: entity
+  parent: [ STBaseHereticObjective, BaseFreeObjective ]
+  id: STHereticObjectiveServeMaster
+  name: stories-heretic-objective-serve-master
+  description: stories-heretic-objective-serve-master-desc

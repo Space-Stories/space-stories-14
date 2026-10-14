@@ -52,9 +52,9 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, DamageDealtEvent>(OnDamage);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, MobStateChangedEvent>(OnMobState);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SleepStateChangedEvent>(OnSleep);
-        // После блокаторов личности (своих и в одежде): иначе их отмена показала бы имя с ID-карты.
+        // После IdentitySystem (он отменяет проверку при блокаторе, в том числе из одежды): иначе его отмена показала бы имя с ID-карты.
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SeeIdentityAttemptEvent>(OnSeeIdentity,
-            after: new[] { typeof(IdentitySystem), typeof(InventorySystem) });
+            after: new[] { typeof(IdentitySystem) });
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, GetVerbsEvent<ExamineVerb>>(OnExamineVerbs,
             after: new[] { typeof(IdExaminableSystem) });
     }

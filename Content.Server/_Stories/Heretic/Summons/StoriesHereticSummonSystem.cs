@@ -8,6 +8,7 @@ using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
+using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Popups;
@@ -25,7 +26,10 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private PopupSystem _popup = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private StackSystem _stack = default!;
+
+    private static readonly EntProtoId ServeMaster = "STHereticObjectiveServeMaster";
 
     public override void Initialize()
     {
@@ -58,6 +62,7 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
 
         var mob = Spawn(ritual.Mob, Transform(args.Rune).Coordinates);
         var summon = EnsureComp<StoriesHereticSummonComponent>(mob);
+        EnsureComp<StoriesHereticSummonWaitingComponent>(mob);
         summon.Master = args.Heretic;
         summon.ExpireTime = _timing.CurTime + summon.ClaimTime;
         _heretic.MakeServant(mob, args.Heretic);
@@ -84,6 +89,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             return;
 
         ent.Comp.Bound = true;
+        RemComp<StoriesHereticSummonWaitingComponent>(ent);
+        _mind.TryAddObjective(args.Mind.Owner, args.Mind.Comp, ServeMaster);
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(ent):player} took the summon role of {ToPrettyString(ent.Comp.Master):user}");
         if (TryComp<StoriesHereticComponent>(ent.Comp.Master, out var heretic))

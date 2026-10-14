@@ -4,6 +4,7 @@ using Content.Server._Stories.Heretic.Summons;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Damage;
+using System.Linq;
 using Content.Shared.Mind;
 using Content.Shared.Stacks;
 using Content.Shared.Damage.Systems;
@@ -126,9 +127,13 @@ public sealed class HereticSummonTest : GameTest
 
             var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent>();
             query.MoveNext(out mob, out _);
+            Assert.That(SEntMan.HasComponent<StoriesHereticSummonWaitingComponent>(mob), Is.True, "Нет компонента ожидания");
 
             mindId = minds.CreateMind(ServerSession!.UserId);
             minds.TransferTo(mindId, mob);
+            Assert.That(SEntMan.HasComponent<StoriesHereticSummonWaitingComponent>(mob), Is.False, "Ожидание не снято");
+            Assert.That(SEntMan.GetComponent<MindComponent>(mindId).Objectives.Select(o => SEntMan.GetComponent<MetaDataComponent>(o).EntityPrototype?.ID),
+                Does.Contain("STHereticObjectiveServeMaster"), "Нет цели слуги");
             Assert.That(heretic.Comp.SummonCount, Is.EqualTo(1), "Призыв не засчитан");
             Assert.That(Server.System<StoriesHereticSystem>().IsServant(mob, heretic), Is.True, "Призыв не слуга хозяина");
             Assert.That(SEntMan.GetComponent<StoriesHereticSummonComponent>(mob).Bound, Is.True);

@@ -144,13 +144,14 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         heat.DamageDict["Heat"] = BurstHeat;
         _burstTargets.Clear();
         _lookup.GetEntitiesInRange(coords, BurstRange, _burstTargets);
-        foreach (var target in _burstTargets)
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"Corrupted organ {ToPrettyString(ent):entity} burst out of {ToPrettyString(body):target}, dealing {BurstHeat} Heat to {_burstTargets.Count} entities");
+
+        // Урон может менять набор (смерть, удаление), поэтому обходим копию.
+        foreach (var target in _burstTargets.ToArray())
         {
             _damageable.TryChangeDamage(target.AsNullable(), heat, origin: ent);
         }
-
-        _adminLog.Add(LogType.Action, LogImpact.Medium,
-            $"Corrupted organ {ToPrettyString(ent):entity} burst out of {ToPrettyString(body):target}, dealing {BurstHeat} Heat to {_burstTargets.Count} entities");
 
         Spawn(BlastEffect, coords);
         _popup.PopupEntity(Loc.GetString("stories-heretic-organs-burst", ("organ", ent.Owner)), body, PopupType.MediumCaution);

@@ -29,6 +29,8 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
     [Dependency] private MobThresholdSystem _thresholds = default!;
     [Dependency] private RejuvenateSystem _rejuvenate = default!;
 
+    private static readonly EntProtoId ServeMaster = "STHereticObjectiveServeMaster";
+
     public override void Initialize()
     {
         base.Initialize();
@@ -75,6 +77,7 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         EnsureComp<StoriesHereticRaisedComponent>(corpse);
         _conversion.TryConvert(corpse, conversion, master);
         _heretic.MakeServant(corpse, master);
+        _mind.TryAddObjective(mindId, mind!, ServeMaster);
 
         if (_player.TryGetSessionById(mind!.UserId, out var session))
             _chat.DispatchServerMessage(session, Loc.GetString("stories-heretic-ghoul-briefing", ("master", master)));

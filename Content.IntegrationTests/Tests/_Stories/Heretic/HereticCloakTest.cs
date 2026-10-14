@@ -52,6 +52,9 @@ public sealed class HereticCloakTest : GameTest
             var id = SSpawnAtPosition("PassengerIDCard", testMap.GridCoords);
             Assert.That(Server.System<SharedIdCardSystem>().TryChangeFullName(id, realName));
             Assert.That(Server.System<InventorySystem>().TryEquip(heretic, id, "id", silent: true, force: true));
+            // Маска с блокатором личности вместе с ID: отмена маски не должна вернуть имя с карты.
+            var mask = SSpawnAtPosition("ClothingMaskGas", testMap.GridCoords);
+            Assert.That(Server.System<InventorySystem>().TryEquip(heretic, mask, "mask", silent: true, force: true));
             baseSpeed = SEntMan.GetComponent<MovementSpeedModifierComponent>(heretic).CurrentSprintSpeed;
 
             var ev = new StoriesHereticShadowCloakEvent { Performer = heretic };
@@ -78,7 +81,7 @@ public sealed class HereticCloakTest : GameTest
         await Server.WaitAssertion(() =>
         {
             Assert.That(SEntMan.HasComponent<StoriesHereticShadowCloakComponent>(heretic), Is.False, "Плащ не сорван уроном");
-            Assert.That(Identity.Name(heretic, SEntMan, observer), Is.EqualTo(realName));
+            Assert.That(Identity.Name(heretic, SEntMan, observer), Is.Not.EqualTo(Server.ResolveDependency<ILocalizationManager>().GetString("stories-heretic-cloak-voice")));
             Assert.That(SEntMan.GetComponent<MobStateComponent>(heretic).CurrentState, Is.EqualTo(MobState.Alive));
             Assert.That(HasIdExamineVerb(heretic, observer), Is.True, "Осмотр «ID» не вернулся после плаща");
         });

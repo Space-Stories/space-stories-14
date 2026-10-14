@@ -9,6 +9,13 @@
   - !type:OverallPlaytimeRequirement
     time: 5h
 
+- type: antag
+  id: STHereticServant
+  name: stories-roles-antag-heretic-servant-name
+  antagonist: true
+  setPreference: false
+  objective: stories-roles-antag-heretic-servant-objective
+
 - type: antagSpecifier
   parent: BaseTraitor
   id: STHereticSpecifier
@@ -39,7 +46,7 @@
   name: Heretic Monster Role
   components:
   - type: MindRole
-    antagPrototype: STHeretic
+    antagPrototype: STHereticServant
     exclusiveAntag: false
     roleType: TeamAntagonist
 
@@ -49,6 +56,6 @@
   name: Heretic Ghoul Role
   components:
   - type: MindRole
-    antagPrototype: STHeretic
+    antagPrototype: STHereticServant
     exclusiveAntag: false
     roleType: TeamAntagonist
