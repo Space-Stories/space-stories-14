@@ -126,7 +126,7 @@
   parent: STHereticKnowledgeBase
   id: STHereticKnowledgeFleshLonely
   name: Lonely Ritual
-  description: Learn the ritual of the Stalker. Three pieces of raw meat, a pen and a sheet of paper on the rune summon a ghost-role stalker with an EMP, ethereal jaunt, thermal vision and a one-time chosen lesser form. "I managed to join greed and desire to summon an otherworldly beast the like of which I had never seen. A mass of flesh forever changing its shape - it knew my goals well. The Marshal approved."
+  description: Learn the ritual of the Stalker. Three slabs of meat, a pen and a sheet of paper on the rune summon a ghost-role stalker with an EMP, ethereal jaunt, thermal vision and a one-time chosen lesser form. "I managed to join greed and desire to summon an otherworldly beast the like of which I had never seen. A mass of flesh forever changing its shape - it knew my goals well. The Marshal approved."
   components:
   - type: StoriesHereticKnowledge
     icon:

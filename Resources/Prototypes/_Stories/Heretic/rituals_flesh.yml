@@ -53,7 +53,7 @@
   parent: STHereticRitualBase
   id: STHereticRitualStalker
   name: Lonely Ritual
-  description: Three pieces of raw meat, a pen and a sheet of paper. Summons the Stalker.
+  description: Three slabs of meat, a pen and a sheet of paper. Summons the Stalker.
   components:
   - type: StoriesHereticRitual
     effect: Summon

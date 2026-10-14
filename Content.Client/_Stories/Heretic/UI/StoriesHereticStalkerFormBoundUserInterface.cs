@@ -1,9 +1,9 @@
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Stories.Heretic.Flesh;
+using Content.Shared.Polymorph;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Shared.Prototypes;
-using Content.Shared.Polymorph;
 
 namespace Content.Client._Stories.Heretic.UI;
 

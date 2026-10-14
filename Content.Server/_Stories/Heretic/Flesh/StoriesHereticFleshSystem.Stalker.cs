@@ -4,7 +4,6 @@ using Content.Shared._Stories.Heretic.Flesh;
 using Content.Shared.Emp;
 using Content.Shared.Polymorph;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Player;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
@@ -20,6 +19,7 @@ public sealed partial class StoriesHereticFleshSystem
         SubscribeLocalEvent<StoriesHereticStalkerFormComponent, StoriesHereticEldritchEmpEvent>(OnStalkerEmp);
         SubscribeLocalEvent<StoriesHereticStalkerFormComponent, StoriesHereticStalkerShapeshiftEvent>(OnStalkerShapeshift);
         SubscribeLocalEvent<StoriesHereticStalkerFormComponent, StoriesHereticStalkerFormSelectMessage>(OnStalkerFormSelected);
+        SubscribeLocalEvent<StoriesHereticStalkerFormComponent, PolymorphedEvent>(OnStalkerPolymorphed);
     }
 
     private void OnStalkerEmp(Entity<StoriesHereticStalkerFormComponent> ent, ref StoriesHereticEldritchEmpEvent args)
@@ -43,11 +43,18 @@ public sealed partial class StoriesHereticFleshSystem
             _ui.OpenUi(ent.Owner, StoriesHereticStalkerFormUiKey.Key, ent);
     }
 
+    // Полиморф переносит разум, но не компоненты: облик остаётся слугой хозяина Сталкера.
+    private void OnStalkerPolymorphed(Entity<StoriesHereticStalkerFormComponent> ent, ref PolymorphedEvent args)
+    {
+        if (!args.IsRevert && _summons.GetMaster(ent) is { } master)
+            _heretic.MakeServant(args.NewEntity, master);
+    }
+
     private void OnStalkerFormSelected(Entity<StoriesHereticStalkerFormComponent> ent, ref StoriesHereticStalkerFormSelectMessage args)
     {
         // Выбор один раз и только из списка компонента.
         var chosen = args.Polymorph;
-        if (ent.Comp.Chosen != null || !ent.Comp.Forms.Exists(f => f.Polymorph == chosen))
+        if (args.Actor != ent.Owner || ent.Comp.Chosen != null || !ent.Comp.Forms.Exists(f => f.Polymorph == chosen))
             return;
 
         ent.Comp.Chosen = chosen;

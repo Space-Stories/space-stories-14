@@ -754,10 +754,10 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(form.Chosen, Is.Null);
 
             // Неизвестный облик игнорируется.
-            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticAshJaunt"), true);
+            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticAshJaunt") { Actor = stalker }, true);
             Assert.That(form.Chosen, Is.Null);
 
-            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticStalkerFormCat"), true);
+            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticStalkerFormCat") { Actor = stalker }, true);
             Assert.That(form.Chosen?.Id, Is.EqualTo("STHereticStalkerFormCat"));
 
             var mind = SEntMan.GetComponent<MindComponent>(mindId);
@@ -765,6 +765,42 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(body, Is.Not.EqualTo(stalker));
             Assert.That(SEntMan.GetComponent<MetaDataComponent>(body).EntityPrototype?.ID, Is.EqualTo("MobCat"));
             Assert.That(SEntMan.HasComponent<PolymorphedEntityComponent>(body));
+        });
+    }
+
+    [Test]
+    public async Task StalkerFormIsServantAndDeathCollapsesStalker()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var minds = Server.System<MindSystem>();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var damageable = Server.System<DamageableSystem>();
+        var mobState = Server.System<MobStateSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var master = SSpawnAtPosition("MobHuman", coords);
+            var stalker = SSpawnAtPosition("STHereticMobStalker", coords);
+            var summon = SEntMan.GetComponent<StoriesHereticSummonComponent>(stalker);
+            summon.Master = master;
+            summon.Ingredients.Add("Pen");
+            heretics.MakeServant(stalker, master);
+
+            var mindId = minds.CreateMind(ServerSession!.UserId);
+            minds.TransferTo(mindId, stalker);
+            SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticStalkerFormCat") { Actor = stalker }, true);
+
+            var cat = SEntMan.GetComponent<MindComponent>(mindId).OwnedEntity!.Value;
+            Assert.That(cat, Is.Not.EqualTo(stalker));
+            Assert.That(heretics.IsServant(cat, master), Is.True, "Облик не слуга хозяина");
+
+            damageable.TryChangeDamage(cat, new DamageSpecifier { DamageDict = new() { { "Blunt", 500 } } }, true);
+
+            Assert.That(SEntMan.GetComponent<MindComponent>(mindId).OwnedEntity, Is.EqualTo(stalker), "Нет возврата в Сталкера");
+            Assert.That(mobState.IsDead(stalker), Is.True, "Сталкер не умер после смерти облика");
+            Assert.That(summon.Collapsed, Is.True, "Призыв не схлопнулся");
+            Assert.That(SEntMan.Deleted(stalker) || SEntMan.EntityQuery<MetaDataComponent>().Any(m => m.EntityPrototype?.ID == "Pen"), Is.True);
         });
     }
 }

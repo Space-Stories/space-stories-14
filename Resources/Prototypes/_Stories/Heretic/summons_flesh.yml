@@ -163,61 +163,43 @@
 
 # Облики Сталкера: штатный возврат даёт действие полиморфа (forced: false).
 - type: polymorph
+  abstract: true
+  id: STHereticStalkerFormBase
+  configuration:
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
+
+- type: polymorph
+  parent: STHereticStalkerFormBase
   id: STHereticStalkerFormCat
   configuration:
     entity: MobCat
-    transferName: true
-    inventory: None
-    forced: false
-    transferDamage: true
-    revertOnDeath: true
-    allowRepeatedMorphs: true
-    delay: 5
 
 - type: polymorph
+  parent: STHereticStalkerFormBase
   id: STHereticStalkerFormCorgi
   configuration:
     entity: MobCorgi
-    transferName: true
-    inventory: None
-    forced: false
-    transferDamage: true
-    revertOnDeath: true
-    allowRepeatedMorphs: true
-    delay: 5
 
 - type: polymorph
+  parent: STHereticStalkerFormBase
   id: STHereticStalkerFormMouse
   configuration:
     entity: MobMouse
-    transferName: true
-    inventory: None
-    forced: false
-    transferDamage: true
-    revertOnDeath: true
-    allowRepeatedMorphs: true
-    delay: 5
 
 - type: polymorph
+  parent: STHereticStalkerFormBase
   id: STHereticStalkerFormFox
   configuration:
     entity: MobFox
-    transferName: true
-    inventory: None
-    forced: false
-    transferDamage: true
-    revertOnDeath: true
-    allowRepeatedMorphs: true
-    delay: 5
 
 - type: polymorph
+  parent: STHereticStalkerFormBase
   id: STHereticStalkerFormCarp
   configuration:
     entity: MobCarp
-    transferName: true
-    inventory: None
-    forced: false
-    transferDamage: true
-    revertOnDeath: true
-    allowRepeatedMorphs: true
-    delay: 5
