@@ -12,6 +12,7 @@ using Content.Shared.Humanoid;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Speech;
 using Robust.Server.Player;
 using Robust.Shared.Prototypes;
 
@@ -40,6 +41,8 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticGhoulComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<StoriesHereticRaisedComponent, MobStateChangedEvent>(OnRaisedMobStateChanged);
+        SubscribeLocalEvent<StoriesHereticGhoulComponent, SpeakAttemptEvent>(OnSpeakAttempt);
+        InitializeRitual();
     }
 
     public int CountGhouls(EntityUid master, ProtoId<ConversionPrototype> conversion)
@@ -53,23 +56,11 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         int limit,
         [NotNullWhen(false)] out string? reason)
     {
-        reason = null;
-        var mindId = EntityUid.Invalid;
-        MindComponent? mind = null;
-        if (!HasComp<HumanoidProfileComponent>(corpse) || !_mobState.IsDead(corpse))
-            reason = Loc.GetString("stories-heretic-ghoul-invalid");
-        else if (HasComp<StoriesHereticRaisedComponent>(corpse))
-            reason = Loc.GetString("stories-heretic-ghoul-already");
-        // Душа — разум игрока, даже если он сейчас призраком: без игрока гуль был бы пустой оболочкой.
-        else if (!_mind.TryGetMind(corpse, out mindId, out mind) || mind.UserId == null)
-            reason = Loc.GetString("stories-heretic-ghoul-no-soul");
-        else if (CountGhouls(master, conversion) >= limit)
-            reason = Loc.GetString("stories-heretic-ghoul-limit");
-        else if (!_conversion.CanConvert(corpse, conversion, master))
-            reason = Loc.GetString("stories-heretic-ghoul-protected");
-
+        reason = GetRaiseFailure(master, corpse, conversion, limit, true);
         if (reason != null)
             return false;
+
+        _mind.TryGetMind(corpse, out var mindId, out var mind);
 
         // Вышедший из тела игрок лишь навещает призрака — возвращаем его в тело.
         _mind.UnVisit(mindId, mind!);
@@ -85,6 +76,31 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         _adminLog.Add(LogType.Action, LogImpact.High,
             $"{ToPrettyString(master):user} raised {ToPrettyString(corpse):target} as a ghoul");
         return true;
+    }
+
+    /// <summary>
+    /// Порядок проверок по спецификации §6.2: лимит, гуманоид, мёртв, не поднимался, душа, защита.
+    /// <paramref name="needSoul"/> выключен для трупа, на который лишь ставится призрачная роль.
+    /// </summary>
+    private string? GetRaiseFailure(EntityUid master, EntityUid corpse, ProtoId<ConversionPrototype> conversion, int limit, bool needSoul)
+    {
+        if (CountGhouls(master, conversion) >= limit)
+            return Loc.GetString("stories-heretic-ghoul-limit");
+        if (!HasComp<HumanoidProfileComponent>(corpse) || !_mobState.IsDead(corpse))
+            return Loc.GetString("stories-heretic-ghoul-invalid");
+        if (HasComp<StoriesHereticRaisedComponent>(corpse))
+            return Loc.GetString("stories-heretic-ghoul-already");
+        // Душа — разум игрока, даже если он сейчас призраком: без игрока гуль был бы пустой оболочкой.
+        if (needSoul && !HasSoul(corpse))
+            return Loc.GetString("stories-heretic-ghoul-no-soul");
+        if (!_conversion.CanConvert(corpse, conversion, master))
+            return Loc.GetString("stories-heretic-ghoul-protected");
+        return null;
+    }
+
+    public bool HasSoul(EntityUid corpse)
+    {
+        return _mind.TryGetMind(corpse, out _, out var mind) && mind.UserId != null;
     }
 
     private void OnStartup(Entity<StoriesHereticGhoulComponent> ent, ref ComponentStartup args)
@@ -147,6 +163,12 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
             if (ProtoMan.TryIndex<ConversionPrototype>(id, out var proto) && proto.Components.ContainsKey(Factory.GetComponentName<StoriesHereticGhoulComponent>()))
                 _conversion.TryRevert(ent, id);
         }
+    }
+
+    private void OnSpeakAttempt(EntityUid uid, StoriesHereticGhoulComponent comp, SpeakAttemptEvent args)
+    {
+        if (comp.Mute)
+            args.Cancel();
     }
 
     private void OnExamined(Entity<StoriesHereticGhoulComponent> ent, ref ExaminedEvent args)

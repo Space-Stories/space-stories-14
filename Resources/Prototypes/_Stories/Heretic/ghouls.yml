@@ -13,3 +13,19 @@
     deadThreshold: 50
   mindRoles:
   - STMindRoleHereticGhoul
+
+# Безгласный мертвец: прочнее обычного гуля (50/100), но немой.
+- type: conversion
+  id: STHereticGhoulVoiceless
+  allowedMobStates: [ Dead, Alive ]
+  blacklist:
+    components:
+    - Zombie
+    - StoriesHeretic
+  components:
+  - type: StoriesHereticGhoul
+    critThreshold: 50
+    deadThreshold: 100
+    mute: true
+  mindRoles:
+  - STMindRoleHereticGhoul

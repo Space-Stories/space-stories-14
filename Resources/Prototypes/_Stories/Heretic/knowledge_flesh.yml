@@ -33,3 +33,19 @@
     requires: [ STHereticKnowledgeFleshRoot ]
     addComponents:
     - type: StoriesHereticGraspGhoul
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshImperfect
+  name: Imperfect Ritual
+  description: Learn the ritual of the Voiceless Dead. A poppy and a corpse on the rune raise a mute ghoul (50 health), up to 2 at a time. A corpse without a soul is offered to ghosts. "I found records of a dark ritual, unfinished... but I pressed on regardless."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: ghoul_voiceless
+    path: STHereticPathFlesh
+    stage: 3
+    requires: [ STHereticKnowledgeFleshGrasp ]
+    rituals:
+    - STHereticRitualFleshImperfect

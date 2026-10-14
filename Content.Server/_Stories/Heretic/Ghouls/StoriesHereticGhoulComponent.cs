@@ -14,4 +14,10 @@ public sealed partial class StoriesHereticGhoulComponent : Component
 
     [DataField(required: true)]
     public FixedPoint2 DeadThreshold;
+
+    /// <summary>
+    /// Безгласный мертвец не может говорить.
+    /// </summary>
+    [DataField]
+    public bool Mute;
 }

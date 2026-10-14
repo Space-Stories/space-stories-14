@@ -14,3 +14,19 @@
       reagents: [ Blood, InsectBlood, CopperBlood, AmmoniaBlood, Slime ]
     results:
     - STHereticBladeFlesh
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualFleshImperfect
+  name: Imperfect Ritual
+  description: A poppy and a corpse on the rune. Raises the corpse as a mute ghoul; without a soul, a ghost may claim it.
+  components:
+  - type: StoriesHereticRitual
+    effect: Ghoul
+    ingredients:
+    - name: stories-heretic-ingredient-poppy
+      prototypes: [ FoodPoppy ]
+  - type: StoriesHereticGhoulRitual
+    conversion: STHereticGhoulVoiceless
+    limit: 2
+    ascendedBonus: 4

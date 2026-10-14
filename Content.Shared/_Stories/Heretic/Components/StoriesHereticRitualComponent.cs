@@ -67,4 +67,5 @@ public enum StoriesHereticRitualEffect : byte
     RerollTargets,
     Ascension,
     Summon,
+    Ghoul,
 }
