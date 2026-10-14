@@ -147,6 +147,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         }
     }
 
+    public EntityUid? GetMaster(EntityUid summon) => CompOrNull<StoriesHereticSummonComponent>(summon)?.Master;
+
     private void OnMindAdded(Entity<StoriesHereticSummonComponent> ent, ref MindAddedMessage args)
     {
         if (ent.Comp.Bound)

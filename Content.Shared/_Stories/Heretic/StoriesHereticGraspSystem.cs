@@ -113,7 +113,7 @@ public sealed partial class StoriesHereticGraspSystem : EntitySystem
         RaiseLocalEvent(ent, ref ev);
     }
 
-    private bool IsProtected(EntityUid target)
+    public bool IsProtected(EntityUid target)
     {
         return _holy.IsHoly(target) || _hands.EnumerateHeld(target).Any(HasComp<HolyComponent>);
     }

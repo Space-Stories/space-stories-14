@@ -18,3 +18,7 @@ stories-heretic-knit-part-Stomach = желудок
 stories-heretic-knit-part-Appendix = аппендикс
 stories-heretic-knit-part-Kidneys = почки
 stories-heretic-knit-part-Ears = уши
+
+stories-chat-radio-heretic-mansus-link = Связь Мансуса
+stories-heretic-mansus-link-blocked = Разум сопротивляется связи!
+stories-heretic-mansus-link-linked = В вашу голову проникает чужой шёпот.

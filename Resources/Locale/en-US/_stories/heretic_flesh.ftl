@@ -18,3 +18,7 @@ stories-heretic-knit-part-Stomach = the stomach
 stories-heretic-knit-part-Appendix = the appendix
 stories-heretic-knit-part-Kidneys = the kidneys
 stories-heretic-knit-part-Ears = the ears
+
+stories-chat-radio-heretic-mansus-link = Mansus Link
+stories-heretic-mansus-link-blocked = The mind resists the link!
+stories-heretic-mansus-link-linked = A foreign whisper creeps into your head.

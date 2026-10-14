@@ -46,6 +46,9 @@
     actions:
     - STActionHereticRawProphetJaunt
     - STActionHereticRawProphetBlind
+    - STActionHereticRawProphetMansusLink
+    - STActionHereticRawProphetExpandSight
+  - type: StoriesHereticRawProphet
   - type: GhostRole
     name: stories-heretic-ghost-role-raw-prophet-name
     description: stories-heretic-ghost-role-raw-prophet-desc
@@ -53,3 +56,45 @@
     tags:
     - CannotSuicide
     - DoorBumpOpener
+
+- type: entity
+  id: STActionHereticRawProphetMansusLink
+  name: Mansus Link
+  description: Bind a creature to a private telepathic channel. Mindshielded and holy targets resist. If the prophet dies, every linked mind screams and is stunned.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 20
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: mansus_link
+  - type: TargetAction
+    range: 7
+  - type: EntityTargetAction
+    event: !type:StoriesHereticMansusLinkEvent
+      duration: 6
+      range: 7
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+
+- type: entity
+  id: STActionHereticRawProphetExpandSight
+  name: Expand Sight
+  description: Widen your view. Use again to return to normal sight.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 8
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: eye
+  - type: InstantAction
+    event: !type:StoriesHereticExpandSightEvent
+      zoom: 1.5

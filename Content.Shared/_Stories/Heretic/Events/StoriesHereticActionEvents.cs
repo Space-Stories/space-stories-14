@@ -177,3 +177,21 @@ public sealed partial class StoriesHereticShadowCloakEvent : InstantActionEvent
     [DataField]
     public EntProtoId Smoke = "STHereticShadowCloakSmoke";
 }
+
+/// <summary>Связь Мансуса: запускает DoAfter привязки цели к каналу пророка.</summary>
+public sealed partial class StoriesHereticMansusLinkEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(6);
+
+    /// <summary>Дальше этого расстояния DoAfter прерывается.</summary>
+    [DataField]
+    public float Range = 7f;
+}
+
+/// <summary>Расширение взора: переключает увеличение обзора камеры.</summary>
+public sealed partial class StoriesHereticExpandSightEvent : InstantActionEvent
+{
+    [DataField]
+    public float Zoom = 1.5f;
+}

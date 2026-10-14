@@ -86,3 +86,6 @@ public sealed partial class StoriesHereticDismemberDoAfterEvent : SimpleDoAfterE
 /// <summary>Извлечение органа заклинанием «Сшить плоть»; орган передаётся как <c>used</c> DoAfter.</summary>
 [Serializable, NetSerializable]
 public sealed partial class StoriesHereticKnitExtractDoAfterEvent : SimpleDoAfterEvent;
+
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticMansusLinkDoAfterEvent : SimpleDoAfterEvent;

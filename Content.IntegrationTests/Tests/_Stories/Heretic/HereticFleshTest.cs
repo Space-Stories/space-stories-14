@@ -19,7 +19,12 @@ using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Components;
 using Content.Shared.Speech;
+using Content.Shared.Mindshield.Components;
+using Content.Shared.Radio;
+using Content.Shared.Radio.Components;
+using Content.Shared.Stunnable;
 using Content.Shared.Verbs;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Server._Stories.Heretic.Summons;
@@ -594,6 +599,75 @@ public sealed class HereticFleshTest : GameTest
             }
 
             Assert.That(found, Is.True, "Рука не вернулась в отделённом теле");
+        });
+    }
+
+    [Test]
+    public async Task MansusLinkGivesChannelAndBreaksOnProphetDeath()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var channel = (ProtoId<RadioChannelPrototype>) "STHereticMansusLink";
+        var other = (ProtoId<RadioChannelPrototype>) "Common";
+        EntityUid prophet = default, target = default, shielded = default;
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            prophet = SSpawnAtPosition("STHereticMobRawProphet", coords);
+            // Без занятой роли призыв схлопывается по таймеру.
+            SEntMan.GetComponent<StoriesHereticSummonComponent>(prophet).Bound = true;
+            target = SSpawnAtPosition("MobHuman", coords);
+            shielded = SSpawnAtPosition("MobHuman", coords);
+            SEntMan.AddComponent<MindShieldComponent>(shielded);
+            SEntMan.EnsureComponent<ActiveRadioComponent>(target).Channels.Add(other);
+
+            foreach (var t in new[] { shielded, target })
+            {
+                var ev = new StoriesHereticMansusLinkEvent { Performer = prophet, Target = t, Duration = TimeSpan.FromSeconds(0.1f) };
+                SEntMan.EventBus.RaiseLocalEvent(prophet, ev);
+                Assert.That(ev.Handled, Is.EqualTo(t == target), "DoAfter: запуск");
+            }
+        });
+
+        await Pair.RunTicksSync(15);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<ActiveRadioComponent>(target).Channels, Does.Contain(channel));
+            Assert.That(SEntMan.GetComponent<IntrinsicRadioTransmitterComponent>(target).Channels, Does.Contain(channel));
+            Assert.That(SEntMan.HasComponent<ActiveRadioComponent>(shielded), Is.False, "Майндшилд не защитил от связи");
+
+            Server.System<DamageableSystem>().TryChangeDamage(prophet, new DamageSpecifier { DamageDict = new() { { "Blunt", 500 } } }, true);
+            SEntMan.DeleteEntity(prophet);
+        });
+
+        await Pair.RunTicksSync(3);
+
+        await Server.WaitAssertion(() =>
+        {
+            var active = SEntMan.GetComponent<ActiveRadioComponent>(target).Channels;
+            Assert.That(active, Does.Not.Contain(channel));
+            Assert.That(active, Does.Contain(other), "Чужой канал снят");
+            Assert.That(SEntMan.GetComponent<IntrinsicRadioTransmitterComponent>(target).Channels, Does.Not.Contain(channel));
+            Assert.That(SEntMan.HasComponent<StunnedComponent>(target), Is.True, "Нет паралича");
+        });
+    }
+
+    [Test]
+    public async Task ExpandSightTogglesZoom()
+    {
+        var testMap = await Pair.CreateTestMap();
+
+        await Server.WaitAssertion(() =>
+        {
+            var prophet = SSpawnAtPosition("STHereticMobRawProphet", testMap.GridCoords);
+            var eye = SEntMan.GetComponent<ContentEyeComponent>(prophet);
+            for (var i = 0; i < 2; i++)
+            {
+                var ev = new StoriesHereticExpandSightEvent { Performer = prophet };
+                SEntMan.EventBus.RaiseLocalEvent(prophet, ev);
+                Assert.That(eye.TargetZoom.X, Is.EqualTo(i == 0 ? 1.5f : 1f).Within(0.001f));
+            }
         });
     }
 }
