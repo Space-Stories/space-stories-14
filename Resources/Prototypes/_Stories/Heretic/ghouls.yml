@@ -1,0 +1,15 @@
+# Dead — для проверки CanConvert до оживления, Alive — для TryConvert после PerformRejuvenate.
+# «Только труп» проверяет StoriesHereticGhoulSystem.TryRaise.
+- type: conversion
+  id: STHereticGhoul
+  allowedMobStates: [ Dead, Alive ]
+  blacklist:
+    components:
+    - Zombie
+    - StoriesHeretic
+  components:
+  - type: StoriesHereticGhoul
+    critThreshold: 25
+    deadThreshold: 50
+  mindRoles:
+  - STMindRoleHereticGhoul
