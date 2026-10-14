@@ -22,7 +22,7 @@ stories-heretic-path-none = none
 stories-heretic-path-STHereticPathAsh = Ash
 stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
-stories-heretic-objective-summon = Summon Mansus monsters: { $count }
+stories-heretic-objective-summon = Summon { $count } Mansus monsters.
 stories-heretic-objective-sacrifice = Sacrifice { $count } targets.
 stories-heretic-objective-head-sacrifice = { $count ->
     [0] No head of staff sacrifice required: there are no living heads left on the station.

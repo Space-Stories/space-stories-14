@@ -1,8 +1,10 @@
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
+using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
@@ -21,6 +23,7 @@ namespace Content.Server._Stories.Heretic;
 /// </summary>
 public sealed partial class StoriesHereticDismemberSystem : EntitySystem
 {
+    [Dependency] private ISharedAdminLogManager _adminLog = default!;
     [Dependency] private DetachableOrganSystem _detachable = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
@@ -29,7 +32,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
 
-    private static readonly string[] Categories = { "Head", "ArmLeft", "ArmRight", "LegLeft", "LegRight" };
+    private static readonly ProtoId<OrganCategoryPrototype>[] Categories = ["Head", "ArmLeft", "ArmRight", "LegLeft", "LegRight"];
     private static readonly TimeSpan DismemberTime = TimeSpan.FromSeconds(5);
     private static readonly SoundSpecifier DismemberSound = new SoundPathSpecifier("/Audio/Effects/gib1.ogg");
 
@@ -93,7 +96,7 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
         return HasComp<DetachableOrganComponent>(organ)
                && TryComp<OrganComponent>(organ, out var comp)
                && comp.Category is { } cat
-               && Array.IndexOf(Categories, cat.Id) >= 0;
+               && Array.IndexOf(Categories, cat) >= 0;
     }
 
     private bool IsInBody(EntityUid corpse, EntityUid organ)
@@ -135,6 +138,8 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
         if (Dismember(ent, organ) == null)
             return;
 
+        _adminLog.Add(LogType.Action, LogImpact.Medium,
+            $"{ToPrettyString(args.User):user} dismembered {ToPrettyString(organ):entity} from {ToPrettyString(ent):target}");
         _audio.PlayPvs(DismemberSound, ent);
         _popup.PopupEntity(Loc.GetString("stories-heretic-dismember-done",
             ("user", args.User), ("part", name), ("corpse", ent.Owner)), ent, PopupType.MediumCaution);
@@ -143,7 +148,8 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
     /// <summary>Мгновенно отделяет орган от трупа. Живому телу ничего не делает.</summary>
     public EntityUid? Dismember(EntityUid corpse, EntityUid organ)
     {
-        if (!_mobState.IsDead(corpse) || !IsDismemberable(organ) || !IsInBody(corpse, organ))
+        if (!_mobState.IsDead(corpse) || HasComp<StoriesHereticShadowRealmComponent>(corpse)
+            || !IsDismemberable(organ) || !IsInBody(corpse, organ))
             return null;
 
         return _detachable.Detach(organ);
