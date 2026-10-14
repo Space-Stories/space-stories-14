@@ -53,6 +53,16 @@ public sealed class HereticRitualTest : GameTest
     - STTestHereticResult
 
 - type: entity
+  id: STTestHereticRitualEyes
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-eyes
+      organCategory: Eyes
+    results:
+    - STTestHereticResult
+
+- type: entity
   id: STTestHereticRitualBlood
   components:
   - type: StoriesHereticRitual
@@ -119,6 +129,33 @@ public sealed class HereticRitualTest : GameTest
 
             Assert.That(rituals.TryPerform((uid, comp), rune), Is.True, "Отделённая рука не засчитана");
             Assert.That(SEntMan.Deleted(detached!.Value) || SEntMan.IsQueuedForDeletion(detached.Value), Is.True, "Рука не поглощена");
+        });
+    }
+
+    [Test]
+    public async Task DetachedHeadIsNotEyes()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var dismember = Server.System<Content.Server._Stories.Heretic.StoriesHereticDismemberSystem>();
+        var containers = Server.System<Robust.Shared.Containers.SharedContainerSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
+            comp.Rituals.Clear();
+            comp.Rituals.Add("STTestHereticRitualEyes");
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+
+            var corpse = SSpawnAtPosition("MobHuman", coords);
+            Server.System<DamageableSystem>().TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            var head = containers.GetContainer(corpse, Content.Shared.Body.BodyComponent.ContainerID).ContainedEntities
+                .First(o => SEntMan.GetComponent<Content.Shared.Body.OrganComponent>(o).Category == "Head");
+            Assert.That(dismember.Dismember(corpse, head), Is.Not.Null);
+
+            Assert.That(rituals.TryPerform((uid, comp), rune), Is.False, "Отделённая голова засчитана как глаза");
         });
     }
 

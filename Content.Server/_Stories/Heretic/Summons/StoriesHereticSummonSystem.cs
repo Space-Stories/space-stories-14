@@ -1,6 +1,11 @@
 using Content.Server.Chat.Managers;
 using Content.Server.Popups;
 using Content.Server.Stack;
+using Content.Shared.Body;
+using Content.Shared.Body.Components;
+using Content.Shared.Mobs.Components;
+using Robust.Shared.Containers;
+using Robust.Shared.Map;
 using Content.Shared.Fluids.Components;
 using Content.Shared.Stacks;
 using Content.Shared._Stories.Heretic;
@@ -27,6 +32,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private SharedContainerSystem _containers = default!;
+    [Dependency] private OrganRelationSystem _relations = default!;
     [Dependency] private StackSystem _stack = default!;
 
     private static readonly EntProtoId ServeMaster = "STHereticObjectiveServeMaster";
@@ -71,6 +78,9 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             if (HasComp<PuddleComponent>(uid))
                 continue;
 
+            if (TryRecordLimb(uid, summon))
+                continue;
+
             if (TryComp<StackComponent>(uid, out var stack))
                 summon.Stacks.Add(stack.StackTypeId);
             else if (MetaData(uid).EntityPrototype is { } ingredient)
@@ -81,6 +91,60 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(args.Heretic):user} summoned {ToPrettyString(mob):target}");
         args.Success = true;
+    }
+
+    /// <summary>Отделённая часть тела (тело без MobState): запоминаем органы внутри.</summary>
+    private bool TryRecordLimb(EntityUid uid, StoriesHereticSummonComponent summon)
+    {
+        if (!HasComp<BodyComponent>(uid) || HasComp<MobStateComponent>(uid)
+            || MetaData(uid).EntityPrototype is not { } body
+            || !_containers.TryGetContainer(uid, BodyComponent.ContainerID, out var container))
+            return false;
+
+        var limb = new StoriesHereticSummonLimb { Body = body.ID };
+        var organs = container.ContainedEntities;
+        foreach (var organ in organs)
+        {
+            if (MetaData(organ).EntityPrototype is not { } proto)
+                continue;
+
+            var parent = -1;
+            if (TryComp<ChildOrganComponent>(organ, out var child) && child.Parent is { } parentUid)
+            {
+                for (var i = 0; i < limb.Organs.Count; i++)
+                {
+                    if (organs[i] == parentUid)
+                        parent = i;
+                }
+            }
+
+            limb.Organs.Add(proto.ID);
+            limb.Parents.Add(parent);
+        }
+
+        summon.Limbs.Add(limb);
+        return true;
+    }
+
+    private void SpawnLimb(StoriesHereticSummonLimb limb, EntityCoordinates coords)
+    {
+        var body = Spawn(limb.Body, coords);
+        if (!_containers.TryGetContainer(body, BodyComponent.ContainerID, out var container))
+            return;
+
+        var spawned = new List<EntityUid>();
+        foreach (var organ in limb.Organs)
+        {
+            var uid = Spawn(organ, coords);
+            _containers.Insert(uid, container, force: true);
+            spawned.Add(uid);
+        }
+
+        for (var i = 0; i < spawned.Count; i++)
+        {
+            if (limb.Parents[i] is >= 0 and var parent && parent < spawned.Count)
+                _relations.Relate(spawned[parent], spawned[i]);
+        }
     }
 
     private void OnMindAdded(Entity<StoriesHereticSummonComponent> ent, ref MindAddedMessage args)
@@ -134,6 +198,12 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         }
 
         ent.Comp.Ingredients.Clear();
+        foreach (var limb in ent.Comp.Limbs)
+        {
+            SpawnLimb(limb, coords);
+        }
+
+        ent.Comp.Limbs.Clear();
         _adminLog.Add(LogType.Action, LogImpact.Low,
             $"Summon {ToPrettyString(ent):target} of {ToPrettyString(ent.Comp.Master):user} collapsed ({message.Id})");
         _popup.PopupCoordinates(Loc.GetString(message, ("mob", ent.Owner)), coords, PopupType.MediumCaution);

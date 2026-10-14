@@ -538,4 +538,62 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(Hit(b), Is.EqualTo(2f));
         });
     }
+
+    [Test]
+    public async Task UnclaimedProphetReturnsDetachedArm()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var dismember = Server.System<StoriesHereticDismemberSystem>();
+        var puddles = Server.System<SharedPuddleSystem>();
+        var containers = Server.System<SharedContainerSystem>();
+        var timing = Server.ResolveDependency<IGameTiming>();
+        var armIngredient = new StoriesHereticIngredient { OrganCategory = "ArmLeft" };
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic.Comp.Points = 20;
+            foreach (var id in new[] { "Root", "Grasp", "Imperfect", "Mark", "Knitting", "Raw" })
+                Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFlesh" + id), Is.True, id);
+
+            var corpse = SSpawnAtPosition("MobHuman", coords);
+            Server.System<DamageableSystem>().TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            EntityUid Find(string cat) => containers.GetContainer(corpse, BodyComponent.ContainerID).ContainedEntities
+                .First(o => SEntMan.GetComponent<OrganComponent>(o).Category == cat);
+
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            Assert.That(containers.Remove(Find("Eyes"), containers.GetContainer(corpse, BodyComponent.ContainerID), destination: coords), Is.True);
+            Assert.That(dismember.Dismember(corpse, Find("ArmLeft")), Is.Not.Null);
+            Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+
+            var query = SEntMan.EntityQueryEnumerator<StoriesHereticSummonComponent>();
+            Assert.That(query.MoveNext(out _, out var summon), Is.True);
+            summon.ExpireTime = timing.CurTime;
+        });
+
+        await Pair.RunTicksSync(3);
+
+        await Server.WaitAssertion(() =>
+        {
+            var found = false;
+            var query = SEntMan.AllEntityQueryEnumerator<BodyComponent>();
+            while (query.MoveNext(out var body, out _))
+            {
+                if (SEntMan.HasComponent<MobStateComponent>(body) || SEntMan.IsQueuedForDeletion(body)
+                    || !containers.TryGetContainer(body, BodyComponent.ContainerID, out var container))
+                    continue;
+
+                if (container.ContainedEntities.Any(o => SEntMan.GetComponent<OrganComponent>(o).Category == "ArmLeft")
+                    && rituals.Matches(armIngredient, body))
+                    found = true;
+            }
+
+            Assert.That(found, Is.True, "Рука не вернулась в отделённом теле");
+        });
+    }
 }

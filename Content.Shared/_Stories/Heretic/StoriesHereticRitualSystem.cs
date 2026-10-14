@@ -42,6 +42,12 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
     private static readonly SoundSpecifier RitualSound = new SoundPathSpecifier("/Audio/Magic/staff_animation.ogg");
 
+    // Отделённая часть тела засчитывается только как конечность, а не как всё, что в ней лежит (глаза в голове).
+    private static readonly HashSet<ProtoId<OrganCategoryPrototype>> LimbCategories =
+    [
+        "Head", "ArmLeft", "ArmRight", "HandLeft", "HandRight", "LegLeft", "LegRight", "FootLeft", "FootRight",
+    ];
+
     private readonly HashSet<EntityUid> _nearby = new();
     private readonly HashSet<EntityUid> _used = new();
     private readonly List<EntityUid> _consumed = new();
@@ -330,6 +336,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
 
         // Отделённая часть тела (DetachedBody) — сущность без MobState, орган лежит в её контейнере.
         if (ingredient.OrganCategory != null
+            && LimbCategories.Contains(ingredient.OrganCategory.Value)
             && !HasComp<MobStateComponent>(uid)
             && _containers.TryGetContainer(uid, BodyComponent.ContainerID, out var bodyOrgans))
         {

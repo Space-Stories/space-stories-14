@@ -27,6 +27,12 @@ public sealed partial class StoriesHereticSummonComponent : Component
     [DataField]
     public List<ProtoId<StackPrototype>> Stacks = new();
 
+    /// <summary>
+    /// Поглощённые отделённые части тела: пустой DetachedBody потерял бы орган, поэтому помним и содержимое.
+    /// </summary>
+    [DataField]
+    public List<StoriesHereticSummonLimb> Limbs = new();
+
     [DataField]
     public TimeSpan ClaimTime = TimeSpan.FromMinutes(5);
 
@@ -43,4 +49,20 @@ public sealed partial class StoriesHereticSummonComponent : Component
     /// Схлопывание уже произошло, повторно не срабатывать.
     /// </summary>
     public bool Collapsed;
+}
+
+/// <summary>
+/// Отделённая часть тела: прототип тела, прототипы органов и индекс родителя каждого органа (-1 — корень).
+/// </summary>
+[DataDefinition]
+public sealed partial class StoriesHereticSummonLimb
+{
+    [DataField]
+    public EntProtoId Body;
+
+    [DataField]
+    public List<EntProtoId> Organs = new();
+
+    [DataField]
+    public List<int> Parents = new();
 }
