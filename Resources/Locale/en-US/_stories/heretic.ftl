@@ -116,3 +116,6 @@ stories-heretic-admin-verb-make = Make heretic
 stories-heretic-admin-verb-make-message = Makes the target a heretic: targets, objectives and the role are granted through the Heretic rule.
 stories-heretic-admin-verb-arrivals = The player is on the arrivals shuttle: antagonist roles are not granted there. Wait until it docks.
 stories-heretic-admin-verb-failed = Could not make the player a heretic: they are a ghost, on the arrivals shuttle or not a humanoid.
+stories-heretic-dismember-category = Dismember
+stories-heretic-dismember-verb = Detach: { $part }
+stories-heretic-dismember-done = { CAPITALIZE($user) } severs { $part } from { $corpse }'s body.
