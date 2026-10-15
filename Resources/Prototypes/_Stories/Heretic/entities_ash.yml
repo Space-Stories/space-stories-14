@@ -104,6 +104,15 @@
     sprite: _Stories/Heretic/scorched_mantle.rsi
   - type: Clothing
     sprite: _Stories/Heretic/scorched_mantle.rsi
+  # Капюшон нарисован на самой мантии, поэтому голова носителя под ней всегда скрыта.
+  - type: HideLayerClothing
+    layers:
+      Hair: OUTERCLOTHING
+      FacialHair: OUTERCLOTHING
+      Snout: OUTERCLOTHING
+      SnoutCover: OUTERCLOTHING
+      HeadTop: OUTERCLOTHING
+      HeadSide: OUTERCLOTHING
   - type: Item
     size: Normal
   - type: ToggleableClothing
