@@ -20,6 +20,7 @@ public sealed partial class StoriesHereticAshSystem
     {
         SubscribeLocalEvent<StoriesHereticScorchedMantleComponent, GotEquippedEvent>(OnMantleEquipped);
         SubscribeLocalEvent<StoriesHereticScorchedMantleComponent, GotUnequippedEvent>(OnMantleUnequipped);
+        SubscribeLocalEvent<StoriesHereticScorchedMantleComponent, ComponentShutdown>(OnMantleShutdown);
         SubscribeLocalEvent<StoriesHereticScorchedMantleComponent, StoriesHereticMantleFlamesEvent>(OnMantleFlames);
     }
 
@@ -77,10 +78,27 @@ public sealed partial class StoriesHereticAshSystem
 
     private void OnMantleUnequipped(Entity<StoriesHereticScorchedMantleComponent> ent, ref GotUnequippedEvent args)
     {
-        if (ent.Comp.Wearer != args.EquipTarget)
+        if (ent.Comp.Wearer == args.EquipTarget)
+            ReleaseWearer(ent);
+    }
+
+    /// <summary>
+    /// Страховка: мантия удалена или лишилась компонента, не пройдя через снятие.
+    /// </summary>
+    private void OnMantleShutdown(Entity<StoriesHereticScorchedMantleComponent> ent, ref ComponentShutdown args)
+    {
+        if (ent.Comp.Wearer is { } wearer && !TerminatingOrDeleted(wearer))
+            ReleaseWearer(ent);
+    }
+
+    /// <summary>
+    /// Снимает с носителя всё, что дала мантия: пламя, скрытую ауру, незатухающий огонь.
+    /// </summary>
+    private void ReleaseWearer(Entity<StoriesHereticScorchedMantleComponent> ent)
+    {
+        if (ent.Comp.Wearer is not { } wearer)
             return;
 
-        var wearer = args.EquipTarget;
         if (ent.Comp.Flames)
             SetMantleFlames(ent, wearer, false);
 
