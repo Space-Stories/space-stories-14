@@ -5,6 +5,7 @@ using Content.IntegrationTests.Fixtures;
 using Content.Shared._Stories.Heretic.Components;
 using Robust.Client.ResourceManagement;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Utility;
@@ -79,6 +80,9 @@ public sealed class HereticKnowledgeUiTest : GameTest
                     continue;
 
                 Assert.That(HasState(icon.RsiPath, icon.RsiState), entity.ID);
+                // Многонаправленная иконка в окне режется до одного кадра из сетки.
+                resources.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / icon.RsiPath).RSI.TryGetState(icon.RsiState, out var state);
+                Assert.That(state!.RsiDirections, Is.EqualTo(RsiDirectionType.Dir1), $"{entity.ID}: иконка знания не однонаправленная");
             }
 
             // Окно собирается со всеми состояниями узлов, с иконкой и без.

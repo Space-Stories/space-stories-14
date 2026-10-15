@@ -56,10 +56,17 @@ public sealed partial class StoriesHereticMarkVisualsSystem : EntitySystem
 
     private void Update(Entity<StoriesHereticMarkComponent> ent)
     {
-        if (!TryComp<SpriteComponent>(ent, out var sprite) || !States.TryGetValue(ent.Comp.Path, out var state))
+        if (!TryComp<SpriteComponent>(ent, out var sprite))
             return;
 
         var uid = (ent.Owner, sprite);
+        // Путь без печати в таблице: прежняя печать не должна остаться висеть.
+        if (!States.TryGetValue(ent.Comp.Path, out var state))
+        {
+            _sprite.RemoveLayer(uid, LayerKey, false);
+            return;
+        }
+
         if (_sprite.LayerMapTryGet(uid, LayerKey, out var layer, false))
         {
             _sprite.LayerSetRsiState(uid, LayerKey, state);

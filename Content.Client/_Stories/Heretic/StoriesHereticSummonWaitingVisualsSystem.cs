@@ -21,13 +21,17 @@ public sealed partial class StoriesHereticSummonWaitingVisualsSystem : EntitySys
 
     private void OnInit(Entity<StoriesHereticSummonWaitingComponent> ent, ref ComponentInit args)
     {
-        if (TryComp<SpriteComponent>(ent, out var sprite))
-            _sprite.SetColor((ent.Owner, sprite), Color.White.WithAlpha(0.5f));
+        if (!TryComp<SpriteComponent>(ent, out var sprite))
+            return;
+
+        // Прежний цвет спрайта (окраска моба) вернётся, когда роль займут.
+        ent.Comp.OriginalColor = sprite.Color;
+        _sprite.SetColor((ent.Owner, sprite), sprite.Color.WithAlpha(sprite.Color.A * 0.5f));
     }
 
     private void OnRemove(Entity<StoriesHereticSummonWaitingComponent> ent, ref ComponentRemove args)
     {
-        if (!TerminatingOrDeleted(ent) && TryComp<SpriteComponent>(ent, out var sprite))
-            _sprite.SetColor((ent.Owner, sprite), Color.White);
+        if (!TerminatingOrDeleted(ent) && ent.Comp.OriginalColor is { } color && TryComp<SpriteComponent>(ent, out var sprite))
+            _sprite.SetColor((ent.Owner, sprite), color);
     }
 }

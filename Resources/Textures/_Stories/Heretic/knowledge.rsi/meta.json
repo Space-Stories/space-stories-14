@@ -59,8 +59,7 @@
       "name": "summon_raw_prophet"
     },
     {
-      "name": "summon_stalker",
-      "directions": 4
+      "name": "summon_stalker"
     }
   ]
 }
