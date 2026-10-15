@@ -70,7 +70,8 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         EnsureComp<StoriesHereticRaisedComponent>(corpse);
         _conversion.TryConvert(corpse, conversion, master);
         _heretic.MakeServant(corpse, master);
-        if (!_mind.TryAddObjective(mindId, mind!, ServeMaster))
+        if (!_mind.TryFindObjective((mindId, mind), ServeMaster, out _)
+            && !_mind.TryAddObjective(mindId, mind!, ServeMaster))
             Log.Error($"Failed to add objective {ServeMaster} to ghoul {ToPrettyString(corpse)}");
 
         if (_player.TryGetSessionById(mind!.UserId, out var session))
