@@ -20,3 +20,69 @@
         Slash: 17
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+
+- type: entity
+  parent: ClothingOuterBase
+  id: STHereticWrithingEmbrace
+  name: Writhing Embrace
+  description: A rotten carcass, or perhaps several, twisted into fleshy polyps, knotted intestines and cracked bone. How one 'wears' this baffles reasonable understanding. It moves when it believes itself unobserved.
+  components:
+  - type: StoriesHereticWrithingEmbrace
+  - type: Sprite
+    sprite: _Stories/Heretic/writhing_embrace.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/writhing_embrace.rsi
+  - type: Item
+    size: Normal
+  - type: ToggleableClothing
+    clothingPrototype: STHereticWrithingEmbraceHood
+    slot: head
+    verbText: toggle-clothing-verb-hood
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+  - type: AllowSuitStorage
+    whitelist:
+      components:
+      - StoriesHereticBlade
+  # Броня tg: ближний бой 70, пули 40, лазер 30, кислота 100, взрывы 35; от огня не защищает.
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.6
+        Heat: 0.7
+        Caustic: 0
+  - type: ExplosionResistance
+    damageCoefficient: 0.65
+
+- type: entity
+  parent: [ ClothingHeadBase, ShowMedicalIcons ]
+  id: STHereticWrithingEmbraceHood
+  name: Writhing Embrace hood
+  description: A rotten carcass twisted into fleshy polyps. Eyes-not-yours peer out of it.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/writhing_embrace_hood.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/writhing_embrace_hood.rsi
+    quickEquip: false
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+      FacialHair: HEAD
+      Snout: HEAD
+      SnoutCover: HEAD
+      HeadTop: HEAD
+      HeadSide: HEAD
+  - type: StoriesHereticFocus
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.6
+        Heat: 0.7
+        Caustic: 0

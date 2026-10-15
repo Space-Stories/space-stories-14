@@ -121,6 +121,8 @@ stories-heretic-mantle-flames-on = The mantle flares up.
 stories-heretic-mantle-flames-off = The mantle's flames die down.
 stories-heretic-mantle-burns = The mantle bursts into flame and bites into your flesh!
 stories-heretic-mantle-limb-burnt = The mantle burns your limb to ash!
+stories-heretic-embrace-wounds = The mantle writhes and sinks its teeth into you!
+stories-heretic-embrace-wound = Something in the mantle tears your flesh open!
 stories-guide-entry-heretic = Heretic
 stories-heretic-aura-examine = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } crackling with a swirling green vortex of energy.[/color]
 stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } shedding { POSS-ADJ($ent) } mortal shell![/color]

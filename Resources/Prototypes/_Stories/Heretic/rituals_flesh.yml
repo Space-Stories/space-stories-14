@@ -85,3 +85,22 @@
   - type: StoriesHereticFleshAscensionRitual
     actions:
     - STActionHereticShedForm
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualFleshMantle
+  name: Writhing Embrace
+  description: A table or any outer clothing, any mask and a pool of blood.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-table-or-suit
+      whitelist:
+        components: [ Bonkable ] # Есть только у столов.
+      clothingSlots: OUTERCLOTHING
+    - name: stories-heretic-ingredient-any-mask
+      clothingSlots: MASK
+    - name: stories-heretic-ingredient-blood
+      reagents: [ Blood, InsectBlood, CopperBlood, AmmoniaBlood, Slime ]
+    results:
+    - STHereticWrithingEmbrace

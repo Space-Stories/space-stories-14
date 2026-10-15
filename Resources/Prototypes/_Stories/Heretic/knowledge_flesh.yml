@@ -155,3 +155,21 @@
     requires: [ STHereticKnowledgeFleshLonely ]
     rituals:
     - STHereticRitualFleshAscension
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshMantle
+  name: Writhing Embrace
+  description: |-
+    Forge a Writhing Embrace. Its hood shows the health of everyone around, and the mantle slowly heals your servants nearby.
+
+    I tugged these wretched, slothing things about me, like one might a warm blanket. With eyes-not-mine, they will witness. With teeth-not-mine, they will clench. With limbs-not-mine, they will break.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/writhing_embrace.rsi
+      state: icon
+    stage: 6
+    requires: [ STHereticKnowledgeFleshKnitting ]
+    rituals:
+    - STHereticRitualFleshMantle

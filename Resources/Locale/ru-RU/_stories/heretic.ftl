@@ -134,6 +134,8 @@ stories-heretic-mantle-flames-on = Мантия разгорается.
 stories-heretic-mantle-flames-off = Пламя мантии гаснет.
 stories-heretic-mantle-burns = Мантия вспыхивает и вгрызается в вашу плоть!
 stories-heretic-mantle-limb-burnt = Мантия сжигает вашу конечность дотла!
+stories-heretic-embrace-wounds = Мантия извивается и вонзает в вас зубы!
+stories-heretic-embrace-wound = Что-то в мантии рвёт вашу плоть!
 stories-guide-entry-heretic = Еретик
 stories-heretic-aura-examine = [color=#3fbf3f]Вокруг { GENDER($ent) ->
     [female] неё
