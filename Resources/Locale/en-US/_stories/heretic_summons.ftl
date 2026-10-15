@@ -6,3 +6,5 @@ stories-heretic-summon-unclaimed = { CAPITALIZE($mob) } never found a soul and d
 stories-heretic-summon-collapse = { CAPITALIZE($mob) } collapses in on itself!
 stories-heretic-ghost-role-raw-prophet-name = Raw Prophet
 stories-heretic-ghost-role-raw-prophet-desc = An abomination stitched together from several severed arms and one swollen, orphaned eye. Serve your master.
+stories-heretic-ghost-role-stalker-name = Stalker
+stories-heretic-ghost-role-stalker-desc = An abomination assembled from assorted remains. Its shape shifts a little every time you blink. Serve your master.
