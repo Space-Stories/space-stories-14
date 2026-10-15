@@ -38,8 +38,6 @@
     - state: worm_ascend
   - type: InstantAction
     event: !type:StoriesHereticShedFormEvent
-  - type: SpeakOnAction
-    sentence: stories-heretic-shed-form-speech
 
 # Действия Сырого пророка: без StoriesHereticRequiresFocus, моб не еретик.
 - type: entity

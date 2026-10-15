@@ -3,6 +3,7 @@ using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Actions;
 using Content.Shared.Body;
 using Content.Shared.Body.Components;
+using Content.Shared.Chat;
 using Content.Shared.Examine;
 using Content.Shared.Humanoid;
 using Content.Shared.Interaction;
@@ -89,8 +90,14 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void OnShedForm(Entity<StoriesHereticComponent> ent, ref StoriesHereticShedFormEvent args)
     {
-        // Handled (перезарядка и крик) — только если превращение удалось.
-        if (args.Handled || _polymorph.PolymorphEntity(ent, args.Polymorph) is not { } lord)
+        if (args.Handled)
+            return;
+
+        // Кричим до превращения: после него тело уже в хранилище полиморфа, и крик никто не услышит.
+        _chat.TrySendInGameICMessage(ent, Loc.GetString(args.Speech), InGameICChatType.Speak, false);
+
+        // Handled (перезарядка) — только если превращение удалось.
+        if (_polymorph.PolymorphEntity(ent, args.Polymorph) is not { } lord)
             return;
 
         args.Handled = true;

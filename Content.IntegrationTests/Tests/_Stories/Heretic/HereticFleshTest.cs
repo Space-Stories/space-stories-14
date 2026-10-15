@@ -964,6 +964,68 @@ public sealed class HereticFleshTest : GameTest
         });
     }
 
+    private static readonly EntProtoId ShedFormAction = "STActionHereticShedForm";
+
+    /// <summary>Еретик с разумом сбрасывает форму: возвращает Владыку Ночи.</summary>
+    private EntityUid ShedForm(EntityUid uid)
+    {
+        var minds = Server.System<MindSystem>();
+        var actions = Server.System<SharedActionsSystem>();
+        var mindId = minds.CreateMind(null);
+        minds.TransferTo(mindId, uid);
+        SEntMan.AddComponent<StoriesHereticComponent>(uid);
+        var shed = actions.AddAction(uid, ShedFormAction);
+        Assert.That(shed, Is.Not.Null);
+        actions.PerformAction(uid, (shed!.Value, SEntMan.GetComponent<ActionComponent>(shed.Value)), predicted: false);
+        var lord = SEntMan.GetComponent<MindComponent>(mindId).OwnedEntity!.Value;
+        Assert.That(SEntMan.GetComponent<MetaDataComponent>(lord).EntityPrototype?.ID, Is.EqualTo("STHereticMobLordOfNight"));
+        return lord;
+    }
+
+    [Test]
+    public async Task ShedFormKeepsInventory()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var inventory = Server.System<InventorySystem>();
+        var polymorph = Server.System<PolymorphSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            Assert.That(inventory.SpawnItemInSlot(uid, "id", "PassengerIDCard", true, true), Is.True);
+            Assert.That(inventory.TryGetSlotEntity(uid, "id", out var card), Is.True);
+
+            var lord = ShedForm(uid);
+            Assert.That(polymorph.Revert(lord), Is.EqualTo(uid));
+            Assert.That(inventory.TryGetSlotEntity(uid, "id", out var after) && after == card, Is.True, "Карта не осталась в слоте");
+        });
+    }
+
+    [Test]
+    public async Task LordOfNightDeathKillsHeretic()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var damageable = Server.System<DamageableSystem>();
+        var mobState = Server.System<MobStateSystem>();
+        var uid = EntityUid.Invalid;
+
+        await Server.WaitAssertion(() =>
+        {
+            uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var lord = ShedForm(uid);
+            damageable.TryChangeDamage(lord, new DamageSpecifier { DamageDict = new() { { "Slash", 1000 } } }, true);
+        });
+
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.HasComponent<StoriesHereticComponent>(uid), Is.True);
+            Assert.That(SEntMan.GetComponent<TransformComponent>(uid).MapID, Is.EqualTo(testMap.MapId), "Еретик не вернулся из формы");
+            Assert.That(mobState.IsDead(uid), Is.True, "Смерть Владыки не убила еретика");
+        });
+    }
+
     [Test]
     public async Task LordOfNightEatsDetachedArm()
     {

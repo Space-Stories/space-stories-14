@@ -245,4 +245,10 @@ public sealed partial class StoriesHereticShedFormEvent : InstantActionEvent
 
     [DataField]
     public LocId FearMessage = "stories-heretic-lord-fear";
+
+    /// <summary>
+    /// Крик перед превращением: произносится обработчиком, пока еретик ещё на станции.
+    /// </summary>
+    [DataField]
+    public LocId Speech = "stories-heretic-shed-form-speech";
 }

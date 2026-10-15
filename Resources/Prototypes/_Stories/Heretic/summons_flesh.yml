@@ -268,12 +268,13 @@
     - DoorBumpOpener
     - StunImmune
 
+# Снаряжение остаётся на сохранённом теле еретика, как в tg.
 - type: polymorph
   id: STHereticLordOfNight
   configuration:
     entity: STHereticMobLordOfNight
     transferName: true
-    inventory: Drop
+    inventory: None
     forced: false
     transferDamage: true
     revertOnDeath: true
