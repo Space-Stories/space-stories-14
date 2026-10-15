@@ -165,3 +165,21 @@
     requires: [ STHereticKnowledgeAshRebirth ]
     rituals:
     - STHereticRitualAshAscension
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshMantle
+  name: Scorched Mantle
+  description: |-
+    Forge a Scorched Mantle. Full protection from fire, and the mantle can keep the flames going on its own.
+
+    The Watch stood where they fell, crumbling out of sight. But the winds that blow through the city call them back to duty: dust rises into the air, the drifting silhouette of the fallen.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/scorched_mantle.rsi
+      state: icon
+    stage: 6
+    requires: [ STHereticKnowledgeAshVolcano ]
+    rituals:
+    - STHereticRitualAshMantle

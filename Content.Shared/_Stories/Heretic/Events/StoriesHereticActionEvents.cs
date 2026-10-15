@@ -8,6 +8,11 @@ namespace Content.Shared._Stories.Heretic.Events;
 
 public sealed partial class StoriesHereticOpenKnowledgeEvent : InstantActionEvent;
 
+/// <summary>
+/// Переключает пламя Обугленной мантии. Поднимается на мантии.
+/// </summary>
+public sealed partial class StoriesHereticMantleFlamesEvent : InstantActionEvent;
+
 public sealed partial class StoriesHereticDrawRuneEvent : WorldTargetActionEvent
 {
     [DataField]

@@ -1,6 +1,7 @@
 using Content.Shared.Body;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.FixedPoint;
+using Content.Shared.Inventory;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
 
@@ -57,6 +58,12 @@ public sealed partial class StoriesHereticIngredient
 
     [DataField]
     public FixedPoint2 ReagentAmount = 10;
+
+    /// <summary>
+    /// Любая одежда, которую можно надеть в один из этих слотов («любая маска», «любая верхняя одежда»).
+    /// </summary>
+    [DataField]
+    public SlotFlags? ClothingSlots;
 
     [DataField]
     public int Amount = 1;

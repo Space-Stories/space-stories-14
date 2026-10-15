@@ -5,6 +5,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Containers;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Clothing.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Fluids.Components;
 using Content.Shared.FixedPoint;
@@ -367,6 +368,11 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             if (amount >= ingredient.ReagentAmount)
                 return true;
         }
+
+        if (ingredient.ClothingSlots is { } slots
+            && TryComp<ClothingComponent>(uid, out var clothing)
+            && (clothing.Slots & slots) != 0)
+            return true;
 
         return false;
     }

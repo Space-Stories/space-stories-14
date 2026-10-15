@@ -135,4 +135,10 @@ public sealed partial class StoriesHereticComponent : Component
 
     [DataField]
     public EntityUid? AuraEntity;
+
+    /// <summary>
+    /// Аура скрыта одеждой (Обугленная мантия), как TRAIT_HERETIC_AURA_HIDDEN в tg.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public bool AuraHidden;
 }

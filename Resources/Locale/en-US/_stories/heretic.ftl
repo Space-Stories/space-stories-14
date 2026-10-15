@@ -114,6 +114,13 @@ stories-heretic-ingredient-mask = breath, gas or sterile mask
 stories-heretic-ingredient-stunbaton = stun baton
 stories-heretic-ingredient-liver = liver
 stories-heretic-ingredient-blood = pool of blood
+
+stories-heretic-ingredient-table-or-suit = table or any outer clothing
+stories-heretic-ingredient-any-mask = any mask
+stories-heretic-mantle-flames-on = The mantle flares up.
+stories-heretic-mantle-flames-off = The mantle's flames die down.
+stories-heretic-mantle-burns = The mantle bursts into flame and bites into your flesh!
+stories-heretic-mantle-limb-burnt = The mantle burns your limb to ash!
 stories-guide-entry-heretic = Heretic
 stories-heretic-aura-examine = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } crackling with a swirling green vortex of energy.[/color]
 stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } shedding { POSS-ADJ($ent) } mortal shell![/color]

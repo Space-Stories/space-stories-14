@@ -78,3 +78,24 @@
     - type: ExplosionResistance
       damageCoefficient: 0
       worn: false
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualAshMantle
+  name: Scorched Mantle
+  description: A table or any outer clothing, any mask and a match or lighter.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-table-or-suit
+      whitelist:
+        components: [ Bonkable ] # Есть только у столов.
+      clothingSlots: OUTERCLOTHING
+    - name: stories-heretic-ingredient-any-mask
+      clothingSlots: MASK
+    - name: stories-heretic-ingredient-fire
+      whitelist:
+        tags: [ Matchstick ]
+      prototypes: [ Lighter, CheapLighter ]
+    results:
+    - STHereticScorchedMantle

@@ -92,3 +92,77 @@
   - type: Tag
     tags:
     - HideContextMenu
+
+- type: entity
+  parent: ClothingOuterBase
+  id: STHereticScorchedMantle
+  name: Scorched Mantle
+  description: Left to burn to tatters, what remains is naught but a blackened echo of the mantle of the Watch. Yet the soot-choked folds turn blade and flame from the form within. A brief reprieve before its gaze turns inwards.
+  components:
+  - type: StoriesHereticScorchedMantle
+  - type: Sprite
+    sprite: _Stories/Heretic/scorched_mantle.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/scorched_mantle.rsi
+  - type: Item
+    size: Normal
+  - type: ToggleableClothing
+    clothingPrototype: STHereticScorchedMantleHood
+    slot: head
+    verbText: toggle-clothing-verb-hood
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+  - type: AllowSuitStorage
+    whitelist:
+      components:
+      - StoriesHereticBlade
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.4
+        Heat: 0.5
+        Radiation: 0
+        Caustic: 0.8
+  - type: ExplosionResistance
+    damageCoefficient: 0
+  # Горение не наносит урона. Теплоизоляция в SS14 общая для жара и холода.
+  - type: FireProtection
+    reduction: 1
+  - type: TemperatureProtection
+    coefficient: 0.01
+  - type: ActionGrant
+    actions:
+    - STActionHereticMantleFlames
+  - type: ItemActionGrant
+    activeIfWorn: true
+
+- type: entity
+  parent: ClothingHeadBase
+  id: STHereticScorchedMantleHood
+  name: Scorched Mantle hood
+  description: Left to burn to tatters, what remains is naught but a blackened echo of the mantle of the Watch.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/scorched_mantle_hood.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/scorched_mantle_hood.rsi
+    quickEquip: false
+  - type: StoriesHereticFocus
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.4
+        Heat: 0.5
+        Radiation: 0
+        Caustic: 0.8
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide

@@ -97,6 +97,8 @@ public sealed partial class StoriesHereticAshSystem
                 _statusEffects.TryUpdateStatusEffectDuration(mob, HallucinationEffect, mask.HallucinationTime);
             }
         }
+
+        UpdateMantles(now);
     }
 
     private void OnMaskEquipped(Entity<StoriesHereticMadnessMaskComponent> ent, ref GotEquippedEvent args)

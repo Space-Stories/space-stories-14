@@ -105,3 +105,23 @@
       damage:
         types:
           Heat: 20
+
+- type: entity
+  id: STActionHereticMantleFlames
+  name: Mantle Flames
+  description: Toggle the mantle's flames. While lit, it adds fire to you every few seconds.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 1
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: flames
+  - type: InstantAction
+    event: !type:StoriesHereticMantleFlamesEvent
+  - type: ActionUserWhitelist
+    whitelist:
+      components:
+      - StoriesHeretic
