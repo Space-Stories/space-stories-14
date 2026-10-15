@@ -7,6 +7,7 @@ stories-heretic-flesh-imperfect-no-master = Хозяин сгинул: Манс�
 stories-heretic-flesh-voiceless-name = Безгласный мертвец
 stories-heretic-flesh-voiceless-description = Вы — труп, поднятый еретиком на Пути Плоти. Вы немы.
 stories-heretic-flesh-voiceless-rules = Вы — безгласный мертвец и служите своему хозяину. Вы антагонист.
+stories-heretic-knit-speech = CL'M M'N!
 stories-heretic-knit-category = Извлечь орган
 stories-heretic-knit-verb = Извлечь: { $part }
 stories-heretic-knit-done = { CAPITALIZE($user) } вырывает { $part } из тела { $target }.

@@ -7,6 +7,7 @@ stories-heretic-flesh-imperfect-no-master = Your master is gone: the Mansus has 
 stories-heretic-flesh-voiceless-name = Voiceless Dead
 stories-heretic-flesh-voiceless-description = You are a corpse raised by a heretic on the Path of Flesh. You are mute.
 stories-heretic-flesh-voiceless-rules = You are the Voiceless Dead and serve your master. You are an antagonist.
+stories-heretic-knit-speech = CL'M M'N!
 stories-heretic-knit-category = Extract organ
 stories-heretic-knit-verb = Extract: { $part }
 stories-heretic-knit-done = { CAPITALIZE($user) } tears { $part } out of { $target }.

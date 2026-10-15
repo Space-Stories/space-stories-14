@@ -1,3 +1,4 @@
+using Content.Server.Polymorph.Components;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Actions;
@@ -10,9 +11,11 @@ using Content.Shared.Interaction;
 using Content.Shared.Jittering;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Polymorph;
 using Content.Shared.Popups;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
@@ -20,6 +23,7 @@ namespace Content.Server._Stories.Heretic.Flesh;
 public sealed partial class StoriesHereticFleshSystem
 {
     [Dependency] private IComponentFactory _factory = default!;
+    [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedActionsSystem _actions = default!;
     [Dependency] private ExamineSystemShared _examine = default!;
@@ -94,10 +98,15 @@ public sealed partial class StoriesHereticFleshSystem
             return;
 
         // Кричим до превращения: после него тело уже в хранилище полиморфа, и крик никто не услышит.
+        // Поэтому сначала те же проверки, что делает PolymorphEntity: без превращения крика нет.
+        var config = ProtoMan.Index(args.Polymorph).Configuration;
+        if (!CanPolymorph(ent, config))
+            return;
+
         _chat.TrySendInGameICMessage(ent, Loc.GetString(args.Speech), InGameICChatType.Speak, false);
 
         // Handled (перезарядка) — только если превращение удалось.
-        if (_polymorph.PolymorphEntity(ent, args.Polymorph) is not { } lord)
+        if (_polymorph.PolymorphEntity(ent, config) is not { } lord)
             return;
 
         args.Handled = true;
@@ -119,6 +128,22 @@ public sealed partial class StoriesHereticFleshSystem
             _statusEffects.TryUpdateStatusEffectDuration(witness, args.DizzyEffect, args.DizzyTime);
             _popup.PopupEntity(Loc.GetString(args.FearMessage), witness, witness, PopupType.LargeCaution);
         }
+    }
+
+    /// <summary>
+    /// Условия отказа <c>PolymorphSystem.PolymorphEntity</c>
+    /// до спавна новой формы: повторное превращение и перезарядка полиморфа.
+    /// </summary>
+    private bool CanPolymorph(EntityUid uid, PolymorphConfiguration config)
+    {
+        if (!config.IgnoreAllowRepeatedMorphs
+            && TryComp<PolymorphedEntityComponent>(uid, out var current)
+            && !current.Configuration.AllowRepeatedMorphs)
+            return false;
+
+        return !TryComp<PolymorphableComponent>(uid, out var polymorphable)
+               || polymorphable.LastPolymorphEnd is not { } end
+               || _timing.CurTime >= end + config.Cooldown;
     }
 
     private void OnArmEaterActivate(Entity<StoriesHereticArmEaterComponent> ent, ref UserActivateInWorldEvent args)

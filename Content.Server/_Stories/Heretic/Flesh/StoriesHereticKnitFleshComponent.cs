@@ -1,3 +1,5 @@
+using Content.Shared.EntityEffects;
+using Content.Shared.EntityEffects.Effects.Damage;
 using Robust.Shared.Audio;
 
 namespace Content.Server._Stories.Heretic.Flesh;
@@ -15,13 +17,25 @@ public sealed partial class StoriesHereticKnitFleshComponent : Component
     public TimeSpan LivingTime = TimeSpan.FromSeconds(15);
 
     [DataField]
-    public float HealBrute = 10;
-
-    [DataField]
-    public float HealBurn = 5;
+    public TimeSpan HealTime = TimeSpan.FromSeconds(1);
 
     /// <summary>
-    /// Дальше этого извлечение органа прерывается.
+    /// Лечение слуги: 10 Brute и 5 Burn, распределённые по имеющемуся урону.
+    /// </summary>
+    [DataField]
+    public EntityEffect[] Heal =
+    [
+        new DistributedHealthChange { Damage = new() { ["Brute"] = -10, ["Burn"] = -5 } },
+    ];
+
+    /// <summary>
+    /// Шёпот при касании слуги.
+    /// </summary>
+    [DataField]
+    public LocId HealSpeech = "stories-heretic-knit-speech";
+
+    /// <summary>
+    /// Дальше этого извлечение органа и лечение прерываются.
     /// </summary>
     [DataField]
     public float DistanceThreshold = 1.5f;

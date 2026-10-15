@@ -6,9 +6,9 @@ using Content.Shared.Body;
 using Content.Shared.Body.Components;
 using Content.Shared.Chat;
 using Content.Shared.Chat.Prototypes;
-using Content.Shared.Damage.Prototypes;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
+using Content.Shared.EntityEffects;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Popups;
@@ -28,13 +28,12 @@ public sealed partial class StoriesHereticFleshSystem
     [Dependency] private SharedChatSystem _chat = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
+    [Dependency] private SharedEntityEffectsSystem _effects = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private OrganRelationSystem _relations = default!;
     [Dependency] private StatusEffectsSystem _statusEffects = default!;
 
-    private static readonly ProtoId<DamageGroupPrototype> BruteGroup = "Brute";
-    private static readonly ProtoId<DamageGroupPrototype> BurnGroup = "Burn";
     private static readonly ProtoId<EmotePrototype> ScreamEmote = "Scream";
     private static readonly EntProtoId SlurredEffect = "StatusEffectSlurred";
     private static readonly ProtoId<OrganCategoryPrototype> HeartCategory = "Heart";
@@ -48,6 +47,7 @@ public sealed partial class StoriesHereticFleshSystem
     private void InitializeKnit()
     {
         SubscribeLocalEvent<StoriesHereticKnitFleshComponent, StoriesHereticKnitFleshEvent>(OnKnitFlesh);
+        SubscribeLocalEvent<StoriesHereticKnitFleshComponent, StoriesHereticKnitHealDoAfterEvent>(OnKnitHealDoAfter);
         SubscribeLocalEvent<BodyComponent, StoriesHereticKnitExtractDoAfterEvent>(OnKnitDoAfter);
         SubscribeLocalEvent<HumanoidProfileComponent, GetVerbsEvent<AlternativeVerb>>(OnGetExtractVerbs);
     }
@@ -57,10 +57,32 @@ public sealed partial class StoriesHereticFleshSystem
         if (args.Handled || !_heretic.IsServant(args.Target, ent) || !_mobState.IsAlive(args.Target))
             return;
 
+        // Перезарядка (Handled) тратится, только если лечение началось.
+        if (!_doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager,
+            ent,
+            ent.Comp.HealTime,
+            new StoriesHereticKnitHealDoAfterEvent(),
+            ent,
+            target: args.Target)
+        {
+            BreakOnMove = true,
+            DistanceThreshold = ent.Comp.DistanceThreshold,
+            DuplicateCondition = DuplicateConditions.SameTarget | DuplicateConditions.SameEvent,
+        }))
+            return;
+
         args.Handled = true;
-        _damageable.HealDistributed(args.Target, -ent.Comp.HealBrute, BruteGroup, ent);
-        _damageable.HealDistributed(args.Target, -ent.Comp.HealBurn, BurnGroup, ent);
-        _audio.PlayPvs(ent.Comp.HealSound, args.Target);
+        _chat.TrySendInGameICMessage(ent, Loc.GetString(ent.Comp.HealSpeech), InGameICChatType.Whisper, false);
+    }
+
+    private void OnKnitHealDoAfter(Entity<StoriesHereticKnitFleshComponent> ent, ref StoriesHereticKnitHealDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled || args.Target is not { } target || !_mobState.IsAlive(target))
+            return;
+
+        args.Handled = true;
+        _effects.ApplyEffects(target, ent.Comp.Heal, user: ent);
+        _audio.PlayPvs(ent.Comp.HealSound, target);
     }
 
     /// <summary>Глаголы «Извлечь: орган». Подписка на гуманоида: тело уже занято расчленением.</summary>
@@ -162,9 +184,11 @@ public sealed partial class StoriesHereticFleshSystem
             return false;
 
         var dropAt = Transform(target).Coordinates;
-        _relations.Orphan(organ);
         if (!_containers.Remove(organ, container, destination: dropAt))
             return false;
+
+        // Связь с родителем рвём только после удачного извлечения: иначе орган остался бы в теле без родителя.
+        _relations.Orphan(organ);
 
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(user):user} extracted {ToPrettyString(organ):entity} from {ToPrettyString(target):target}");

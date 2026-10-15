@@ -87,6 +87,10 @@ public sealed partial class StoriesHereticDismemberDoAfterEvent : SimpleDoAfterE
 [Serializable, NetSerializable]
 public sealed partial class StoriesHereticKnitExtractDoAfterEvent : SimpleDoAfterEvent;
 
+/// <summary>Лечение слуги заклинанием «Сшить плоть».</summary>
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticKnitHealDoAfterEvent : SimpleDoAfterEvent;
+
 /// <summary>Связь Мансуса: DoAfter привязки цели к каналу пророка завершён.</summary>
 [Serializable, NetSerializable]
 public sealed partial class StoriesHereticMansusLinkDoAfterEvent : SimpleDoAfterEvent;

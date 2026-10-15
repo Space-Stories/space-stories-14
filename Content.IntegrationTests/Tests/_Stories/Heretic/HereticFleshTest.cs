@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Content.IntegrationTests.Tests.Helpers;
+using Content.Shared.Chat;
 using Content.Server._Stories.Heretic;
 using Content.Server._Stories.Heretic.Flesh;
 using Content.Server._Stories.Heretic.Ghouls;
@@ -468,35 +470,53 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(bloodstream.BleedAmount, Is.EqualTo(before), "По мёртвым без эффекта");
         });
     }
+    private sealed class SpokeListenerSystem : TestListenerSystem<EntitySpokeEvent>;
+
     [Test]
     public async Task KnitFleshHealsServantOnly()
     {
         var testMap = await Pair.CreateTestMap();
+        var listener = Server.System<SpokeListenerSystem>();
+        var heretic = EntityUid.Invalid;
+        var servant = EntityUid.Invalid;
+        var stranger = EntityUid.Invalid;
+
+        float Blunt(EntityUid uid) => (float) SEntMan.GetComponent<DamageableComponent>(uid).Damage.DamageDict["Blunt"];
 
         await Server.WaitAssertion(() =>
         {
             var coords = testMap.GridCoords;
-            var heretic = SSpawnAtPosition("MobHuman", coords);
-            var servant = SSpawnAtPosition("MobHuman", coords);
-            var stranger = SSpawnAtPosition("MobHuman", coords);
+            heretic = SSpawnAtPosition("MobHuman", coords);
+            servant = SSpawnAtPosition("MobHuman", coords);
+            stranger = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<StoriesHereticKnitFleshComponent>(heretic);
+            SEntMan.AddComponent<TestListenerComponent>(heretic);
             Server.System<StoriesHereticSystem>().MakeServant(servant, heretic);
             var dmg = new DamageSpecifier { DamageDict = new() { { "Blunt", 30 } } };
             Server.System<DamageableSystem>().TryChangeDamage(servant, dmg, true);
             Server.System<DamageableSystem>().TryChangeDamage(stranger, dmg, true);
 
-            float Blunt(EntityUid uid) => (float) SEntMan.GetComponent<DamageableComponent>(uid).Damage.DamageDict["Blunt"];
-
             var ev = new StoriesHereticKnitFleshEvent { Performer = heretic, Target = stranger };
             SEntMan.EventBus.RaiseLocalEvent(heretic, (object) ev);
             Assert.That(ev.Handled, Is.False, "Чужих не лечим и перезарядку не тратим");
-            Assert.That(Blunt(stranger), Is.EqualTo(30f));
+            Assert.That(listener.Count(heretic), Is.Zero, "Шёпот без лечения");
 
             ev = new StoriesHereticKnitFleshEvent { Performer = heretic, Target = servant };
             SEntMan.EventBus.RaiseLocalEvent(heretic, (object) ev);
-            Assert.That(ev.Handled, Is.True);
-            Assert.That(Blunt(servant), Is.EqualTo(20f));
+            Assert.That(ev.Handled, Is.True, "Лечение не началось");
+            Assert.That(Blunt(servant), Is.EqualTo(30f), "Лечение мгновенное, без DoAfter");
+            var whisper = listener.GetEvents(heretic).SingleOrDefault();
+            Assert.That(whisper, Is.Not.Null, "Нет шёпота при касании");
+            Assert.That(whisper!.Message, Is.EqualTo(Loc.GetString("stories-heretic-knit-speech")));
+            Assert.That(whisper.ObfuscatedMessage, Is.Not.Null, "Заклинание сказано вслух, а не шёпотом");
+            Assert.That(Blunt(stranger), Is.EqualTo(30f));
         });
+
+        // DoAfter 1 с.
+        await Pair.RunSeconds(1.5f);
+
+        // На тестовой карте нет воздуха: оба получают одинаковую баротравму, чужой служит контролем.
+        await Server.WaitAssertion(() => Assert.That(Blunt(servant), Is.EqualTo(Blunt(stranger) - 10f).Within(0.01f), "Слуга не вылечен после DoAfter"));
     }
 
     [Test]
@@ -532,8 +552,13 @@ public sealed class HereticFleshTest : GameTest
 
             Assert.That(Find("Brain"), Is.Not.Null);
             var organ = Find("Liver")!.Value;
+            var child = SEntMan.GetComponent<ChildOrganComponent>(organ);
+            var parent = child.Parent;
+            Assert.That(parent, Is.Not.Null, "Печень не связана с родительским органом");
             Assert.That(knit.Extract(heretic, victim, organ), Is.True);
             Assert.That(Find("Liver"), Is.Null, "Печень осталась в теле");
+            Assert.That(child.Parent, Is.Null, "Связь с родителем не разорвана");
+            Assert.That(SEntMan.GetComponent<ParentOrganComponent>(parent!.Value).Children, Does.Not.Contain(organ));
         });
     }
 
@@ -998,6 +1023,37 @@ public sealed class HereticFleshTest : GameTest
             var lord = ShedForm(uid);
             Assert.That(polymorph.Revert(lord), Is.EqualTo(uid));
             Assert.That(inventory.TryGetSlotEntity(uid, "id", out var after) && after == card, Is.True, "Карта не осталась в слоте");
+        });
+    }
+
+    [Test]
+    public async Task ShedFormCriesOnlyWhenTransforming()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var listener = Server.System<SpokeListenerSystem>();
+        var minds = Server.System<MindSystem>();
+        var actions = Server.System<SharedActionsSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            SEntMan.AddComponent<TestListenerComponent>(uid);
+            ShedForm(uid);
+            Assert.That(listener.GetEvents(uid).Select(e => e.Message), Is.EqualTo(new[] { Loc.GetString("stories-heretic-shed-form-speech") }),
+                "Нет крика при превращении");
+
+            // Уже в чужом облике без повторных превращений: полиморф откажет, кричать незачем.
+            var morphed = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var mindId = minds.CreateMind(null);
+            minds.TransferTo(mindId, morphed);
+            SEntMan.AddComponent<PolymorphedEntityComponent>(morphed);
+            SEntMan.AddComponent<StoriesHereticComponent>(morphed);
+            SEntMan.AddComponent<TestListenerComponent>(morphed);
+            var shed = actions.AddAction(morphed, ShedFormAction)!.Value;
+            actions.PerformAction(morphed, (shed, SEntMan.GetComponent<ActionComponent>(shed)), predicted: false);
+            Assert.That(SEntMan.GetComponent<MindComponent>(mindId).OwnedEntity, Is.EqualTo(morphed), "Превращение всё же состоялось");
+            Assert.That(listener.Count(morphed), Is.Zero, "Крик без превращения");
+            Assert.That(SEntMan.GetComponent<ActionComponent>(shed).Cooldown, Is.Null, "Перезарядка без превращения");
         });
     }
 
