@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
+using Content.Server._Stories.Heretic.Ash;
 using Content.Server.Atmos.EntitySystems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
@@ -187,6 +188,45 @@ public sealed class HereticScorchedMantleTest : GameTest
             Assert.That(actions.GetActions(human).Select(a => a.Owner), Does.Not.Contain(otherAction));
 
             Assert.That(inventory.TryUnequip(heretic, "outerClothing", silent: true, force: true));
+        });
+    }
+
+    [Test]
+    public async Task DeletedMantleRestoresWearer()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var actions = Server.System<SharedActionsSystem>();
+
+        var heretic = default(Entity<StoriesHereticComponent>);
+        var fade = 0f;
+
+        await Server.WaitAssertion(() =>
+        {
+            heretic = SpawnHeretic(testMap.GridCoords);
+            fade = SEntMan.GetComponent<FlammableComponent>(heretic).FirestackFade;
+            var mantle = EquipMantle(heretic);
+            var actionUid = SEntMan.GetComponent<ActionGrantComponent>(mantle).ActionEntities.Single();
+            actions.PerformAction(heretic.Owner, (actionUid, SEntMan.GetComponent<ActionComponent>(actionUid)), predicted: false);
+            Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).FirestackFade, Is.Zero);
+            Assert.That(heretic.Comp.AuraHidden, Is.True);
+
+            SEntMan.QueueDeleteEntity(mantle);
+        });
+
+        await RunTicksSync(1);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).FirestackFade, Is.EqualTo(fade), "Затухание огня не вернулось");
+            Assert.That(heretic.Comp.AuraHidden, Is.False, "Аура осталась скрытой");
+            Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).OnFire, Is.False, "Пламя мантии не погасло");
+
+            // Компонент мантии снят без снятия одежды — срабатывает только страховка ComponentShutdown.
+            var mantle = EquipMantle(heretic);
+            Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).FirestackFade, Is.Zero);
+            SEntMan.RemoveComponent<StoriesHereticScorchedMantleComponent>(mantle);
+            Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).FirestackFade, Is.EqualTo(fade), "Страховка не вернула затухание");
+            Assert.That(heretic.Comp.AuraHidden, Is.False, "Страховка не вернула ауру");
         });
     }
 
