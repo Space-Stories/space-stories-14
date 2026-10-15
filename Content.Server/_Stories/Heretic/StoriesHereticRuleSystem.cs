@@ -154,6 +154,11 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
                 ("path", path),
                 ("knowledge", heretic.LearnedCount),
                 ("sacrifices", heretic.SacrificeCount)));
+
+            if (heretic.RequiredSummons > 0)
+                args.AddLine(Loc.GetString("stories-heretic-round-end-summons",
+                    ("count", heretic.SummonCount),
+                    ("required", heretic.RequiredSummons)));
         }
 
         args.AddLine("\n");

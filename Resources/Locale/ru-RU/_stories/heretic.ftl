@@ -22,6 +22,7 @@ stories-heretic-round-end-count = Еретиков было: { $count }.
 stories-heretic-round-end-entry = { $name } ({ $user }) — путь: { $path }, знаний: { $knowledge }, жертв: { $sacrifices }.
 stories-heretic-round-end-ascended = [color=#58a65c]{ $name } ({ $user }) вознёсся![/color] Путь: { $path }, знаний: { $knowledge }, жертв: { $sacrifices }.
 stories-heretic-round-end-lost = { $name } ({ $user }) — тело еретика утрачено.
+stories-heretic-round-end-summons = Призвано чудовищ: { $count } из { $required }.
 stories-heretic-path-none = не выбран
 stories-heretic-path-STHereticPathAsh = Пепел
 stories-heretic-path-STHereticPathFlesh = Плоть

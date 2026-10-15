@@ -22,6 +22,7 @@ stories-heretic-round-end-count = There were { $count } heretics.
 stories-heretic-round-end-entry = { $name } ({ $user }) — path: { $path }, knowledge: { $knowledge }, sacrifices: { $sacrifices }.
 stories-heretic-round-end-ascended = [color=#58a65c]{ $name } ({ $user }) ascended![/color] Path: { $path }, knowledge: { $knowledge }, sacrifices: { $sacrifices }.
 stories-heretic-round-end-lost = { $name } ({ $user }) — the heretic's body was lost.
+stories-heretic-round-end-summons = Monsters summoned: { $count } of { $required }.
 stories-heretic-path-none = none
 stories-heretic-path-STHereticPathAsh = Ash
 stories-heretic-path-STHereticPathFlesh = Flesh
