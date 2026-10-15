@@ -1,3 +1,5 @@
+using Robust.Shared.Audio;
+
 namespace Content.Server._Stories.Heretic.Flesh;
 
 /// <summary>
@@ -17,4 +19,16 @@ public sealed partial class StoriesHereticKnitFleshComponent : Component
 
     [DataField]
     public float HealBurn = 5;
+
+    /// <summary>
+    /// Дальше этого извлечение органа прерывается.
+    /// </summary>
+    [DataField]
+    public float DistanceThreshold = 1.5f;
+
+    [DataField]
+    public SoundSpecifier HealSound = new SoundPathSpecifier("/Audio/_Stories/Heretic/staff_healing.ogg");
+
+    [DataField]
+    public SoundSpecifier ExtractSound = new SoundPathSpecifier("/Audio/_Stories/Heretic/slice.ogg");
 }

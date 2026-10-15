@@ -14,7 +14,6 @@ using Content.Shared.Humanoid;
 using Content.Shared.Popups;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Verbs;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
@@ -38,8 +37,8 @@ public sealed partial class StoriesHereticFleshSystem
     private static readonly ProtoId<DamageGroupPrototype> BurnGroup = "Burn";
     private static readonly ProtoId<EmotePrototype> ScreamEmote = "Scream";
     private static readonly EntProtoId SlurredEffect = "StatusEffectSlurred";
-    private static readonly SoundSpecifier HealSound = new SoundPathSpecifier("/Audio/_Stories/Heretic/staff_healing.ogg");
-    private static readonly SoundSpecifier ExtractSound = new SoundPathSpecifier("/Audio/_Stories/Heretic/slice.ogg");
+    private static readonly ProtoId<OrganCategoryPrototype> HeartCategory = "Heart";
+    private static readonly ProtoId<OrganCategoryPrototype> LungsCategory = "Lungs";
 
     private static readonly ProtoId<OrganCategoryPrototype>[] KnitCategories =
         ["Eyes", "Tongue", "Heart", "Lungs", "Liver", "Stomach", "Appendix", "Kidneys", "Ears"];
@@ -50,6 +49,7 @@ public sealed partial class StoriesHereticFleshSystem
     {
         SubscribeLocalEvent<StoriesHereticKnitFleshComponent, StoriesHereticKnitFleshEvent>(OnKnitFlesh);
         SubscribeLocalEvent<BodyComponent, StoriesHereticKnitExtractDoAfterEvent>(OnKnitDoAfter);
+        SubscribeLocalEvent<HumanoidProfileComponent, GetVerbsEvent<AlternativeVerb>>(OnGetExtractVerbs);
     }
 
     private void OnKnitFlesh(Entity<StoriesHereticKnitFleshComponent> ent, ref StoriesHereticKnitFleshEvent args)
@@ -60,11 +60,11 @@ public sealed partial class StoriesHereticFleshSystem
         args.Handled = true;
         _damageable.HealDistributed(args.Target, -ent.Comp.HealBrute, BruteGroup, ent);
         _damageable.HealDistributed(args.Target, -ent.Comp.HealBurn, BurnGroup, ent);
-        _audio.PlayPvs(HealSound, args.Target);
+        _audio.PlayPvs(ent.Comp.HealSound, args.Target);
     }
 
-    /// <summary>Добавляет глаголы «Извлечь: орган». Вызывается из <see cref="StoriesHereticDismemberSystem"/>: на тело нельзя подписаться дважды.</summary>
-    public void AddExtractVerbs(Entity<BodyComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
+    /// <summary>Глаголы «Извлечь: орган». Подписка на гуманоида: тело уже занято расчленением.</summary>
+    private void OnGetExtractVerbs(Entity<HumanoidProfileComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         if (!args.CanInteract || !args.CanAccess
             || !TryComp<StoriesHereticKnitFleshComponent>(args.User, out var knit)
@@ -107,7 +107,7 @@ public sealed partial class StoriesHereticFleshSystem
             return false;
 
         // Из живых нельзя достать сердце и лёгкие.
-        return _mobState.IsDead(target) || (cat != "Heart" && cat != "Lungs");
+        return _mobState.IsDead(target) || (cat != HeartCategory && cat != LungsCategory);
     }
 
     public bool TryStartExtract(EntityUid user, EntityUid target, EntityUid organ)
@@ -125,7 +125,7 @@ public sealed partial class StoriesHereticFleshSystem
             used: organ)
         {
             BreakOnMove = true,
-            DistanceThreshold = 1.5f,
+            DistanceThreshold = knit.DistanceThreshold,
             NeedHand = true,
             DuplicateCondition = DuplicateConditions.SameTarget | DuplicateConditions.SameEvent,
         }))
@@ -168,7 +168,7 @@ public sealed partial class StoriesHereticFleshSystem
 
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(user):user} extracted {ToPrettyString(organ):entity} from {ToPrettyString(target):target}");
-        _audio.PlayPvs(ExtractSound, target);
+        _audio.PlayPvs(knit.ExtractSound, target);
 
         // Испорченный орган мог взорваться при извлечении.
         if (!TerminatingOrDeleted(organ))

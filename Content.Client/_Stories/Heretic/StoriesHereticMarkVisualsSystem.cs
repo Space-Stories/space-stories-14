@@ -1,5 +1,7 @@
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.Tag;
 using Robust.Client.GameObjects;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Stories.Heretic;
@@ -15,7 +17,7 @@ public sealed partial class StoriesHereticMarkVisualsSystem : EntitySystem
     public static readonly ResPath Rsi = new("/Textures/_Stories/Heretic/marks.rsi");
 
     // Ключ — ID тега пути. Номера выбраны по виду печатей в tg eldritch.dmi (порядок tg: Плоть, Пустота, Пепел, Ржавчина, Клинок, Космос, Замок, Луна).
-    public static readonly IReadOnlyDictionary<string, string> States = new Dictionary<string, string>
+    public static readonly IReadOnlyDictionary<ProtoId<TagPrototype>, string> States = new Dictionary<ProtoId<TagPrototype>, string>
     {
         ["STHereticPathFlesh"] = "emark1",
         ["STHereticPathVoid"] = "emark2",
