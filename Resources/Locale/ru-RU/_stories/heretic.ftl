@@ -27,9 +27,17 @@ stories-heretic-path-none = не выбран
 stories-heretic-path-STHereticPathAsh = Пепел
 stories-heretic-path-STHereticPathFlesh = Плоть
 stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
-stories-heretic-objective-knowledge = Изучить { $count } знаний Мансуса.
+stories-heretic-objective-knowledge = Изучить { $count } { $count ->
+    [one] знание
+    [few] знания
+   *[other] знаний
+} Мансуса.
 stories-heretic-objective-summon = Призвать монстров Мансуса: { $count }.
-stories-heretic-objective-sacrifice = Принести в жертву { $count } целей.
+stories-heretic-objective-sacrifice = Принести в жертву { $count } { $count ->
+    [one] цель
+    [few] цели
+   *[other] целей
+}.
 stories-heretic-objective-head-sacrifice = { $count ->
     [0] Жертва главы отдела не требуется: живых глав на станции не осталось.
    *[other] Принести в жертву главу отдела ({ $count }).
