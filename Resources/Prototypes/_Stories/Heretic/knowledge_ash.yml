@@ -179,6 +179,8 @@
     icon:
       sprite: _Stories/Heretic/scorched_mantle.rsi
       state: icon
+    path: STHereticPathAsh
+    side: true
     stage: 6
     requires: [ STHereticKnowledgeAshVolcano ]
     rituals:

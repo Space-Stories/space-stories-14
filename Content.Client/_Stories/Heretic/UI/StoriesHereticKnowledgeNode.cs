@@ -26,4 +26,5 @@ public sealed record StoriesHereticKnowledgeNode(
     SpriteSpecifier? Icon,
     IReadOnlyList<string> Requires,
     StoriesHereticNodeState State,
-    string? Reason);
+    string? Reason,
+    bool Side = false);

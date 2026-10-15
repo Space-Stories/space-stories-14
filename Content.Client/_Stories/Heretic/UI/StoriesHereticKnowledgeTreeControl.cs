@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
@@ -11,6 +12,10 @@ namespace Content.Client._Stories.Heretic.UI;
 public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
 {
     private const float ColumnWidth = 170f;
+    /// <summary>
+    /// Дорожка побочных знаний пути (мантии) справа от основной цепочки.
+    /// </summary>
+    private const float SideWidth = 160f;
     private const float NodeWidth = 150f;
     private const float RowHeight = 150f;
     private const float HeaderHeight = 40f;
@@ -20,6 +25,8 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
     private readonly Dictionary<string, StoriesHereticKnowledgeNodeControl> _controls = new();
     private readonly Vector2[] _quad = new Vector2[4];
     private IReadOnlyList<StoriesHereticKnowledgeColumn> _columns = Array.Empty<StoriesHereticKnowledgeColumn>();
+    private float[] _columnX = Array.Empty<float>();
+    private float[] _columnWidth = Array.Empty<float>();
 
     public event Action<string>? OnLearn;
 
@@ -29,18 +36,30 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
         _controls.Clear();
         _columns = columns;
 
+        // Колонка с побочными знаниями шире на дорожку, остальные колонки сдвигаются вправо.
+        _columnX = new float[columns.Count];
+        _columnWidth = new float[columns.Count];
+        var x = 0f;
+        for (var i = 0; i < columns.Count; i++)
+        {
+            var column = i;
+            _columnX[i] = x;
+            _columnWidth[i] = ColumnWidth + (nodes.Any(n => n.Side && n.Column == column) ? SideWidth : 0);
+            x += _columnWidth[i];
+        }
+
         for (var i = 0; i < columns.Count; i++)
         {
             var header = new Label
             {
                 Text = columns[i].Name,
                 Align = Label.AlignMode.Center,
-                SetWidth = ColumnWidth,
+                SetWidth = _columnWidth[i],
                 FontColorOverride = StoriesHereticPalette.Get(columns[i].Path).Accent,
                 StyleClasses = { "LabelHeading" },
             };
             AddChild(header);
-            SetPosition(header, new Vector2(i * ColumnWidth, Padding));
+            SetPosition(header, new Vector2(_columnX[i], Padding));
         }
 
         var maxRow = 0;
@@ -53,26 +72,27 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
             AddChild(control);
             // Не-стартовые знания начинаются со ступени 1 — она и есть первая строка.
             var row = Math.Max(node.Stage - 1, 0);
-            SetPosition(control, new Vector2(node.Column * ColumnWidth + (ColumnWidth - NodeWidth) / 2, HeaderHeight + Padding + row * RowHeight));
+            var left = _columnX[node.Column] + (node.Side
+                ? ColumnWidth + (SideWidth - NodeWidth) / 2
+                : (ColumnWidth - NodeWidth) / 2);
+            SetPosition(control, new Vector2(left, HeaderHeight + Padding + row * RowHeight));
             _controls[id] = control;
             maxRow = Math.Max(maxRow, row);
         }
 
-        MinSize = new Vector2(columns.Count * ColumnWidth, HeaderHeight + Padding * 2 + (maxRow + 1) * RowHeight);
+        MinSize = new Vector2(x, HeaderHeight + Padding * 2 + (maxRow + 1) * RowHeight);
     }
 
     protected override void Draw(DrawingHandleScreen handle)
     {
         base.Draw(handle);
 
-        var columnWidth = ColumnWidth * UIScale;
-
         // Подложка колонки — тёмный тон пути, под заголовком — черта цвета пути.
         for (var i = 0; i < _columns.Count; i++)
         {
             var column = _columns[i];
-            var left = i * columnWidth + 4 * UIScale;
-            var right = (i + 1) * columnWidth - 4 * UIScale;
+            var left = (_columnX[i] + 4) * UIScale;
+            var right = (_columnX[i] + _columnWidth[i] - 4) * UIScale;
             if (column.BridgeTo != null)
             {
                 var mid = (left + right) / 2;

@@ -84,7 +84,8 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
                 knowledge.Icon,
                 knowledge.Requires.Select(r => r.Id).ToList(),
                 state,
-                state == StoriesHereticNodeState.Learned ? null : reason));
+                state == StoriesHereticNodeState.Learned ? null : reason,
+                knowledge.Side));
         }
 
         var pathName = heretic.Path is { } chosen

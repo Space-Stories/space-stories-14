@@ -89,4 +89,11 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
     /// </summary>
     [DataField]
     public int RequiredSummons;
+
+    /// <summary>
+    /// Побочное знание своего пути (мантия): в окне стоит справа от основной цепочки колонки пути.
+    /// Только для раскладки окна.
+    /// </summary>
+    [DataField]
+    public bool Side;
 }
