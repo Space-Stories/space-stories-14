@@ -8,7 +8,6 @@ using Content.Shared.Chat;
 using Content.Shared.Chat.Prototypes;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
-using Content.Shared.EntityEffects;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Humanoid;
 using Content.Shared.Popups;
@@ -28,7 +27,6 @@ public sealed partial class StoriesHereticFleshSystem
     [Dependency] private SharedChatSystem _chat = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
-    [Dependency] private SharedEntityEffectsSystem _effects = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private OrganRelationSystem _relations = default!;
@@ -77,11 +75,18 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void OnKnitHealDoAfter(Entity<StoriesHereticKnitFleshComponent> ent, ref StoriesHereticKnitHealDoAfterEvent args)
     {
-        if (args.Cancelled || args.Handled || args.Target is not { } target || !_mobState.IsAlive(target))
+        // За секунду слуга мог умереть или смениться хозяин.
+        if (args.Cancelled || args.Handled || args.Target is not { } target
+            || !_heretic.IsServant(target, ent) || !_mobState.IsAlive(target))
             return;
 
         args.Handled = true;
-        _effects.ApplyEffects(target, ent.Comp.Heal, user: ent);
+        // HealDistributed напрямую, а не через эффект: эффект теряет origin (кто лечил).
+        foreach (var (group, amount) in ent.Comp.Heal.Damage)
+        {
+            _damageable.HealDistributed(target, amount, group, ent);
+        }
+
         _audio.PlayPvs(ent.Comp.HealSound, target);
     }
 

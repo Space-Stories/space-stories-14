@@ -40,6 +40,7 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
 
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<StoriesHereticGhoulComponent, MindAddedMessage>(OnMindAdded);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, MindRemovedMessage>(OnMindRemoved);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ExaminedEvent>(OnExamined);
@@ -70,9 +71,7 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         EnsureComp<StoriesHereticRaisedComponent>(corpse);
         _conversion.TryConvert(corpse, conversion, master);
         _heretic.MakeServant(corpse, master);
-        if (!_mind.TryFindObjective((mindId, mind), ServeMaster, out _)
-            && !_mind.TryAddObjective(mindId, mind!, ServeMaster))
-            Log.Error($"Failed to add objective {ServeMaster} to ghoul {ToPrettyString(corpse)}");
+        EnsureServeObjective((mindId, mind!), corpse);
 
         if (_player.TryGetSessionById(mind!.UserId, out var session))
             _chat.DispatchServerMessage(session, Loc.GetString("stories-heretic-ghoul-briefing", ("master", master)));
@@ -166,6 +165,22 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
     private void OnMindRemoved(Entity<StoriesHereticGhoulComponent> ent, ref MindRemovedMessage args)
     {
         RemoveServeObjective(args.Mind);
+    }
+
+    /// <summary>
+    /// Разум вернулся в живого гуля (возврат из полиморфа, админ-управление мобом): служба продолжается.
+    /// </summary>
+    private void OnMindAdded(Entity<StoriesHereticGhoulComponent> ent, ref MindAddedMessage args)
+    {
+        EnsureServeObjective(args.Mind, ent);
+    }
+
+    /// <summary>Выдаёт цель служения, только если её ещё нет.</summary>
+    private void EnsureServeObjective(Entity<MindComponent> mind, EntityUid ghoul)
+    {
+        if (!_mind.TryFindObjective(mind.AsNullable(), ServeMaster, out _)
+            && !_mind.TryAddObjective(mind, mind.Comp, ServeMaster))
+            Log.Error($"Failed to add objective {ServeMaster} to ghoul {ToPrettyString(ghoul)}");
     }
 
     private void RemoveServeObjective(Entity<MindComponent> mind)

@@ -1,4 +1,5 @@
 #pragma warning disable RA0002
+using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.Server._Stories.Heretic.Ghouls;
 using Content.Shared._Stories.Heretic;
@@ -117,6 +118,34 @@ public sealed class HereticGhoulTest : GameTest
         {
             Assert.That(SEntMan.EntityExists(mindId), Is.True, "Разум пропал вместе с телом");
             Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.False, "Цель служения осталась после разрыва гуля");
+        });
+    }
+
+    [Test]
+    public async Task ServeObjectiveReturnsWithMind()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var ghouls = Server.System<StoriesHereticGhoulSystem>();
+        var damageable = Server.System<DamageableSystem>();
+        var minds = Server.System<SharedMindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var master = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var ghoul = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var elsewhere = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var mindId = minds.CreateMind(ServerSession!.UserId);
+            minds.TransferTo(mindId, ghoul);
+            damageable.TryChangeDamage(ghoul, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            Assert.That(ghouls.TryRaise(master, ghoul, "STHereticGhoul", 1, out _), Is.True);
+
+            // Разум временно ушёл из живого гуля (полиморф, админ-управление мобом) и вернулся.
+            minds.TransferTo(mindId, elsewhere);
+            Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.False, "Цель осталась вне тела гуля");
+            minds.TransferTo(mindId, ghoul);
+            Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.True, "Цель не вернулась вместе с разумом");
+            Assert.That(SEntMan.GetComponent<MindComponent>(mindId).Objectives
+                .Count(o => SEntMan.GetComponent<MetaDataComponent>(o).EntityPrototype?.ID == "STHereticObjectiveServeMaster"), Is.EqualTo(1));
         });
     }
 

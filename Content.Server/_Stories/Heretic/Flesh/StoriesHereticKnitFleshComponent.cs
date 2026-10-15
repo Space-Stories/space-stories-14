@@ -1,4 +1,3 @@
-using Content.Shared.EntityEffects;
 using Content.Shared.EntityEffects.Effects.Damage;
 using Robust.Shared.Audio;
 
@@ -20,13 +19,10 @@ public sealed partial class StoriesHereticKnitFleshComponent : Component
     public TimeSpan HealTime = TimeSpan.FromSeconds(1);
 
     /// <summary>
-    /// Лечение слуги: 10 Brute и 5 Burn, распределённые по имеющемуся урону.
+    /// Лечение слуги по группам урона: 10 Brute и 5 Burn, распределённые по имеющемуся урону.
     /// </summary>
     [DataField]
-    public EntityEffect[] Heal =
-    [
-        new DistributedHealthChange { Damage = new() { ["Brute"] = -10, ["Burn"] = -5 } },
-    ];
+    public DistributedHealthChange Heal = new() { Damage = new() { ["Brute"] = -10, ["Burn"] = -5 } };
 
     /// <summary>
     /// Шёпот при касании слуги.

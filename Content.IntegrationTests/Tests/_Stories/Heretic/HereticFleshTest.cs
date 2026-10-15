@@ -545,6 +545,7 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(bloodstream.BleedAmount, Is.EqualTo(before), "По мёртвым без эффекта");
         });
     }
+
     private sealed class SpokeListenerSystem : TestListenerSystem<EntitySpokeEvent>;
 
     [Test]
