@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Fixtures;
 using Content.IntegrationTests.Tests.Helpers;
+using Content.Shared.Administration.Systems;
 using Content.Shared.Chat;
+using Content.Shared.Hands.EntitySystems;
 using Content.Server._Stories.Heretic;
 using Content.Server._Stories.Heretic.Flesh;
 using Content.Server._Stories.Heretic.Ghouls;
@@ -49,6 +51,7 @@ using Content.Shared.Fluids;
 using Content.Shared.Mind;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.UnitTesting.Pool;
@@ -150,6 +153,45 @@ public sealed class HereticFleshTest : GameTest
             heretic.Comp.Ascended = true;
             Hit(fourth);
             Assert.That(heretics.IsServant(fourth, uid), Is.True, "После Вознесения лимит 6");
+        });
+    }
+
+    [Test]
+    public async Task GraspOfFleshExplainsRefusal()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            // Игрок — сам еретик: всплывающие сообщения приходят ему.
+            minds.TransferTo(minds.CreateMind(ServerSession!.UserId), uid);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic.Comp.Points = 2;
+            Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshRoot"), Is.True);
+            Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshGrasp"), Is.True);
+
+            var soulless = DeadCorpse(coords, false);
+            var used = DeadCorpse(coords, false);
+            SEntMan.AddComponent<StoriesHereticRaisedComponent>(used);
+            foreach (var corpse in new[] { soulless, used })
+            {
+                var ev = new StoriesHereticGraspHitEvent(uid, corpse);
+                SEntMan.EventBus.RaiseLocalEvent(uid, ref ev);
+                Assert.That(heretics.IsServant(corpse), Is.False);
+            }
+        });
+
+        await Pair.RunTicksSync(5);
+
+        await Client.WaitAssertion(() =>
+        {
+            var texts = Client.System<Content.Client.Popups.PopupSystem>().WorldLabels.Select(l => l.Text).ToList();
+            Assert.That(texts, Does.Contain(Loc.GetString("stories-heretic-ghoul-no-soul")), "Нет сообщения «нет души»");
+            Assert.That(texts, Does.Contain(Loc.GetString("stories-heretic-ghoul-already")), "Нет сообщения «уже служил»");
         });
     }
 
@@ -420,6 +462,31 @@ public sealed class HereticFleshTest : GameTest
     }
 
     [Test]
+    public async Task ImperfectOfferRefundsWhenCorpseRevived()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var heretic = LearnImperfect(SSpawnAtPosition("MobHuman", coords));
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            var corpse = DeadCorpse(coords, false);
+            SSpawnAtPosition("FoodPoppy", coords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(CountPoppies(), Is.EqualTo(0));
+
+            // Труп оживили до того, как роль взяли: предложение снимается, мак возвращается.
+            Server.System<RejuvenateSystem>().PerformRejuvenate(corpse);
+            Assert.That(Server.System<MobStateSystem>().IsAlive(corpse), Is.True);
+            Assert.That(SEntMan.HasComponent<StoriesHereticGhoulOfferComponent>(corpse), Is.False, "Предложение осталось на живом");
+            Assert.That(SEntMan.HasComponent<GhostRoleComponent>(corpse), Is.False, "Роль осталась на живом");
+            Assert.That(CountPoppies(), Is.EqualTo(1), "Мак не вернулся после оживления");
+        });
+    }
+
+    [Test]
     public async Task FleshMarkAddsBleedingAndSlash()
     {
         var testMap = await Pair.CreateTestMap();
@@ -436,6 +503,14 @@ public sealed class HereticFleshTest : GameTest
             var heretic2 = SEntMan.GetComponent<StoriesHereticFleshMarkComponent>(heretic);
             Server.System<DamageableSystem>().TryChangeDamage(control, heretic2.Damage, true);
             var controlBleed = SEntMan.GetComponent<BloodstreamComponent>(control).BleedAmount;
+            // Иначе потолок съел бы всю прибавку и проверка ниже ничего бы не доказала.
+            Assert.That(controlBleed, Is.LessThan(bloodstream.MaxBleedAmount), "Контрольное кровотечение уже на потолке");
+
+            // Метка чужого пути — не наша забота.
+            var foreign = new StoriesHereticMarkTriggeredEvent(heretic, target, "STHereticPathAsh", 0);
+            SEntMan.EventBus.RaiseEvent(EventSource.Local, ref foreign);
+            Assert.That(bloodstream.BleedAmount, Is.Zero, "Метка чужого пути вызвала кровотечение");
+            Assert.That(SEntMan.GetComponent<DamageableComponent>(target).TotalDamage.Float(), Is.Zero, "Метка чужого пути нанесла урон");
 
             var ev = new StoriesHereticMarkTriggeredEvent(heretic, target, "STHereticPathFlesh", 0);
             SEntMan.EventBus.RaiseEvent(EventSource.Local, ref ev);
@@ -746,6 +821,44 @@ public sealed class HereticFleshTest : GameTest
     }
 
     [Test]
+    public async Task MasterKeepsChannelWhileAnotherProphetLives()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var channel = (ProtoId<RadioChannelPrototype>) "STHereticMansusLink";
+        var minds = Server.System<MindSystem>();
+        var damageable = Server.System<DamageableSystem>();
+        EntityUid master = default, first = default, second = default;
+
+        bool MasterHears() => SEntMan.TryGetComponent<ActiveRadioComponent>(master, out var radio) && radio.Channels.Contains(channel);
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            master = SSpawnAtPosition("MobHuman", coords);
+            first = SSpawnAtPosition("STHereticMobRawProphet", coords);
+            second = SSpawnAtPosition("STHereticMobRawProphet", coords);
+            foreach (var prophet in new[] { first, second })
+            {
+                SEntMan.GetComponent<StoriesHereticSummonComponent>(prophet).Master = master;
+                minds.TransferTo(minds.CreateMind(null), prophet);
+            }
+
+            Assert.That(MasterHears(), Is.True, "Хозяин не получил канал");
+            damageable.TryChangeDamage(first, new DamageSpecifier { DamageDict = new() { { "Blunt", 500 } } }, true);
+            Assert.That(MasterHears(), Is.True, "Смерть одного пророка сняла канал, хотя второй жив");
+        });
+
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(MasterHears(), Is.True, "Канал пропал после удаления первого пророка");
+            damageable.TryChangeDamage(second, new DamageSpecifier { DamageDict = new() { { "Blunt", 500 } } }, true);
+            Assert.That(MasterHears(), Is.False, "Канал остался после смерти последнего пророка");
+        });
+    }
+
+    [Test]
     public async Task ExpandSightTogglesZoom()
     {
         var testMap = await Pair.CreateTestMap();
@@ -864,6 +977,7 @@ public sealed class HereticFleshTest : GameTest
         var heretics = Server.System<StoriesHereticSystem>();
         var damageable = Server.System<DamageableSystem>();
         var mobState = Server.System<MobStateSystem>();
+        var containers = Server.System<SharedContainerSystem>();
 
         await Server.WaitAssertion(() =>
         {
@@ -888,7 +1002,23 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(SEntMan.GetComponent<MindComponent>(mindId).OwnedEntity, Is.EqualTo(stalker), "Нет возврата в Сталкера");
             Assert.That(mobState.IsDead(stalker), Is.True, "Сталкер не умер после смерти облика");
             Assert.That(summon.Collapsed, Is.True, "Призыв не схлопнулся");
-            Assert.That(SEntMan.Deleted(stalker) || SEntMan.EntityQuery<MetaDataComponent>().Any(m => m.EntityPrototype?.ID == "Pen"), Is.True);
+        });
+
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            // Ингредиент рецепта лежит на полу тестовой карты, а не в хранилище полиморфа и не в контейнере.
+            var pens = SEntMan.AllEntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            var onFloor = 0;
+            while (pens.MoveNext(out var uid, out var meta, out var xform))
+            {
+                if (meta.EntityPrototype?.ID == "Pen" && !SEntMan.IsQueuedForDeletion(uid)
+                    && xform.MapID == testMap.MapId && !containers.IsEntityInContainer(uid))
+                    onFloor++;
+            }
+
+            Assert.That(onFloor, Is.EqualTo(1), "Ручка не вернулась на пол");
         });
     }
 
@@ -1058,6 +1188,45 @@ public sealed class HereticFleshTest : GameTest
     }
 
     [Test]
+    public async Task LordOfNightManualReturnKeepsAscension()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var actions = Server.System<SharedActionsSystem>();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var mindId = minds.CreateMind(null);
+            minds.TransferTo(mindId, uid);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic.Comp.Points = 30;
+            foreach (var id in new[] { "Root", "Grasp", "Imperfect", "Mark", "Knitting" })
+                Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFlesh" + id), Is.True, id);
+            heretics.SetAscended(heretic);
+            var shed = actions.AddAction(uid, ShedFormAction)!.Value;
+            var actionsBefore = actions.GetActions(uid).Select(a => a.Owner).ToHashSet();
+            var knowledge = heretic.Comp.Knowledge.ToHashSet();
+
+            actions.PerformAction(uid, (shed, SEntMan.GetComponent<ActionComponent>(shed)), predicted: false);
+            var mind = SEntMan.GetComponent<MindComponent>(mindId);
+            var lord = mind.OwnedEntity!.Value;
+            Assert.That(lord, Is.Not.EqualTo(uid), "Владыка Ночи не появился");
+
+            // Ручной возврат — действием полиморфа, как игрок.
+            var revert = SEntMan.GetComponent<PolymorphedEntityComponent>(lord).Action!.Value;
+            actions.PerformAction(lord, (revert, SEntMan.GetComponent<ActionComponent>(revert)), predicted: false);
+
+            Assert.That(mind.OwnedEntity, Is.EqualTo(uid), "Разум не вернулся в тело еретика");
+            Assert.That(SEntMan.GetComponent<StoriesHereticComponent>(uid), Is.SameAs(heretic.Comp), "Компонент еретика пересоздан");
+            Assert.That(heretic.Comp.Ascended, Is.True, "Вознесение потеряно");
+            Assert.That(heretic.Comp.Knowledge, Is.EquivalentTo(knowledge), "Знания изменились");
+            Assert.That(actions.GetActions(uid).Select(a => a.Owner), Is.EquivalentTo(actionsBefore), "Действия еретика изменились");
+        });
+    }
+
+    [Test]
     public async Task LordOfNightDeathKillsHeretic()
     {
         var testMap = await Pair.CreateTestMap();
@@ -1113,6 +1282,40 @@ public sealed class HereticFleshTest : GameTest
             // 50% от 1000 по имеющемуся урону: из 600 Slash остаётся 100.
             Assert.That(SEntMan.GetComponent<DamageableComponent>(lord).TotalDamage.Float(), Is.EqualTo(100f).Within(0.1f));
         });
+    }
+
+    [Test]
+    public async Task BladeBreakShowsPatronMessage()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var minds = Server.System<MindSystem>();
+        var maps = Server.System<SharedMapSystem>();
+        var user = EntityUid.Invalid;
+
+        await Server.WaitAssertion(() =>
+        {
+            // Пол вокруг: клинок переносит еретика на 10–20 тайлов.
+            for (var x = -21; x <= 21; x++)
+            {
+                for (var y = -21; y <= 21; y++)
+                    maps.SetTile(testMap.Grid, new Vector2i(x, y), testMap.Tile.Tile);
+            }
+
+            user = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            minds.TransferTo(minds.CreateMind(ServerSession!.UserId), user);
+            SEntMan.AddComponent<StoriesHereticComponent>(user);
+            var blade = SSpawnAtPosition("STHereticBladeFlesh", testMap.GridCoords);
+            Assert.That(Server.System<SharedHandsSystem>().TryPickupAnyHand(user, blade), Is.True);
+            Assert.That(Server.System<SharedInteractionSystem>().UseInHandInteraction(user, blade), Is.True, "Ломка клинка не началась");
+        });
+
+        await Pair.RunSeconds(1.5f);
+
+        var message = Server.ResolveDependency<ILocalizationManager>().GetString("stories-heretic-blade-break-flesh");
+        await Server.WaitAssertion(() =>
+            Assert.That(SEntMan.GetComponent<TransformComponent>(user).Coordinates.Position.Length(), Is.GreaterThan(5f), "Клинок не перенёс еретика"));
+        await Client.WaitAssertion(() =>
+            Assert.That(Client.System<Content.Client.Popups.PopupSystem>().WorldLabels.Select(l => l.Text), Does.Contain(message), "Нет сообщения Маршала"));
     }
 
     /// <summary>
