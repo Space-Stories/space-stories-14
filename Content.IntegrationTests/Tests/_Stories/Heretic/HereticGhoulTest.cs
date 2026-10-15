@@ -30,6 +30,7 @@ public sealed class HereticGhoulTest : GameTest
         var master = EntityUid.Invalid;
         var corpse = EntityUid.Invalid;
         var alive = EntityUid.Invalid;
+        var ghoulMind = EntityUid.Invalid;
 
         // Душа — разум игрока. Игрок в тесте один: каждый новый труп забирает его разум себе.
         EntityUid Corpse(bool soul = true)
@@ -56,6 +57,8 @@ public sealed class HereticGhoulTest : GameTest
             Assert.That(thresholds.TryGetThresholdForState(corpse, MobState.Dead, out var dead) && dead == 50, "Пороги гуля не выставлены");
             Assert.That(ghouls.CountGhouls(master, "STHereticGhoul"), Is.EqualTo(1));
             Assert.That(heretics.IsServant(corpse, master), Is.True, "Гуль не слуга хозяина");
+            Assert.That(minds.TryGetMind(corpse, out ghoulMind, out _), Is.True);
+            Assert.That(minds.TryFindObjective(ghoulMind, "STHereticObjectiveServeMaster", out _), Is.True, "Нет цели служения");
             Assert.That(heretics.IsServant(alive), Is.False, "Случайный моб — слуга");
 
             Assert.That(ghouls.TryRaise(master, Corpse(), "STHereticGhoul", 1, out reason), Is.False, "Лимит не сработал");
@@ -72,6 +75,7 @@ public sealed class HereticGhoulTest : GameTest
             Assert.That(mobState.IsDead(corpse), Is.True, "Снятие обращения оживило труп");
             Assert.That(ghouls.CountGhouls(master, "STHereticGhoul"), Is.Zero);
             Assert.That(heretics.IsServant(corpse), Is.False, "Мёртвый гуль остался слугой");
+            Assert.That(minds.TryFindObjective(ghoulMind, "STHereticObjectiveServeMaster", out _), Is.False, "Цель служения осталась после смерти гуля");
             Assert.That(ghouls.TryRaise(master, corpse, "STHereticGhoul", 1, out _), Is.False, "Тот же труп поднят дважды");
 
             // Оживлённый бывший гуль снова обычной прочности.

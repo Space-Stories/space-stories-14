@@ -20,6 +20,7 @@ public sealed partial class StoriesHereticGhoulSystem
     [Dependency] private SharedPopupSystem _popup = default!;
 
     private static readonly ProtoId<GhostRoleRaffleSettingsPrototype> OfferRaffle = "short";
+    private static readonly EntProtoId GhoulMindRole = "STMindRoleHereticGhoul";
 
     private void InitializeRitual()
     {
@@ -100,12 +101,17 @@ public sealed partial class StoriesHereticGhoulSystem
         offer.ExpireTime = _timing.CurTime + ritual.OfferTime;
 
         EnsureComp<GhostTakeoverAvailableComponent>(corpse);
-        var role = EnsureComp<GhostRoleComponent>(corpse);
-        role.RoleName = Loc.GetString("stories-heretic-flesh-voiceless-name");
-        role.RoleDescription = Loc.GetString("stories-heretic-flesh-voiceless-description");
-        role.RoleRules = Loc.GetString("stories-heretic-flesh-voiceless-rules");
-        role.MindRoles = new();
-        role.RaffleConfig = new GhostRoleRaffleConfig(ProtoMan.Index(OfferRaffle).Settings);
+        // Роль собирается до добавления: открытые окна призрачных ролей сразу видят её имя.
+        // MindRoles нужен для проверки бана на роль гуля; саму роль снимает OnOfferMindAdded.
+        var role = new GhostRoleComponent
+        {
+            RoleName = Loc.GetString("stories-heretic-flesh-voiceless-name"),
+            RoleDescription = Loc.GetString("stories-heretic-flesh-voiceless-description"),
+            RoleRules = Loc.GetString("stories-heretic-flesh-voiceless-rules"),
+            MindRoles = [GhoulMindRole],
+            RaffleConfig = new GhostRoleRaffleConfig(ProtoMan.Index(OfferRaffle).Settings),
+        };
+        AddComp(corpse, role, true);
 
         _popup.PopupEntity(Loc.GetString("stories-heretic-flesh-imperfect-offered"), corpse, args.Heretic);
         args.Success = true;
@@ -118,8 +124,16 @@ public sealed partial class StoriesHereticGhoulSystem
         // Закрываем до подсчёта: само предложение не должно занимать слот лимита.
         var coords = Transform(ent).Coordinates;
         var refund = offer.Refund;
+        // GhostRoleSystem выдаёт MindRoles уже после переноса разума, тем же объектом компонента.
+        // Роль гуля выдаёт обращение, а при неудаче игрок остаётся простым трупом: выдавать нечего.
+        if (TryComp<GhostRoleComponent>(ent, out var ghostRole))
+            ghostRole.MindRoles.Clear();
+
         EndOffer(ent, false);
-        if (TryRaise(master, ent, conversion, limit, out var reason))
+        string? reason;
+        if (TerminatingOrDeleted(master))
+            reason = Loc.GetString("stories-heretic-flesh-imperfect-no-master");
+        else if (TryRaise(master, ent, conversion, limit, out reason))
             return;
 
         // Лимит заняли за 5 минут или труп испортился: игрок остаётся в трупе, мак возвращается.

@@ -8,10 +8,13 @@ using Content.Server._Stories.Heretic.Ghouls;
 using Content.Shared.Body;
 using Content.Shared._Stories.Heretic.Flesh;
 using Content.Server.Polymorph.Components;
+using Content.Server.Polymorph.Systems;
+using Content.Shared.Inventory;
 using Content.Shared.Power.Components;
 using Content.Shared.Power.EntitySystems;
 using Content.Shared.Mind.Components;
 using Content.Shared.Body.Components;
+using Content.Server.Ghost.Roles;
 using Content.Server.Ghost.Roles.Components;
 using Content.Server.Mind;
 using Content.Server.Roles;
@@ -243,6 +246,67 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(heretics.IsServant(corpse, uid), Is.True, "Игрок занял тело, но гуля нет");
             Assert.That(SEntMan.HasComponent<GhostRoleComponent>(corpse), Is.False);
             Assert.That(SEntMan.HasComponent<StoriesHereticGhoulOfferComponent>(corpse), Is.False);
+        });
+    }
+
+    /// <summary>
+    /// Штатный путь призрачной роли: проверка бана по роли гуля, затем ровно одна роль гуля на разуме.
+    /// </summary>
+    [Test]
+    public async Task ImperfectOfferTakenThroughGhostRoleSystem()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var ghostRoles = Server.System<GhostRoleSystem>();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = LearnImperfect(uid);
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            var corpse = DeadCorpse(coords, false);
+            SSpawnAtPosition("FoodPoppy", coords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+
+            var role = SEntMan.GetComponent<GhostRoleComponent>(corpse);
+            Assert.That(role.RoleName, Is.EqualTo(Loc.GetString("stories-heretic-flesh-voiceless-name")));
+            Assert.That(role.MindRoles, Is.EqualTo(new List<EntProtoId> { "STMindRoleHereticGhoul" }), "Бан на роль гуля не проверяется");
+
+            Assert.That(ghostRoles.Takeover(ServerSession!, role.Identifier), Is.True);
+            Assert.That(heretics.IsServant(corpse, uid), Is.True, "Игрок занял тело, но гуля нет");
+            Assert.That(SEntMan.HasComponent<StoriesHereticGhoulComponent>(corpse), Is.True);
+            Assert.That(minds.TryGetMind(corpse, out _, out var mind), Is.True);
+            var ghoulRoles = mind!.MindRoleContainer.ContainedEntities
+                .Count(r => SEntMan.GetComponent<MetaDataComponent>(r).EntityPrototype?.ID == "STMindRoleHereticGhoul");
+            Assert.That(ghoulRoles, Is.EqualTo(1), "Роль гуля на разуме не одна");
+        });
+    }
+
+    [Test]
+    public async Task ImperfectOfferWithDeletedMasterRefunds()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var minds = Server.System<MindSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = LearnImperfect(uid);
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            var corpse = DeadCorpse(coords, false);
+            SSpawnAtPosition("FoodPoppy", coords);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+
+            SEntMan.DeleteEntity(uid);
+            minds.TransferTo(minds.CreateMind(ServerSession!.UserId), corpse);
+            Assert.That(SEntMan.HasComponent<StoriesHereticGhoulComponent>(corpse), Is.False, "Гуль без хозяина");
+            Assert.That(SEntMan.HasComponent<StoriesHereticGhoulOfferComponent>(corpse), Is.False);
+            Assert.That(CountPoppies(), Is.EqualTo(1), "Мак не вернулся");
         });
     }
 

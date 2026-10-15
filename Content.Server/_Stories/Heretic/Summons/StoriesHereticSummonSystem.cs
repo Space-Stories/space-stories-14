@@ -173,7 +173,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             _popup.PopupEntity(Loc.GetString("stories-heretic-summon-claimed", ("mob", ent.Owner)), ent.Comp.Master.Value, ent.Comp.Master.Value, PopupType.Medium);
         }
 
-        if (TryComp<ActorComponent>(ent, out var actor) && ent.Comp.Master is { } master)
+        // Удалённого хозяина в брифинге не назвать: призыв всё равно привязан, но без брифинга.
+        if (TryComp<ActorComponent>(ent, out var actor) && ent.Comp.Master is { } master && !TerminatingOrDeleted(master))
             _chat.DispatchServerMessage(actor.PlayerSession, Loc.GetString("stories-heretic-summon-briefing", ("master", master)));
     }
 

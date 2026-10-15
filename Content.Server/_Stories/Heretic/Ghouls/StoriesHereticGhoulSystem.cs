@@ -145,6 +145,10 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
             _statusEffects.TryRemoveStatusEffect(ent, effect);
 
         RemComp<StoriesHereticServantComponent>(ent);
+        // Служба окончена: цель «служить хозяину» больше не нужна.
+        if (_mind.TryGetMind(ent, out var mindId, out var mind) && _mind.TryFindObjective((mindId, mind), ServeMaster, out var objective))
+            _mind.TryRemoveObjective(mindId, mind, mind.Objectives.IndexOf(objective.Value));
+
         _adminLog.Add(LogType.Action, LogImpact.Medium, $"{ToPrettyString(ent):target} is no longer a ghoul");
 
         if (!_mobState.IsDead(ent) && TryComp<StoriesHereticRaisedComponent>(ent, out var raised))
