@@ -23,7 +23,11 @@ stories-chat-radio-heretic-mansus-link = Связь Мансуса
 stories-heretic-mansus-link-blocked = Разум сопротивляется связи!
 stories-heretic-mansus-link-linked = В вашу голову проникает чужой шёпот.
 
-stories-heretic-flesh-ascension-corpses = Гимну нужно ещё { $count } мёртвых тел.
+stories-heretic-flesh-ascension-corpses = Гимну нужно ещё { $count } { $count ->
+    [one] мёртвое тело
+    [few] мёртвых тела
+   *[other] мёртвых тел
+}.
 stories-heretic-flesh-ascension-announcement = Вечно свивающийся вихрь. Реальность развернулась. РУКИ РАСПРОСТЁРТЫ — ВЛАДЫКА НОЧИ { $name } вознёсся! Бойтесь вечно извивающейся длани!
 stories-heretic-shed-form-speech = REALITY UNCOIL!
 stories-heretic-lord-fear = Вы видите Врата Мансуса, и ваш разум трещит.

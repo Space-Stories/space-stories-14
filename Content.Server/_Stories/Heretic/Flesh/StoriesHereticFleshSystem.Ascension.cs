@@ -89,20 +89,20 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void OnShedForm(Entity<StoriesHereticComponent> ent, ref StoriesHereticShedFormEvent args)
     {
-        if (args.Handled)
+        // Handled (перезарядка и крик) — только если превращение удалось.
+        if (args.Handled || _polymorph.PolymorphEntity(ent, args.Polymorph) is not { } lord)
             return;
 
         args.Handled = true;
-        if (_polymorph.PolymorphEntity(ent, args.Polymorph) is not { } lord)
-            return;
 
-        // Ужас Владыки (замена мозговых травм tg): каждый видящий не-еретик и не-слуга с шансом.
+        // Ужас Владыки (замена мозговых травм tg): каждый живой видящий не-еретик и не-слуга с шансом.
         _witnesses.Clear();
         _lookup.GetEntitiesInRange(Transform(lord).Coordinates, args.FearRange, _witnesses);
         foreach (var witness in _witnesses)
         {
             if (HasComp<StoriesHereticComponent>(witness)
                 || _heretic.IsServant(witness)
+                || !_mobState.IsAlive(witness)
                 || !_examine.InRangeUnOccluded(lord, witness, args.FearRange)
                 || !_random.Prob(args.FearChance))
                 continue;
@@ -120,12 +120,9 @@ public sealed partial class StoriesHereticFleshSystem
             return;
 
         args.Handled = true;
+        // Лечит долю максимума по всем имеющимся видам урона, пропорционально их величине.
         if (_thresholds.TryGetDeadThreshold(ent, out var max))
-        {
-            var heal = max.Value * ent.Comp.HealFraction / 2;
-            _damageable.HealDistributed(ent.Owner, -heal, BruteGroup, ent);
-            _damageable.HealDistributed(ent.Owner, -heal, BurnGroup, ent);
-        }
+            _damageable.HealDistributed(ent.Owner, -(max.Value * ent.Comp.HealFraction), origin: ent);
 
         _audio.PlayPvs(ent.Comp.Sound, ent);
         QueueDel(args.Target);

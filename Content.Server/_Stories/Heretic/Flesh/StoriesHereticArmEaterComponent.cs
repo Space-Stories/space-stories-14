@@ -11,7 +11,7 @@ namespace Content.Server._Stories.Heretic.Flesh;
 public sealed partial class StoriesHereticArmEaterComponent : Component
 {
     /// <summary>
-    /// Доля максимума здоровья, которую лечит одна рука; делится поровну между Brute и Burn.
+    /// Доля максимума здоровья, которую лечит одна рука (по всем имеющимся видам урона).
     /// </summary>
     [DataField]
     public float HealFraction = 0.5f;

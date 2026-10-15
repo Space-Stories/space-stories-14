@@ -143,6 +143,8 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         _lookup.GetEntitiesInRange(coords, radius, _nearby, LookupFlags.Uncontained);
         _nearby.Remove(heretic);
         _nearby.Remove(rune);
+        // Поглощённое прошлым ритуалом удаляется только в конце тика — второй ритуал в том же тике его не видит.
+        _nearby.RemoveWhere(uid => TerminatingOrDeleted(uid) || EntityManager.IsQueuedForDeletion(uid));
 
         // Подсказка берётся от ритуала, к которому игрок подошёл ближе всего:
         // очки = число выполненных условий, при равенстве — первый.

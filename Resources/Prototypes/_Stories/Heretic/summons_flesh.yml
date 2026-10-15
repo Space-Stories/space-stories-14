@@ -212,7 +212,7 @@
   - BaseMob
   - MobCombat
   name: Lord of the Night
-  description: An abomination made of dozens and dozens of severed and mangled limbs, clinging to one another.
+  description: An abomination made of dozens and dozens of severed and mangled limbs, clinging to one another. Outside combat mode it devours severed arms by clicking them, healing itself.
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite

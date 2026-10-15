@@ -46,6 +46,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.UnitTesting.Pool;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
@@ -57,9 +58,9 @@ public sealed class HereticFleshTest : GameTest
     {
         var testMap = await Pair.CreateTestMap();
         var heretics = Server.System<StoriesHereticSystem>();
-        var rituals = Server.System<StoriesHereticRitualSystem>();
-        var puddles = Server.System<SharedPuddleSystem>();
         var minds = Server.System<MindSystem>();
+        var heretic = default(Entity<StoriesHereticComponent>);
+        var rune = EntityUid.Invalid;
 
         await Server.WaitAssertion(() =>
         {
@@ -68,7 +69,7 @@ public sealed class HereticFleshTest : GameTest
             var mindId = minds.CreateMind(null);
             minds.TransferTo(mindId, uid);
             Server.System<RoleSystem>().MindAddRole(mindId, "STMindRoleHeretic");
-            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
 
             var points = heretic.Comp.Points;
             Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshRoot"), Is.True);
@@ -80,20 +81,15 @@ public sealed class HereticFleshTest : GameTest
             var mind = SEntMan.GetComponent<MindComponent>(mindId);
             Assert.That(mind.Objectives.Any(o => SEntMan.GetComponent<MetaDataComponent>(o).EntityPrototype?.ID == "STHereticObjectiveSummon"));
 
-            var rune = SSpawnAtPosition("STHereticRune", coords);
-            for (var i = 1; i <= 4; i++)
-            {
-                SSpawnAtPosition("KitchenKnife", coords);
-                Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
-                Assert.That(rituals.TryPerform(heretic, rune), Is.True, $"Клинок {i}");
-                Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(i));
-            }
-
-            SSpawnAtPosition("KitchenKnife", coords);
-            Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
-            Assert.That(rituals.TryPerform(heretic, rune), Is.False, "5-й клинок сверх лимита");
-            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(4));
+            rune = SSpawnAtPosition("STHereticRune", coords);
         });
+
+        for (var i = 1; i <= 5; i++)
+        {
+            Assert.That(await TryBladeRitual(heretic, rune, testMap), Is.EqualTo(i <= 4), $"Клинок {i}");
+            await Server.WaitAssertion(() =>
+                Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(Math.Min(i, 4))));
+        }
     }
 
     [Test]
@@ -815,7 +811,6 @@ public sealed class HereticFleshTest : GameTest
         var rituals = Server.System<StoriesHereticRitualSystem>();
         var damageable = Server.System<DamageableSystem>();
         var actions = Server.System<SharedActionsSystem>();
-        var puddles = Server.System<SharedPuddleSystem>();
         var minds = Server.System<MindSystem>();
         var status = Server.System<StatusEffectsSystem>();
         var heretic = default(Entity<StoriesHereticComponent>);
@@ -866,20 +861,23 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(heretic.Comp.Rituals, Does.Not.Contain((EntProtoId) "STHereticRitualFleshAscension"));
             Assert.That(corpses.All(c => SEntMan.Deleted(c) || SEntMan.IsQueuedForDeletion(c)), "Трупы не поглощены");
 
+        });
+
+        await Pair.RunTicksSync(1);
+
+        // Клинки без лимита (лимит до Вознесения — 4).
+        for (var i = 1; i <= 5; i++)
+            Assert.That(await TryBladeRitual(heretic, rune, testMap), Is.True, $"Клинок {i}");
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(5));
+
             // Повтор невозможен: ритуала больше нет.
             for (var i = 0; i < 4; i++)
                 SpawnCorpse();
             Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Вознесение повторилось");
-
-            // Клинки без лимита (лимит до Вознесения — 4).
-            for (var i = 1; i <= 5; i++)
-            {
-                SSpawnAtPosition("KitchenKnife", coords);
-                Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out _, sound: false), Is.True);
-                Assert.That(rituals.TryPerform(heretic, rune), Is.True, $"Клинок {i}");
-            }
-
-            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(5));
 
             // «Сбросить форму»: Владыка Ночи со штатным возвратом и ужасом свидетеля.
             var witness = SSpawnAtPosition("MobHuman", coords);
@@ -930,8 +928,32 @@ public sealed class HereticFleshTest : GameTest
             interaction.UserInteraction(lord, SEntMan.GetComponent<TransformComponent>(arm).Coordinates, arm);
             Assert.That(SEntMan.Deleted(arm) || SEntMan.IsQueuedForDeletion(arm), Is.True, "Рука не съедена");
 
-            // 50% от 1000: по 250 Brute и Burn, ожога нет — остаётся 350.
-            Assert.That(SEntMan.GetComponent<DamageableComponent>(lord).TotalDamage.Float(), Is.EqualTo(350f).Within(0.1f));
+            // 50% от 1000 по имеющемуся урону: из 600 Slash остаётся 100.
+            Assert.That(SEntMan.GetComponent<DamageableComponent>(lord).TotalDamage.Float(), Is.EqualTo(100f).Within(0.1f));
         });
+    }
+
+    /// <summary>
+    /// Нож и лужа крови на руне, затем ритуал. Готовый клинок (он тоже нож) уносится с руны,
+    /// а тик удаляет поглощённое: иначе новая кровь вольётся в лужу, которая уже ждёт удаления.
+    /// </summary>
+    private async Task<bool> TryBladeRitual(Entity<StoriesHereticComponent> heretic, EntityUid rune, TestMapData map)
+    {
+        var result = false;
+        await Server.WaitAssertion(() =>
+        {
+            SSpawnAtPosition("KitchenKnife", map.GridCoords);
+            Assert.That(Server.System<SharedPuddleSystem>().TrySpillAt(map.GridCoords, new Solution("Blood", 10), out _, sound: false), Is.True);
+            result = Server.System<StoriesHereticRitualSystem>().TryPerform(heretic, rune);
+
+            var query = SEntMan.EntityQueryEnumerator<MetaDataComponent>();
+            while (query.MoveNext(out var uid, out var meta))
+            {
+                if (meta.EntityPrototype?.ID == "STHereticBladeFlesh")
+                    Server.System<SharedTransformSystem>().SetMapCoordinates(uid, map.MapCoords.Offset(50, 50));
+            }
+        });
+        await Pair.RunTicksSync(1);
+        return result;
     }
 }

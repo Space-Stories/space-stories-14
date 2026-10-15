@@ -104,7 +104,11 @@ stories-heretic-ui-locked = Пока недоступно.
 stories-heretic-ash-rebirth = Вы вытягиваете жизнь из пламени. Жертв: { $count }.
 stories-heretic-ingredient-fire = спичка или зажигалка
 
-stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $count } сгоревших тел.
+stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $count } { $count ->
+    [one] сгоревшее тело
+    [few] сгоревших тела
+   *[other] сгоревших тел
+}.
 stories-heretic-ascension-done = Вы уже вознеслись.
 stories-heretic-ash-ascension-announcement = Внимание! Обнаружен всплеск аномальной активности. { $name } вознёсся как Повелитель пепла. Огонь поглотит всех.
 stories-heretic-ingredient-glass-shard = осколок стекла

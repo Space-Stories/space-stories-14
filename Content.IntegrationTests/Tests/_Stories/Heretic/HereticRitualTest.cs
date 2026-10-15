@@ -215,6 +215,33 @@ public sealed class HereticRitualTest : GameTest
     }
 
     [Test]
+    public async Task QueuedIngredientIsNotReused()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var heretics = Server.System<StoriesHereticSystem>();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var coords = testMap.GridCoords;
+            var uid = SSpawnAtPosition("MobHuman", coords);
+            var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
+            Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeAshRoot"), Is.True);
+
+            var rune = SSpawnAtPosition("STHereticRune", coords);
+            // Зажигалка одна (сам клинок — тоже нож, поэтому ножей хватает на второй раз).
+            SSpawnAtPosition("KitchenKnife", coords);
+            SSpawnAtPosition("KitchenKnife", coords);
+            SSpawnAtPosition("Lighter", coords);
+
+            // Зажигалка поглощена первым ритуалом и ждёт удаления до конца тика — второй её не видит.
+            Assert.That(rituals.TryPerform(heretic, rune), Is.True);
+            Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Зажигалка из очереди на удаление использована снова");
+            Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualAshBlade"), Is.EqualTo(1));
+        });
+    }
+
+    [Test]
     public async Task AshAscensionOnce()
     {
         var testMap = await Pair.CreateTestMap();
