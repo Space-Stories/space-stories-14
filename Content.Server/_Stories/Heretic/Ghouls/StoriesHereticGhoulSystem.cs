@@ -10,6 +10,7 @@ using Content.Shared.Database;
 using Content.Shared.Examine;
 using Content.Shared.Humanoid;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.StatusEffectNew;
@@ -39,6 +40,7 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
 
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<StoriesHereticGhoulComponent, MindRemovedMessage>(OnMindRemoved);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<StoriesHereticGhoulComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<StoriesHereticRaisedComponent, MobStateChangedEvent>(OnRaisedMobStateChanged);
@@ -68,7 +70,8 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         EnsureComp<StoriesHereticRaisedComponent>(corpse);
         _conversion.TryConvert(corpse, conversion, master);
         _heretic.MakeServant(corpse, master);
-        _mind.TryAddObjective(mindId, mind!, ServeMaster);
+        if (!_mind.TryAddObjective(mindId, mind!, ServeMaster))
+            Log.Error($"Failed to add objective {ServeMaster} to ghoul {ToPrettyString(corpse)}");
 
         if (_player.TryGetSessionById(mind!.UserId, out var session))
             _chat.DispatchServerMessage(session, Loc.GetString("stories-heretic-ghoul-briefing", ("master", master)));
@@ -146,13 +149,28 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
 
         RemComp<StoriesHereticServantComponent>(ent);
         // Служба окончена: цель «служить хозяину» больше не нужна.
-        if (_mind.TryGetMind(ent, out var mindId, out var mind) && _mind.TryFindObjective((mindId, mind), ServeMaster, out var objective))
-            _mind.TryRemoveObjective(mindId, mind, mind.Objectives.IndexOf(objective.Value));
+        if (_mind.TryGetMind(ent, out var mindId, out var mind))
+            RemoveServeObjective((mindId, mind));
 
         _adminLog.Add(LogType.Action, LogImpact.Medium, $"{ToPrettyString(ent):target} is no longer a ghoul");
 
         if (!_mobState.IsDead(ent) && TryComp<StoriesHereticRaisedComponent>(ent, out var raised))
             RestoreThresholds((ent, raised));
+    }
+
+    /// <summary>
+    /// Разум ушёл из тела гуля. При разрыве или удалении тела это происходит до <see cref="OnShutdown"/>,
+    /// где разума в теле уже нет: снимаем цель здесь.
+    /// </summary>
+    private void OnMindRemoved(Entity<StoriesHereticGhoulComponent> ent, ref MindRemovedMessage args)
+    {
+        RemoveServeObjective(args.Mind);
+    }
+
+    private void RemoveServeObjective(Entity<MindComponent> mind)
+    {
+        if (_mind.TryFindObjective(mind.AsNullable(), ServeMaster, out var objective))
+            _mind.TryRemoveObjective(mind, mind.Comp, mind.Comp.Objectives.IndexOf(objective.Value));
     }
 
     private void OnRaisedMobStateChanged(Entity<StoriesHereticRaisedComponent> ent, ref MobStateChangedEvent args)

@@ -39,7 +39,8 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
 
         foreach (var objective in knowledge.Objectives)
         {
-            _mind.TryAddObjective(mindId, mind, objective);
+            if (!_mind.TryAddObjective(mindId, mind, objective))
+                Log.Error($"Failed to add objective {objective} to heretic {ToPrettyString(ent)} for knowledge {args.Knowledge}");
         }
     }
 

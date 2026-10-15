@@ -163,7 +163,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
 
         ent.Comp.Bound = true;
         RemComp<StoriesHereticSummonWaitingComponent>(ent);
-        _mind.TryAddObjective(args.Mind.Owner, args.Mind.Comp, ServeMaster);
+        if (!_mind.TryAddObjective(args.Mind.Owner, args.Mind.Comp, ServeMaster))
+            Log.Error($"Failed to add objective {ServeMaster} to summon {ToPrettyString(ent)}");
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(ent):player} took the summon role of {ToPrettyString(ent.Comp.Master):user}");
         if (TryComp<StoriesHereticComponent>(ent.Comp.Master, out var heretic))

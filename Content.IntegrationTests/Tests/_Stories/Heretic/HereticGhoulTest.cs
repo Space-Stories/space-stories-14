@@ -5,6 +5,7 @@ using Content.Shared._Stories.Heretic;
 using Content.Shared.Administration.Systems;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
+using Content.Shared.Gibbing;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
@@ -76,13 +77,46 @@ public sealed class HereticGhoulTest : GameTest
             Assert.That(ghouls.CountGhouls(master, "STHereticGhoul"), Is.Zero);
             Assert.That(heretics.IsServant(corpse), Is.False, "Мёртвый гуль остался слугой");
             Assert.That(minds.TryFindObjective(ghoulMind, "STHereticObjectiveServeMaster", out _), Is.False, "Цель служения осталась после смерти гуля");
-            Assert.That(ghouls.TryRaise(master, corpse, "STHereticGhoul", 1, out _), Is.False, "Тот же труп поднят дважды");
+            Assert.That(ghouls.TryRaise(master, corpse, "STHereticGhoul", 1, out var again), Is.False, "Тот же труп поднят дважды");
+            Assert.That(again, Is.EqualTo(loc.GetString("stories-heretic-ghoul-already")));
 
             // Оживлённый бывший гуль снова обычной прочности.
             Server.System<RejuvenateSystem>().PerformRejuvenate(corpse);
             Assert.That(mobState.IsAlive(corpse), Is.True);
             Assert.That(thresholds.TryGetThresholdForState(corpse, MobState.Critical, out var crit) && crit == 100, "Порог крита не вернулся");
             Assert.That(thresholds.TryGetThresholdForState(corpse, MobState.Dead, out var dead) && dead == 200, "Порог смерти не вернулся");
+        });
+    }
+
+    [Test]
+    public async Task GibbedGhoulLosesServeObjective()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var ghouls = Server.System<StoriesHereticGhoulSystem>();
+        var damageable = Server.System<DamageableSystem>();
+        var minds = Server.System<SharedMindSystem>();
+        var mindId = EntityUid.Invalid;
+
+        await Server.WaitAssertion(() =>
+        {
+            var master = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            var corpse = SSpawnAtPosition("MobHuman", testMap.GridCoords);
+            mindId = minds.CreateMind(ServerSession!.UserId);
+            minds.TransferTo(mindId, corpse);
+            damageable.TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
+            Assert.That(ghouls.TryRaise(master, corpse, "STHereticGhoul", 1, out _), Is.True);
+            Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.True);
+
+            // Гуля разорвало: тело удаляется, разум уходит в призрака.
+            Server.System<GibbingSystem>().Gib(corpse);
+        });
+
+        await Pair.RunTicksSync(2);
+
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.EntityExists(mindId), Is.True, "Разум пропал вместе с телом");
+            Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.False, "Цель служения осталась после разрыва гуля");
         });
     }
 
