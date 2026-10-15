@@ -46,6 +46,34 @@ public sealed class HereticKnowledgeUiTest : GameTest
         });
     }
 
+    /// <summary>
+    /// Два знания в одной клетке окна (колонка, ступень, дорожка) рисуются друг поверх друга.
+    /// </summary>
+    [Test]
+    public async Task KnowledgeCellsAreUnique()
+    {
+        var client = Pair.Client;
+        var proto = client.ResolveDependency<IPrototypeManager>();
+        var factory = client.ResolveDependency<IComponentFactory>();
+
+        await client.WaitAssertion(() =>
+        {
+            var cells = new Dictionary<string, string>();
+            foreach (var entity in proto.EnumeratePrototypes<EntityPrototype>())
+            {
+                // Тестовые прототипы (STTest*) в окно игрока не попадают.
+                if (entity.Abstract || !entity.ID.StartsWith("STHereticKnowledge")
+                    || !entity.TryGetComponent<StoriesHereticKnowledgeComponent>(out var knowledge, factory)
+                    || knowledge.Starting)
+                    continue;
+
+                var bridge = string.Join("+", knowledge.Bridge);
+                var cell = $"{knowledge.Path}|{bridge}|{knowledge.Stage}|{knowledge.Side}";
+                Assert.That(cells.TryAdd(cell, entity.ID), Is.True, $"{entity.ID} и {cells.GetValueOrDefault(cell)} в одной клетке окна");
+            }
+        });
+    }
+
     [Test]
     public async Task KnowledgeWindowBuilds()
     {

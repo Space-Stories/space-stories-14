@@ -169,6 +169,8 @@
     icon:
       sprite: _Stories/Heretic/writhing_embrace.rsi
       state: icon
+    path: STHereticPathFlesh
+    side: true
     stage: 6
     requires: [ STHereticKnowledgeFleshKnitting ]
     rituals:
