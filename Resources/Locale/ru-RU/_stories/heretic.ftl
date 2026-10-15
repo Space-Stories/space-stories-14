@@ -106,6 +106,12 @@ stories-heretic-ingredient-candle = свеча
 stories-heretic-ingredient-mask = дыхательная, противогазная или стерильная маска
 stories-heretic-ingredient-stunbaton = станбатон
 stories-heretic-ingredient-liver = печень
+stories-heretic-ingredient-table-or-suit = стол или любая верхняя одежда
+stories-heretic-ingredient-any-mask = любая маска
+stories-heretic-mantle-flames-on = Мантия разгорается.
+stories-heretic-mantle-flames-off = Пламя мантии гаснет.
+stories-heretic-mantle-burns = Мантия вспыхивает и вгрызается в вашу плоть!
+stories-heretic-mantle-limb-burnt = Мантия сжигает вашу конечность дотла!
 stories-guide-entry-heretic = Еретик
 stories-heretic-aura-examine = [color=#3fbf3f]Вокруг { GENDER($ent) ->
     [female] неё

@@ -138,11 +138,21 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     }
 
     /// <summary>
-    /// Как should_show_aura в tg: аура видна на поздней стадии пути, но не после Пира сов.
+    /// Как should_show_aura в tg: аура видна на поздней стадии пути, но не после Пира сов и не под мантией.
     /// </summary>
     public bool ShouldShowAura(StoriesHereticComponent comp)
     {
-        return comp.PointsGained > comp.PointsToAura && comp.CanAscend;
+        return comp.PointsGained > comp.PointsToAura && comp.CanAscend && !comp.AuraHidden;
+    }
+
+    public void SetAuraHidden(Entity<StoriesHereticComponent> ent, bool hidden)
+    {
+        if (ent.Comp.AuraHidden == hidden)
+            return;
+
+        ent.Comp.AuraHidden = hidden;
+        Dirty(ent);
+        UpdateAura(ent);
     }
 
     /// <summary>

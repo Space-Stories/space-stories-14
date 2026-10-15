@@ -1,6 +1,7 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Body;
+using Content.Shared.Clothing.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
@@ -318,6 +319,11 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         if (ingredient.OrganCategory != null
             && TryComp<OrganComponent>(uid, out var organ)
             && organ.Category == ingredient.OrganCategory)
+            return true;
+
+        if (ingredient.ClothingSlots is { } slots
+            && TryComp<ClothingComponent>(uid, out var clothing)
+            && (clothing.Slots & slots) != 0)
             return true;
 
         return false;
