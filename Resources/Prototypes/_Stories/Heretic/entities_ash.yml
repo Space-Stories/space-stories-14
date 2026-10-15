@@ -5,6 +5,7 @@
   description: A curved blade that smells of smoke. Breaking it carries you away through the Mansus.
   components:
   - type: StoriesHereticBlade
+    breakMessage: stories-heretic-blade-break-ash
   - type: Sprite
     sprite: _Stories/Heretic/ash_blade.rsi
     state: icon

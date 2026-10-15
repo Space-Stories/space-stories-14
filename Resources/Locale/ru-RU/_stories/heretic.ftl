@@ -61,6 +61,7 @@ stories-heretic-ingredient-hide = шкура или кожа
 
 stories-heretic-grasp-blocked = Святая сила отталкивает Хватку!
 stories-heretic-blade-no-place = Мансусу некуда вас перенести.
+stories-heretic-blade-break-ash = Ночной дозорный слышит твой зов…
 stories-heretic-sacrifice-not-target = Мансус не примет эту жертву.
 stories-heretic-sacrifice-resisting = Жертва ещё сопротивляется.
 stories-heretic-sacrifice-victim = Вас утягивает сквозь завесу реальности...

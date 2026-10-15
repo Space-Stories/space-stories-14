@@ -27,4 +27,5 @@ stories-heretic-mansus-link-linked = A foreign whisper creeps into your head.
 stories-heretic-flesh-ascension-corpses = The hymn needs { $count } more dead bodies.
 stories-heretic-flesh-ascension-announcement = Ever coiling vortex. Reality unfolded. ARMS OUTREACHED, THE LORD OF THE NIGHT, { $name } has ascended! Fear the ever twisting hand!
 stories-heretic-shed-form-speech = REALITY UNCOIL!
+stories-heretic-blade-break-flesh = The Marshal hears your call...
 stories-heretic-lord-fear = You glimpse the Gates of the Mansus, and your mind cracks.

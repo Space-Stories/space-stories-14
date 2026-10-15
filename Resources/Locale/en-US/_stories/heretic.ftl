@@ -61,6 +61,7 @@ stories-heretic-ingredient-hide = hide or leather
 
 stories-heretic-grasp-blocked = Holy power repels the Grasp!
 stories-heretic-blade-no-place = The Mansus has nowhere to take you.
+stories-heretic-blade-break-ash = The Nightwatcher hears your call...
 stories-heretic-sacrifice-not-target = The Mansus will not accept this sacrifice.
 stories-heretic-sacrifice-resisting = The victim is still resisting.
 stories-heretic-sacrifice-victim = You are pulled through the veil of reality...

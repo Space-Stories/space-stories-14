@@ -325,6 +325,9 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
 
     public bool Matches(StoriesHereticIngredient ingredient, EntityUid uid)
     {
+        if (ingredient.Blacklist != null && _whitelist.IsValid(ingredient.Blacklist, uid))
+            return false;
+
         if (ingredient.Whitelist != null && _whitelist.IsValid(ingredient.Whitelist, uid))
             return true;
 

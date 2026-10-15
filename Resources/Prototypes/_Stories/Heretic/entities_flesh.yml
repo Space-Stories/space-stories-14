@@ -5,6 +5,7 @@
   description: A sickle-shaped blade born from a mutilated creature of flesh. Breaking it carries you away through the Mansus.
   components:
   - type: StoriesHereticBlade
+    breakMessage: stories-heretic-blade-break-flesh
   - type: Sprite
     sprite: _Stories/Heretic/flesh_blade.rsi
     state: icon

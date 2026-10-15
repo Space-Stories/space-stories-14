@@ -214,6 +214,28 @@ public sealed class HereticRitualTest : GameTest
         });
     }
 
+    /// <summary>Клинок еретика — тоже нож, но не годится ножом для нового клинка.</summary>
+    [Test]
+    public async Task BladeIsNotKnifeIngredient()
+    {
+        var testMap = await Pair.CreateTestMap();
+        var rituals = Server.System<StoriesHereticRitualSystem>();
+        var protoMan = Server.ResolveDependency<IPrototypeManager>();
+        var factory = Server.ResolveDependency<IComponentFactory>();
+
+        await Server.WaitAssertion(() =>
+        {
+            var knife = SSpawnAtPosition("KitchenKnife", testMap.GridCoords);
+            foreach (var (ritual, blade) in new[] { ("STHereticRitualAshBlade", "STHereticBladeAsh"), ("STHereticRitualFleshBlade", "STHereticBladeFlesh") })
+            {
+                Assert.That(protoMan.Index<EntityPrototype>(ritual).TryComp<StoriesHereticRitualComponent>(out var recipe, factory), Is.True);
+                var ingredient = recipe!.Ingredients.First(i => i.Name == "stories-heretic-ingredient-knife");
+                Assert.That(rituals.Matches(ingredient, knife), Is.True, ritual);
+                Assert.That(rituals.Matches(ingredient, SSpawnAtPosition(blade, testMap.GridCoords)), Is.False, $"{blade} принят ножом");
+            }
+        });
+    }
+
     [Test]
     public async Task QueuedIngredientIsNotReused()
     {

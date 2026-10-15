@@ -31,4 +31,5 @@ stories-heretic-flesh-ascension-corpses = Гимну нужно ещё { $count 
 }.
 stories-heretic-flesh-ascension-announcement = Вечно свивающийся вихрь. Реальность развернулась. РУКИ РАСПРОСТЁРТЫ — ВЛАДЫКА НОЧИ { $name } вознёсся! Бойтесь вечно извивающейся длани!
 stories-heretic-shed-form-speech = REALITY UNCOIL!
+stories-heretic-blade-break-flesh = Маршал слышит твой зов…
 stories-heretic-lord-fear = Вы видите Врата Мансуса, и ваш разум трещит.

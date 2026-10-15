@@ -37,6 +37,12 @@ public sealed partial class StoriesHereticIngredient
     [DataField]
     public EntityWhitelist? Whitelist;
 
+    /// <summary>
+    /// Что не годится, даже если подходит под остальные условия (клинок еретика вместо ножа).
+    /// </summary>
+    [DataField]
+    public EntityWhitelist? Blacklist;
+
     [DataField]
     public List<EntProtoId>? Prototypes;
 

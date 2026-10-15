@@ -17,4 +17,10 @@ public sealed partial class StoriesHereticBladeComponent : Component
 
     [DataField]
     public SoundSpecifier? BreakSound = new SoundPathSpecifier("/Audio/Effects/glass_break1.ogg");
+
+    /// <summary>
+    /// Что слышит еретик, когда клинок ломается и переносит его.
+    /// </summary>
+    [DataField]
+    public LocId? BreakMessage;
 }
