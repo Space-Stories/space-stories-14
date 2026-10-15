@@ -37,6 +37,7 @@ public sealed partial class StoriesHereticAshSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticBladeFireComponent, StoriesHereticBladeHitEvent>(OnBladeFireHit);
 
         InitializeAscension();
+        InitializeMantle();
     }
 
     private void Ignite(EntityUid target, float stacks)
