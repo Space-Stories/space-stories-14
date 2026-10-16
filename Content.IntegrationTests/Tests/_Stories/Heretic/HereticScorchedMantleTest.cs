@@ -165,7 +165,14 @@ public sealed class HereticScorchedMantleTest : GameTest
             var actionUid = SEntMan.GetComponent<ActionGrantComponent>(mantle).ActionEntities.Single();
             action = (actionUid, SEntMan.GetComponent<ActionComponent>(actionUid));
             Assert.That(actions.GetActions(heretic).Select(a => a.Owner), Does.Contain(actionUid), "Еретик не получил действие");
+        });
 
+        // Клиент должен увидеть еретика до поджога: FireVisualizerSystem апстрима создаёт огонёк прямо
+        // в инициализации компонента, и моб, впервые пришедший клиенту горящим, роняет DebugAssert движка.
+        await RunTicksSync(5);
+
+        await Server.WaitAssertion(() =>
+        {
             actions.PerformAction(heretic.Owner, action, predicted: false);
             Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).OnFire, Is.True, "Носитель не загорелся");
         });
