@@ -49,5 +49,5 @@
 - type: entity
   parent: [ STBaseHereticObjective, BaseFreeObjective ]
   id: STHereticObjectiveServeMaster
-  name: stories-heretic-objective-serve-master
-  description: stories-heretic-objective-serve-master-desc
+  name: Serve your master.
+  description: Serve the heretic who summoned you.

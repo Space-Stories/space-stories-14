@@ -47,7 +47,7 @@ public sealed class HereticSummonTest : GameTest
   - type: StoriesHereticRitual
     effect: Summon
     ingredients:
-    - name: stories-heretic-ingredient-glass
+    - name: stories-heretic-ingredient-glass-shard
       prototypes: [ SheetGlass ]
   - type: StoriesHereticSummonRitual
     mob: STTestHereticSummonMob
