@@ -1,0 +1,127 @@
+- type: entity
+  id: STActionHereticAshPassage
+  name: Ashen Passage
+  description: Dissolve into ash for a moment and pass through walls. Works even while cuffed.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 15
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: ash_shift
+  - type: InstantAction
+    event: !type:PolymorphActionEvent
+      protoId: STHereticAshJaunt
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticVolcanoBlast
+  name: Volcano Blast
+  description: A beam of fire that jumps between creatures that are not yet burning.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: flames
+  - type: InstantAction
+    event: !type:StoriesHereticVolcanoBlastEvent
+      damage:
+        types:
+          Heat: 10
+      selfHeal:
+        types:
+          Heat: -5
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticRebirth
+  name: Nightwatcher's Rebirth
+  description: Drain life from everyone burning around you. Burning victims in critical condition die.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 60
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: smoke
+  - type: InstantAction
+    event: !type:StoriesHereticRebirthEvent
+      healPerTarget:
+        types:
+          Blunt: -3
+          Slash: -3
+          Piercing: -3
+          Heat: -2.5
+          Cold: -2.5
+          Shock: -2.5
+          Caustic: -2.5
+          Poison: -10
+          Asphyxiation: -10
+      finishDamage:
+        types:
+          Heat: 300
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticFireRing
+  name: Ring of Fire
+  description: Surround yourself with fire for a minute.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 90
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: fire_ring
+  - type: InstantAction
+    event: !type:StoriesHereticFireRingEvent
+
+- type: entity
+  id: STActionHereticFireWave
+  name: Wave of Flame
+  description: Unleash a wave of fire in front of you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: flames
+  - type: InstantAction
+    event: !type:StoriesHereticFireWaveEvent
+      damage:
+        types:
+          Heat: 20
+
+- type: entity
+  id: STActionHereticMantleFlames
+  name: Mantle Flames
+  description: Toggle the mantle's flames. While lit, it adds fire to you every few seconds.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 1
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: flames
+  - type: InstantAction
+    event: !type:StoriesHereticMantleFlamesEvent
+  - type: ActionUserWhitelist
+    whitelist:
+      components:
+      - StoriesHeretic

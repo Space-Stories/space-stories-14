@@ -1,0 +1,184 @@
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshRoot
+  name: Nightwatcher's Secret
+  description: Step onto the Path of Ash. Learn to forge ashen blades from a knife and a flame.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/ash_blade.rsi
+      state: icon
+    path: STHereticPathAsh
+    choosesPath: true
+    stage: 1
+    rituals:
+    - STHereticRitualAshBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshGrasp
+  name: Grasp of Ash
+  description: Your Mansus Grasp blinds its victim.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: grasp_ash
+    path: STHereticPathAsh
+    stage: 2
+    requires: [ STHereticKnowledgeAshRoot ]
+    addComponents:
+    - type: StoriesHereticGraspBlind
+      duration: 5
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshPassage
+  name: Ashen Passage
+  description: A short jaunt through walls. Works while cuffed.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: ash_shift
+    path: STHereticPathAsh
+    stage: 3
+    requires: [ STHereticKnowledgeAshGrasp ]
+    actions:
+    - STActionHereticAshPassage
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshMark
+  name: Mark of Ash
+  description: Your Grasp marks victims. A blade strike on a marked victim sets them ablaze, and the mark spreads to those nearby.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: mansus_grasp
+    path: STHereticPathAsh
+    stage: 4
+    cost: 2
+    requires: [ STHereticKnowledgeAshPassage ]
+    addComponents:
+    - type: StoriesHereticGraspMark
+      path: STHereticPathAsh
+    - type: StoriesHereticAshMark
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshVolcano
+  name: Volcano Blast
+  description: A beam of fire that jumps between creatures.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: flames
+    path: STHereticPathAsh
+    stage: 5
+    requires: [ STHereticKnowledgeAshMark ]
+    actions:
+    - STActionHereticVolcanoBlast
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshFieryBlade
+  name: Fiery Blade
+  description: Your blades set their victims on fire.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: blade_upgrade_ash
+    path: STHereticPathAsh
+    stage: 6
+    cost: 2
+    requires: [ STHereticKnowledgeAshVolcano ]
+    addComponents:
+    - type: StoriesHereticBladeFire
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshRebirth
+  name: Nightwatcher's Rebirth
+  description: Drain life from everyone burning around you.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: fire_ring
+    path: STHereticPathAsh
+    stage: 7
+    requires: [ STHereticKnowledgeAshFieryBlade ]
+    actions:
+    - STActionHereticRebirth
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshenEyes
+  name: Ashen Eyes
+  description: Forge a band that shows you the warmth of the living. It also works as a focus.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/ashen_eyes.rsi
+      state: icon
+    stage: 3
+    requires: [ STHereticKnowledgeAshPassage ]
+    rituals:
+    - STHereticRitualAshenEyes
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeMadnessMask
+  name: Mask of Madness
+  description: Those around the wearer lose stamina and see things that are not there.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/madness_mask.rsi
+      state: icon
+    stage: 5
+    requires: [ STHereticKnowledgeAshVolcano ]
+    rituals:
+    - STHereticRitualMadnessMask
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshAscension
+  name: "Ashlord's Rite"
+  description: Burn three corpses on a rune and ascend. Requires completed objectives.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/knowledge.rsi
+      state: node_finished
+    path: STHereticPathAsh
+    stage: 8
+    cost: 2
+    ascension: true
+    requires: [ STHereticKnowledgeAshRebirth ]
+    rituals:
+    - STHereticRitualAshAscension
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAshMantle
+  name: Scorched Mantle
+  description: |-
+    Forge a Scorched Mantle. Full protection from fire, and the mantle can keep the flames going on its own.
+
+    The Watch stood where they fell, crumbling out of sight. But the winds that blow through the city call them back to duty: dust rises into the air, the drifting silhouette of the fallen.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/scorched_mantle.rsi
+      state: icon
+    path: STHereticPathAsh
+    side: true
+    stage: 6
+    requires: [ STHereticKnowledgeAshVolcano ]
+    rituals:
+    - STHereticRitualAshMantle

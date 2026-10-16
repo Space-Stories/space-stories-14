@@ -1,0 +1,169 @@
+- type: entity
+  parent: BaseKnife
+  id: STHereticBladeAsh
+  name: ashen blade
+  description: A curved blade that smells of smoke. Breaking it carries you away through the Mansus.
+  components:
+  - type: StoriesHereticBlade
+  - type: Sprite
+    sprite: _Stories/Heretic/ash_blade.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Heretic/ash_blade_inhand.rsi
+    size: Normal
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 17
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+
+- type: entity
+  parent: ClothingNeckBase
+  id: STHereticAshenEyes
+  name: warm eldritch medallion
+  description: A smouldering medallion with an eye. Through it you see the warmth of the living.
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/ashen_eyes.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Stories/Heretic/ashen_eyes.rsi
+  - type: StoriesHereticFocus
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+
+- type: entity
+  parent: ClothingMaskGas
+  id: STHereticMadnessMask
+  name: mask of madness
+  description: A grinning mask. Those who see it lose their minds.
+  components:
+  - type: StoriesHereticMadnessMask
+  - type: Sprite
+    sprite: _Stories/Heretic/madness_mask.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Stories/Heretic/madness_mask.rsi
+
+- type: entity
+  id: STHereticFireRingEffect
+  name: ring of fire
+  description: A smouldering ring of ashen fire.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/fire_ring.rsi
+    color: "#ff7a22dd"
+    layers:
+    - state: ring
+      shader: unshaded
+    drawdepth: FloorObjects
+    noRot: true
+  - type: PointLight
+    radius: 3.5
+    energy: 0.8
+    softness: 2
+    color: "#ff7a22"
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticFireEffect
+  name: eldritch flame
+  description: Ashen fire.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/effects.rsi
+    layers:
+    - state: flame
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  parent: ClothingOuterBase
+  id: STHereticScorchedMantle
+  name: Scorched Mantle
+  description: Left to burn to tatters, what remains is naught but a blackened echo of the mantle of the Watch. Yet the soot-choked folds turn blade and flame from the form within. A brief reprieve before its gaze turns inwards.
+  components:
+  - type: StoriesHereticScorchedMantle
+  - type: Sprite
+    sprite: _Stories/Heretic/scorched_mantle.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/scorched_mantle.rsi
+  - type: Item
+    size: Normal
+  - type: ToggleableClothing
+    clothingPrototype: STHereticScorchedMantleHood
+    slot: head
+    verbText: toggle-clothing-verb-hood
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+  - type: AllowSuitStorage
+    whitelist:
+      components:
+      - StoriesHereticBlade
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.4
+        Heat: 0.5
+        Radiation: 0
+        Caustic: 0.8
+  - type: ExplosionResistance
+    damageCoefficient: 0
+  # Горение не наносит урона. Теплоизоляция в SS14 общая для жара и холода.
+  - type: FireProtection
+    reduction: 1
+  - type: TemperatureProtection
+    coefficient: 0.01
+  - type: ActionGrant
+    actions:
+    - STActionHereticMantleFlames
+  - type: ItemActionGrant
+    activeIfWorn: true
+
+- type: entity
+  parent: ClothingHeadBase
+  id: STHereticScorchedMantleHood
+  name: Scorched Mantle hood
+  description: Left to burn to tatters, what remains is naught but a blackened echo of the mantle of the Watch.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/scorched_mantle_hood.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/scorched_mantle_hood.rsi
+    quickEquip: false
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+      FacialHair: HEAD
+      Snout: HEAD
+      HeadTop: HEAD
+      HeadSide: HEAD
+  - type: StoriesHereticFocus
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.4
+        Heat: 0.5
+        Radiation: 0
+        Caustic: 0.8

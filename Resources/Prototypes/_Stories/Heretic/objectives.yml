@@ -1,0 +1,39 @@
+- type: objectiveIssuer
+  id: STHeretic
+  name: stories-heretic-objective-issuer
+
+- type: entity
+  abstract: true
+  parent: BaseObjective
+  id: STBaseHereticObjective
+  components:
+  - type: Objective
+    difficulty: 1
+    issuer: STHeretic
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: eye
+
+- type: entity
+  parent: STBaseHereticObjective
+  id: STHereticObjectiveKnowledge
+  components:
+  - type: StoriesHereticObjectiveCondition
+    kind: Knowledge
+    title: stories-heretic-objective-knowledge
+
+- type: entity
+  parent: STBaseHereticObjective
+  id: STHereticObjectiveSacrifice
+  components:
+  - type: StoriesHereticObjectiveCondition
+    kind: Sacrifice
+    title: stories-heretic-objective-sacrifice
+
+- type: entity
+  parent: STBaseHereticObjective
+  id: STHereticObjectiveHeadSacrifice
+  components:
+  - type: StoriesHereticObjectiveCondition
+    kind: HeadSacrifice
+    title: stories-heretic-objective-head-sacrifice

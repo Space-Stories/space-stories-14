@@ -1,0 +1,19 @@
+- type: polymorph
+  id: STHereticAshJaunt
+  configuration:
+    entity: EtherealJaunt
+    transferName: true
+    inventory: None
+    forced: true
+    revertOnDeath: true
+    revertOnCrit: true
+    allowRepeatedMorphs: false
+    polymorphSound: /Audio/Magic/ethereal_enter.ogg
+    exitPolymorphSound: /Audio/Magic/ethereal_exit.ogg
+    duration: 3
+
+- type: damageModifierSet
+  id: STHereticAshAscended
+  coefficients:
+    Heat: 0
+    Cold: 0

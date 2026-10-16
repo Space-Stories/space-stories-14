@@ -1,0 +1,96 @@
+- type: entity
+  abstract: true
+  id: STHereticKnowledgeBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticKnowledge
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeRunes
+  name: Mansus transmutation
+  description: You know how to draw transmutation runes and perform simple rituals.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    actions:
+    - STActionHereticDrawRune
+    rituals:
+    - STHereticRitualKnowledge
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFeastOfOwls
+  name: Feast of Owls
+  description: Gain 5 knowledge points at once, but forever lose the chance to ascend.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/actions.rsi
+      state: eye
+    cost: 0
+    stage: 1
+    grantPoints: 5
+    locksAscension: true
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeAmberFocus
+  name: Amber Focus
+  description: You know how to create a focus from glass and eyes.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    rituals:
+    - STHereticRitualAmberFocus
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeCodex
+  name: Codex Cicatrix
+  description: You know how to bind the Codex. An open Codex doubles influences, speeds up runes and works as a focus.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    rituals:
+    - STHereticRitualCodex
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeBreakOfDawn
+  name: Break of Dawn
+  description: The Mansus Grasp staggers, knocks down and confuses its victim.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    actions:
+    - STActionHereticGrasp
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeHeartbeat
+  name: Heartbeat of the Mansus
+  description: You can sacrifice your targets on a transmutation rune.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    rituals:
+    - STHereticRitualSacrifice
+    - STHereticRitualReroll
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeLivingHeart
+  name: The Living Heart
+  description: Your heart leads you to your targets.
+  components:
+  - type: StoriesHereticKnowledge
+    starting: true
+    cost: 0
+    actions:
+    - STActionHereticLivingHeart

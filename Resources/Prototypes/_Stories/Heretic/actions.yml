@@ -1,0 +1,76 @@
+- type: entity
+  id: STActionHereticKnowledge
+  name: Mansus knowledge
+  description: Open the tree of forbidden knowledge.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: eye
+  - type: InstantAction
+    event: !type:StoriesHereticOpenKnowledgeEvent
+
+- type: entity
+  id: STActionHereticDrawRune
+  name: Draw transmutation rune
+  description: Use a writing tool in your active hand to draw a transmutation rune.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 1
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: draw_rune
+  - type: TargetAction
+    range: 1.5
+  - type: WorldTargetAction
+    event: !type:StoriesHereticDrawRuneEvent
+
+- type: entity
+  id: STActionHereticGrasp
+  name: Mansus Grasp
+  description: Touch a creature to stagger it with the power of the Mansus. Also erases transmutation runes.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+    sound: !type:SoundPathSpecifier
+      path: /Audio/Magic/disintegrate.ogg
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: mansus_grasp
+  - type: TargetAction
+    range: 1.5
+    interactOnMiss: false
+  - type: EntityTargetAction
+    event: !type:StoriesHereticGraspEvent
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+      - StoriesHereticRune
+
+- type: entity
+  id: STActionHereticLivingHeart
+  name: Living Heart
+  description: Listen to your heart to find the next sacrifice target. Others can hear it beat.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 10
+    checkCanInteract: false
+  - type: Sprite
+    sprite: _Stories/Heretic/actions.rsi
+    layers:
+    - state: living_heart
+  - type: InstantAction
+    event: !type:StoriesHereticLivingHeartEvent

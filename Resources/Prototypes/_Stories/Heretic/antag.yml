@@ -1,0 +1,34 @@
+- type: antag
+  id: STHeretic
+  name: stories-roles-antag-heretic-name
+  antagonist: true
+  setPreference: true
+  objective: stories-roles-antag-heretic-objective
+  guides: [ STHeretic ]
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 5h
+
+- type: antagSpecifier
+  parent: BaseTraitor
+  id: STHereticSpecifier
+  prefRoles: [ STHeretic ]
+  briefing:
+    text: stories-heretic-role-greeting
+    color: "#58a65c"
+    sound: /Audio/Ambience/Antag/ling_alert.ogg
+  components:
+  - type: StoriesHeretic
+  mindRoles:
+  - STMindRoleHeretic
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: STMindRoleHeretic
+  name: Heretic Role
+  components:
+  - type: MindRole
+    antagPrototype: STHeretic
+    exclusiveAntag: true
+    roleType: SoloAntagonist
+  - type: StoriesHereticRole

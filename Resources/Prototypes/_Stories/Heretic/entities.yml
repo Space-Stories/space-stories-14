@@ -1,0 +1,118 @@
+- type: entity
+  id: STHereticInfluence
+  name: reality smash
+  description: A tear in the fabric of reality. Something whispers from the other side.
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StoriesHereticInfluence
+  - type: Sprite
+    sprite: _Stories/Heretic/effects.rsi
+    state: reality_smash
+    visible: false
+    drawdepth: Effects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+
+- type: entity
+  id: STHereticPiercedReality
+  name: pierced reality
+  description: A wound in the world. Looking at it hurts.
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StoriesHereticPiercedReality
+  - type: Sprite
+    sprite: _Stories/Heretic/effects.rsi
+    state: pierced_illusion
+    drawdepth: Effects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+
+- type: entity
+  id: STHereticRune
+  name: transmutation rune
+  description: A carefully drawn circle of eldritch symbols.
+  categories: [ HideSpawnMenu ]
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: StoriesHereticRune
+  - type: Sprite
+    sprite: _Stories/Heretic/rune.rsi
+    state: transmutation_rune
+    color: "#4bd36a"
+    drawdepth: FloorObjects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: ClothingNeckBase
+  id: STHereticAmberFocus
+  name: amber focus
+  description: A glass amulet with an eye frozen inside. It helps to focus on the Mansus.
+  components:
+  - type: StoriesHereticFocus
+  - type: Sprite
+    sprite: _Stories/Heretic/amber_focus.rsi
+    state: icon
+  - type: Clothing
+    sprite: _Stories/Heretic/amber_focus.rsi
+
+- type: entity
+  parent: BaseItem
+  id: STHereticCodexCicatrix
+  name: Codex Cicatrix
+  description: A book bound in skin. Its pages whisper.
+  components:
+  - type: StoriesHereticCodex
+  - type: Sprite
+    sprite: _Stories/Heretic/codex.rsi
+    state: icon
+  - type: Item
+    size: Normal
+
+- type: entity
+  id: STHereticAura
+  name: eldritch aura
+  description: A crackling green vortex of otherworldly energy.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/aura.rsi
+    layers:
+    - state: aura
+      shader: unshaded
+    drawdepth: Effects
+  - type: PointLight
+    radius: 1.5
+    energy: 0.8
+    color: "#4fd65a"
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  parent: MarkerBase
+  id: STHereticShadowRealmSpawn
+  name: shadow realm spawn
+  description: Where sacrifice victims appear in the Shadow Realm.
+  components:
+  - type: StoriesHereticShadowRealmSpawn
+  - type: Sprite
+    sprite: Markers/jobs.rsi
+    layers:
+    - state: green
+    - sprite: _Stories/Heretic/knowledge.rsi
+      state: node_side
