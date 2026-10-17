@@ -6,12 +6,16 @@
   name: revenant
   description: A spooky ghostie.
   components:
-  # Stories-Pontific-Start
+  # Stories-Start
   - type: Unholy
     resistanceCoefficient: 0.5
     ignoreProtectionImpulse: false
     detectable: true
-  # Stories-Pontific-End
+  - type: DamageOnAttacked
+    damage:
+      types:
+        Heat: 30
+  # Stories-End
   - type: Emag
     emagType: All
   - type: Input

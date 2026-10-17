@@ -20,7 +20,7 @@
     capacity: 32
     whitelist:
       tags:
-      - Cartridge585Trappiste
+      - STCartridge585Trappiste
 
 - type: entity
   parent: BaseItem
@@ -44,7 +44,7 @@
     capacity: 32
     whitelist:
       tags:
-      - Cartridge585Trappiste
+      - STCartridge585Trappiste
 
 - type: entity
   parent: BaseItem
@@ -68,4 +68,4 @@
     capacity: 32
     whitelist:
       tags:
-      - Cartridge585Trappiste
+      - STCartridge585Trappiste

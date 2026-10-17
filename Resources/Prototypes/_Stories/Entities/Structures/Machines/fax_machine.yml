@@ -2,20 +2,16 @@
   parent: FaxMachineBase
   id: STFaxMachineCaptains
   name: captain's long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
-  suffix: "Nuclear Codes"
+  description: A special Captain's fax. Capable of receiving goals and nuclear codes.
+  suffix: Goal, Nuclear Codes
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_captain.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_captain.rsi
       state: icon
     - type: FaxMachine
-      name: "Captain's Office"
+      name: "Офис Капитана"
       receiveNukeCodes: true
       receiveStationGoal: true
     - type: StealTarget
@@ -23,135 +19,175 @@
 
 - type: entity
   parent: FaxMachineBase
+  id: STFaxMachineCommands
+  suffix: Bridge
+  components:
+    - type: Sprite
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_captain.rsi
+    - type: Icon
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_captain.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Мостик"
+      receiveNukeCodes: false
+      receiveStationGoal: false
+
+- type: entity
+  parent: FaxMachineBase
   id: STFaxMachineCargo
-  name: long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
   suffix: Cargo
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_cargo.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_cargo.rsi
       state: icon
     - type: FaxMachine
-      name: "Cargo"
+      name: "Отдел Снабжения"
+
+- type: entity
+  parent: FaxMachineBase
+  id: STFaxMachineQM
+  suffix: Quartermaster
+  components:
+    - type: Sprite
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_cargo.rsi
+    - type: Icon
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_cargo.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Квартирмейстера"
 
 - type: entity
   parent: FaxMachineBase
   id: STFaxMachineEngeneering
-  name: long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
   suffix: Engineering
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_engeneering.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_engeneering.rsi
       state: icon
     - type: FaxMachine
-      name: "Engineering department"
+      name: "Инженерный Отдел"
+
+- type: entity
+  parent: FaxMachineBase
+  id: STFaxMachineCE
+  suffix: Chief Engineer
+  components:
+    - type: Sprite
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_engeneering.rsi
+    - type: Icon
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_engeneering.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Старшего Инженера"
 
 - type: entity
   parent: FaxMachineBase
   id: STFaxMachineScientist
-  name: long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
   suffix: Science
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_scientist.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_scientist.rsi
       state: icon
     - type: FaxMachine
-      name: "Science department"
+      name: "Научный Отдел"
+
+- type: entity
+  parent: FaxMachineBase
+  id: STFaxMachineRD
+  suffix: Research Director
+  components:
+    - type: Sprite
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_scientist.rsi
+    - type: Icon
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_scientist.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Научного Руководителя"
 
 - type: entity
   parent: FaxMachineBase
   id: STFaxMachineSecurity
-  name: long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
   suffix: Security
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_security.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_security.rsi
       state: icon
     - type: FaxMachine
-      name: "Security"
+      name: "Отдел Службы Безопасности"
+
+- type: entity
+  parent: FaxMachineBase
+  id: STFaxMachineHOS
+  suffix: Head Of Security
+  components:
+    - type: Sprite
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_security.rsi
+    - type: Icon
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_security.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Главы Службы Безопасности"
 
 - type: entity
   parent: FaxMachineBase
   id: STFaxMachineMedical
-  name: long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
   suffix: Medical
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_medical.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_medical.rsi
       state: icon
     - type: FaxMachine
-      name: "Medical department"
+      name: "Медицинский Отдел"
+
+- type: entity
+  parent: FaxMachineBase
+  id: STFaxMachineCMO
+  suffix: Chief Medical Officer
+  components:
+    - type: Sprite
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_medical.rsi
+    - type: Icon
+      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_medical.rsi
+      state: icon
+    - type: FaxMachine
+      name: "Офис Главного Врача"
 
 - type: entity
   parent: FaxMachineBase
   id: STFaxMachineHop
-  name: long range fax machine
-  description: Bluespace technology at the service of bureaucracy.
   suffix: Head of Personnel
   components:
     - type: Sprite
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_hop.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
     - type: Icon
       sprite: _Stories/Structures/Machines/fax_machine/fax_machine_hop.rsi
       state: icon
     - type: FaxMachine
-      name: "Head of Personnel"
+      name: "Офис Главы Персонала"
 
 - type: entity
   parent: FaxMachineBase
   id: STFaxMachineCentcom
-  description: Bluespace technology at the service of bureaucracy.
-  name: CentCom long range fax machine
+  description: A special CentComm's fax. Capable of receiving goals.
+  name: CentComm long range fax machine
   suffix: CentComm
   components:
-    - type: Sprite
-      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_centcom.rsi
-      drawdepth: SmallObjects
-      layers:
-      - state: icon
-        map: [ "enum.FaxMachineVisuals.VisualState" ]
-    - type: Icon
-      sprite: _Stories/Structures/Machines/fax_machine/fax_machine_centcom.rsi
-      state: icon
-    - type: FaxMachine
-      name: "Central Command"
-      notifyAdmins: true
-      receiveStationGoal: true
+  - type: Sprite
+    sprite: _Stories/Structures/Machines/fax_machine/fax_machine_centcom.rsi
+  - type: Icon
+    sprite: _Stories/Structures/Machines/fax_machine/fax_machine_centcom.rsi
+    state: icon
+  - type: FaxMachine
+    name: "Центральное Командование"
+    notifyAdmins: true
+    receiveStationGoal: true

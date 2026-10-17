@@ -2,10 +2,7 @@
   id: STMobSlaughterDemon
   parent:
   - BaseSimpleMob
-  - MobAtmosExposed
   - MobCombat
-  - MobBloodstream
-  - MobFlammable
   name: slaughter demon
   description: A huge, menacing creature covered in armored black scales. You should run!
   components:
@@ -23,6 +20,7 @@
       0: Alive
       250: Dead
   - type: MeleeWeapon
+    altDisarm: false
     range: 1.5
     angle: 0
     animation: WeaponArcThrust
@@ -52,9 +50,6 @@
     - Demonic
     - GalacticCommon
   - type: NoSlip
-  - type: TemperatureDamage
-    heatDamageThreshold: 10000
-    coldDamageThreshold: -10000
   - type: Puller
     needsHands: false
   - type: Hands
@@ -100,10 +95,11 @@
         Slash: -20
   - type: DemonSpawnPhased
   - type: DemonWhisper
-  - type: ActionGrant
+  - type: MobStateActions
     actions:
-    - STActionBloodCrawl
-    - STActionDemonWhisper
+      Alive:
+      - STActionBloodCrawl
+      - STActionDemonWhisper
   - type: GhostRole
     name: stories-ghost-role-information-slaughter-demon-name
     description: stories-ghost-role-information-slaughter-demon-desc
@@ -143,8 +139,6 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 6
     baseSprintSpeed: 8
-  - type: Puller
-    needsHands: false
   - type: Eye
     drawFov: false
     visMask:
@@ -201,10 +195,11 @@
         Blunt: -20
         Slash: -20
   - type: DemonWhisper
-  - type: ActionGrant
+  - type: MobStateActions
     actions:
-    - STActionBloodCrawl
-    - STActionDemonWhisper
+      Alive:
+      - STActionBloodCrawl
+      - STActionDemonWhisper
   - type: Tag
     tags:
     - CannotSuicide

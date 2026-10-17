@@ -497,6 +497,9 @@
         hard: false
         layer:
         - GhostImpassable
+  - type: MovementSpeedModifier # Stories-StationAI-MovementSpeedModifier
+    baseSprintSpeed: 12
+    baseWalkSpeed: 36
   - type: NoFTL
   - type: WarpPoint
     follow: true

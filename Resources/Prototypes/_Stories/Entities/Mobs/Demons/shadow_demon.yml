@@ -22,6 +22,7 @@
       0: Alive
       180: Dead
   - type: MeleeWeapon
+    altDisarm: false
     range: 1.5
     angle: 0
     animation: WeaponArcThrust
@@ -92,11 +93,12 @@
     cocoonPrototype: STStructureShadowCocoon
   - type: DemonSpawnPhased
   - type: DemonWhisper
-  - type: ActionGrant
+  - type: MobStateActions
     actions:
-    - STActionShadowCrawl
-    - STActionShadowGrapple
-    - STActionDemonWhisper
+      Alive:
+      - STActionShadowCrawl
+      - STActionShadowGrapple
+      - STActionDemonWhisper
   - type: GhostRole
     name: stories-ghost-role-information-shadow-demon-name
     description: stories-ghost-role-information-shadow-demon-desc
@@ -155,8 +157,6 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 5
     baseSprintSpeed: 7
-  - type: Puller
-    needsHands: false
   - type: Eye
     drawFov: false
     visMask:
@@ -185,10 +185,11 @@
     phaseOutEffect: STShadowDemonDisappearEffect
     phaseInEffect: STShadowDemonAppearEffect
   - type: DemonWhisper
-  - type: ActionGrant
+  - type: MobStateActions
     actions:
-    - STActionShadowCrawl
-    - STActionDemonWhisper
+      Alive:
+      - STActionShadowCrawl
+      - STActionDemonWhisper
   - type: Tag
     tags:
     - CannotSuicide

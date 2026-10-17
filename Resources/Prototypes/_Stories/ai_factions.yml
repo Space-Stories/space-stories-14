@@ -29,3 +29,17 @@
   hostile:
   - STUnholy
   - STShadowling
+
+- type: npcFaction
+  id: STDemon
+  hostile:
+  - NanoTrasen
+  - Syndicate
+  - Xeno
+  - PetsNT
+  - Zombie
+  - Revolutionary
+  - Dragon
+  - AllHostile
+  - Wizard
+  - Xenoborg

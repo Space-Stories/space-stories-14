@@ -1,4 +1,5 @@
 using Content.Shared.Actions;
+using Content.Shared.Tag;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
@@ -54,6 +55,9 @@ public sealed partial class VendingMachineComponent : Component
 
     [DataField]
     public List<ProtoId<Content.Shared.Roles.JobPrototype>> FreeJobs = new();
+
+    [DataField]
+    public List<ProtoId<TagPrototype>> FreeTags = new();
     // Stories-End
 }
 

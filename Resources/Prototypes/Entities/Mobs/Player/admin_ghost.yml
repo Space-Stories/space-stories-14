@@ -20,6 +20,7 @@
     - NotGhostnadoWarpable
     - AllowPortalTraversal
     - PreventPortalCollision
+    - STFreeVendNT # Stories-Economy
   - type: Input
     context: "aghost"
   - type: Ghost
