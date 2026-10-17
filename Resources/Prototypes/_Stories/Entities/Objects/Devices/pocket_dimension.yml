@@ -1,0 +1,45 @@
+- type: entity
+  parent: BaseItem
+  id: STPocketDimensionSticker
+  name: inside-out sticker
+  description: A matte black peel-off sticker with a tiny tear printed in the middle. Look at it long enough and the tear looks back.
+  suffix: Admin
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Devices/inside_out_sticker.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Objects/Devices/inside_out_sticker.rsi
+    size: Tiny
+  - type: PocketDimensionSticker
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 30
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# Дверь Изнанки: снаружи на стене станции и внутри комнаты.
+- type: entity
+  parent: BaseWallmount
+  id: STPocketDimensionDoor
+  name: maintenance door
+  description: An ordinary maintenance door. The paint on it looks fresh.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Structures/Doors/Airlocks/Standard/airlock-maints.rsi # TODO: свой спрайт двери
+    state: closed
+  - type: WallMount
+    arc: 360
+  - type: Anchorable
+    flags:
+    - None
+  - type: PocketDimensionDoor
+  - type: ContainerContainer
+    containers:
+      pocket_dimension_sticker: !type:ContainerSlot
