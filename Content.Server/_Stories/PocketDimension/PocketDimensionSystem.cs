@@ -32,6 +32,7 @@ namespace Content.Server._Stories.PocketDimension;
 public sealed partial class PocketDimensionSystem : EntitySystem
 {
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private AtmosphereSystem _atmos = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedContainerSystem _container = default!;
@@ -133,6 +134,7 @@ public sealed partial class PocketDimensionSystem : EntitySystem
 
         ent.Comp.OuterDoor = door;
         ent.Comp.Exit = Transform(user).Coordinates;
+        _audio.PlayPvs(ent.Comp.StickSound, door);
 
         _adminLogger.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(user):player} stuck {ToPrettyString(ent):entity} on {ToPrettyString(wall):entity}");
@@ -238,15 +240,20 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             return;
 
         args.Handled = true;
-        _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, ent.Comp.PassDelay, new PocketDimensionPassDoAfterEvent(), ent, target: ent)
+        var started = _doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager, args.User, ent.Comp.PassDelay, new PocketDimensionPassDoAfterEvent(), ent, target: ent)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
         });
+
+        if (started)
+            _appearance.SetData(ent, PocketDimensionDoorVisuals.Open, true);
     }
 
     private void OnPassDoAfter(Entity<PocketDimensionDoorComponent> ent, ref PocketDimensionPassDoAfterEvent args)
     {
+        _appearance.SetData(ent, PocketDimensionDoorVisuals.Open, false);
+
         if (args.Handled || args.Cancelled || !TryComp<PocketDimensionStickerComponent>(ent.Comp.Sticker, out var sticker))
             return;
 
@@ -260,14 +267,18 @@ public sealed partial class PocketDimensionSystem : EntitySystem
                 return;
             }
 
+            _audio.PlayPvs(ent.Comp.PassSound, ent);
             Teleport(args.User, exit);
+            _audio.PlayPvs(ent.Comp.PassSound, exit);
             return;
         }
 
         if (sticker.InnerDoor is not { } inner)
             return;
 
+        _audio.PlayPvs(ent.Comp.PassSound, ent);
         Teleport(args.User, Transform(inner).Coordinates.Offset(new Vector2(0, -1)));
+        _audio.PlayPvs(ent.Comp.PassSound, inner);
         EjectNukeDisks(ent.Comp.Sticker!.Value, sticker);
 
         _adminLogger.Add(LogType.Action, LogImpact.Low,
@@ -330,6 +341,7 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             return;
 
         args.Handled = true;
+        _audio.PlayPvs(sticker.StickSound, ent);
         sticker.OuterDoor = null;
         sticker.Exit = null;
         _hands.PickupOrDrop(args.User, ent.Comp.Sticker!.Value);
