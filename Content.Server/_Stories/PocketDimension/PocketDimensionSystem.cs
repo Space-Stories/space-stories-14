@@ -17,6 +17,7 @@ using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Nuke;
 using Content.Shared.Popups;
 using Content.Shared.Radio;
+using Content.Shared.Teleportation.Components;
 using Content.Shared.Verbs;
 using Content.Shared.Wall;
 using Content.Shared.Weapons.Melee.Events;
@@ -24,6 +25,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -39,6 +41,7 @@ public sealed partial class PocketDimensionSystem : EntitySystem
     [Dependency] private SharedDoAfterSystem _doAfter = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedMapSystem _map = default!;
+    [Dependency] private SharedPhysicsSystem _physics = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SpecialRespawnSystem _respawn = default!;
     [Dependency] private StationSystem _station = default!;
@@ -48,7 +51,7 @@ public sealed partial class PocketDimensionSystem : EntitySystem
 
     private static readonly EntProtoId DoorProto = "STPocketDimensionDoor";
     private static readonly EntProtoId RoomWallProto = "WallPlastitaniumIndestructible";
-    private const string RoomFloor = "FloorDark";
+    private const string RoomFloor = "STFloorPocketDimension";
     private const string StickerContainer = "pocket_dimension_sticker";
 
     /// <summary>
@@ -56,6 +59,13 @@ public sealed partial class PocketDimensionSystem : EntitySystem
     /// </summary>
     private const int RoomSize = 5;
     private static readonly Vector2i InnerDoorTile = new(2, 4);
+    private static readonly Vector2i RoomCenterTile = new(2, 2);
+
+    /// <summary>
+    /// Как часто возвращать в комнату то, что оказалось за её стенами.
+    /// </summary>
+    private static readonly TimeSpan StraySweepInterval = TimeSpan.FromSeconds(1);
+    private TimeSpan _nextStraySweep;
 
     public override void Initialize()
     {
@@ -79,6 +89,9 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         // Станционные каналы и датчики костюмов вне станции не работают и так.
         SubscribeLocalEvent<RadioSendAttemptEvent>(OnRadioSendAttempt);
         SubscribeLocalEvent<RadioReceiveAttemptEvent>(OnRadioReceiveAttempt);
+
+        // Через порталы из Изнанки не выйти и в неё не войти.
+        SubscribeLocalEvent<PortalComponent, MapInitEvent>(OnPortalMapInit);
     }
 
     #region Наклейка
@@ -183,11 +196,26 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             EnsureComp<DamageableComponent>(wall);
         }
 
-        var door = Spawn(DoorProto, _map.GridTileToLocal(mapUid, grid, InnerDoorTile));
-        Comp<PocketDimensionDoorComponent>(door).Sticker = ent;
-
         ent.Comp.Map = mapUid;
+        EnsureInnerDoor(ent);
+    }
+
+    /// <summary>
+    /// Внутренняя дверь нужна, чтобы было куда входить и откуда выходить.
+    /// Если её как-то удалили, комната ставит новую на прежнее место.
+    /// </summary>
+    private EntityUid? EnsureInnerDoor(Entity<PocketDimensionStickerComponent> ent)
+    {
+        if (Exists(ent.Comp.InnerDoor))
+            return ent.Comp.InnerDoor;
+
+        if (!TryComp<MapGridComponent>(ent.Comp.Map, out var grid))
+            return null;
+
+        var door = Spawn(DoorProto, _map.GridTileToLocal(ent.Comp.Map.Value, grid, InnerDoorTile));
+        Comp<PocketDimensionDoorComponent>(door).Sticker = ent;
         ent.Comp.InnerDoor = door;
+        return door;
     }
 
     /// <summary>
@@ -201,6 +229,12 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             return;
 
         var dest = GetEjectCoordinates(ent);
+
+        // Карта или грид назначения сами удаляются (конец раунда): выбрасывать некуда, всё уйдёт вместе с ними.
+        if (dest != null && (TerminatingOrDeleted(_map.GetMapOrInvalid(dest.Value.MapId))
+                             || _map.TryFindGridAt(dest.Value, out var destGrid, out _) && TerminatingOrDeleted(destGrid)))
+            dest = null;
+
         var toEject = new List<EntityUid>();
         var children = Transform(ent.Comp.Map.Value).ChildEnumerator;
         while (children.MoveNext(out var child))
@@ -273,7 +307,7 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             return;
         }
 
-        if (sticker.InnerDoor is not { } inner)
+        if (EnsureInnerDoor((ent.Comp.Sticker!.Value, sticker)) is not { } inner)
             return;
 
         _audio.PlayPvs(ent.Comp.PassSound, ent);
@@ -358,6 +392,11 @@ public sealed partial class PocketDimensionSystem : EntitySystem
 
         sticker.OuterDoor = null;
         sticker.Exit = null;
+
+        // Удаляется вся карта (конец раунда): ронять наклейку некуда, она уйдёт вместе с картой.
+        if (TerminatingOrDeleted(Transform(ent).ParentUid))
+            return;
+
         _container.TryRemoveFromContainer(ent.Comp.Sticker!.Value, true);
     }
 
@@ -450,6 +489,55 @@ public sealed partial class PocketDimensionSystem : EntitySystem
     {
         if (InPocketDimension(args.RadioReceiver))
             args.Cancelled = true;
+    }
+
+    private void OnPortalMapInit(Entity<PortalComponent> ent, ref MapInitEvent args)
+    {
+        if (!InPocketDimension(ent))
+            return;
+
+        // Удаление отложено до конца тика, а столкнуться портал успеет раньше: гасим его сразу.
+        _physics.SetCanCollide(ent, false);
+        _popup.PopupCoordinates(Loc.GetString("portal-component-invalid-configuration-fizzle"), Transform(ent).Coordinates, PopupType.Medium);
+        QueueDel(ent);
+    }
+
+    /// <summary>
+    /// Случайные телепорты (одиночный портал, кристалл, имплант побега) выкидывают за стены
+    /// в пустоту той же карты. Раз в секунду возвращаем такое в центр комнаты.
+    /// </summary>
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_timing.CurTime < _nextStraySweep)
+            return;
+
+        _nextStraySweep = _timing.CurTime + StraySweepInterval;
+
+        var stray = new List<EntityUid>();
+        var query = EntityQueryEnumerator<PocketDimensionMapComponent, MapGridComponent>();
+        while (query.MoveNext(out var map, out _, out var grid))
+        {
+            stray.Clear();
+            var children = Transform(map).ChildEnumerator;
+            while (children.MoveNext(out var child))
+            {
+                var xform = Transform(child);
+                if (xform.Anchored)
+                    continue;
+
+                var tile = _map.LocalToTile(map, grid, xform.Coordinates);
+                if (tile.X is < 1 or > RoomSize - 2 || tile.Y is < 1 or > RoomSize - 2)
+                    stray.Add(child);
+            }
+
+            var center = _map.GridTileToLocal(map, grid, RoomCenterTile);
+            foreach (var uid in stray)
+            {
+                _transform.SetCoordinates(uid, center);
+            }
+        }
     }
 
     private bool InPocketDimension(EntityUid uid)

@@ -8,7 +8,9 @@ using Content.Shared.Implants;
 using Content.Shared.Inventory;
 using Content.Shared.Mindshield;
 using Content.Shared.StatusIcon.Components;
+using Robust.Client.GameObjects;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Stories;
@@ -27,6 +29,7 @@ public sealed class DisguiseRemoteTest : InteractionTest
     [SidedDependency(Side.Server)] private MetaDataSystem _metaData = default!;
     [SidedDependency(Side.Server)] private SharedSubdermalImplantSystem _implants = default!;
     [SidedDependency(Side.Server)] private MindShieldSystem _mindShield = default!;
+    [SidedDependency(Side.Client)] private SpriteSystem _sprite = default!;
 
     [Test]
     [Description("Пульт копирует имя, вещи и ID-карту с доступами цели, исчезает, а способность меняет облики и комплекты вещей местами.")]
@@ -110,5 +113,32 @@ public sealed class DisguiseRemoteTest : InteractionTest
             Assert.That(_idCard.TryFindIdCard(SPlayer, out var id));
             Assert.That(id.Comp.FullName, Is.EqualTo(TargetName));
         });
+    }
+
+    [Test]
+    [Description("При перевоплощении в другую расу наложения урона перекрашиваются в её цвет крови и обратно.")]
+    public async Task DamageOverlayColorFollowsSpeciesTest()
+    {
+        var target = await SpawnTarget("MobSlimePerson");
+        await PlaceInHands("STDisguiseRemote");
+        await Interact();
+        await RunTicks(5);
+
+        Assert.That(GetChestBruteColor(), Is.EqualTo(Color.FromHex("#FF0000")));
+
+        await Server.WaitPost(() => SEntMan.EventBus.RaiseLocalEvent(SPlayer, new DisguiseToggleActionEvent()));
+        await RunTicks(5);
+        Assert.That(GetChestBruteColor(), Is.EqualTo(Color.FromHex("#2cf274")), "В облике слайма кровь должна быть слаймовой.");
+
+        await Server.WaitPost(() => SEntMan.EventBus.RaiseLocalEvent(SPlayer, new DisguiseToggleActionEvent()));
+        await RunTicks(5);
+        Assert.That(GetChestBruteColor(), Is.EqualTo(Color.FromHex("#FF0000")), "В своём облике кровь должна вернуться.");
+    }
+
+    private Color GetChestBruteColor()
+    {
+        var sprite = CEntMan.GetComponent<SpriteComponent>(CPlayer);
+        Assert.That(_sprite.LayerMapTryGet((CPlayer, sprite), "ChestBrute", out var index, false), "Нет слоя наложения урона на груди.");
+        return sprite[index].Color;
     }
 }

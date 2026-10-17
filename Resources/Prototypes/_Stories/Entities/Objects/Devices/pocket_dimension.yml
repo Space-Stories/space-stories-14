@@ -53,3 +53,10 @@
   - type: ContainerContainer
     containers:
       pocket_dimension_sticker: !type:ContainerSlot
+
+# Пол комнаты: выглядит как тёмная плитка, но не снимается ни ломом, ни РСУ, ни взрывом.
+- type: tile
+  id: STFloorPocketDimension
+  parent: FloorDark
+  indestructible: true
+  deconstructTools: []
