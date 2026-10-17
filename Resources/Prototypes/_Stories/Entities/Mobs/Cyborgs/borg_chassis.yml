@@ -54,7 +54,8 @@
       - PositronicBrain
       borg_module:
       - BorgModulePrying
-      - STBorgModuleSecurity
+      - STBorgModuleSecurityNonLethal
+      - STBorgModuleSecurityServiceWeapon
       - BorgModuleFireExtinguisher
   - type: ItemSlots
     slots:
