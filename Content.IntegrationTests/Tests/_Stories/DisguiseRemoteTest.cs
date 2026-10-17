@@ -57,6 +57,16 @@ public sealed class DisguiseRemoteTest : InteractionTest
         await RunTicks(5);
         AssertDeleted(remote);
 
+        // Пульт только снимает облик, перевоплощение — по способности.
+        await Server.WaitAssertion(() =>
+        {
+            Assert.That(SEntMan.GetComponent<MetaDataComponent>(SPlayer).EntityName, Is.EqualTo(ownName));
+            Assert.That(_inventory.TryGetSlotEntity(SPlayer, "jumpsuit", out var suit));
+            Assert.That(suit, Is.EqualTo(ownSuit));
+
+            SEntMan.EventBus.RaiseLocalEvent(SPlayer, new DisguiseToggleActionEvent());
+        });
+
         await Server.WaitAssertion(() =>
         {
             Assert.That(SEntMan.GetComponent<MetaDataComponent>(SPlayer).EntityName, Is.EqualTo(TargetName));
