@@ -18,6 +18,12 @@ public sealed partial class PocketDimensionStickerComponent : Component
     public TimeSpan UnstickDelay = TimeSpan.FromSeconds(2);
 
     /// <summary>
+    /// Тихий звук при приклеивании и отклеивании.
+    /// </summary>
+    [DataField]
+    public SoundSpecifier StickSound = new SoundPathSpecifier("/Audio/Effects/packetrip.ogg", AudioParams.Default.WithVolume(-6f).WithMaxDistance(3f));
+
+    /// <summary>
     /// Карта с комнатой. Создаётся при первом приклеивании и живёт, пока жива наклейка.
     /// </summary>
     [ViewVariables]
@@ -47,6 +53,12 @@ public sealed partial class PocketDimensionDoorComponent : Component
 {
     [DataField]
     public TimeSpan PassDelay = TimeSpan.FromSeconds(1.5);
+
+    /// <summary>
+    /// Тихий звук прохода, играет и у входа, и у выхода.
+    /// </summary>
+    [DataField]
+    public SoundSpecifier PassSound = new SoundPathSpecifier("/Audio/Effects/teleport_departure.ogg", AudioParams.Default.WithVolume(-10f).WithMaxDistance(3f));
 
     [ViewVariables]
     public EntityUid? Sticker;
@@ -88,6 +100,15 @@ public sealed partial class PocketDimensionMapComponent : Component
 
     [ViewVariables]
     public TimeSpan NextHit;
+}
+
+/// <summary>
+/// Дверь показывает открытый разрыв, пока через неё кто-то проходит.
+/// </summary>
+[Serializable, NetSerializable]
+public enum PocketDimensionDoorVisuals : byte
+{
+    Open,
 }
 
 [Serializable, NetSerializable]

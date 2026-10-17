@@ -27,13 +27,22 @@
 - type: entity
   parent: BaseWallmount
   id: STPocketDimensionDoor
-  name: maintenance door
-  description: An ordinary maintenance door. The paint on it looks fresh.
+  name: inside-out door
+  description: A doorway-sized matte black sticker with a tear down the middle. Behind it, something much bigger than this room.
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Structures/Doors/Airlocks/Standard/airlock-maints.rsi # TODO: свой спрайт двери
-    state: closed
+    sprite: _Stories/Structures/Doors/inside_out_door.rsi
+    layers:
+    - state: closed
+      map: [ "enum.PocketDimensionDoorVisuals.Open" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PocketDimensionDoorVisuals.Open:
+        enum.PocketDimensionDoorVisuals.Open:
+          True: { state: open }
+          False: { state: closed }
   - type: WallMount
     arc: 360
   - type: Anchorable
