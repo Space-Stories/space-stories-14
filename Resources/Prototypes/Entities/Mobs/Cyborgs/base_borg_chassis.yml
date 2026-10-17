@@ -94,6 +94,7 @@
     - Biological
     - Inorganic
     - Silicon
+  - type: Magboots
   # Stories-Borg-End
   - type: Inventory
     templateId: borg

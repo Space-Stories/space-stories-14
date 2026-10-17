@@ -1,0 +1,23 @@
+- type: entity
+  parent: BaseHoloSign
+  id: STHolocone
+  name: cone sign
+  description: Remember those annoying cone-shaped things blocking the way? Now you can pass right through them.
+  components:
+  - type: Sprite
+    sprite: _Stories/Structures/Holo/cone.rsi
+    state: icon
+  - type: TimedDespawn
+    lifetime: 180
+  - type: PointLight
+    enabled: true
+    radius: 1.5
+    color: yellow
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 10
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]

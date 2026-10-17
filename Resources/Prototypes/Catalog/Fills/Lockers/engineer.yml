@@ -206,6 +206,7 @@
       prob: 0.02
     - id: PlushieLizardJobStationengineer
       prob: 0.02
+    - id: STHoloconeProjector # Stories-Projector
 
 - type: entityTable
   id: FillEngineerHardsuit
