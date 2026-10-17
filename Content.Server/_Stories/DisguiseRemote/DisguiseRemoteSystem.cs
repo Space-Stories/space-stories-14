@@ -84,7 +84,8 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         _adminLogger.Add(LogType.Identity, LogImpact.High,
             $"{ToPrettyString(user):player} used {ToPrettyString(ent):entity} to copy the identity of {ToPrettyString(target):player}");
 
-        Toggle((user, comp));
+        // Перевоплощение только по способности: сразу у жертвы на глазах было бы слишком заметно.
+        _popup.PopupEntity(Loc.GetString("st-disguise-remote-copied", ("target", Name(target))), user, user);
         QueueDel(ent);
     }
 
