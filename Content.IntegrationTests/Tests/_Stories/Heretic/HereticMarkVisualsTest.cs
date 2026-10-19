@@ -55,7 +55,6 @@ public sealed class HereticMarkVisualsTest : GameTest
         await Pair.RunTicksSync(5);
         await Client.WaitAssertion(() => Assert.That(HasLayer(), Is.True, "Нет печати метки"));
 
-        // Путь, которого нет в таблице печатей: старая печать снимается.
         await Server.WaitPost(() =>
         {
             mark.Path = "Meat";

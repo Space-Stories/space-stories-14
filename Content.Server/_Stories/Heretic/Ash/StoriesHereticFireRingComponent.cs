@@ -16,27 +16,15 @@ public sealed partial class StoriesHereticFireRingComponent : Component
     [DataField]
     public float FireStacks = 2f;
 
-    /// <summary>
-    /// Огненное кольцо, прикреплённое к еретику на всё время действия. Только визуал.
-    /// </summary>
     [DataField]
     public EntProtoId RingEffect = "STHereticFireRingEffect";
 
-    /// <summary>
-    /// Радиус кольца на спрайте при масштабе 1, в тайлах. Масштаб спрайта = <see cref="Radius"/> / это значение.
-    /// </summary>
     [DataField]
     public float RingSpriteRadius = 1f;
 
-    /// <summary>
-    /// Языки пламени в случайных точках окружности на каждом импульсе.
-    /// </summary>
     [DataField]
     public StoriesHereticFlameEffects Flames = new() { Count = 5 };
 
-    /// <summary>
-    /// Разброс языков пламени поперёк окружности, в тайлах.
-    /// </summary>
     [DataField]
     public float FlameSpread = 0.3f;
 

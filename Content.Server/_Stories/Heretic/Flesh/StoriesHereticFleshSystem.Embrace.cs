@@ -5,7 +5,6 @@ using Content.Shared.Inventory.Events;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
-// Извивающиеся объятия — мантия пути Плоти.
 public sealed partial class StoriesHereticFleshSystem
 {
     [Dependency] private SharedTransformSystem _transform = default!;
@@ -47,7 +46,6 @@ public sealed partial class StoriesHereticFleshSystem
 
         if (!TryComp<StoriesHereticComponent>(wearer, out var heretic))
         {
-            // Как robes_side_effect в tg: чужаку мантия по очереди рвёт каждую часть тела.
             ent.Comp.WoundsLeft = ent.Comp.Wounds;
             _popup.PopupEntity(Loc.GetString("stories-heretic-embrace-wounds"), wearer, wearer);
             _adminLog.Add(LogType.Action, LogImpact.Medium,
@@ -64,9 +62,6 @@ public sealed partial class StoriesHereticFleshSystem
             ReleaseEmbrace(ent);
     }
 
-    /// <summary>
-    /// Страховка: мантия удалена или лишилась компонента, не пройдя через снятие.
-    /// </summary>
     private void OnEmbraceShutdown(Entity<StoriesHereticWrithingEmbraceComponent> ent, ref ComponentShutdown args)
     {
         if (ent.Comp.Wearer is { } wearer && !TerminatingOrDeleted(wearer))
@@ -85,9 +80,6 @@ public sealed partial class StoriesHereticFleshSystem
         ent.Comp.WoundsLeft = 0;
     }
 
-    /// <summary>
-    /// Аура aura_healing из tg: лечит живых слуг носителя в радиусе, самого носителя — нет.
-    /// </summary>
     private void HealServants(Entity<StoriesHereticWrithingEmbraceComponent> ent, EntityUid wearer)
     {
         var center = _transform.GetMapCoordinates(wearer);
@@ -111,7 +103,6 @@ public sealed partial class StoriesHereticFleshSystem
     private void Wound(Entity<StoriesHereticWrithingEmbraceComponent> ent, EntityUid wearer)
     {
         ent.Comp.WoundsLeft--;
-        // Рана рвёт изнутри: броня самой мантии её не смягчает.
         _damageable.TryChangeDamage(wearer, ent.Comp.Wound, ignoreResistances: true, origin: ent);
         _bloodstream.TryModifyBleedAmount(wearer, ent.Comp.WoundBleed);
         _popup.PopupEntity(Loc.GetString("stories-heretic-embrace-wound"), wearer, wearer);

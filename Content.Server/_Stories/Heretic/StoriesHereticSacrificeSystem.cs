@@ -101,8 +101,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
                 || !_rule.IsOnStation(uid))
                 continue;
 
-            // Тело главы — законная жертва, даже если глава в крите или без разума (ушёл в госта).
-            // Остальных берём только живых и с игроком.
             var head = IsHead(uid);
             ProtoId<JobPrototype>? job = null;
             if (_mind.TryGetMind(uid, out var mindId, out _))
@@ -134,9 +132,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
             WaiveHeadSacrifice(heretic);
     }
 
-    /// <summary>
-    /// Глав на станции не осталось — цель «жертва главы» невыполнима, снимаем её, чтобы Вознесение оставалось достижимым.
-    /// </summary>
     private void WaiveHeadSacrifice(Entity<StoriesHereticComponent> heretic)
     {
         _heretic.SetRequiredHeadSacrifices(heretic, 0);
@@ -179,10 +174,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
         return department.ID;
     }
 
-    /// <summary>
-    /// Глава — тело с <see cref="CommandStaffComponent"/> (как у целей предателя): не зависит от разума,
-    /// поэтому засчитывается и для тела, покинутого игроком.
-    /// </summary>
     public bool IsHead(EntityUid uid)
     {
         return HasComp<CommandStaffComponent>(uid);
@@ -220,7 +211,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
                 continue;
             }
 
-            // Ту же жертву нельзя засчитать второму еретику.
             if (HasComp<StoriesHereticSacrificedComponent>(uid))
             {
                 args.FailReason ??= Loc.GetString("stories-heretic-sacrifice-already");
@@ -255,7 +245,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
 
         _rejuvenate.PerformRejuvenate(victim);
 
-        // Как curse_organs в tg: только у жертвы с разумом; выпавшие органы годятся для ритуалов.
         if (_mind.TryGetMind(victim, out _, out _) && _organs.CurseOrgans(victim, runeCoords) > 0)
             _popup.PopupCoordinates(Loc.GetString("stories-heretic-organs-forced-out", ("victim", victim)), runeCoords, PopupType.MediumCaution);
 

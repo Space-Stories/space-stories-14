@@ -19,7 +19,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
-// «Сшить плоть»: лечение слуг и извлечение органов глаголами.
 public sealed partial class StoriesHereticFleshSystem
 {
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
@@ -55,7 +54,6 @@ public sealed partial class StoriesHereticFleshSystem
         if (args.Handled || !_heretic.IsServant(args.Target, ent) || !_mobState.IsAlive(args.Target))
             return;
 
-        // Перезарядка (Handled) тратится, только если лечение началось.
         if (!_doAfter.TryStartDoAfter(new DoAfterArgs(EntityManager,
             ent,
             ent.Comp.HealTime,
@@ -75,13 +73,11 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void OnKnitHealDoAfter(Entity<StoriesHereticKnitFleshComponent> ent, ref StoriesHereticKnitHealDoAfterEvent args)
     {
-        // За секунду слуга мог умереть или смениться хозяин.
         if (args.Cancelled || args.Handled || args.Target is not { } target
             || !_heretic.IsServant(target, ent) || !_mobState.IsAlive(target))
             return;
 
         args.Handled = true;
-        // HealDistributed напрямую, а не через эффект: эффект теряет origin (кто лечил).
         foreach (var (group, amount) in ent.Comp.Heal.Damage)
         {
             _damageable.HealDistributed(target, amount, group, ent);
@@ -90,7 +86,6 @@ public sealed partial class StoriesHereticFleshSystem
         _audio.PlayPvs(ent.Comp.HealSound, target);
     }
 
-    /// <summary>Глаголы «Извлечь: орган». Подписка на гуманоида: тело уже занято расчленением.</summary>
     private void OnGetExtractVerbs(Entity<HumanoidProfileComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         if (!args.CanInteract || !args.CanAccess
@@ -133,7 +128,6 @@ public sealed partial class StoriesHereticFleshSystem
             || !container.Contains(organ))
             return false;
 
-        // Из живых нельзя достать сердце и лёгкие.
         return _mobState.IsDead(target) || (cat != HeartCategory && cat != LungsCategory);
     }
 
@@ -181,7 +175,6 @@ public sealed partial class StoriesHereticFleshSystem
             ("user", args.User), ("part", name), ("target", ent.Owner)), ent, PopupType.MediumCaution);
     }
 
-    /// <summary>Мгновенно достаёт орган из тела и кладёт его еретику в руку, если она свободна.</summary>
     public bool Extract(EntityUid user, EntityUid target, EntityUid organ)
     {
         if (!TryComp<StoriesHereticKnitFleshComponent>(user, out var knit) || !CanExtract((user, knit), target, organ)
@@ -192,14 +185,12 @@ public sealed partial class StoriesHereticFleshSystem
         if (!_containers.Remove(organ, container, destination: dropAt))
             return false;
 
-        // Связь с родителем рвём только после удачного извлечения: иначе орган остался бы в теле без родителя.
         _relations.Orphan(organ);
 
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"{ToPrettyString(user):user} extracted {ToPrettyString(organ):entity} from {ToPrettyString(target):target}");
         _audio.PlayPvs(knit.ExtractSound, target);
 
-        // Испорченный орган мог взорваться при извлечении.
         if (!TerminatingOrDeleted(organ))
             _hands.TryPickupAnyHand(user, organ);
 

@@ -12,7 +12,6 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.Heretic.Ghouls;
 
-// Несовершенный ритуал: труп на руне поднимается сразу, а бездушный предлагается призракам.
 public sealed partial class StoriesHereticGhoulSystem
 {
     [Dependency] private IComponentFactory _factory = default!;
@@ -41,7 +40,6 @@ public sealed partial class StoriesHereticGhoulSystem
             if (now < offer.ExpireTime)
                 continue;
 
-            // Никто не откликнулся: труп остаётся трупом, мак возвращается.
             _popup.PopupCoordinates(Loc.GetString("stories-heretic-flesh-imperfect-expired"), Transform(uid).Coordinates, PopupType.MediumCaution);
             EndOffer(uid, true);
         }
@@ -101,8 +99,6 @@ public sealed partial class StoriesHereticGhoulSystem
         offer.ExpireTime = _timing.CurTime + ritual.OfferTime;
 
         EnsureComp<GhostTakeoverAvailableComponent>(corpse);
-        // Роль собирается до добавления: открытые окна призрачных ролей сразу видят её имя.
-        // MindRoles нужен для проверки бана на роль гуля; саму роль снимает OnOfferMindAdded.
         var role = new GhostRoleComponent
         {
             RoleName = Loc.GetString("stories-heretic-flesh-voiceless-name"),
@@ -121,11 +117,8 @@ public sealed partial class StoriesHereticGhoulSystem
     {
         var offer = ent.Comp;
         var (master, conversion, limit) = (offer.Master, offer.Conversion, offer.Limit);
-        // Закрываем до подсчёта: само предложение не должно занимать слот лимита.
         var coords = Transform(ent).Coordinates;
         var refund = offer.Refund;
-        // GhostRoleSystem выдаёт MindRoles уже после переноса разума, тем же объектом компонента.
-        // Роль гуля выдаёт обращение, а при неудаче игрок остаётся простым трупом: выдавать нечего.
         if (TryComp<GhostRoleComponent>(ent, out var ghostRole))
             ghostRole.MindRoles.Clear();
 
@@ -136,7 +129,6 @@ public sealed partial class StoriesHereticGhoulSystem
         else if (TryRaise(master, ent, conversion, limit, out reason))
             return;
 
-        // Лимит заняли за 5 минут или труп испортился: игрок остаётся в трупе, мак возвращается.
         Spawn(refund, coords);
         if (args.Mind.Comp.UserId is { } user && _player.TryGetSessionById(user, out var session))
             _chat.DispatchServerMessage(session, reason);
@@ -150,7 +142,6 @@ public sealed partial class StoriesHereticGhoulSystem
 
     private void OnOfferTerminating(Entity<StoriesHereticGhoulOfferComponent> ent, ref EntityTerminatingEvent args)
     {
-        // Штатно закрытое предложение уже разобрано. Иначе труп удалён или разорван: мак ляжет на его последнее место.
         if (ent.Comp.Settled || Transform(ent).MapUid is not { } map || TerminatingOrDeleted(map))
             return;
 

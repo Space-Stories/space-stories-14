@@ -18,7 +18,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
-// Сырой пророк: Связь Мансуса (частный канал связи) и Расширение взора (зум камеры).
 public sealed partial class StoriesHereticFleshSystem
 {
     [Dependency] private SharedContentEyeSystem _contentEye = default!;
@@ -46,7 +45,6 @@ public sealed partial class StoriesHereticFleshSystem
         EnsureComp<ActiveRadioComponent>(uid).Channels.Add(MansusChannel);
     }
 
-    // Снимаем только канал Мансуса: остальные каналы цели остаются.
     private void RevokeMansus(EntityUid uid)
     {
         if (TryComp<IntrinsicRadioTransmitterComponent>(uid, out var transmitter))
@@ -101,7 +99,6 @@ public sealed partial class StoriesHereticFleshSystem
         }
     }
 
-    // Канал хозяина нужен, пока жив другой пророк того же хозяина.
     private bool HasOtherProphet(Entity<StoriesHereticRawProphetComponent> ent, EntityUid master)
     {
         var query = EntityQueryEnumerator<StoriesHereticRawProphetComponent>();

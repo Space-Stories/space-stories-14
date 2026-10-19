@@ -43,16 +43,13 @@ public sealed class HereticCloakTest : GameTest
             heretic = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             observer = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             SEntMan.AddComponent<StoriesHereticComponent>(heretic);
-            // Поднимаем порог крита, чтобы плащ срывался именно уроном, а не сменой состояния.
             var thresholds = Server.System<MobThresholdSystem>();
             thresholds.SetMobStateThreshold(heretic, 1000, MobState.Critical);
             thresholds.SetMobStateThreshold(heretic, 2000, MobState.Dead);
             realName = SEntMan.GetComponent<MetaDataComponent>(heretic).EntityName;
-            // С ID-картой личность без плаща — имя с карты; плащ должен скрыть и его.
             var id = SSpawnAtPosition("PassengerIDCard", testMap.GridCoords);
             Assert.That(Server.System<SharedIdCardSystem>().TryChangeFullName(id, realName));
             Assert.That(Server.System<InventorySystem>().TryEquip(heretic, id, "id", silent: true, force: true));
-            // Маска с блокатором личности вместе с ID: отмена маски не должна вернуть имя с карты.
             var mask = SSpawnAtPosition("ClothingMaskGas", testMap.GridCoords);
             Assert.That(Server.System<InventorySystem>().TryEquip(heretic, mask, "mask", silent: true, force: true));
             baseSpeed = SEntMan.GetComponent<MovementSpeedModifierComponent>(heretic).CurrentSprintSpeed;

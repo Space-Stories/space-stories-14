@@ -7,7 +7,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._Stories.Heretic.UI;
 
-/// <summary>Радиальное меню выбора облика Сталкера.</summary>
 [UsedImplicitly]
 public sealed class StoriesHereticStalkerFormBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
 {

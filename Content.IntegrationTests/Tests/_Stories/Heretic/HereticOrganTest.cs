@@ -37,7 +37,6 @@ public sealed class HereticOrganTest : GameTest
                 .Count(SEntMan.HasComponent<StoriesHereticCorruptedOrganComponent>);
             Assert.That(inBody, Is.EqualTo(replaced), "Испорченные органы не в теле");
 
-            // Старые органы выпали на пол.
             var dropped = 0;
             var query = SEntMan.AllEntityQueryEnumerator<OrganComponent, TransformComponent>();
             while (query.MoveNext(out var uid, out var organ, out var xform))

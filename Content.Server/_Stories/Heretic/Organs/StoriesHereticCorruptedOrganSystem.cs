@@ -20,9 +20,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
 
     private static readonly ProtoId<ReagentPrototype> HolyWater = "Holywater";
 
-    /// <summary>
-    /// Категория штатного органа → испорченная замена.
-    /// </summary>
     private static readonly (ProtoId<OrganCategoryPrototype> Category, EntProtoId Corrupted)[] Replacements =
     [
         ("Eyes", "STHereticCorruptedEyes"),
@@ -36,9 +33,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
 
     private readonly List<(EntityUid Organ, EntProtoId Corrupted)> _candidates = new();
 
-    /// <summary>
-    /// Заменяет 2–4 случайных органа на испорченные, старые выпадают в <paramref name="dropAt"/>.
-    /// </summary>
     public int CurseOrgans(EntityUid victim, EntityCoordinates dropAt)
     {
         if (!_containers.TryGetContainer(victim, BodyComponent.ContainerID, out var container))
@@ -67,9 +61,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         return count;
     }
 
-    /// <summary>
-    /// Заменяет орган указанной категории испорченным. Для тестов и админов; <see cref="CurseOrgans"/> выбирает случайно.
-    /// </summary>
     public bool TryCurseOrgan(EntityUid victim, ProtoId<OrganCategoryPrototype> category, EntityCoordinates dropAt)
     {
         if (!_containers.TryGetContainer(victim, BodyComponent.ContainerID, out var container))
@@ -94,9 +85,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
         return false;
     }
 
-    /// <summary>
-    /// Святая вода в крови подавляет эффекты испорченных органов.
-    /// </summary>
     public bool IsSuppressed(EntityUid body)
     {
         var solution = CompOrNull<BloodstreamComponent>(body)?.BloodSolutionName ?? BloodstreamComponent.DefaultBloodSolutionName;
@@ -107,13 +95,11 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
     private void Replace(BaseContainer container, EntityUid old, EntProtoId corrupted, EntityCoordinates dropAt)
     {
         var parent = CompOrNull<ChildOrganComponent>(old)?.Parent;
-        // Старый орган остаётся ребёнком родителя после извлечения — разрываем связь явно.
         _relations.Orphan(old);
         _containers.Remove(old, container, destination: dropAt);
 
         var organ = Spawn(corrupted, dropAt);
         CopySpeciesData(old, organ);
-        // Расписание эффектов (сердце) начинается с момента проклятия, а не с первого тика.
         if (TryComp<StoriesHereticCorruptedOrganComponent>(organ, out var comp) && comp.Kind == StoriesHereticCorruptedOrganKind.Heart)
             comp.NextEffect = _timing.CurTime + TimeSpan.FromSeconds(_random.Next(6, 46));
         _containers.Insert(organ, container);
@@ -121,10 +107,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
             _relations.Relate(parent.Value, organ);
     }
 
-    /// <summary>
-    /// Испорченные органы — наследники человеческих. Чтобы вокс или мотылёк не начали метаболизировать
-    /// как человек, переносим с заменённого органа видовые типы метаболизма и особую пищу желудка.
-    /// </summary>
     private void CopySpeciesData(EntityUid old, EntityUid organ)
     {
         if (TryComp<MetabolizerComponent>(old, out var oldMetabolizer) && TryComp<MetabolizerComponent>(organ, out var metabolizer))
@@ -136,7 +118,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem : EntitySystem
             }
         }
 
-        // Весь компонент: его поля (особая пища) закрыты для записи извне StomachSystem.
         if (TryComp<StomachComponent>(old, out var stomach) && HasComp<StomachComponent>(organ))
             CopyComp(old, organ, stomach);
     }

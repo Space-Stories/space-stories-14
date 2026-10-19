@@ -65,7 +65,6 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
 
         _mind.TryGetMind(corpse, out var mindId, out var mind);
 
-        // Вышедший из тела игрок лишь навещает призрака — возвращаем его в тело.
         _mind.UnVisit(mindId, mind!);
         _rejuvenate.PerformRejuvenate(corpse);
         EnsureComp<StoriesHereticRaisedComponent>(corpse);
@@ -81,20 +80,14 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         return true;
     }
 
-    /// <summary>
-    /// Порядок проверок по спецификации §6.2: лимит, гуманоид, мёртв, не поднимался, душа, защита.
-    /// <paramref name="needSoul"/> выключен для трупа, на который лишь ставится призрачная роль.
-    /// </summary>
     private string? GetRaiseFailure(EntityUid master, EntityUid corpse, ProtoId<ConversionPrototype> conversion, int limit, bool needSoul)
     {
-        // Ожидающие игрока предложения тоже занимают слот: иначе их можно наплодить сверх лимита.
         if (CountGhouls(master, conversion) + CountOffers(master, conversion) >= limit)
             return Loc.GetString("stories-heretic-ghoul-limit");
         if (!HasComp<HumanoidProfileComponent>(corpse) || !_mobState.IsDead(corpse))
             return Loc.GetString("stories-heretic-ghoul-invalid");
         if (HasComp<StoriesHereticRaisedComponent>(corpse))
             return Loc.GetString("stories-heretic-ghoul-already");
-        // Душа — разум игрока, даже если он сейчас призраком: без игрока гуль был бы пустой оболочкой.
         if (needSoul && !HasSoul(corpse))
             return Loc.GetString("stories-heretic-ghoul-no-soul");
         if (!_conversion.CanConvert(corpse, conversion, master))
@@ -135,10 +128,6 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
             _statusEffects.TrySetStatusEffectDuration(ent, effect);
     }
 
-    /// <summary>
-    /// Живому (снятие майндшилдом или админом) пороги возвращаются сразу. Мёртвый гуль остаётся трупом:
-    /// с обычными порогами накопленный урон снова оказался бы «живым». Ему пороги вернёт оживление.
-    /// </summary>
     private void OnShutdown(Entity<StoriesHereticGhoulComponent> ent, ref ComponentShutdown args)
     {
         if (TerminatingOrDeleted(ent))
@@ -148,7 +137,6 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
             _statusEffects.TryRemoveStatusEffect(ent, effect);
 
         RemComp<StoriesHereticServantComponent>(ent);
-        // Служба окончена: цель «служить хозяину» больше не нужна.
         if (_mind.TryGetMind(ent, out var mindId, out var mind))
             RemoveServeObjective((mindId, mind));
 
@@ -158,24 +146,16 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
             RestoreThresholds((ent, raised));
     }
 
-    /// <summary>
-    /// Разум ушёл из тела гуля. При разрыве или удалении тела это происходит до <see cref="OnShutdown"/>,
-    /// где разума в теле уже нет: снимаем цель здесь.
-    /// </summary>
     private void OnMindRemoved(Entity<StoriesHereticGhoulComponent> ent, ref MindRemovedMessage args)
     {
         RemoveServeObjective(args.Mind);
     }
 
-    /// <summary>
-    /// Разум вернулся в живого гуля (возврат из полиморфа, админ-управление мобом): служба продолжается.
-    /// </summary>
     private void OnMindAdded(Entity<StoriesHereticGhoulComponent> ent, ref MindAddedMessage args)
     {
         EnsureServeObjective(args.Mind, ent);
     }
 
-    /// <summary>Выдаёт цель служения, только если её ещё нет.</summary>
     private void EnsureServeObjective(Entity<MindComponent> mind, EntityUid ghoul)
     {
         if (!_mind.TryFindObjective(mind.AsNullable(), ServeMaster, out _)
@@ -191,14 +171,12 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
 
     private void OnRaisedMobStateChanged(Entity<StoriesHereticRaisedComponent> ent, ref MobStateChangedEvent args)
     {
-        // Бывший гуль оживлён (дефибриллятор, реанимация).
         if (args.OldMobState == MobState.Dead && args.NewMobState != MobState.Dead && !HasComp<StoriesHereticGhoulComponent>(ent))
             RestoreThresholds(ent);
     }
 
     private void RestoreThresholds(Entity<StoriesHereticRaisedComponent> ent)
     {
-        // Сначала очищаем: смена порогов сама вызывает смену состояния и повторный вход сюда.
         var dead = ent.Comp.OriginalDead;
         var crit = ent.Comp.OriginalCrit;
         ent.Comp.OriginalDead = null;
@@ -215,7 +193,6 @@ public sealed partial class StoriesHereticGhoulSystem : EntitySystem
         if (args.NewMobState != MobState.Dead || !TryComp<ConversionableComponent>(ent, out var conversions))
             return;
 
-        // Гуль умер — служба окончена, слот лимита освобождается.
         foreach (var id in new List<string>(conversions.ActiveConversions.Keys))
         {
             if (ProtoMan.TryIndex<ConversionPrototype>(id, out var proto) && proto.Components.ContainsKey(Factory.GetComponentName<StoriesHereticGhoulComponent>()))

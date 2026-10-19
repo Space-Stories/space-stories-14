@@ -5,16 +5,9 @@ using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._Stories.Heretic.UI;
 
-/// <summary>
-/// Раскладывает узлы знаний по колонкам (пути) и строкам (ступени), рисует подложки колонок и линии связей.
-/// Узлы создаются из данных, поэтому их нельзя описать в XAML.
-/// </summary>
 public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
 {
     private const float ColumnWidth = 170f;
-    /// <summary>
-    /// Дорожка побочных знаний пути (мантии) справа от основной цепочки.
-    /// </summary>
     private const float SideWidth = 160f;
     private const float NodeWidth = 150f;
     private const float RowHeight = 150f;
@@ -36,7 +29,6 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
         _controls.Clear();
         _columns = columns;
 
-        // Колонка с побочными знаниями шире на дорожку, остальные колонки сдвигаются вправо.
         _columnX = new float[columns.Count];
         _columnWidth = new float[columns.Count];
         var x = 0f;
@@ -70,7 +62,6 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
             control.OnPressed += _ => OnLearn?.Invoke(id);
 
             AddChild(control);
-            // Не-стартовые знания начинаются со ступени 1 — она и есть первая строка.
             var row = Math.Max(node.Stage - 1, 0);
             var left = _columnX[node.Column] + (node.Side
                 ? ColumnWidth + (SideWidth - NodeWidth) / 2
@@ -87,7 +78,6 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
     {
         base.Draw(handle);
 
-        // Подложка колонки — тёмный тон пути, под заголовком — черта цвета пути.
         for (var i = 0; i < _columns.Count; i++)
         {
             var column = _columns[i];
@@ -106,8 +96,6 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
             handle.DrawRect(new UIBox2(left, (HeaderHeight - 4) * UIScale, right, (HeaderHeight - 2) * UIScale), palette.Accent.WithAlpha(0.6f));
         }
 
-        // Связи рисуются под узлами (дети рисуются после родителя) и упираются в центр печати.
-        // Вниз линия идёт от нижнего края узла, чтобы не перечёркивать название и цену; в пределах строки — между печатями.
         foreach (var to in _controls.Values)
         {
             var palette = StoriesHereticPalette.Get(to.Node.Path);
@@ -132,11 +120,6 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
         }
     }
 
-    /// <summary>
-    /// <see cref="DrawingHandleBase.DrawLine"/> рисует только 1 px, поэтому толстая линия — полоса из двух треугольников.
-    /// Вершины пишутся в заранее созданный массив: выражение коллекции в <c>Span</c> компилируется
-    /// в InlineArray, который не проходит проверку песочницы клиента (клиент не загрузится).
-    /// </summary>
     private void DrawThickLine(DrawingHandleScreen handle, Vector2 from, Vector2 to, float thickness, Color color)
     {
         var direction = to - from;

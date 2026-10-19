@@ -160,12 +160,10 @@ public sealed class HereticSummonTest : GameTest
             Assert.That(SEntMan.GetComponent<StoriesHereticSummonComponent>(mob).Bound, Is.True);
         });
 
-        // Поглощённый нож удаляется в конце тика — иначе второй ритуал нашёл бы его снова.
         await Pair.RunTicksSync(1);
 
         await Server.WaitAssertion(() =>
         {
-            // Тот же игрок во втором призыве цель не продвигает.
             SSpawnAtPosition("KitchenKnife", testMap.GridCoords);
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             var second = EntityUid.Invalid;

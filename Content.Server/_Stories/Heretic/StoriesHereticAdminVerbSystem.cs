@@ -16,9 +16,6 @@ using Robust.Shared.Utility;
 
 namespace Content.Server._Stories.Heretic;
 
-/// <summary>
-/// Админ-верб «Сделать еретиком» — как апстримные антаг-вербы: через правило, чтобы выдать цели, роль и влияния.
-/// </summary>
 public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
 {
     [Dependency] private IAdminManager _admin = default!;
@@ -43,7 +40,6 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
             || !_admin.HasAdminFlag(actor.PlayerSession, AdminFlags.Fun))
             return;
 
-        // Повторная выдача пересоздала бы компонент и сбросила прогресс.
         if (!TryComp<MindContainerComponent>(args.Target, out var container)
             || !TryComp<ActorComponent>(args.Target, out var targetActor)
             || HasComp<StoriesHereticComponent>(args.Target)
@@ -54,7 +50,6 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
         var targetUid = args.Target;
         var admin = args.User;
         var name = Loc.GetString("stories-heretic-admin-verb-make");
-        // Апстрим не выдаёт антагов на шаттле прибытия и молча снимает выбор — показываем причину сразу.
         var onArrivals = _arrivals.IsOnArrivals((targetUid, null));
         args.Verbs.Add(new Verb
         {

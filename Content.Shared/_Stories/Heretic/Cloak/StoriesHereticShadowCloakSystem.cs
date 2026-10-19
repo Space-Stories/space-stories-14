@@ -52,7 +52,6 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, DamageDealtEvent>(OnDamage);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, MobStateChangedEvent>(OnMobState);
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SleepStateChangedEvent>(OnSleep);
-        // После IdentitySystem (он отменяет проверку при блокаторе, в том числе из одежды): иначе его отмена показала бы имя с ID-карты.
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SeeIdentityAttemptEvent>(OnSeeIdentity,
             after: new[] { typeof(IdentitySystem) });
         SubscribeLocalEvent<StoriesHereticShadowCloakComponent, GetVerbsEvent<ExamineVerb>>(OnExamineVerbs,
@@ -68,7 +67,6 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         var uid = ent.Owner;
         EntityUid? action = args.Action.Owner.Valid ? args.Action.Owner : null;
 
-        // Повторное нажатие снимает плащ вручную.
         if (TryComp<StoriesHereticShadowCloakComponent>(uid, out var active))
         {
             var remaining = active.EndTime - _timing.CurTime;
@@ -76,7 +74,6 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
 
             RemCompDeferred<StoriesHereticShadowCloakComponent>(uid);
             _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-off"), uid, uid);
-            // PerformAction после обработчика сбрасывает перезарядку и ставит UseDelay, поэтому задержка задаётся через него.
             _actions.SetUseDelay(active.Action ?? action, cooldown);
             return;
         }
@@ -117,9 +114,6 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
             uid);
     }
 
-    /// <summary>
-    /// Снятие плаща любым путём восстанавливает всё запомненное.
-    /// </summary>
     private void OnShutdown(Entity<StoriesHereticShadowCloakComponent> ent, ref ComponentShutdown args)
     {
         if (TerminatingOrDeleted(ent))
@@ -144,10 +138,6 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         args.VoiceName = Loc.GetString("stories-heretic-cloak-voice");
     }
 
-    /// <summary>
-    /// Отменённая проверка личности показывает имя с ID-карты (PresumedName), поэтому плащ снимает отмену
-    /// и подменяет имя — как в чате.
-    /// </summary>
     private void OnSeeIdentity(Entity<StoriesHereticShadowCloakComponent> ent, ref SeeIdentityAttemptEvent args)
     {
         if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
@@ -157,9 +147,6 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
         args.NameOverride = Loc.GetString("stories-heretic-cloak-voice");
     }
 
-    /// <summary>
-    /// Осмотр «ID» читает карту из слота напрямую, мимо системы личности, — в дыму плаща его не разглядеть.
-    /// </summary>
     private void OnExamineVerbs(Entity<StoriesHereticShadowCloakComponent> ent, ref GetVerbsEvent<ExamineVerb> args)
     {
         if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
@@ -207,14 +194,10 @@ public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
             Break(ent);
     }
 
-    /// <summary>
-    /// Срыв плаща: нокдаун, замедление и долгая перезарядка.
-    /// </summary>
     private void Break(Entity<StoriesHereticShadowCloakComponent> ent)
     {
         var uid = ent.Owner;
         var comp = ent.Comp;
-        // Немедленно, чтобы второй удар в этом же тике не сорвал плащ повторно.
         RemComp<StoriesHereticShadowCloakComponent>(uid);
 
         _stun.TryKnockdown(uid, comp.InterruptKnockdown, true);

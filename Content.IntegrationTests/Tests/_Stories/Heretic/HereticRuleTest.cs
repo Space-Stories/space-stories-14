@@ -98,7 +98,6 @@ public sealed class HereticRuleTest : GameTest
         {
             Assert.That(admins.HasAdminFlag(pair.Player!, AdminFlags.Fun), "Тестовый игрок не админ");
 
-            // Админ делает еретиком себя: верб есть и проходит через правило STHeretic.
             var verb = verbs.GetLocalVerbs(player, player, typeof(Verb))
                 .Single(v => v.Text == Loc.GetString("stories-heretic-admin-verb-make"));
             verbs.ExecuteVerb(verb, player, player, true);
@@ -108,7 +107,6 @@ public sealed class HereticRuleTest : GameTest
             Assert.That(SEntMan.HasComponent<StoriesHereticComponent>(player));
             Assert.That(SEntMan.GetComponent<MindComponent>(mind).Objectives, Has.Count.EqualTo(3));
 
-            // Повторно верб не предлагается: иначе прогресс сбросился бы.
             Assert.That(verbs.GetLocalVerbs(player, player, typeof(Verb))
                 .Any(v => v.Text == Loc.GetString("stories-heretic-admin-verb-make")), Is.False);
         });

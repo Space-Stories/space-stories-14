@@ -94,7 +94,6 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         args.Success = true;
     }
 
-    /// <summary>Отделённая часть тела (тело без MobState): запоминаем органы внутри.</summary>
     private bool TryRecordLimb(EntityUid uid, StoriesHereticSummonComponent summon)
     {
         if (!HasComp<BodyComponent>(uid) || HasComp<MobStateComponent>(uid)
@@ -148,7 +147,6 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
         }
     }
 
-    // Моб, созданный не ритуалом (админ-спавн), тоже получает срок ожидания игрока.
     private void OnSummonMapInit(Entity<StoriesHereticSummonComponent> ent, ref MapInitEvent args)
     {
         ent.Comp.ExpireTime = _timing.CurTime + ent.Comp.ClaimTime;
@@ -163,7 +161,6 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
 
         ent.Comp.Bound = true;
         RemComp<StoriesHereticSummonWaitingComponent>(ent);
-        // Разум, уже служивший (перенос между телами), второй такой цели не получает.
         if (!_mind.TryFindObjective(args.Mind.AsNullable(), ServeMaster, out _)
             && !_mind.TryAddObjective(args.Mind.Owner, args.Mind.Comp, ServeMaster))
             Log.Error($"Failed to add objective {ServeMaster} to summon {ToPrettyString(ent)}");
@@ -176,7 +173,6 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             _popup.PopupEntity(Loc.GetString("stories-heretic-summon-claimed", ("mob", ent.Owner)), ent.Comp.Master.Value, ent.Comp.Master.Value, PopupType.Medium);
         }
 
-        // Удалённого хозяина в брифинге не назвать: призыв всё равно привязан, но без брифинга.
         if (TryComp<ActorComponent>(ent, out var actor) && ent.Comp.Master is { } master && !TerminatingOrDeleted(master))
             _chat.DispatchServerMessage(actor.PlayerSession, Loc.GetString("stories-heretic-summon-briefing", ("master", master)));
     }
@@ -187,12 +183,8 @@ public sealed partial class StoriesHereticSummonSystem : EntitySystem
             Collapse(ent, "stories-heretic-summon-collapse");
     }
 
-    /// <summary>
-    /// Моб растворяется и оставляет ингредиенты рецепта: ритуал не пропадает впустую.
-    /// </summary>
     private void Collapse(Entity<StoriesHereticSummonComponent> ent, LocId message)
     {
-        // Уже схлопнулся (смерть и таймер в один тик). Очередь удаления не проверяем: моба могли разгибать до обработчика.
         if (ent.Comp.Collapsed || TerminatingOrDeleted(ent))
             return;
 

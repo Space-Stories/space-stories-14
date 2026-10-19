@@ -90,11 +90,9 @@ public sealed class HereticRitualTest : GameTest
             var heretic = new Entity<StoriesHereticComponent>(uid, comp);
             var rune = SSpawnAtPosition("STHereticRune", coords);
 
-            // 5 ед. мало.
             Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 5), out _, sound: false), Is.True);
             Assert.That(rituals.TryPerform(heretic, rune), Is.False);
 
-            // Лужа на тайле сливается в одну: 5 + 10 = 15 ед.
             Assert.That(puddles.TrySpillAt(coords, new Solution("Blood", 10), out var puddle, sound: false), Is.True);
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             Assert.That(SEntMan.Deleted(puddle) || SEntMan.IsQueuedForDeletion(puddle), Is.True, "Лужа не поглощена");
@@ -182,7 +180,6 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(SEntMan.Deleted(knife) || SEntMan.IsQueuedForDeletion(knife), Is.True, "Нож не поглощён");
             Assert.That(heretics.CountLimitedResults(heretic, "STTestHereticRitualLimited"), Is.EqualTo(1));
 
-            // Лимит 1: повтор не срабатывает.
             SSpawnAtPosition("KitchenKnife", coords);
             Assert.That(rituals.TryPerform(heretic, rune), Is.False);
         });
@@ -214,7 +211,6 @@ public sealed class HereticRitualTest : GameTest
         });
     }
 
-    /// <summary>Клинок еретика — тоже нож, но не годится ножом для нового клинка.</summary>
     [Test]
     public async Task BladeIsNotKnifeIngredient()
     {
@@ -251,12 +247,10 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeAshRoot"), Is.True);
 
             var rune = SSpawnAtPosition("STHereticRune", coords);
-            // Зажигалка одна (сам клинок — тоже нож, поэтому ножей хватает на второй раз).
             SSpawnAtPosition("KitchenKnife", coords);
             SSpawnAtPosition("KitchenKnife", coords);
             SSpawnAtPosition("Lighter", coords);
 
-            // Зажигалка поглощена первым ритуалом и ждёт удаления до конца тика — второй её не видит.
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Зажигалка из очереди на удаление использована снова");
             Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualAshBlade"), Is.EqualTo(1));
@@ -319,7 +313,6 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(heretic.Comp.Rituals, Does.Not.Contain((EntProtoId) "STHereticRitualAshAscension"));
             Assert.That(SEntMan.Deleted(knife) || SEntMan.IsQueuedForDeletion(knife), Is.False, "Вещи трупа уничтожены");
 
-            // Как ash_final в tg: вдвое больше скачков Извержения, короче перезарядки, иммунитеты.
             var volcano = FindAction(heretic, "STActionHereticVolcanoBlast");
             var volcanoEvent = (StoriesHereticVolcanoBlastEvent) SEntMan.GetComponent<InstantActionComponent>(volcano).Event!;
             Assert.That(volcanoEvent.Bounces, Is.EqualTo(10));
@@ -328,7 +321,6 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(SEntMan.GetComponent<ExplosionResistanceComponent>(heretic).DamageCoefficient, Is.Zero);
             Assert.That(SEntMan.HasComponent<RespiratorComponent>(heretic), Is.False, "Вознёсшийся всё ещё дышит");
 
-            // Усиление не задело данные прототипа: новое действие с обычным числом скачков.
             var fresh = SSpawn("STActionHereticVolcanoBlast");
             Assert.That(((StoriesHereticVolcanoBlastEvent) SEntMan.GetComponent<InstantActionComponent>(fresh).Event!).Bounces, Is.EqualTo(5));
         });

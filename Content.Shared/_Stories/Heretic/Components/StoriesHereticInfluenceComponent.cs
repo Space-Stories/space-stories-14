@@ -4,9 +4,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Stories.Heretic.Components;
 
-/// <summary>
-/// Разлом реальности. Виден и доступен только еретикам.
-/// </summary>
 [RegisterComponent, NetworkedComponent]
 public sealed partial class StoriesHereticInfluenceComponent : Component
 {

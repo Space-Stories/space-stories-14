@@ -39,7 +39,6 @@
   - type: InstantAction
     event: !type:StoriesHereticShedFormEvent
 
-# Действия Сырого пророка: без StoriesHereticRequiresFocus, моб не еретик.
 - type: entity
   id: STActionHereticRawProphetJaunt
   name: Ethereal Jaunt
@@ -123,7 +122,6 @@
     event: !type:StoriesHereticExpandSightEvent
       zoom: 1.5
 
-# Действия Сталкера: без StoriesHereticRequiresFocus, моб не еретик.
 - type: entity
   id: STActionHereticStalkerEmp
   name: Eldritch EMP

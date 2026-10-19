@@ -7,9 +7,6 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._Stories.Heretic.Components;
 
-/// <summary>
-/// Состояние еретика. Изменяется только через API <see cref="StoriesHereticSystem"/>.
-/// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), AutoGenerateComponentPause]
 [Access(typeof(StoriesHereticSystem))]
 public sealed partial class StoriesHereticComponent : Component
@@ -25,9 +22,6 @@ public sealed partial class StoriesHereticComponent : Component
     [DataField, AutoNetworkedField]
     public HashSet<EntProtoId> Knowledge = new();
 
-    /// <summary>
-    /// Число купленных знаний (без стартовых и Пира сов) — для цели «изучить N знаний».
-    /// </summary>
     [DataField, AutoNetworkedField]
     public int LearnedCount;
 
@@ -46,15 +40,9 @@ public sealed partial class StoriesHereticComponent : Component
     [DataField, AutoNetworkedField]
     public int HeadSacrificeCount;
 
-    /// <summary>
-    /// Призванные монстры, чью роль занял игрок. Гули не считаются (Paradise).
-    /// </summary>
     [DataField, AutoNetworkedField]
     public int SummonCount;
 
-    /// <summary>
-    /// Игроки, уже засчитанные в <see cref="SummonCount"/>.
-    /// </summary>
     [DataField]
     public HashSet<NetUserId> SummonedPlayers = new();
 
@@ -115,30 +103,18 @@ public sealed partial class StoriesHereticComponent : Component
     [DataField]
     public EntProtoId KnowledgeAction = "STActionHereticKnowledge";
 
-    /// <summary>
-    /// Всего получено очков знаний за раунд (без стартовых). Траты не уменьшают.
-    /// </summary>
     [DataField, AutoNetworkedField]
     public int PointsGained;
 
-    /// <summary>
-    /// Аура появляется, когда <see cref="PointsGained"/> превышает это значение (points_to_aura в tg).
-    /// </summary>
     [DataField, AutoNetworkedField]
     public int PointsToAura = 8;
 
-    /// <summary>
-    /// Видимая всем аура еретика (heretic_aura в tg). Скрыта после Пира сов.
-    /// </summary>
     [DataField]
     public EntProtoId Aura = "STHereticAura";
 
     [DataField]
     public EntityUid? AuraEntity;
 
-    /// <summary>
-    /// Аура скрыта одеждой (Обугленная мантия), как TRAIT_HERETIC_AURA_HIDDEN в tg.
-    /// </summary>
     [DataField, AutoNetworkedField]
     public bool AuraHidden;
 }

@@ -7,7 +7,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
-// Сталкер: ЭМИ и одноразово выбираемый облик.
 public sealed partial class StoriesHereticFleshSystem
 {
     [Dependency] private SharedEmpSystem _emp = default!;
@@ -43,7 +42,6 @@ public sealed partial class StoriesHereticFleshSystem
             _ui.OpenUi(ent.Owner, StoriesHereticStalkerFormUiKey.Key, ent);
     }
 
-    // Полиморф переносит разум, но не компоненты: облик остаётся слугой хозяина Сталкера.
     private void OnStalkerPolymorphed(Entity<StoriesHereticStalkerFormComponent> ent, ref PolymorphedEvent args)
     {
         if (!args.IsRevert && _summons.GetMaster(ent) is { } master)
@@ -52,7 +50,6 @@ public sealed partial class StoriesHereticFleshSystem
 
     private void OnStalkerFormSelected(Entity<StoriesHereticStalkerFormComponent> ent, ref StoriesHereticStalkerFormSelectMessage args)
     {
-        // Выбор один раз и только из списка компонента.
         var chosen = args.Polymorph;
         if (args.Actor != ent.Owner || ent.Comp.Chosen != null || !ent.Comp.Forms.Exists(f => f.Polymorph == chosen))
             return;

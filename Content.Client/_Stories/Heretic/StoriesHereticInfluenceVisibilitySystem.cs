@@ -5,10 +5,6 @@ using Robust.Shared.Player;
 
 namespace Content.Client._Stories.Heretic;
 
-/// <summary>
-/// Влияния скрыты (в YAML <c>visible: false</c>) и показываются, только если локальный игрок — еретик.
-/// Компонент еретика приходит только его владельцу (см. <c>OnGetStateAttempt</c>), поэтому другим он не виден.
-/// </summary>
 public sealed partial class StoriesHereticInfluenceVisibilitySystem : EntitySystem
 {
     [Dependency] private IPlayerManager _player = default!;

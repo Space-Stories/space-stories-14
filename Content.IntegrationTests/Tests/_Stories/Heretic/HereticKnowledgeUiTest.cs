@@ -32,7 +32,7 @@ public sealed class HereticKnowledgeUiTest : GameTest
             {
                 (null, null),
                 ("STHereticPathAsh", null),
-                ("STHereticPathFlesh", "STHereticPathLock"), // полумост: соседа нет, мост прижат к нашему пути с его стороны
+                ("STHereticPathFlesh", "STHereticPathLock"),
                 ("STHereticPathFlesh", null),
                 ("STHereticPathFlesh", "STHereticPathVoid"),
                 ("STHereticPathVoid", null),
@@ -46,9 +46,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
         });
     }
 
-    /// <summary>
-    /// Два знания в одной клетке окна (колонка, ступень, дорожка) рисуются друг поверх друга.
-    /// </summary>
     [Test]
     public async Task KnowledgeCellsAreUnique()
     {
@@ -61,7 +58,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
             var cells = new Dictionary<string, string>();
             foreach (var entity in proto.EnumeratePrototypes<EntityPrototype>())
             {
-                // Тестовые прототипы (STTest*) в окно игрока не попадают.
                 if (entity.Abstract || !entity.ID.StartsWith("STHereticKnowledge")
                     || !entity.TryGetComponent<StoriesHereticKnowledgeComponent>(out var knowledge, factory)
                     || knowledge.Starting)
@@ -90,7 +86,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
                        && res.RSI.TryGetState(state, out _);
             }
 
-            // У каждого пути и у общих знаний есть фон узла.
             Assert.That(HasState(KnowledgeRsi, StoriesHereticPalette.General.NodeState));
             Assert.That(HasState(KnowledgeRsi, "node_locked"));
             foreach (var path in Paths)
@@ -100,7 +95,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
                 Assert.That(HasState(KnowledgeRsi, palette.NodeState), path);
             }
 
-            // Иконки знаний указывают на существующие состояния RSI.
             foreach (var entity in proto.EnumeratePrototypes<EntityPrototype>())
             {
                 if (!entity.TryGetComponent<StoriesHereticKnowledgeComponent>(out var knowledge, factory)
@@ -108,12 +102,10 @@ public sealed class HereticKnowledgeUiTest : GameTest
                     continue;
 
                 Assert.That(HasState(icon.RsiPath, icon.RsiState), entity.ID);
-                // Многонаправленная иконка в окне режется до одного кадра из сетки.
                 resources.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / icon.RsiPath).RSI.TryGetState(icon.RsiState, out var state);
                 Assert.That(state!.RsiDirections, Is.EqualTo(RsiDirectionType.Dir1), $"{entity.ID}: иконка знания не однонаправленная");
             }
 
-            // Окно собирается со всеми состояниями узлов, с иконкой и без.
             var grasp = new SpriteSpecifier.Rsi(KnowledgeRsi, "grasp_ash");
             var window = new StoriesHereticKnowledgeWindow();
             window.UpdateState(1,

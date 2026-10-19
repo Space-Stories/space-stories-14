@@ -111,28 +111,22 @@ public sealed class HereticKnowledgeTest : GameTest
             var comp = SEntMan.AddComponent<StoriesHereticComponent>(uid);
             var ent = new Entity<StoriesHereticComponent>(uid, comp);
 
-            // Стартовое знание выдано бесплатно и не считается купленным.
             Assert.That(comp.Knowledge, Does.Contain((EntProtoId) "STTestHereticKnowledgeStart"));
             Assert.That(comp.LearnedCount, Is.Zero);
             Assert.That(comp.Points, Is.EqualTo(1));
 
-            // Без корня пути следующая ступень недоступна.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeA2"), Is.False);
 
-            // Выбор пути списывает очко и фиксирует путь.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeRootA"), Is.True);
             Assert.That(comp.Points, Is.Zero);
             Assert.That(comp.Path?.Id, Is.EqualTo("STTestHereticPathA"));
             Assert.That(comp.LearnedCount, Is.EqualTo(1));
 
-            // Второй корень закрыт.
             sys.AddPoints(ent, 5);
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeRootB"), Is.False);
 
-            // Следующая ступень своего пути доступна.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeA2"), Is.True);
 
-            // Вознесение без выполненных целей недоступно.
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeAscend"), Is.False);
         });
     }
@@ -152,10 +146,8 @@ public sealed class HereticKnowledgeTest : GameTest
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeRootA"), Is.True);
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeA2"), Is.True);
 
-            // Закрытое знание чужого пути нельзя даже при выполненных требованиях.
             Assert.That(sys.CanLearn(ent, "STTestHereticKnowledgeGraspB", out _), Is.False);
 
-            // Без моста узел чужого пути закрыт требованиями.
             Assert.That(sys.CanLearn(ent, "STTestHereticKnowledgeB3", out _), Is.False);
 
             Assert.That(sys.TryLearn(ent, "STTestHereticKnowledgeBridgeAB"), Is.True);
@@ -195,18 +187,15 @@ public sealed class HereticKnowledgeTest : GameTest
                 SEntMan.EventBus.RaiseLocalEvent(uid, (object) msg, true);
             }
 
-            // Чужой клиент не может купить знание за еретика.
             Send(stranger);
             Assert.That(comp.Knowledge, Does.Not.Contain((EntProtoId) "STTestHereticKnowledgeRootA"));
 
             Send(uid);
             Assert.That(comp.Knowledge, Does.Contain((EntProtoId) "STTestHereticKnowledgeRootA"));
 
-            // Чужой не может открыть окно знаний еретика (проверка ввода у него отключена).
             ui.OpenUi(uid, StoriesHereticKnowledgeUiKey.Key, stranger);
             Assert.That(ui.IsUiOpen(uid, StoriesHereticKnowledgeUiKey.Key, stranger), Is.False);
 
-            // Повторное добавление компонента не дублирует действия.
             before = actions.GetActions(uid).Count();
             beforeEntities = ActionEntities(uid);
             Assert.That(beforeEntities, Is.GreaterThan(0));
@@ -215,7 +204,6 @@ public sealed class HereticKnowledgeTest : GameTest
             Assert.That(actions.GetActions(uid).Count(), Is.EqualTo(before), "Старые действия остались дублями");
         });
 
-        // Удаление сущностей старых действий отложено до конца тика.
         await Pair.RunTicksSync(5);
         await Server.WaitAssertion(() =>
         {
@@ -231,7 +219,6 @@ public sealed class HereticKnowledgeTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
-            // Пир сов: +5 очков, закрывает Вознесение и не идёт в цель «изучить N».
             var feasterUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var feaster = SEntMan.AddComponent<StoriesHereticComponent>(feasterUid);
             var feasterEnt = new Entity<StoriesHereticComponent>(feasterUid, feaster);
@@ -241,7 +228,6 @@ public sealed class HereticKnowledgeTest : GameTest
             Assert.That(feaster.LearnedCount, Is.Zero);
             Assert.That(feaster.Points, Is.EqualTo(points + 5));
 
-            // Знание Вознесения уже изучено — Пир сов закрыт.
             var ascenderUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var ascender = SEntMan.AddComponent<StoriesHereticComponent>(ascenderUid);
             var ascenderEnt = new Entity<StoriesHereticComponent>(ascenderUid, ascender);
@@ -252,7 +238,6 @@ public sealed class HereticKnowledgeTest : GameTest
             Assert.That(sys.TryLearn(ascenderEnt, "STTestHereticKnowledgeAscend"), Is.True);
             Assert.That(sys.CanLearn(ascenderEnt, "STTestHereticKnowledgeFeast", out _), Is.False);
 
-            // Уже вознёсшийся — тоже.
             var ascendedUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var ascended = SEntMan.AddComponent<StoriesHereticComponent>(ascendedUid);
             var ascendedEnt = new Entity<StoriesHereticComponent>(ascendedUid, ascended);
@@ -270,7 +255,6 @@ public sealed class HereticKnowledgeTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
-            // Как в tg: аура появляется, когда получено больше PointsToAura очков.
             var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
             var examiner = SSpawnAtPosition("MobHuman", testMap.GridCoords);
@@ -288,7 +272,6 @@ public sealed class HereticKnowledgeTest : GameTest
             sys.AddPoints(heretic, 1);
             Assert.That(heretic.Comp.AuraEntity, Is.EqualTo(aura), "Аура продублировалась");
 
-            // Пир сов прячет ауру.
             Assert.That(sys.TryLearn(heretic, "STTestHereticKnowledgeFeast"), Is.True);
             Assert.That(heretic.Comp.AuraEntity, Is.Null);
             Assert.That(SEntMan.Deleted(aura) || SEntMan.IsQueuedForDeletion(aura), Is.True);
@@ -297,7 +280,6 @@ public sealed class HereticKnowledgeTest : GameTest
             sys.AddPoints(heretic, 10);
             Assert.That(heretic.Comp.AuraEntity, Is.Null, "Аура после Пира сов");
 
-            // Снятие компонента еретика убирает ауру.
             var otherUid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var other = new Entity<StoriesHereticComponent>(otherUid, SEntMan.AddComponent<StoriesHereticComponent>(otherUid));
             sys.AddPoints(other, other.Comp.PointsToAura + 1);

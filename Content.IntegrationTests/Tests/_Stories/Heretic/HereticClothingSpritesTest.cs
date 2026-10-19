@@ -8,10 +8,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
-/// <summary>
-/// Клиент ищет вид на персонаже по имени слота из своей таблицы (голова — <c>equipped-HELMET</c>, не HEAD).
-/// Без нужного состояния слой молча не рисуется: капюшон надет, а его не видно.
-/// </summary>
 [TestFixture]
 public sealed class HereticClothingSpritesTest : GameTest
 {

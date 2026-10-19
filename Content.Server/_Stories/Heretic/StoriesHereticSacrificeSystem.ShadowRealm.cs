@@ -66,9 +66,6 @@ public sealed partial class StoriesHereticSacrificeSystem
         _transform.AttachToGridOrMap(victim);
     }
 
-    /// <summary>
-    /// Случайная точка появления, расставленная маппером на сетке Теневого мира; без точек — центр сетки.
-    /// </summary>
     private EntityCoordinates PickRealmSpawn(EntityUid grid)
     {
         _realmSpawns.Clear();
@@ -91,7 +88,6 @@ public sealed partial class StoriesHereticSacrificeSystem
         if (!_rule.TryGetRandomStationCoordinates(out var coords))
             coords = ent.Comp.ReturnCoordinates;
 
-        // Станции и руны больше нет — жертва остаётся в Теневом мире без урона.
         if (!coords.IsValid(EntityManager))
             return;
 

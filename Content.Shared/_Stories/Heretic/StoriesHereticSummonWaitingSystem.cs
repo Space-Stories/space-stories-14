@@ -20,7 +20,6 @@ public sealed partial class StoriesHereticSummonWaitingSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticSummonWaitingComponent, ComponentShutdown>(OnShutdown);
     }
 
-    // Не-ref события подписываются только в форме (uid, comp, args).
     private void OnUpdateCanMove(EntityUid uid, StoriesHereticSummonWaitingComponent comp, UpdateCanMoveEvent args)
     {
         if (comp.LifeStage > ComponentLifeStage.Running)

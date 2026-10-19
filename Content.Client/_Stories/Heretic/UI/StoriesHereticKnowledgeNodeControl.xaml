@@ -2,7 +2,6 @@
     xmlns="https://spacestation14.io"
     SetWidth="150">
     <BoxContainer Orientation="Vertical" SeparationOverride="3">
-        <!-- Печать знания: фон пути, иконка знания поверх, отметка «изучено» в углу. -->
         <Control Name="SealBox" SetSize="80 80" HorizontalAlignment="Center">
             <AnimatedTextureRect Name="Seal" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <AnimatedTextureRect Name="KnowledgeIcon" HorizontalAlignment="Center" VerticalAlignment="Center" />

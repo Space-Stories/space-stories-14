@@ -7,9 +7,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Stories.Heretic.Components;
 
-/// <summary>
-/// Рецепт ритуала. Живёт только на прототипах <c>STHereticRitual*</c>.
-/// </summary>
 [RegisterComponent]
 public sealed partial class StoriesHereticRitualComponent : Component
 {
@@ -22,9 +19,6 @@ public sealed partial class StoriesHereticRitualComponent : Component
     [DataField]
     public int? Limit;
 
-    /// <summary>
-    /// После Вознесения <see cref="Limit"/> не действует (клинки Плоти).
-    /// </summary>
     [DataField]
     public bool AscendedUnlimited;
 
@@ -38,9 +32,6 @@ public sealed partial class StoriesHereticIngredient
     [DataField]
     public EntityWhitelist? Whitelist;
 
-    /// <summary>
-    /// Что не годится, даже если подходит под остальные условия (клинок еретика вместо ножа).
-    /// </summary>
     [DataField]
     public EntityWhitelist? Blacklist;
 
@@ -50,18 +41,12 @@ public sealed partial class StoriesHereticIngredient
     [DataField]
     public ProtoId<OrganCategoryPrototype>? OrganCategory;
 
-    /// <summary>
-    /// Лужа на руне, в которой не меньше <see cref="ReagentAmount"/> любого из реагентов (кровь, пепел, рвота).
-    /// </summary>
     [DataField]
     public List<ProtoId<ReagentPrototype>>? Reagents;
 
     [DataField]
     public FixedPoint2 ReagentAmount = 10;
 
-    /// <summary>
-    /// Любая одежда, которую можно надеть в один из этих слотов («любая маска», «любая верхняя одежда»).
-    /// </summary>
     [DataField]
     public SlotFlags? ClothingSlots;
 
@@ -71,9 +56,6 @@ public sealed partial class StoriesHereticIngredient
     [DataField]
     public bool Consume = true;
 
-    /// <summary>
-    /// Название для сообщения «не хватает ...».
-    /// </summary>
     [DataField(required: true)]
     public LocId Name;
 }

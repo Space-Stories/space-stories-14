@@ -25,7 +25,6 @@ public sealed partial class StoriesHereticKnowledgeWindow : FancyWindow
         IReadOnlyList<StoriesHereticKnowledgeColumn> columns,
         IReadOnlyList<StoriesHereticKnowledgeNode> nodes)
     {
-        // Пока путь не выбран, окно окрашено в зелень Мансуса.
         var palette = StoriesHereticPalette.Get(pathId);
 
         Backdrop.PanelOverride = new StyleBoxFlat(Color.InterpolateBetween(BaseBackground, palette.Dark, 0.35f));

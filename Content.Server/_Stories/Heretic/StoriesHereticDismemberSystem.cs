@@ -18,9 +18,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic;
 
-/// <summary>
-/// Расчленение трупа клинком еретика: глаголы на мёртвом гуманоиде, отделяющие голову, руки и ноги.
-/// </summary>
 public sealed partial class StoriesHereticDismemberSystem : EntitySystem
 {
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
@@ -146,7 +143,6 @@ public sealed partial class StoriesHereticDismemberSystem : EntitySystem
             ("user", args.User), ("part", name), ("corpse", ent.Owner)), ent, PopupType.MediumCaution);
     }
 
-    /// <summary>Мгновенно отделяет орган от трупа. Живому телу ничего не делает.</summary>
     public EntityUid? Dismember(EntityUid corpse, EntityUid organ)
     {
         if (!_mobState.IsDead(corpse) || HasComp<StoriesHereticShadowRealmComponent>(corpse)

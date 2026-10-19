@@ -1,8 +1,5 @@
 namespace Content.Server._Stories.Heretic.Ash;
 
-/// <summary>
-/// На еретике: параметры срабатывания метки Пепла.
-/// </summary>
 [RegisterComponent, Access(typeof(StoriesHereticAshSystem))]
 public sealed partial class StoriesHereticAshMarkComponent : Component
 {

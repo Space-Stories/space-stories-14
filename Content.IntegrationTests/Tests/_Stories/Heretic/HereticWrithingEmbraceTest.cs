@@ -33,9 +33,6 @@ public sealed class HereticWrithingEmbraceTest : GameTest
         return (uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
     }
 
-    /// <summary>
-    /// Воздух на всей карте: в вакууме баротравма портит счёт урона.
-    /// </summary>
     private async Task Breathable(EntityUid map)
     {
         await Server.WaitPost(() =>
@@ -185,7 +182,6 @@ public sealed class HereticWrithingEmbraceTest : GameTest
         await Server.WaitAssertion(() =>
         {
             var comp = SEntMan.GetComponent<StoriesHereticWrithingEmbraceComponent>(embraceRef);
-            // Шесть ран мимо брони: по 10 резаных за каждую.
             Assert.That(SEntMan.GetComponent<DamageableComponent>(victim).Damage.DamageDict.GetValueOrDefault("Slash").Float(),
                 Is.EqualTo(comp.Wound.DamageDict["Slash"].Float() * comp.Wounds).Within(0.01f));
             Assert.That(SEntMan.GetComponent<BloodstreamComponent>(victim).BleedAmount, Is.GreaterThan(0f), "Нет кровотечения");

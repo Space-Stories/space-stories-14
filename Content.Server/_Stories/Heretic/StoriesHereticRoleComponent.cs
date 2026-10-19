@@ -3,10 +3,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic;
 
-/// <summary>
-/// Роль еретика на разуме. Хранит снимок прогресса, чтобы цели и итоги раунда не терялись,
-/// когда разум уходит из тела еретика (гиб, борг, клон, крио).
-/// </summary>
 [RegisterComponent, Access(typeof(StoriesHereticObjectiveSystem))]
 public sealed partial class StoriesHereticRoleComponent : Component
 {

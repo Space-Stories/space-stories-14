@@ -36,7 +36,6 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 
     private void OnAntagSelected(Entity<StoriesHereticRuleComponent> ent, ref AfterAntagEntitySelectedEvent args)
     {
-        // Новый еретик не должен оставаться целью уже выбранных.
         var query = EntityQueryEnumerator<StoriesHereticComponent>();
         while (query.MoveNext(out var other, out var otherComp))
         {
@@ -61,9 +60,6 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
         }
     }
 
-    /// <summary>
-    /// Случайная безопасная плитка станции: проходимая, с пригодным воздухом, не на улетевшем шаттле.
-    /// </summary>
     public bool TryGetRandomStationCoordinates(out EntityCoordinates coords, StoriesHereticRuleComponent? rule = null)
     {
         rule ??= EntityQuery<StoriesHereticRuleComponent>().FirstOrDefault() ?? new StoriesHereticRuleComponent();
@@ -92,9 +88,6 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
         return false;
     }
 
-    /// <summary>
-    /// Находится ли сущность на станции и на её основной карте (не на шаттле в FTL или у ЦК).
-    /// </summary>
     public bool IsOnStation(EntityUid uid)
     {
         return _station.GetOwningStation(uid) is { } station
@@ -102,9 +95,6 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
                && IsOnStationMap(station, grid);
     }
 
-    /// <summary>
-    /// Шаттлы станции в FTL или у ЦК — на другой карте, чем основная сетка.
-    /// </summary>
     private bool IsOnStationMap(EntityUid station, EntityUid grid)
     {
         if (HasComp<FTLComponent>(grid))
@@ -136,7 +126,6 @@ public sealed partial class StoriesHereticRuleSystem : GameRuleSystem<StoriesHer
 
         foreach (var (mindId, data, name) in heretics)
         {
-            // Прогресс берётся со снимка роли, если тело еретика утрачено.
             if (!TryComp<MindComponent>(mindId, out var mind)
                 || !_objectives.TryGetProgress(mindId, mind, out var heretic))
             {

@@ -57,7 +57,6 @@ public sealed partial class StoriesHereticAshSystem
 
         if (!TryComp<StoriesHereticComponent>(wearer, out var heretic))
         {
-            // Как robes_side_effect в tg: чужака мантия сжигает по конечности в секунду.
             ent.Comp.NextPulse = _timing.CurTime + ent.Comp.BurnInterval;
             _popup.PopupEntity(Loc.GetString("stories-heretic-mantle-burns"), wearer, wearer);
             _adminLog.Add(LogType.Action, LogImpact.Medium,
@@ -67,7 +66,6 @@ public sealed partial class StoriesHereticAshSystem
 
         _heretic.SetAuraHidden((wearer, heretic), true);
 
-        // Как on_robes_gained в tg: огонь на носителе не затухает.
         if (TryComp<FlammableComponent>(wearer, out var flammable))
         {
             ent.Comp.SavedFirestackFade = flammable.FirestackFade;
@@ -82,18 +80,12 @@ public sealed partial class StoriesHereticAshSystem
             ReleaseWearer(ent);
     }
 
-    /// <summary>
-    /// Страховка: мантия удалена или лишилась компонента, не пройдя через снятие.
-    /// </summary>
     private void OnMantleShutdown(Entity<StoriesHereticScorchedMantleComponent> ent, ref ComponentShutdown args)
     {
         if (ent.Comp.Wearer is { } wearer && !TerminatingOrDeleted(wearer))
             ReleaseWearer(ent);
     }
 
-    /// <summary>
-    /// Снимает с носителя всё, что дала мантия: пламя, скрытую ауру, незатухающий огонь.
-    /// </summary>
     private void ReleaseWearer(Entity<StoriesHereticScorchedMantleComponent> ent)
     {
         if (ent.Comp.Wearer is not { } wearer)
@@ -149,9 +141,6 @@ public sealed partial class StoriesHereticAshSystem
         Ignite(wearer, ent.Comp.FlameStacks);
     }
 
-    /// <summary>
-    /// Отрывает и сжигает одну руку или ногу (как burn_limbs в tg). Голова и торс не трогаются.
-    /// </summary>
     private void BurnLimb(Entity<StoriesHereticScorchedMantleComponent> ent, EntityUid wearer)
     {
         foreach (var organ in _body.EnumerateOrgans<DetachableOrganComponent>(wearer))

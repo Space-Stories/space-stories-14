@@ -3,19 +3,12 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
-/// <summary>
-/// Данные ритуала «Последний гимн жреца» (Вознесение Плоти). Живёт на прототипе ритуала.
-/// Лимиты гулей и клинков после Вознесения задаются у самих Хватки, ритуалов Безгласных и клинка.
-/// </summary>
 [RegisterComponent, Access(typeof(StoriesHereticFleshSystem))]
 public sealed partial class StoriesHereticFleshAscensionRitualComponent : Component
 {
     [DataField]
     public int Corpses = 4;
 
-    /// <summary>
-    /// Действия вознёсшегося: «Сбросить форму».
-    /// </summary>
     [DataField]
     public List<EntProtoId> Actions = new();
 

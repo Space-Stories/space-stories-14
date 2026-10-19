@@ -80,7 +80,6 @@ public sealed class HereticScorchedMantleTest : GameTest
 
             var rune = SSpawnAtPosition("STHereticRune", coords);
 
-            // Стол + маска + зажигалка.
             var table = SSpawnAtPosition("Table", coords);
             SSpawnAtPosition("ClothingMaskBreath", coords);
             SSpawnAtPosition("Lighter", coords);
@@ -88,7 +87,6 @@ public sealed class HereticScorchedMantleTest : GameTest
             Assert.That(SEntMan.Deleted(table) || SEntMan.IsQueuedForDeletion(table), Is.True, "Стол не поглощён");
             Assert.That(CountMantles(), Is.EqualTo(1));
 
-            // Любая верхняя одежда вместо стола.
             SSpawnAtPosition("ClothingOuterRobesCult", coords);
             SSpawnAtPosition("ClothingMaskBreath", coords);
             SSpawnAtPosition("Lighter", coords);
@@ -167,8 +165,6 @@ public sealed class HereticScorchedMantleTest : GameTest
             Assert.That(actions.GetActions(heretic).Select(a => a.Owner), Does.Contain(actionUid), "Еретик не получил действие");
         });
 
-        // Клиент должен увидеть еретика до поджога: FireVisualizerSystem апстрима создаёт огонёк прямо
-        // в инициализации компонента, и моб, впервые пришедший клиенту горящим, роняет DebugAssert движка.
         await RunTicksSync(5);
 
         await Server.WaitAssertion(() =>
@@ -188,7 +184,6 @@ public sealed class HereticScorchedMantleTest : GameTest
             actions.PerformAction(heretic.Owner, action, predicted: false);
             Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).OnFire, Is.False, "Выключение не потушило");
 
-            // Не-еретику действие не выдаётся.
             var human = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var other = EquipMantle(human);
             var otherAction = SEntMan.GetComponent<ActionGrantComponent>(other).ActionEntities.Single();
@@ -228,7 +223,6 @@ public sealed class HereticScorchedMantleTest : GameTest
             Assert.That(heretic.Comp.AuraHidden, Is.False, "Аура осталась скрытой");
             Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).OnFire, Is.False, "Пламя мантии не погасло");
 
-            // Компонент мантии снят без снятия одежды — срабатывает только страховка ComponentShutdown.
             var mantle = EquipMantle(heretic);
             Assert.That(SEntMan.GetComponent<FlammableComponent>(heretic).FirestackFade, Is.Zero);
             SEntMan.RemoveComponent<StoriesHereticScorchedMantleComponent>(mantle);

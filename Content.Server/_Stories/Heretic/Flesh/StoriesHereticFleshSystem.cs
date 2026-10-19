@@ -67,7 +67,6 @@ public sealed partial class StoriesHereticFleshSystem : EntitySystem
 
     private void OnGraspGhoul(Entity<StoriesHereticGraspGhoulComponent> ent, ref StoriesHereticGraspHitEvent args)
     {
-        // По живым Хватка работает как обычно, гулем становится только труп.
         if (!_mobState.IsDead(args.Target))
             return;
 

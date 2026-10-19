@@ -43,7 +43,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
     private static readonly SoundSpecifier RitualSound = new SoundPathSpecifier("/Audio/Magic/staff_animation.ogg");
 
-    // Отделённая часть тела засчитывается только как конечность, а не как всё, что в ней лежит (глаза в голове).
     private static readonly HashSet<ProtoId<OrganCategoryPrototype>> LimbCategories =
     [
         "Head", "ArmLeft", "ArmRight", "HandLeft", "HandRight", "LegLeft", "LegRight", "FootLeft", "FootRight",
@@ -132,9 +131,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         TryPerform((args.User, heretic), rune);
     }
 
-    /// <summary>
-    /// Выполняет первый подходящий известный ритуал на руне. Только сервер.
-    /// </summary>
     public bool TryPerform(Entity<StoriesHereticComponent> heretic, EntityUid rune)
     {
         var radius = CompOrNull<StoriesHereticRuneComponent>(rune)?.Radius ?? 1.5f;
@@ -144,11 +140,8 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         _lookup.GetEntitiesInRange(coords, radius, _nearby, LookupFlags.Uncontained);
         _nearby.Remove(heretic);
         _nearby.Remove(rune);
-        // Поглощённое прошлым ритуалом удаляется только в конце тика — второй ритуал в том же тике его не видит.
         _nearby.RemoveWhere(uid => TerminatingOrDeleted(uid) || EntityManager.IsQueuedForDeletion(uid));
 
-        // Подсказка берётся от ритуала, к которому игрок подошёл ближе всего:
-        // очки = число выполненных условий, при равенстве — первый.
         string? failReason = null;
         var bestScore = 0;
         foreach (var ritualId in new List<EntProtoId>(heretic.Comp.Rituals))
@@ -177,7 +170,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 continue;
             }
 
-            // Из стопки ингредиент — одна единица, остальное остаётся на руне.
             foreach (var uid in _consumed)
             {
                 if (TryComp<StackComponent>(uid, out var stack) && stack.Count > 1)
@@ -211,9 +203,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         }
     }
 
-    /// <summary>
-    /// <paramref name="score"/> — сколько условий эффекта выполнено (для выбора подсказки при неудаче).
-    /// </summary>
     private bool TryRunEffect(Entity<StoriesHereticComponent> heretic,
         EntityUid rune,
         EntProtoId ritualId,
@@ -261,7 +250,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 if (ev.Success)
                     return true;
 
-                // Обработчик ставит FailReason только если нашёл, с чем работать (тело на руне и т.п.).
                 failReason = ev.FailReason;
                 score = 1;
                 return false;
@@ -283,9 +271,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         return false;
     }
 
-    /// <summary>
-    /// <paramref name="matched"/> — число полностью найденных ингредиентов.
-    /// </summary>
     private bool TryMatch(List<StoriesHereticIngredient> ingredients, out string? missing, out int matched)
     {
         _used.Clear();
@@ -342,7 +327,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             && organ.Category == ingredient.OrganCategory)
             return true;
 
-        // Отделённая часть тела (DetachedBody) — сущность без MobState, орган лежит в её контейнере.
         if (ingredient.OrganCategory != null
             && LimbCategories.Contains(ingredient.OrganCategory.Value)
             && !HasComp<MobStateComponent>(uid)

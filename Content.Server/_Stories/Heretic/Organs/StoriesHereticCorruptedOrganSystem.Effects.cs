@@ -54,17 +54,10 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
     private static readonly EntProtoId Blindness = "StatusEffectBlindness";
     private static readonly ProtoId<DatasetPrototype> Shadowspeak = "STHereticShadowspeak";
 
-    /// <summary>
-    /// Реагенты, которые испорченная печень подмешивает в выпитое. SpaceMirage в проекте нет — отброшен.
-    /// </summary>
     private static readonly ProtoId<ReagentPrototype>[] LiverReagents = ["Rum", "Vodka", "Happiness", "MindbreakerToxin", "Laughter"];
 
-    /// <summary>
-    /// Реагенты крови (как у лужи крови): выпив любой из них, испорченный желудок на время успокаивается.
-    /// </summary>
     private static readonly ProtoId<ReagentPrototype>[] BloodReagents = ["Blood", "InsectBlood", "CopperBlood", "AmmoniaBlood"];
 
-    // Миазмов в этом форке нет — вместо них аммиак (тоже вонючее облако).
     private static readonly Gas[] CoughGases = [Gas.Ammonia, Gas.Plasma];
 
     private static readonly TimeSpan SecondTick = TimeSpan.FromSeconds(1);
@@ -77,7 +70,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
     private readonly HashSet<Entity<DamageableComponent>> _burstTargets = new();
     private readonly HashSet<Entity<StoriesHereticComponent>> _watchers = new();
 
-    // База голода человека -1/60 в секунду; ещё -2/60 даёт итоговые x3.
     private const float StomachExtraHunger = -2f / 60f;
     private const float HeartStamina = 20f;
     private const float LungsChance = 0.15f;
@@ -120,7 +112,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         return false;
     }
 
-    // И проклятие, и пересадка: тело с испорченным органом получает маркер.
     private void OnInserted(Entity<StoriesHereticCorruptedOrganComponent> ent, ref OrganGotInsertedEvent args)
     {
         EnsureComp<StoriesHereticCorruptedBodyComponent>(args.Target);
@@ -132,7 +123,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         if (TerminatingOrDeleted(body))
             return;
 
-        // Орган уже вышел из контейнера: если других испорченных не осталось, маркер не нужен.
         if (!HasKind(body, null))
             RemComp<StoriesHereticCorruptedBodyComponent>(body);
 
@@ -147,7 +137,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         _adminLog.Add(LogType.Action, LogImpact.Medium,
             $"Corrupted organ {ToPrettyString(ent):entity} burst out of {ToPrettyString(body):target}, dealing {BurstHeat} Heat to {_burstTargets.Count} entities");
 
-        // Урон может менять набор (смерть, удаление), поэтому обходим копию.
         foreach (var target in _burstTargets.ToArray())
         {
             _damageable.TryChangeDamage(target.AsNullable(), heat, origin: ent);
@@ -240,7 +229,6 @@ public sealed partial class StoriesHereticCorruptedOrganSystem
         args.Message = string.Join(' ', words);
     }
 
-    // Один вдох — один бросок шанса.
     private void OnInhaled(Entity<StoriesHereticCorruptedBodyComponent> ent, ref InhaledGasEvent args)
     {
         if (!HasKind(ent, StoriesHereticCorruptedOrganKind.Lungs) || !_mobState.IsAlive(ent) || IsSuppressed(ent)

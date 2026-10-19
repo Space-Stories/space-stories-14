@@ -34,7 +34,6 @@ public sealed class HereticGhoulTest : GameTest
         var alive = EntityUid.Invalid;
         var ghoulMind = EntityUid.Invalid;
 
-        // Душа — разум игрока. Игрок в тесте один: каждый новый труп забирает его разум себе.
         EntityUid Corpse(bool soul = true)
         {
             var uid = SSpawnAtPosition("MobHuman", testMap.GridCoords);
@@ -66,7 +65,6 @@ public sealed class HereticGhoulTest : GameTest
             Assert.That(ghouls.TryRaise(master, Corpse(), "STHereticGhoul", 1, out reason), Is.False, "Лимит не сработал");
             Assert.That(reason, Is.EqualTo(loc.GetString("stories-heretic-ghoul-limit")));
 
-            // Смерть гуля освобождает слот, тело остаётся трупом.
             damageable.TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 100 } } }, true);
         });
 
@@ -81,7 +79,6 @@ public sealed class HereticGhoulTest : GameTest
             Assert.That(ghouls.TryRaise(master, corpse, "STHereticGhoul", 1, out var again), Is.False, "Тот же труп поднят дважды");
             Assert.That(again, Is.EqualTo(loc.GetString("stories-heretic-ghoul-already")));
 
-            // Оживлённый бывший гуль снова обычной прочности.
             Server.System<RejuvenateSystem>().PerformRejuvenate(corpse);
             Assert.That(mobState.IsAlive(corpse), Is.True);
             Assert.That(thresholds.TryGetThresholdForState(corpse, MobState.Critical, out var crit) && crit == 100, "Порог крита не вернулся");
@@ -108,7 +105,6 @@ public sealed class HereticGhoulTest : GameTest
             Assert.That(ghouls.TryRaise(master, corpse, "STHereticGhoul", 1, out _), Is.True);
             Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.True);
 
-            // Гуля разорвало: тело удаляется, разум уходит в призрака.
             Server.System<GibbingSystem>().Gib(corpse);
         });
 
@@ -139,7 +135,6 @@ public sealed class HereticGhoulTest : GameTest
             damageable.TryChangeDamage(ghoul, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
             Assert.That(ghouls.TryRaise(master, ghoul, "STHereticGhoul", 1, out _), Is.True);
 
-            // Разум временно ушёл из живого гуля (полиморф, админ-управление мобом) и вернулся.
             minds.TransferTo(mindId, elsewhere);
             Assert.That(minds.TryFindObjective(mindId, "STHereticObjectiveServeMaster", out _), Is.False, "Цель осталась вне тела гуля");
             minds.TransferTo(mindId, ghoul);
@@ -165,7 +160,6 @@ public sealed class HereticGhoulTest : GameTest
             minds.TransferTo(mind, corpse);
             damageable.TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
 
-            // Игрок вышел из мёртвого тела призраком, но может вернуться: разум лишь «навещает» призрака.
             var ghost = SSpawnAtPosition("MobObserver", testMap.GridCoords);
             minds.Visit(mind, ghost);
             Assert.That(ServerSession.AttachedEntity, Is.EqualTo(ghost));

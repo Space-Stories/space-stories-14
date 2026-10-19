@@ -1,4 +1,3 @@
-# Общий набор сопротивлений призывов Плоти.
 - type: damageModifierSet
   id: STHereticSummonDamageModifierSet
   coefficients:
@@ -119,7 +118,6 @@
     - CannotSuicide
     - DoorBumpOpener
 
-# Облики Сталкера: штатный возврат даёт действие полиморфа (forced: false).
 - type: polymorph
   abstract: true
   id: STHereticStalkerFormBase
@@ -162,8 +160,6 @@
   configuration:
     entity: MobCarp
 
-# Владыка Ночи: форма вознёсшегося еретика Плоти, не призыв. Без Pullable — его нельзя тянуть;
-# без MobCollision — проходит сквозь толпу и никого не толкает.
 - type: entity
   id: STHereticMobLordOfNight
   parent:
@@ -226,7 +222,6 @@
     - DoorBumpOpener
     - StunImmune
 
-# Снаряжение остаётся на сохранённом теле еретика, как в tg.
 - type: polymorph
   id: STHereticLordOfNight
   configuration:

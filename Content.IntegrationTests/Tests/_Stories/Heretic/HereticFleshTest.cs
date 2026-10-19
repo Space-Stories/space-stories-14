@@ -118,7 +118,6 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshRoot"), Is.True);
             Assert.That(heretics.TryLearn(heretic, "STHereticKnowledgeFleshGrasp"), Is.True);
 
-            // Игрок в тесте один: каждый новый труп забирает его разум себе.
             EntityUid Corpse()
             {
                 var corpse = SSpawnAtPosition("MobHuman", coords);
@@ -167,7 +166,6 @@ public sealed class HereticFleshTest : GameTest
         {
             var coords = testMap.GridCoords;
             var uid = SSpawnAtPosition("MobHuman", coords);
-            // Игрок — сам еретик: всплывающие сообщения приходят ему.
             minds.TransferTo(minds.CreateMind(ServerSession!.UserId), uid);
             var heretic = new Entity<StoriesHereticComponent>(uid, SEntMan.AddComponent<StoriesHereticComponent>(uid));
             heretic.Comp.Points = 2;
@@ -293,9 +291,6 @@ public sealed class HereticFleshTest : GameTest
         });
     }
 
-    /// <summary>
-    /// Штатный путь призрачной роли: проверка бана по роли гуля, затем ровно одна роль гуля на разуме.
-    /// </summary>
     [Test]
     public async Task ImperfectOfferTakenThroughGhostRoleSystem()
     {
@@ -477,7 +472,6 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             Assert.That(CountPoppies(), Is.EqualTo(0));
 
-            // Труп оживили до того, как роль взяли: предложение снимается, мак возвращается.
             Server.System<RejuvenateSystem>().PerformRejuvenate(corpse);
             Assert.That(Server.System<MobStateSystem>().IsAlive(corpse), Is.True);
             Assert.That(SEntMan.HasComponent<StoriesHereticGhoulOfferComponent>(corpse), Is.False, "Предложение осталось на живом");
@@ -498,15 +492,12 @@ public sealed class HereticFleshTest : GameTest
             var target = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<StoriesHereticFleshMarkComponent>(heretic);
             var bloodstream = SEntMan.GetComponent<BloodstreamComponent>(target);
-            // Контроль: цель, получившая только тот же Slash. Сам урон тоже вызывает кровотечение.
             var control = SSpawnAtPosition("MobHuman", coords);
             var heretic2 = SEntMan.GetComponent<StoriesHereticFleshMarkComponent>(heretic);
             Server.System<DamageableSystem>().TryChangeDamage(control, heretic2.Damage, true);
             var controlBleed = SEntMan.GetComponent<BloodstreamComponent>(control).BleedAmount;
-            // Иначе потолок съел бы всю прибавку и проверка ниже ничего бы не доказала.
             Assert.That(controlBleed, Is.LessThan(bloodstream.MaxBleedAmount), "Контрольное кровотечение уже на потолке");
 
-            // Метка чужого пути — не наша забота.
             var foreign = new StoriesHereticMarkTriggeredEvent(heretic, target, "STHereticPathAsh", 0);
             SEntMan.EventBus.RaiseEvent(EventSource.Local, ref foreign);
             Assert.That(bloodstream.BleedAmount, Is.Zero, "Метка чужого пути вызвала кровотечение");
@@ -588,10 +579,8 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(Blunt(stranger), Is.EqualTo(30f));
         });
 
-        // DoAfter 1 с.
         await Pair.RunSeconds(1.5f);
 
-        // На тестовой карте нет воздуха: оба получают одинаковую баротравму, чужой служит контролем.
         await Server.WaitAssertion(() => Assert.That(Blunt(servant), Is.EqualTo(Blunt(stranger) - 10f).Within(0.01f), "Слуга не вылечен после DoAfter"));
     }
 
@@ -955,7 +944,6 @@ public sealed class HereticFleshTest : GameTest
             var form = SEntMan.GetComponent<StoriesHereticStalkerFormComponent>(stalker);
             Assert.That(form.Chosen, Is.Null);
 
-            // Неизвестный облик игнорируется.
             SEntMan.EventBus.RaiseLocalEvent(stalker, new StoriesHereticStalkerFormSelectMessage("STHereticAshJaunt") { Actor = stalker }, true);
             Assert.That(form.Chosen, Is.Null);
 
@@ -1009,7 +997,6 @@ public sealed class HereticFleshTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
-            // Ингредиент рецепта лежит на полу тестовой карты, а не в хранилище полиморфа и не в контейнере.
             var pens = SEntMan.AllEntityQueryEnumerator<MetaDataComponent, TransformComponent>();
             var onFloor = 0;
             while (pens.MoveNext(out var uid, out var meta, out var xform))
@@ -1065,7 +1052,6 @@ public sealed class HereticFleshTest : GameTest
             rune = SSpawnAtPosition("STHereticRune", coords);
             var corpses = new List<EntityUid> { SpawnCorpse(), SpawnCorpse(), SpawnCorpse() };
 
-            // Трёх трупов мало: подсказка о недостающем.
             var nearby = new HashSet<EntityUid>(corpses);
             var ev = new StoriesHereticRitualEffectEvent(heretic, rune, "STHereticRitualFleshAscension",
                 StoriesHereticRitualEffect.Ascension, nearby, new List<EntityUid>());
@@ -1080,12 +1066,10 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(heretic.Comp.Ascended, Is.True);
             Assert.That(heretic.Comp.Rituals, Does.Not.Contain((EntProtoId) "STHereticRitualFleshAscension"));
             Assert.That(corpses.All(c => SEntMan.Deleted(c) || SEntMan.IsQueuedForDeletion(c)), "Трупы не поглощены");
-
         });
 
         await Pair.RunTicksSync(1);
 
-        // Клинки без лимита (лимит до Вознесения — 4).
         for (var i = 1; i <= 5; i++)
             Assert.That(await TryBladeRitual(heretic, rune, testMap), Is.True, $"Клинок {i}");
 
@@ -1094,12 +1078,10 @@ public sealed class HereticFleshTest : GameTest
             var coords = testMap.GridCoords;
             Assert.That(heretics.CountLimitedResults(heretic, "STHereticRitualFleshBlade"), Is.EqualTo(5));
 
-            // Повтор невозможен: ритуала больше нет.
             for (var i = 0; i < 4; i++)
                 SpawnCorpse();
             Assert.That(rituals.TryPerform(heretic, rune), Is.False, "Вознесение повторилось");
 
-            // «Сбросить форму»: Владыка Ночи со штатным возвратом и ужасом свидетеля.
             var witness = SSpawnAtPosition("MobHuman", coords);
             Entity<ActionComponent>? shed = null;
             foreach (var action in actions.GetActions(heretic))
@@ -1122,7 +1104,6 @@ public sealed class HereticFleshTest : GameTest
 
     private static readonly EntProtoId ShedFormAction = "STActionHereticShedForm";
 
-    /// <summary>Еретик с разумом сбрасывает форму: возвращает Владыку Ночи.</summary>
     private EntityUid ShedForm(EntityUid uid)
     {
         var minds = Server.System<MindSystem>();
@@ -1173,7 +1154,6 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(listener.GetEvents(uid).Select(e => e.Message), Is.EqualTo(new[] { Loc.GetString("stories-heretic-shed-form-speech") }),
                 "Нет крика при превращении");
 
-            // Уже в чужом облике без повторных превращений: полиморф откажет, кричать незачем.
             var morphed = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             var mindId = minds.CreateMind(null);
             minds.TransferTo(mindId, morphed);
@@ -1215,7 +1195,6 @@ public sealed class HereticFleshTest : GameTest
             var lord = mind.OwnedEntity!.Value;
             Assert.That(lord, Is.Not.EqualTo(uid), "Владыка Ночи не появился");
 
-            // Ручной возврат — действием полиморфа, как игрок.
             var revert = SEntMan.GetComponent<PolymorphedEntityComponent>(lord).Action!.Value;
             actions.PerformAction(lord, (revert, SEntMan.GetComponent<ActionComponent>(revert)), predicted: false);
 
@@ -1280,7 +1259,6 @@ public sealed class HereticFleshTest : GameTest
             interaction.UserInteraction(lord, SEntMan.GetComponent<TransformComponent>(arm).Coordinates, arm);
             Assert.That(SEntMan.Deleted(arm) || SEntMan.IsQueuedForDeletion(arm), Is.True, "Рука не съедена");
 
-            // 50% от 1000 по имеющемуся урону: из 600 Slash остаётся 100.
             Assert.That(SEntMan.GetComponent<DamageableComponent>(lord).TotalDamage.Float(), Is.EqualTo(100f).Within(0.1f));
         });
     }
@@ -1295,7 +1273,6 @@ public sealed class HereticFleshTest : GameTest
 
         await Server.WaitAssertion(() =>
         {
-            // Пол вокруг: клинок переносит еретика на 10–20 тайлов.
             for (var x = -21; x <= 21; x++)
             {
                 for (var y = -21; y <= 21; y++)
@@ -1319,10 +1296,6 @@ public sealed class HereticFleshTest : GameTest
             Assert.That(Client.System<Content.Client.Popups.PopupSystem>().WorldLabels.Select(l => l.Text), Does.Contain(message), "Нет сообщения Маршала"));
     }
 
-    /// <summary>
-    /// Нож и лужа крови на руне, затем ритуал. Готовый клинок (он тоже нож) уносится с руны,
-    /// а тик удаляет поглощённое: иначе новая кровь вольётся в лужу, которая уже ждёт удаления.
-    /// </summary>
     private async Task<bool> TryBladeRitual(Entity<StoriesHereticComponent> heretic, EntityUid rune, TestMapData map)
     {
         var result = false;

@@ -22,9 +22,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
-/// <summary>
-/// Сквозная проверка целей еретика Плоти: настоящий раунд, правило STHeretic, призывы через систему призрачных ролей.
-/// </summary>
 [TestFixture]
 public sealed class HereticObjectivesTest : AntagTest
 {
@@ -51,7 +48,6 @@ public sealed class HereticObjectivesTest : AntagTest
         });
         await Pair.RunTicksSync(5);
 
-        // Двое игроков-призраков для призывов и третий — душа гуля.
         var sessions = await Server.AddDummySessions(3);
         var (first, second, ghoulSoul) = (sessions[0], sessions[1], sessions[2]);
         var testMap = await Pair.CreateTestMap();
@@ -76,7 +72,6 @@ public sealed class HereticObjectivesTest : AntagTest
         await Server.WaitAssertion(() =>
         {
             var player = Pair.Player!.AttachedEntity!.Value;
-            // Чистая карта: ритуал не должен подхватить предметы станции.
             Server.System<SharedTransformSystem>().SetCoordinates(player, testMap.GridCoords);
             heretic = (player, SEntMan.GetComponent<StoriesHereticComponent>(player));
             Assert.That(SMind.TryGetMind(Pair.Player!, out var mindId, out var mindComp));
@@ -113,7 +108,6 @@ public sealed class HereticObjectivesTest : AntagTest
 
             Assert.That(objectives.IsCompleted(Find(Knowledge)!.Value, mind), Is.True, "Цель знаний не выполнена");
 
-            // Остальные цели закрываем состоянием: проверяется только влияние призывов на Вознесение.
             heretic.Comp.SacrificeCount = heretic.Comp.RequiredSacrifices;
             heretic.Comp.HeadSacrificeCount = heretic.Comp.RequiredHeadSacrifices;
             Assert.That(objectives.IsCompleted(Find(Sacrifice)!.Value, mind), Is.True);
@@ -124,7 +118,6 @@ public sealed class HereticObjectivesTest : AntagTest
             rune = SSpawnAtPosition("STHereticRune", testMap.GridCoords);
         });
 
-        // Первый призыв занимает первый игрок.
         await TakeStalker(heretic, rune, first, ghostRoles);
         await Server.WaitAssertion(() =>
         {
@@ -132,14 +125,12 @@ public sealed class HereticObjectivesTest : AntagTest
             Assert.That(Progress(Summon), Is.EqualTo(0.5f).Within(0.001f));
         });
 
-        // Тот же игрок во втором призыве цель не продвигает.
         await TakeStalker(heretic, rune, first, ghostRoles);
         await Server.WaitAssertion(() =>
         {
             Assert.That(heretic.Comp.SummonCount, Is.EqualTo(1), "Один игрок засчитан дважды");
             Assert.That(Progress(Summon), Is.EqualTo(0.5f).Within(0.001f));
 
-            // Гуль Хватки — не призыв.
             var corpse = SSpawnAtPosition("MobHuman", testMap.GridCoords);
             SMind.TransferTo(SMind.CreateMind(ghoulSoul.UserId), corpse);
             damageable.TryChangeDamage(corpse, new DamageSpecifier { DamageDict = new() { { "Blunt", 250 } } }, true);
@@ -151,7 +142,6 @@ public sealed class HereticObjectivesTest : AntagTest
             Assert.That(heretics.CanLearn(heretic, Ascension, out _), Is.False);
         });
 
-        // Второй игрок — второй призыв.
         await TakeStalker(heretic, rune, second, ghostRoles);
         await Server.WaitAssertion(() =>
         {
@@ -165,7 +155,6 @@ public sealed class HereticObjectivesTest : AntagTest
             Assert.That(ev.Text, Does.Contain(loc.GetString("stories-heretic-round-end-summons", ("count", 2), ("required", 2))));
             Assert.That(ev.Text, Does.Contain(Ru ? "2 из 2" : "2 of 2"), "В итогах раунда нет счёта призывов");
 
-            // Вознесение и Владыка Ночи: разум уходит из тела еретика, цели и итоги читаются со снимка роли.
             Assert.That(heretics.TryLearn(heretic, Ascension), Is.True);
             for (var i = 0; i < 4; i++)
             {
@@ -194,9 +183,6 @@ public sealed class HereticObjectivesTest : AntagTest
 
     private bool Ru => Server.ResolveDependency<ILocalizationManager>().DefaultCulture?.Name.StartsWith("ru") == true;
 
-    /// <summary>
-    /// Одинокий ритуал на руне, затем роль Сталкера берёт <paramref name="session"/> через систему призрачных ролей.
-    /// </summary>
     private async Task TakeStalker(Entity<StoriesHereticComponent> heretic, EntityUid rune, ICommonSession session, GhostRoleSystem ghostRoles)
     {
         await Server.WaitAssertion(() =>
@@ -222,7 +208,6 @@ public sealed class HereticObjectivesTest : AntagTest
             Assert.That(session.AttachedEntity, Is.EqualTo(stalker), "Игрок не в Сталкере");
         });
 
-        // Поглощённое удаляется в конце тика — иначе следующий ритуал нашёл бы его снова.
         await Pair.RunTicksSync(1);
     }
 }

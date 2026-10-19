@@ -3,9 +3,6 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared._Stories.Heretic.Cloak;
 
-/// <summary>
-/// Еретик укрыт Плащом Тени: личность и голос скрыты, шаги беззвучны, скорость выше (tg shadow_cloak).
-/// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
 [Access(typeof(StoriesHereticShadowCloakSystem))]
 public sealed partial class StoriesHereticShadowCloakComponent : Component

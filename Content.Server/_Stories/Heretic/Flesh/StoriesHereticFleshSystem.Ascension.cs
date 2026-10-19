@@ -19,7 +19,6 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.Heretic.Flesh;
 
-// Последний гимн жреца: Вознесение Плоти и Владыка Ночи.
 public sealed partial class StoriesHereticFleshSystem
 {
     [Dependency] private IComponentFactory _factory = default!;
@@ -97,21 +96,17 @@ public sealed partial class StoriesHereticFleshSystem
         if (args.Handled)
             return;
 
-        // Кричим до превращения: после него тело уже в хранилище полиморфа, и крик никто не услышит.
-        // Поэтому сначала те же проверки, что делает PolymorphEntity: без превращения крика нет.
         var config = ProtoMan.Index(args.Polymorph).Configuration;
         if (!CanPolymorph(ent, config))
             return;
 
         _chat.TrySendInGameICMessage(ent, Loc.GetString(args.Speech), InGameICChatType.Speak, false);
 
-        // Handled (перезарядка) — только если превращение удалось.
         if (_polymorph.PolymorphEntity(ent, config) is not { } lord)
             return;
 
         args.Handled = true;
 
-        // Ужас Владыки (замена мозговых травм tg): каждый живой видящий не-еретик и не-слуга с шансом.
         _witnesses.Clear();
         _lookup.GetEntitiesInRange(Transform(lord).Coordinates, args.FearRange, _witnesses);
         foreach (var witness in _witnesses)
@@ -130,10 +125,6 @@ public sealed partial class StoriesHereticFleshSystem
         }
     }
 
-    /// <summary>
-    /// Условия отказа <c>PolymorphSystem.PolymorphEntity</c>
-    /// до спавна новой формы: повторное превращение и перезарядка полиморфа.
-    /// </summary>
     private bool CanPolymorph(EntityUid uid, PolymorphConfiguration config)
     {
         if (!config.IgnoreAllowRepeatedMorphs
@@ -152,7 +143,6 @@ public sealed partial class StoriesHereticFleshSystem
             return;
 
         args.Handled = true;
-        // Лечит долю максимума по всем имеющимся видам урона, пропорционально их величине.
         if (_thresholds.TryGetDeadThreshold(ent, out var max))
             _damageable.HealDistributed(ent.Owner, -(max.Value * ent.Comp.HealFraction), origin: ent);
 
@@ -160,7 +150,6 @@ public sealed partial class StoriesHereticFleshSystem
         QueueDel(args.Target);
     }
 
-    // Отделённая часть тела (DetachedBody) — без MobState, органы лежат в её контейнере.
     private bool IsDetachedArm(EntityUid uid, StoriesHereticArmEaterComponent eater)
     {
         if (HasComp<MobStateComponent>(uid) || !_containers.TryGetContainer(uid, BodyComponent.ContainerID, out var organs))

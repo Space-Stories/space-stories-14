@@ -2,10 +2,6 @@ using System.Linq;
 
 namespace Content.Client._Stories.Heretic.UI;
 
-/// <summary>
-/// Порядок путей в окне — кольцо дерева Paradise. Побочные знания-мосты стоят между соседями.
-/// Это раскладка окна, а не правило игры: доступ к знаниям задают их требования.
-/// </summary>
 public static class StoriesHereticRing
 {
     public static readonly string[] Order =
@@ -14,17 +10,11 @@ public static class StoriesHereticRing
         "STHereticPathVoid", "STHereticPathBlade", "STHereticPathRust", "STHereticPathCosmos",
     ];
 
-    /// <summary>
-    /// Колонки слева направо: общая, затем пути по кольцу (начиная с Пепла) и мосты между ними.
-    /// Мост к пути, которого нет в окне, ставится рядом со своим путём с той стороны, где по кольцу лежит сосед.
-    /// Мост записывается как (путь слева, путь справа по кольцу).
-    /// </summary>
     public static List<(string? Path, string? BridgeTo)> BuildColumns(
         IReadOnlyCollection<string> paths,
         IReadOnlyCollection<(string A, string B)> bridges)
     {
         var shown = Order.Where(paths.Contains).ToList();
-        // Пути, которых нет в кольце (тестовые), — в конец по алфавиту.
         shown.AddRange(paths.Where(p => !Order.Contains(p)).OrderBy(p => p));
 
         var normalized = new HashSet<(string Left, string Right)>();
@@ -36,7 +26,6 @@ public static class StoriesHereticRing
         var columns = new List<(string? Path, string? BridgeTo)> { (null, null) };
         foreach (var path in shown)
         {
-            // Полумост слева: сосед слева по кольцу не показан.
             foreach (var (left, right) in normalized)
             {
                 if (right == path && !shown.Contains(left))
@@ -76,9 +65,6 @@ public static class StoriesHereticRing
         return 0;
     }
 
-    /// <summary>
-    /// <paramref name="b"/> — следующий после <paramref name="a"/> путь по кольцу.
-    /// </summary>
     private static bool IsClockwiseNeighbour(string a, string b)
     {
         var ia = Array.IndexOf(Order, a);
