@@ -19,9 +19,6 @@ using Robust.Shared.Timing;
 
 namespace Content.Shared._Stories.Heretic;
 
-/// <summary>
-/// Единственный владелец <see cref="StoriesHereticComponent"/>. Остальные системы еретика используют его API.
-/// </summary>
 public sealed partial class StoriesHereticSystem : EntitySystem
 {
     [Dependency] private ISharedAdminLogManager _adminLog = default!;
@@ -78,7 +75,6 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         if (_actions.AddAction(ent, ent.Comp.KnowledgeAction) is { } knowledgeAction)
             ent.Comp.GrantedActions.Add(knowledgeAction);
 
-        // Без проверки взаимодействия: знания изучаются и в наручниках, как в tg. Чужие сообщения отсекает OnLearnMessage.
         EnsureComp<UserInterfaceComponent>(ent);
         _ui.SetUi(ent.Owner, StoriesHereticKnowledgeUiKey.Key, new InterfaceData(KnowledgeBuiType, requireInputValidation: false));
 
@@ -92,9 +88,6 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         Dirty(ent);
     }
 
-    /// <summary>
-    /// Данные еретика видит только он сам: иначе по сети можно вычислить антагониста.
-    /// </summary>
     private void OnGetStateAttempt(Entity<StoriesHereticComponent> ent, ref ComponentGetStateAttemptEvent args)
     {
         if (args.Cancelled)
@@ -137,9 +130,6 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         UpdateAura(ent);
     }
 
-    /// <summary>
-    /// Как should_show_aura в tg: аура видна на поздней стадии пути, но не после Пира сов и не под мантией.
-    /// </summary>
     public bool ShouldShowAura(StoriesHereticComponent comp)
     {
         return comp.PointsGained > comp.PointsToAura && comp.CanAscend && !comp.AuraHidden;
@@ -155,9 +145,6 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         UpdateAura(ent);
     }
 
-    /// <summary>
-    /// Создаёт или убирает ауру по <see cref="ShouldShowAura"/>. Повторный вызов не дублирует ауру.
-    /// </summary>
     private void UpdateAura(Entity<StoriesHereticComponent> ent)
     {
         if (_net.IsClient)
@@ -182,14 +169,12 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         if (_net.IsServer)
             QueueDel(ent.Comp.AuraEntity);
 
-        // Повторная выдача компонента (админ, ForceMakeAntag) создаёт новый — старые действия не должны остаться дублями.
         if (TerminatingOrDeleted(ent))
             return;
 
         foreach (var action in ent.Comp.GrantedActions)
         {
             _actions.RemoveAction(ent.Owner, action);
-            // RemoveAction лишь отвязывает действие от владельца, сущность остаётся в контейнере.
             PredictedQueueDel(action);
         }
     }
@@ -228,15 +213,11 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         Dirty(ent);
     }
 
-    /// <summary>
-    /// Переключает Живое сердце на следующую существующую цель.
-    /// </summary>
     public EntityUid? CycleTrackedTarget(Entity<StoriesHereticComponent> ent)
     {
         for (var i = 0; i < ent.Comp.Targets.Count; i++)
         {
             ent.Comp.TrackedTarget = (ent.Comp.TrackedTarget + 1) % ent.Comp.Targets.Count;
-            // На paused-карте (крио) цель недостижима — сердце её пропускает.
             if (TryGetEntity(ent.Comp.Targets[ent.Comp.TrackedTarget], out var target)
                 && !TerminatingOrDeleted(target)
                 && !Paused(target.Value))

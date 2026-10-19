@@ -33,7 +33,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
                        && res.RSI.TryGetState(state, out _);
             }
 
-            // У каждого пути и у общих знаний есть фон узла.
             Assert.That(HasState(KnowledgeRsi, StoriesHereticPalette.General.NodeState));
             Assert.That(HasState(KnowledgeRsi, "node_locked"));
             foreach (var path in Paths)
@@ -43,7 +42,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
                 Assert.That(HasState(KnowledgeRsi, palette.NodeState), path);
             }
 
-            // Иконки знаний указывают на существующие состояния RSI.
             foreach (var entity in proto.EnumeratePrototypes<EntityPrototype>())
             {
                 if (!entity.TryGetComponent<StoriesHereticKnowledgeComponent>(out var knowledge, factory)
@@ -53,7 +51,6 @@ public sealed class HereticKnowledgeUiTest : GameTest
                 Assert.That(HasState(icon.RsiPath, icon.RsiState), entity.ID);
             }
 
-            // Окно собирается со всеми состояниями узлов, с иконкой и без.
             var grasp = new SpriteSpecifier.Rsi(KnowledgeRsi, "grasp_ash");
             var window = new StoriesHereticKnowledgeWindow();
             window.UpdateState(1,

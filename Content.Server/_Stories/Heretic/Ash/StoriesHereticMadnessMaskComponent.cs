@@ -2,9 +2,6 @@ using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Server._Stories.Heretic.Ash;
 
-/// <summary>
-/// Маска безумия: пока её носит еретик, окружающие теряют выносливость и галлюцинируют.
-/// </summary>
 [RegisterComponent, AutoGenerateComponentPause, Access(typeof(StoriesHereticAshSystem))]
 public sealed partial class StoriesHereticMadnessMaskComponent : Component
 {

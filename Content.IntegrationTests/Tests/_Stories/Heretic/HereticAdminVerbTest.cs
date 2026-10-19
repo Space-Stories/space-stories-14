@@ -13,9 +13,6 @@ public sealed class HereticAdminVerbTest : AntagTest
 {
     private static readonly ProtoId<AntagSpecifierPrototype> Specifier = "STHereticSpecifier";
 
-    /// <summary>
-    /// Админ-верб «Сделать еретиком» вызывает ForceMakeAntag с правилом STHeretic — игрок в раунде должен стать еретиком.
-    /// </summary>
     [Test]
     public async Task ForceMakeHereticInRound()
     {

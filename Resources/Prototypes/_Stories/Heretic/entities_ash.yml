@@ -127,7 +127,6 @@
         Caustic: 0.8
   - type: ExplosionResistance
     damageCoefficient: 0
-  # Горение не наносит урона. Теплоизоляция в SS14 общая для жара и холода.
   - type: FireProtection
     reduction: 1
   - type: TemperatureProtection

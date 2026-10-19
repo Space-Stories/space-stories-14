@@ -11,10 +11,6 @@ using Robust.Shared.Utility;
 
 namespace Content.Client._Stories.Heretic.UI;
 
-/// <summary>
-/// Узел дерева знаний — «печать» пути с иконкой знания, названием и ценой.
-/// Свечение и пульсация рисуются здесь же, без таймеров в системах.
-/// </summary>
 [GenerateTypedNameReferences]
 public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
 {
@@ -25,7 +21,6 @@ public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
     private static readonly Color AvailableHintColor = Color.FromHex("#8fd18f");
     private static readonly Color LockedReasonColor = Color.FromHex("#d65a5a");
 
-    // Спрайты 32×32: фон до 64 px, иконка до 48 px (фильтрация RSI — ближайший сосед, без размытия).
     private const float SealScale = 2f;
     private const float IconScale = 1.5f;
     private const float SealRadius = 31f;
@@ -50,7 +45,6 @@ public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
         var locked = node.State == StoriesHereticNodeState.Locked;
         var accent = locked ? LockedColor : _palette.Accent;
 
-        // Без стандартного «пластикового» фона кнопки — от кнопки нужны только клик и наведение.
         StyleBoxOverride = new StyleBoxEmpty();
         Disabled = node.State != StoriesHereticNodeState.Available;
         DefaultCursorShape = Disabled ? CursorShape.Arrow : CursorShape.Hand;
@@ -90,9 +84,6 @@ public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
         CostBadge.PanelOverride = MakeBadge(accent);
     }
 
-    /// <summary>
-    /// Центр печати в пикселях относительно узла — к нему дерево тянет линии связей.
-    /// </summary>
     public Vector2 SealCenter => (Vector2) (SealBox.GlobalPixelPosition - GlobalPixelPosition) + (Vector2) SealBox.PixelSize / 2f;
 
     public float SealPixelRadius => SealRadius * UIScale;
@@ -114,7 +105,6 @@ public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
         if (Node.State != StoriesHereticNodeState.Available)
             return;
 
-        // Доступный узел мягко «дышит»: печать и свечение пульсируют, при наведении — полная яркость.
         _time += args.DeltaSeconds;
         _pulse = 0.5f + 0.5f * MathF.Sin(_time * PulseSpeed);
         Seal.Modulate = IsHovered ? Color.White : Color.InterpolateBetween(Color.FromHex("#a8a8a8"), Color.White, _pulse);
@@ -141,13 +131,11 @@ public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
         var center = SealCenter;
         var radius = SealPixelRadius;
 
-        // Мягкий ореол из нескольких полупрозрачных кругов: к печати плотнее, наружу — слабее.
         for (var i = 3; i >= 1; i--)
         {
             handle.DrawCircle(center, radius + i * 3f * UIScale, color.WithAlpha(glow));
         }
 
-        // Изученный узел обведён рамкой цвета пути (две окружности — линия в 2 px).
         if (Node.State == StoriesHereticNodeState.Learned)
         {
             handle.DrawCircle(center, radius + 1f * UIScale, color, false);

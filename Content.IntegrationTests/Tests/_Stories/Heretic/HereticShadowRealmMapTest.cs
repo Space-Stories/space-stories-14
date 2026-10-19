@@ -15,10 +15,6 @@ using Robust.Shared.Utility;
 
 namespace Content.IntegrationTests.Tests._Stories.Heretic;
 
-/// <summary>
-/// Теневой мир из карты маппера: жертва появляется на одной из точек появления, карта не на паузе.
-/// Нужен свежий сервер: Теневой мир кешируется на раунд, и другие тесты могли создать сгенерированный.
-/// </summary>
 [TestFixture]
 public sealed class HereticShadowRealmMapTest : GameTest
 {

@@ -118,9 +118,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         TryPerform((args.User, heretic), rune);
     }
 
-    /// <summary>
-    /// Выполняет первый подходящий известный ритуал на руне. Только сервер.
-    /// </summary>
     public bool TryPerform(Entity<StoriesHereticComponent> heretic, EntityUid rune)
     {
         var radius = CompOrNull<StoriesHereticRuneComponent>(rune)?.Radius ?? 1.5f;
@@ -131,8 +128,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         _nearby.Remove(heretic);
         _nearby.Remove(rune);
 
-        // Подсказка берётся от ритуала, к которому игрок подошёл ближе всего:
-        // очки = число выполненных условий, при равенстве — первый.
         string? failReason = null;
         var bestScore = 0;
         foreach (var ritualId in new List<EntProtoId>(heretic.Comp.Rituals))
@@ -159,7 +154,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 continue;
             }
 
-            // Из стопки ингредиент — одна единица, остальное остаётся на руне.
             foreach (var uid in _consumed)
             {
                 if (TryComp<StackComponent>(uid, out var stack) && stack.Count > 1)
@@ -193,9 +187,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         }
     }
 
-    /// <summary>
-    /// <paramref name="score"/> — сколько условий эффекта выполнено (для выбора подсказки при неудаче).
-    /// </summary>
     private bool TryRunEffect(Entity<StoriesHereticComponent> heretic,
         EntityUid rune,
         EntProtoId ritualId,
@@ -243,7 +234,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 if (ev.Success)
                     return true;
 
-                // Обработчик ставит FailReason только если нашёл, с чем работать (тело на руне и т.п.).
                 failReason = ev.FailReason;
                 score = 1;
                 return false;
@@ -265,9 +255,6 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         return false;
     }
 
-    /// <summary>
-    /// <paramref name="matched"/> — число полностью найденных ингредиентов.
-    /// </summary>
     private bool TryMatch(List<StoriesHereticIngredient> ingredients, out string? missing, out int matched)
     {
         _used.Clear();

@@ -43,11 +43,9 @@ public sealed class HereticSacrificeTest : GameTest
             damageable.TryChangeDamage(stranger, new DamageSpecifier { DamageDict = new() { { "Blunt", 300 } } }, true);
             Assert.That(mobState.IsDead(stranger));
 
-            // Не цель — не принимается.
             heretics.SetTargets(heretic, new());
             Assert.That(rituals.TryPerform(heretic, rune), Is.False);
 
-            // Цель — принимается.
             heretics.SetTargets(heretic, new() { stranger });
             Assert.That(rituals.TryPerform(heretic, rune), Is.True);
             Assert.That(comp.SacrificeCount, Is.EqualTo(1));
@@ -58,7 +56,6 @@ public sealed class HereticSacrificeTest : GameTest
                 "Жертва не перенесена в Теневой мир");
         });
 
-        // Возврат без станции: фолбэк на руну.
         await Server.WaitPost(() => SEntMan.GetComponent<StoriesHereticShadowRealmComponent>(stranger).ReturnTime = TimeSpan.Zero);
         await Pair.RunTicksSync(5);
         await Server.WaitAssertion(() =>
@@ -95,9 +92,6 @@ public sealed class HereticSacrificeTest : GameTest
         });
     }
 
-    /// <summary>
-    /// Делает сетку тестовой карты частью «станции» для выбора целей.
-    /// </summary>
     private void MakeStation(TestMapData map)
     {
         SEntMan.EnsureComponent<StationMemberComponent>(map.Grid).Station = map.MapUid;
@@ -119,14 +113,12 @@ public sealed class HereticSacrificeTest : GameTest
         {
             var coords = testMap.GridCoords;
 
-            // Должность командования без CommandStaff (синий щит) — не глава.
             var blueshield = SSpawnAtPosition("MobHuman", coords);
             var mind = minds.CreateMind(null);
             minds.TransferTo(mind, blueshield);
             roles.MindAddJobRole(mind, silent: true, jobPrototype: "STBlueshield");
             Assert.That(sacrifice.IsHead(blueshield), Is.False);
 
-            // Глава без разума (ушёл в госта) засчитывается как глава.
             var head = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<CommandStaffComponent>(head);
             Assert.That(sacrifice.IsHead(head));
@@ -154,7 +146,6 @@ public sealed class HereticSacrificeTest : GameTest
             MakeStation(testMap);
             var coords = testMap.GridCoords;
 
-            // Глава в крите/мёртвый и без разума всё ещё глава: требование не снимается, он — цель.
             var head = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<CommandStaffComponent>(head);
             damageable.TryChangeDamage(head, new DamageSpecifier { DamageDict = new() { { "Blunt", 300 } } }, true);
@@ -181,7 +172,6 @@ public sealed class HereticSacrificeTest : GameTest
             MakeStation(testMap);
             var coords = testMap.GridCoords;
 
-            // Живых глав нет — требование жертвы главы снимается.
             var first = SSpawnAtPosition("MobHuman", coords);
             var firstHeretic = new Entity<StoriesHereticComponent>(first, SEntMan.AddComponent<StoriesHereticComponent>(first));
             var crew = SSpawnAtPosition("MobHuman", coords);
@@ -189,14 +179,12 @@ public sealed class HereticSacrificeTest : GameTest
             sacrifice.AssignTargets(firstHeretic);
             Assert.That(firstHeretic.Comp.RequiredHeadSacrifices, Is.Zero);
 
-            // Глава на станции есть — цель-глава выдаётся; кандидат вне станции (ЦК, шаттл) — нет.
             var head = SSpawnAtPosition("MobHuman", coords);
             SEntMan.AddComponent<CommandStaffComponent>(head);
             minds.TransferTo(minds.CreateMind(null), head);
             var offStation = SSpawnAtPosition("MobHuman", otherMap.GridCoords);
             minds.TransferTo(minds.CreateMind(null), offStation);
 
-            // Шаттл станции в FTL — тоже не станция.
             SEntMan.EnsureComponent<StationMemberComponent>(otherMap.Grid).Station = testMap.MapUid;
             SEntMan.EnsureComponent<FTLComponent>(otherMap.Grid);
 
@@ -208,7 +196,6 @@ public sealed class HereticSacrificeTest : GameTest
             Assert.That(secondHeretic.Comp.Targets, Does.Contain(SEntMan.GetNetEntity(crew)));
             Assert.That(secondHeretic.Comp.Targets, Does.Not.Contain(SEntMan.GetNetEntity(offStation)));
 
-            // Фиктивный FTL не должен дожить до обновления шаттловой системы.
             SEntMan.RemoveComponent<FTLComponent>(otherMap.Grid);
         });
     }

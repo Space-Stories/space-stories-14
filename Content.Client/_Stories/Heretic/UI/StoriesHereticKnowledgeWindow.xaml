@@ -5,7 +5,6 @@
     Title="{Loc stories-heretic-ui-title}"
     MinSize="640 480"
     SetSize="1000 720">
-    <!-- Фон окна подкрашивается тёмным тоном выбранного пути из кода. -->
     <PanelContainer Name="Backdrop">
         <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="8">
             <BoxContainer Orientation="Horizontal" SeparationOverride="16">

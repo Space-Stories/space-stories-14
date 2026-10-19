@@ -51,8 +51,6 @@ def main():
     sheet = sheet.convert("RGBA")
     sheet_columns = sheet.width // width
 
-    # В DMI кадры идут подряд по всем состояниям; внутри состояния — кадр за кадром, в кадре — все направления.
-    # При повторяющихся именах берётся первое состояние.
     offsets = {}
     index = 0
     for state in states:
@@ -83,7 +81,6 @@ def main():
         rows = math.ceil(total / columns)
         image = Image.new("RGBA", (columns * width, rows * height))
 
-        # RSI: сначала все кадры направления 0, затем направления 1 и т.д.; сетка слева направо, сверху вниз.
         for direction in range(dirs):
             for frame in range(frames):
                 source_index = start + frame * dirs + direction

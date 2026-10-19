@@ -5,9 +5,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Stories.Heretic.Components;
 
-/// <summary>
-/// Рецепт ритуала. Живёт только на прототипах <c>STHereticRitual*</c>.
-/// </summary>
 [RegisterComponent]
 public sealed partial class StoriesHereticRitualComponent : Component
 {
@@ -36,9 +33,6 @@ public sealed partial class StoriesHereticIngredient
     [DataField]
     public ProtoId<OrganCategoryPrototype>? OrganCategory;
 
-    /// <summary>
-    /// Любая одежда, которую можно надеть в один из этих слотов («любая маска», «любая верхняя одежда»).
-    /// </summary>
     [DataField]
     public SlotFlags? ClothingSlots;
 
@@ -48,9 +42,6 @@ public sealed partial class StoriesHereticIngredient
     [DataField]
     public bool Consume = true;
 
-    /// <summary>
-    /// Название для сообщения «не хватает ...».
-    /// </summary>
     [DataField(required: true)]
     public LocId Name;
 }

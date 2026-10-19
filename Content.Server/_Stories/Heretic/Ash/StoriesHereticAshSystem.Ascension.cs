@@ -207,9 +207,6 @@ public sealed partial class StoriesHereticAshSystem
         _audio.PlayGlobal(ritual.Sound, Filter.Broadcast(), true);
     }
 
-    /// <summary>
-    /// Усиливает уже изученные действия: «Извержение вулкана» прыгает дальше, перезарядки короче.
-    /// </summary>
     private void EmpowerActions(EntityUid heretic, StoriesHereticAshAscensionRitualComponent ritual)
     {
         foreach (var action in _actions.GetActions(heretic))
@@ -225,9 +222,6 @@ public sealed partial class StoriesHereticAshSystem
         }
     }
 
-    /// <summary>
-    /// Маленькие языки пламени со случайным размером, поворотом и временем жизни. Только визуал.
-    /// </summary>
     private void SpawnFlame(StoriesHereticFlameEffects flames, MapCoordinates coords)
     {
         var rotation = new Angle(_random.NextFloat((float) -flames.MaxRotation.Theta, (float) flames.MaxRotation.Theta));
@@ -238,9 +232,6 @@ public sealed partial class StoriesHereticAshSystem
             despawn.Lifetime = _random.NextFloat(flames.MinLifetime, flames.MaxLifetime);
     }
 
-    /// <summary>
-    /// Языки пламени в случайных точках возле окружности кольца, не привязанных к сетке.
-    /// </summary>
     private void SpawnRingEffects(Entity<StoriesHereticFireRingComponent> ring)
     {
         var center = _transform.GetMapCoordinates(ring);
@@ -302,9 +293,6 @@ public sealed partial class StoriesHereticAshSystem
         SpawnWaveEffects(_transform.GetMapCoordinates(ent), facing, args);
     }
 
-    /// <summary>
-    /// Языки пламени в случайных точках конуса волны, не привязанных к сетке.
-    /// </summary>
     private void SpawnWaveEffects(MapCoordinates origin, Vector2 facing, StoriesHereticFireWaveEvent args)
     {
         var halfAngle = (float) Angle.FromDegrees(args.HalfAngleDegrees).Theta;

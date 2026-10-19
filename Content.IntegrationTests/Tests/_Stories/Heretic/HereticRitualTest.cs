@@ -63,7 +63,6 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(SEntMan.Deleted(knife) || SEntMan.IsQueuedForDeletion(knife), Is.True, "Нож не поглощён");
             Assert.That(heretics.CountLimitedResults(heretic, "STTestHereticRitualLimited"), Is.EqualTo(1));
 
-            // Лимит 1: повтор не срабатывает.
             SSpawnAtPosition("KitchenKnife", coords);
             Assert.That(rituals.TryPerform(heretic, rune), Is.False);
         });
@@ -151,7 +150,6 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(heretic.Comp.Rituals, Does.Not.Contain((EntProtoId) "STHereticRitualAshAscension"));
             Assert.That(SEntMan.Deleted(knife) || SEntMan.IsQueuedForDeletion(knife), Is.False, "Вещи трупа уничтожены");
 
-            // Как ash_final в tg: вдвое больше скачков Извержения, короче перезарядки, иммунитеты.
             var volcano = FindAction(heretic, "STActionHereticVolcanoBlast");
             var volcanoEvent = (StoriesHereticVolcanoBlastEvent) SEntMan.GetComponent<InstantActionComponent>(volcano).Event!;
             Assert.That(volcanoEvent.Bounces, Is.EqualTo(10));
@@ -160,7 +158,6 @@ public sealed class HereticRitualTest : GameTest
             Assert.That(SEntMan.GetComponent<ExplosionResistanceComponent>(heretic).DamageCoefficient, Is.Zero);
             Assert.That(SEntMan.HasComponent<RespiratorComponent>(heretic), Is.False, "Вознёсшийся всё ещё дышит");
 
-            // Усиление не задело данные прототипа: новое действие с обычным числом скачков.
             var fresh = SSpawn("STActionHereticVolcanoBlast");
             Assert.That(((StoriesHereticVolcanoBlastEvent) SEntMan.GetComponent<InstantActionComponent>(fresh).Event!).Bounces, Is.EqualTo(5));
         });

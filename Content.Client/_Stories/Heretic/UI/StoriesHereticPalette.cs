@@ -1,17 +1,9 @@
 namespace Content.Client._Stories.Heretic.UI;
 
-/// <summary>
-/// Палитра одного пути: акцент (заголовок, связи, свечение, рамки), тёмный тон (фон) и состояние фона узла в knowledge.rsi.
-/// </summary>
 public readonly record struct StoriesHereticPalette(Color Accent, Color Dark, string NodeState)
 {
-    /// <summary>
-    /// Общие и побочные знания — зелень Мансуса.
-    /// </summary>
     public static readonly StoriesHereticPalette General = new(Color.FromHex("#6fcf73"), Color.FromHex("#122a17"), "node_side");
 
-    // Это чисто визуальный стиль окна, поэтому таблица живёт в клиенте, а не в прототипах (теги путей полей не имеют).
-    // Ключ — ID тега пути; пути, которых ещё нет в игре, заведены заранее.
     private static readonly Dictionary<string, StoriesHereticPalette> Paths = new()
     {
         ["STHereticPathAsh"] = new(Color.FromHex("#e8742a"), Color.FromHex("#3a1d10"), "node_ash"),

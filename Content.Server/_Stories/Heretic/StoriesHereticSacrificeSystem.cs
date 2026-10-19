@@ -99,8 +99,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
                 || !_rule.IsOnStation(uid))
                 continue;
 
-            // Тело главы — законная жертва, даже если глава в крите или без разума (ушёл в госта).
-            // Остальных берём только живых и с игроком.
             var head = IsHead(uid);
             ProtoId<JobPrototype>? job = null;
             if (_mind.TryGetMind(uid, out var mindId, out _))
@@ -132,9 +130,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
             WaiveHeadSacrifice(heretic);
     }
 
-    /// <summary>
-    /// Глав на станции не осталось — цель «жертва главы» невыполнима, снимаем её, чтобы Вознесение оставалось достижимым.
-    /// </summary>
     private void WaiveHeadSacrifice(Entity<StoriesHereticComponent> heretic)
     {
         _heretic.SetRequiredHeadSacrifices(heretic, 0);
@@ -177,10 +172,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
         return department.ID;
     }
 
-    /// <summary>
-    /// Глава — тело с <see cref="CommandStaffComponent"/> (как у целей предателя): не зависит от разума,
-    /// поэтому засчитывается и для тела, покинутого игроком.
-    /// </summary>
     public bool IsHead(EntityUid uid)
     {
         return HasComp<CommandStaffComponent>(uid);
@@ -218,7 +209,6 @@ public sealed partial class StoriesHereticSacrificeSystem : EntitySystem
                 continue;
             }
 
-            // Ту же жертву нельзя засчитать второму еретику.
             if (HasComp<StoriesHereticSacrificedComponent>(uid))
             {
                 args.FailReason ??= Loc.GetString("stories-heretic-sacrifice-already");

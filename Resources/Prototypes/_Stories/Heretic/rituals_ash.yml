@@ -87,7 +87,7 @@
     ingredients:
     - name: stories-heretic-ingredient-table-or-suit
       whitelist:
-        components: [ Bonkable ] # Есть только у столов.
+        components: [ Bonkable ]
       clothingSlots: OUTERCLOTHING
     - name: stories-heretic-ingredient-any-mask
       clothingSlots: MASK

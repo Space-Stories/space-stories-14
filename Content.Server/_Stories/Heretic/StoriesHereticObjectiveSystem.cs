@@ -7,10 +7,6 @@ using Content.Shared.Objectives.Components;
 
 namespace Content.Server._Stories.Heretic;
 
-/// <summary>
-/// Прогресс целей еретика. Источник — <see cref="StoriesHereticComponent"/> на теле; пока тело доступно,
-/// он копируется в <see cref="StoriesHereticRoleComponent"/> на роли разума, и после утраты тела читается оттуда.
-/// </summary>
 public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
 {
     [Dependency] private MetaDataSystem _metaData = default!;
@@ -49,9 +45,6 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
         args.Progress = required <= 0 ? 1f : Math.Clamp((float) current / required, 0f, 1f);
     }
 
-    /// <summary>
-    /// Прогресс еретика: с тела, если оно ещё еретик, иначе последний снимок на роли разума.
-    /// </summary>
     public bool TryGetProgress(EntityUid mindId, MindComponent mind, [NotNullWhen(true)] out StoriesHereticRoleComponent? progress)
     {
         progress = null;
@@ -65,9 +58,6 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
         return true;
     }
 
-    /// <summary>
-    /// Обновляет заголовки целей еретика (требуемые числа могли измениться).
-    /// </summary>
     public void RefreshTitles(EntityUid mindId, MindComponent mind)
     {
         if (!TryGetProgress(mindId, mind, out var progress))

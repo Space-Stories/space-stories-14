@@ -7,9 +7,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._Stories.Heretic.UI;
 
-/// <summary>
-/// Собирает узлы дерева из прототипов знаний и <see cref="StoriesHereticComponent"/> владельца.
-/// </summary>
 [UsedImplicitly]
 public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
 {
@@ -37,7 +34,6 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
         var system = EntMan.System<StoriesHereticSystem>();
         var ent = new Entity<StoriesHereticComponent>(Owner, heretic);
 
-        // Колонка 0 — общие знания, далее пути в алфавитном порядке.
         var paths = system.AllKnowledge
             .Where(k => k.Comp.Path != null)
             .Select(k => k.Comp.Path!.Value.Id)

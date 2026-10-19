@@ -7,9 +7,6 @@ namespace Content.Shared._Stories.Heretic.Events;
 
 public sealed partial class StoriesHereticOpenKnowledgeEvent : InstantActionEvent;
 
-/// <summary>
-/// Переключает пламя Обугленной мантии. Поднимается на мантии.
-/// </summary>
 public sealed partial class StoriesHereticMantleFlamesEvent : InstantActionEvent;
 
 public sealed partial class StoriesHereticDrawRuneEvent : WorldTargetActionEvent
@@ -98,23 +95,13 @@ public sealed partial class StoriesHereticFireWaveEvent : InstantActionEvent
     [DataField]
     public float FireStacks = 5f;
 
-    /// <summary>
-    /// Языки пламени в случайных точках конуса (только визуал).
-    /// </summary>
     [DataField]
     public StoriesHereticFlameEffects Flames = new() { Count = 24 };
 
-    /// <summary>
-    /// Ближайшее к еретику расстояние, на котором появляются языки пламени.
-    /// </summary>
     [DataField]
     public float FlameMinDistance = 0.5f;
 }
 
-/// <summary>
-/// Параметры россыпи маленьких языков пламени: сколько, какого размера и сколько живут.
-/// Только визуал, ничего не поджигает.
-/// </summary>
 [DataDefinition]
 public sealed partial class StoriesHereticFlameEffects
 {
@@ -136,9 +123,6 @@ public sealed partial class StoriesHereticFlameEffects
     [DataField]
     public float MaxLifetime = 0.8f;
 
-    /// <summary>
-    /// Наибольшее отклонение поворота языка пламени в обе стороны.
-    /// </summary>
     [DataField]
     public Angle MaxRotation = Angle.FromDegrees(25);
 }

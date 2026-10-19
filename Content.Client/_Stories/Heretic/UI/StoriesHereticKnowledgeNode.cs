@@ -9,9 +9,6 @@ public enum StoriesHereticNodeState : byte
     Locked,
 }
 
-/// <summary>
-/// Колонка дерева. <see cref="Path"/> — ID тега пути, <c>null</c> — общие знания.
-/// </summary>
 public sealed record StoriesHereticKnowledgeColumn(string? Path, string Name);
 
 public sealed record StoriesHereticKnowledgeNode(
