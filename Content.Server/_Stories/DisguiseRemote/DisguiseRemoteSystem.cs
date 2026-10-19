@@ -43,7 +43,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         SubscribeLocalEvent<DisguiseRemoteComponent, AfterInteractEvent>(OnAfterInteract);
         SubscribeLocalEvent<DisguisedComponent, DisguiseToggleActionEvent>(OnToggleAction);
         SubscribeLocalEvent<DisguisedComponent, ComponentShutdown>(OnShutdown);
-        // После реле инвентаря, чтобы перебить значок от своего импланта или шляпы.
         SubscribeLocalEvent<DisguisedComponent, GetMindShieldStatusEvent>(OnMindShieldStatus, after: [typeof(InventorySystem)]);
     }
 
@@ -76,7 +75,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         CopyIdCard(target, disguise.Value, user);
         _mindShield.GetMindshieldStatus(target, out _, out comp.MindShieldVisible);
 
-        // Повторный пульт перезаписывает прошлый облик вместе с его вещами.
         QueueDel(comp.DisguiseForm);
         comp.DisguiseForm = disguise;
         _actions.AddAction(user, ref comp.ActionEntity, comp.Action);
@@ -84,7 +82,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         _adminLogger.Add(LogType.Identity, LogImpact.High,
             $"{ToPrettyString(user):player} used {ToPrettyString(ent):entity} to copy the identity of {ToPrettyString(target):player}");
 
-        // Перевоплощение только по способности: сразу у жертвы на глазах было бы слишком заметно.
         _popup.PopupEntity(Loc.GetString("st-disguise-remote-copied", ("target", Name(target))), user, user);
         QueueDel(ent);
     }
@@ -100,7 +97,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
 
     private void OnMindShieldStatus(Entity<DisguisedComponent> ent, ref GetMindShieldStatusEvent args)
     {
-        // В чужом облике значок как у жертвы, сама защита остаётся своей.
         if (ent.Comp.Disguised)
             args.IsVisible = ent.Comp.MindShieldVisible;
     }
@@ -112,9 +108,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         QueueDel(ent.Comp.DisguiseForm);
     }
 
-    /// <summary>
-    /// Переключает между настоящим и скопированным обликом, меняя комплекты вещей местами.
-    /// </summary>
     private void Toggle(Entity<DisguisedComponent> ent)
     {
         var (stash, form) = ent.Comp.Disguised
@@ -124,10 +117,8 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         if (!Exists(stash) || !Exists(form) || !ProtoMan.Resolve(ent.Comp.Settings, out var settings))
             return;
 
-        // Прячем вещи до смены тела: другой шаблон инвентаря (другая раса) иначе вывалит их на пол.
         MoveEquipment(ent, stash.Value);
 
-        // Как у генокрада: если в новом облике нет внутреннего хранилища (слаймы), его содержимое падает на пол.
         if (TryComp<StorageComponent>(ent, out var storage) && !HasComp<StorageComponent>(form))
             _container.EmptyContainer(storage.Container);
 
@@ -137,7 +128,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         if (settings.CopyStatusEffects)
             _cloning.CopyStatusEffects(form.Value, ent.Owner, settings.StatusEffectWhitelist, settings.StatusEffectBlacklist);
 
-        // Без событий переименования, иначе переименуются ID-карта и запись в манифесте экипажа.
         _metaData.SetEntityName(ent, Name(form.Value), raiseEvents: false);
         _metaData.SetEntityDescription(ent, Description(form.Value));
         _identity.QueueIdentityUpdate(ent);
@@ -157,10 +147,6 @@ public sealed partial class DisguiseRemoteSystem : EntitySystem
         }
     }
 
-    /// <summary>
-    /// Клонирование создаёт карту заново из прототипа, без имени и с доступами по умолчанию.
-    /// Переносим на копию данные и доступы настоящей карты. Ключ записи станции не копируется, поэтому манифест не затрагивается.
-    /// </summary>
     private void CopyIdCard(EntityUid original, EntityUid clone, EntityUid user)
     {
         if (!_idCard.TryFindIdCard(original, out var originalId) || !_idCard.TryFindIdCard(clone, out var cloneId))

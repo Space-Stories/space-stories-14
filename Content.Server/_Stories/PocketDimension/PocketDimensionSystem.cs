@@ -54,16 +54,10 @@ public sealed partial class PocketDimensionSystem : EntitySystem
     private const string RoomFloor = "STFloorPocketDimension";
     private const string StickerContainer = "pocket_dimension_sticker";
 
-    /// <summary>
-    /// Комната 3x3 и кольцо стен вокруг.
-    /// </summary>
     private const int RoomSize = 5;
     private static readonly Vector2i InnerDoorTile = new(2, 4);
     private static readonly Vector2i RoomCenterTile = new(2, 2);
 
-    /// <summary>
-    /// Как часто возвращать в комнату то, что оказалось за её стенами.
-    /// </summary>
     private static readonly TimeSpan StraySweepInterval = TimeSpan.FromSeconds(1);
     private TimeSpan _nextStraySweep;
 
@@ -85,12 +79,9 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         SubscribeLocalEvent<PocketDimensionWallComponent, InteractUsingEvent>(OnWallInteractUsing);
         SubscribeLocalEvent<PocketDimensionWallComponent, AttackedEvent>(OnWallAttacked);
 
-        // Дальние каналы (Синдикат, ЦК) не требуют телекомов, поэтому глушим их вручную.
-        // Станционные каналы и датчики костюмов вне станции не работают и так.
         SubscribeLocalEvent<RadioSendAttemptEvent>(OnRadioSendAttempt);
         SubscribeLocalEvent<RadioReceiveAttemptEvent>(OnRadioReceiveAttempt);
 
-        // Через порталы из Изнанки не выйти и в неё не войти.
         SubscribeLocalEvent<PortalComponent, MapInitEvent>(OnPortalMapInit);
     }
 
@@ -134,9 +125,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         Stick(ent, wall, args.User);
     }
 
-    /// <summary>
-    /// Превращает стену в дверь Изнанки. Наклейка уходит внутрь двери.
-    /// </summary>
     public void Stick(Entity<PocketDimensionStickerComponent> ent, EntityUid wall, EntityUid user)
     {
         EnsureRoom(ent);
@@ -161,7 +149,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         var mapUid = _map.CreateMap(out var mapId);
         AddComp(mapUid, new PocketDimensionMapComponent { Sticker = ent });
 
-        // Как у планет: сама карта и есть грид, со своей гравитацией, светом и неисчерпаемым воздухом.
         var grid = EnsureComp<MapGridComponent>(mapUid);
         var gravity = EnsureComp<GravityComponent>(mapUid);
         gravity.Enabled = true;
@@ -192,7 +179,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
 
             var wall = Spawn(RoomWallProto, _map.GridTileToLocal(mapUid, grid, pos));
             EnsureComp<PocketDimensionWallComponent>(wall);
-            // Без Damageable удар оружием по цели считается промахом. Порога разрушения нет, стена остаётся целой.
             EnsureComp<DamageableComponent>(wall);
         }
 
@@ -200,10 +186,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         EnsureInnerDoor(ent);
     }
 
-    /// <summary>
-    /// Внутренняя дверь нужна, чтобы было куда входить и откуда выходить.
-    /// Если её как-то удалили, комната ставит новую на прежнее место.
-    /// </summary>
     private EntityUid? EnsureInnerDoor(Entity<PocketDimensionStickerComponent> ent)
     {
         if (Exists(ent.Comp.InnerDoor))
@@ -218,9 +200,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         return door;
     }
 
-    /// <summary>
-    /// Наклейку уничтожили: комната схлопывается, всё содержимое выбрасывает обратно.
-    /// </summary>
     private void OnStickerTerminating(Entity<PocketDimensionStickerComponent> ent, ref EntityTerminatingEvent args)
     {
         QueueDel(ent.Comp.OuterDoor);
@@ -230,7 +209,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
 
         var dest = GetEjectCoordinates(ent);
 
-        // Карта или грид назначения сами удаляются (конец раунда): выбрасывать некуда, всё уйдёт вместе с ними.
         if (dest != null && (TerminatingOrDeleted(_map.GetMapOrInvalid(dest.Value.MapId))
                              || _map.TryFindGridAt(dest.Value, out var destGrid, out _) && TerminatingOrDeleted(destGrid)))
             dest = null;
@@ -319,9 +297,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             $"{ToPrettyString(args.User):player} entered the pocket dimension of {ToPrettyString(ent.Comp.Sticker):entity}");
     }
 
-    /// <summary>
-    /// Переносит вместе с тем, кого тащат: так затаскивают похищенных и ящики.
-    /// </summary>
     private void Teleport(EntityUid user, EntityCoordinates coords)
     {
         var pulled = CompOrNull<PullerComponent>(user)?.Pulling;
@@ -330,9 +305,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
             _transform.SetCoordinates(pulled.Value, coords);
     }
 
-    /// <summary>
-    /// Ядерный диск не может покидать станцию, его выбрасывает обратно к двери.
-    /// </summary>
     private void EjectNukeDisks(EntityUid sticker, PocketDimensionStickerComponent comp)
     {
         if (comp.Exit is not { } exit)
@@ -382,9 +354,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         QueueDel(ent);
     }
 
-    /// <summary>
-    /// Внешнюю дверь удалили не отклеиванием (например, админ): наклейка падает на пол целой.
-    /// </summary>
     private void OnDoorTerminating(Entity<PocketDimensionDoorComponent> ent, ref EntityTerminatingEvent args)
     {
         if (!IsOuterDoor(ent, out var sticker))
@@ -393,7 +362,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         sticker.OuterDoor = null;
         sticker.Exit = null;
 
-        // Удаляется вся карта (конец раунда): ронять наклейку некуда, она уйдёт вместе с картой.
         if (TerminatingOrDeleted(Transform(ent).ParentUid))
             return;
 
@@ -432,9 +400,6 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         HitWall(ent, args.User);
     }
 
-    /// <summary>
-    /// Один удар по стене. После нужного числа ударов бьющего выбрасывает на станцию.
-    /// </summary>
     private void HitWall(Entity<PocketDimensionWallComponent> ent, EntityUid user)
     {
         if (!TryComp<PocketDimensionMapComponent>(Transform(ent).MapUid, out var room) || _timing.CurTime < room.NextHit)
@@ -496,16 +461,11 @@ public sealed partial class PocketDimensionSystem : EntitySystem
         if (!InPocketDimension(ent))
             return;
 
-        // Удаление отложено до конца тика, а столкнуться портал успеет раньше: гасим его сразу.
         _physics.SetCanCollide(ent, false);
         _popup.PopupCoordinates(Loc.GetString("portal-component-invalid-configuration-fizzle"), Transform(ent).Coordinates, PopupType.Medium);
         QueueDel(ent);
     }
 
-    /// <summary>
-    /// Случайные телепорты (одиночный портал, кристалл, имплант побега) выкидывают за стены
-    /// в пустоту той же карты. Раз в секунду возвращаем такое в центр комнаты.
-    /// </summary>
     public override void Update(float frameTime)
     {
         base.Update(frameTime);

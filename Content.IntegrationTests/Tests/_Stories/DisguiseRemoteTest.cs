@@ -46,7 +46,6 @@ public sealed class DisguiseRemoteTest : InteractionTest
             Assert.That(_inventory.SpawnItemInSlot(sTarget, "id", "PassengerPDA"));
             Assert.That(_idCard.TryFindIdCard(sTarget, out var id));
             _idCard.TryChangeFullName(id, TargetName, id);
-            // Доступ, которого нет у пассажира по умолчанию: проверяем, что копируются настоящие доступы карты.
             _access.TrySetTags(id, ["Captain"]);
             _implants.AddImplant(sTarget, "MindShieldImplant");
 
@@ -60,7 +59,6 @@ public sealed class DisguiseRemoteTest : InteractionTest
         await RunTicks(5);
         AssertDeleted(remote);
 
-        // Пульт только снимает облик, перевоплощение — по способности.
         await Server.WaitAssertion(() =>
         {
             Assert.That(SEntMan.GetComponent<MetaDataComponent>(SPlayer).EntityName, Is.EqualTo(ownName));
@@ -81,19 +79,17 @@ public sealed class DisguiseRemoteTest : InteractionTest
             Assert.That(id.Comp.FullName, Is.EqualTo(TargetName));
             Assert.That(SEntMan.GetComponent<AccessComponent>(id).Tags, Does.Contain(new ProtoId<AccessLevelPrototype>("Captain")));
 
-            // Значки 1:1 с жертвой.
             Assert.That(SEntMan.GetComponent<JobStatusComponent>(SPlayer).JobStatusIcon, Is.EqualTo(id.Comp.JobIcon));
             _mindShield.GetMindshieldStatus(SPlayer, out var shielded, out var shieldVisible);
             Assert.That(shieldVisible, Is.True);
             Assert.That(shielded, Is.False, "Щит разума должен быть только значком, без защиты.");
 
-            // Цель не тронута.
             Assert.That(_inventory.TryGetSlotEntity(sTarget, "jumpsuit", out _));
             Assert.That(SEntMan.GetComponent<MetaDataComponent>(sTarget).EntityName, Is.EqualTo(TargetName));
 
             SEntMan.EventBus.RaiseLocalEvent(SPlayer, new DisguiseToggleActionEvent());
         });
-        await RunTicks(1); // статус щита снимается отложенно
+        await RunTicks(1);
 
         await Server.WaitAssertion(() =>
         {

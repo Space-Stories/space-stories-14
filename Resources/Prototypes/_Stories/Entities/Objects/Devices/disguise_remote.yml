@@ -22,7 +22,7 @@
   components:
   - type: Action
     itemIconStyle: NoItem
-    useDelay: 3 # каждое переключение переносит все вещи между картами, спам нагружает сеть
+    useDelay: 3
   - type: Sprite
     sprite: _Stories/Objects/Devices/mimic_remote.rsi
     layers:
@@ -30,7 +30,6 @@
   - type: InstantAction
     event: !type:DisguiseToggleActionEvent
 
-# Снимок своего облика: вещи не копируются, настоящие переезжают на снимок при переключении.
 - type: cloningSettings
   id: STDisguiseSelfCloningSettings
   parent: ChangelingCloningSettings

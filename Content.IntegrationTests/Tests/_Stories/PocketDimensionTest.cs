@@ -29,7 +29,6 @@ public sealed class PocketDimensionTest : InteractionTest
         var comp = SEntMan.GetComponent<PocketDimensionStickerComponent>(sticker);
         var stationMap = SEntMan.GetComponent<TransformComponent>(SPlayer).MapUid;
 
-        // Настоящий клик по стене: вне станции наклейка не клеится.
         await Interact();
         Assert.That(comp.OuterDoor, Is.Null);
 
@@ -41,20 +40,16 @@ public sealed class PocketDimensionTest : InteractionTest
         var outer = comp.OuterDoor!.Value;
         var inner = comp.InnerDoor!.Value;
 
-        // Входим.
         await Interact(outer, SEntMan.GetComponent<TransformComponent>(outer).Coordinates);
         Assert.That(SEntMan.GetComponent<TransformComponent>(SPlayer).MapUid, Is.EqualTo(comp.Map));
 
-        // Выходим.
         await Interact(inner, SEntMan.GetComponent<TransformComponent>(inner).Coordinates);
         Assert.That(SEntMan.GetComponent<TransformComponent>(SPlayer).MapUid, Is.EqualTo(stationMap));
 
-        // Входим снова и уничтожаем наклейку, пока сидим внутри.
         await Interact(outer, SEntMan.GetComponent<TransformComponent>(outer).Coordinates);
         Assert.That(SEntMan.GetComponent<TransformComponent>(SPlayer).MapUid, Is.EqualTo(comp.Map));
         var pocketMap = comp.Map!.Value;
 
-        // Удар по стене засчитывается, а второй сразу следом — нет, из-за паузы между ударами.
         var innerCoords = SEntMan.GetComponent<TransformComponent>(inner).Coordinates;
         EntityUid roomWall = default;
         await Server.WaitPost(() =>
@@ -102,7 +97,6 @@ public sealed class PocketDimensionTest : InteractionTest
         EntityUid apple = default;
         await Server.WaitPost(() =>
         {
-            // Пол не снимается ни ломом, ни РСУ, ни взрывом.
             var center = _map.GetTileRef(pocketMap, grid, new Vector2i(2, 2));
             var floor = (ContentTileDefinition) _tileDef[center.Tile.TypeId];
             Assert.That(floor.Indestructible, Is.True);
@@ -121,7 +115,6 @@ public sealed class PocketDimensionTest : InteractionTest
             Assert.That(tile.Y, Is.InRange(1, 3), "Предмет за стенами должен вернуться в комнату.");
         });
 
-        // Выходим, удаляем внутреннюю дверь и заходим снова: без ошибок, дверь появляется заново.
         var inner = comp.InnerDoor!.Value;
         await Interact(inner, SEntMan.GetComponent<TransformComponent>(inner).Coordinates);
         Assert.That(SEntMan.GetComponent<TransformComponent>(SPlayer).MapUid, Is.Not.EqualTo(pocketMap), "Портал не должен был сдвинуть игрока от двери.");

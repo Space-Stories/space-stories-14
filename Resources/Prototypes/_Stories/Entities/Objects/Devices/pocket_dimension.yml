@@ -24,7 +24,6 @@
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
 
-# Дверь Изнанки: снаружи на стене станции и внутри комнаты.
 - type: entity
   parent: BaseWallmount
   id: STPocketDimensionDoor
@@ -54,7 +53,6 @@
     containers:
       pocket_dimension_sticker: !type:ContainerSlot
 
-# Пол комнаты: выглядит как тёмная плитка, но не снимается ни ломом, ни РСУ, ни взрывом.
 - type: tile
   id: STFloorPocketDimension
   parent: FloorDark

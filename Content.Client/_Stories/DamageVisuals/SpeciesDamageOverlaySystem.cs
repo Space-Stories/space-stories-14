@@ -5,11 +5,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._Stories.DamageVisuals;
 
-/// <summary>
-/// Перекрашивает наложения урона (кровь, ожоги) под расу, когда она меняется на лету:
-/// пульт MIMIC-9, генокрад. Апстрим задаёт цвет этих слоёв один раз при создании персонажа,
-/// и слайм в облике человека продолжал бы кровить зелёным.
-/// </summary>
 public sealed partial class SpeciesDamageOverlaySystem : EntitySystem
 {
     [Dependency] private IComponentFactory _factory = default!;
@@ -32,7 +27,6 @@ public sealed partial class SpeciesDamageOverlaySystem : EntitySystem
             || speciesVisuals.DamageOverlayGroups == null)
             return;
 
-        // Ключи слоёв те же, что выдаёт DamageVisualsSystem при создании персонажа.
         foreach (var (group, overlay) in speciesVisuals.DamageOverlayGroups)
         {
             if (overlay.Color == null)
