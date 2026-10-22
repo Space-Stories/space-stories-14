@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "license": "All rights reserved",
-  "copyright": "Created by Space Stories team for Space Stories.",
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Made by XcenLegend (discord: xcenlegend), taken from Goob Station at https://github.com/Goob-Station/Goob-Station/tree/f730467ca1cb880d20d59d0dd1ccc2a1de50c84c/Resources/Textures/_Goobstation/Heretic/Clothing/OuterClothing/ashen_armor.rsi. Modified for Space Stories: sprite edited, icon and inhand sprites added.",
   "size": {
     "x": 32,
     "y": 32
