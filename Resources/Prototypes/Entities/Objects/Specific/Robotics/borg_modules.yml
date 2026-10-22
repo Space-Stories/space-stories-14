@@ -787,6 +787,7 @@
     - item: BorgHandheldGPSBasic
     - item: GasAnalyzer
     - item: HolofanProjectorBorg
+    - item: STHoloconeProjectorBorg # Stories-Cyborg-Module-Item
     - item: GeigerCounter
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: rcd-module }
@@ -1072,12 +1073,16 @@
         whitelist:
           tags:
           - ConstructionMaterial
+          components:
+          - Circuitboard
     - hand:
         emptyRepresentative: SheetRPGlass
         emptyLabel: borg-slot-construction-empty
         whitelist:
           tags:
           - ConstructionMaterial
+          components:
+          - Circuitboard
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: anomaly-module }
 

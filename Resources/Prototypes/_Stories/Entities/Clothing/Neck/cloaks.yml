@@ -155,3 +155,14 @@
   components:
   - type: Sprite
     sprite: _Stories/Clothing/Neck/Cloaks/golden_qm.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: STClothingNeckCloakOpium
+  name: opium cloak
+  description: A floor-length black cloak with a funnel collar, razor shoulders and a hem torn into ribbons that never stop moving. Ash drifts off it like it's still burning.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Neck/Cloaks/opium_cloak.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Neck/Cloaks/opium_cloak.rsi

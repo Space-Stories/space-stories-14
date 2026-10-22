@@ -1,0 +1,36 @@
+- type: entity
+  parent: BaseItem
+  id: STDisguiseRemote
+  name: MIMIC-9 remote
+  description: A compact appearance-copy remote. Its screen never stops flicking through faces it could wear. Single use.
+  suffix: Admin
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Devices/mimic_remote.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Objects/Devices/mimic_remote.rsi
+    size: Small
+  - type: DisguiseRemote
+
+- type: entity
+  parent: BaseAction
+  id: STActionDisguiseToggle
+  name: Disguise
+  description: Switch between the copied appearance and your own.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 3
+  - type: Sprite
+    sprite: _Stories/Objects/Devices/mimic_remote.rsi
+    layers:
+    - state: icon
+  - type: InstantAction
+    event: !type:DisguiseToggleActionEvent
+
+- type: cloningSettings
+  id: STDisguiseSelfCloningSettings
+  parent: ChangelingCloningSettings
+  copyEquipment: null

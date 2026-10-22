@@ -11,7 +11,7 @@
 
   defaultModules:
   - BorgModulePrying
-  - STBorgModuleSecurity
+  - STBorgModuleSecurityNonLethal
   - BorgModuleFireExtinguisher
 
   radioChannels:

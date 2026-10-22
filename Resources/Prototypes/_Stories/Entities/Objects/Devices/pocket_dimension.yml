@@ -1,0 +1,60 @@
+- type: entity
+  parent: BaseItem
+  id: STPocketDimensionSticker
+  name: inside-out sticker
+  description: A matte black peel-off sticker with a tiny tear printed in the middle. Look at it long enough and the tear looks back.
+  suffix: Admin
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Devices/inside_out_sticker.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Objects/Devices/inside_out_sticker.rsi
+    size: Tiny
+  - type: PocketDimensionSticker
+  - type: Damageable
+  - type: Injurable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 30
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: BaseWallmount
+  id: STPocketDimensionDoor
+  name: inside-out door
+  description: A doorway-sized matte black sticker with a tear down the middle. Behind it, something much bigger than this room.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Structures/Doors/inside_out_door.rsi
+    layers:
+    - state: closed
+      map: [ "enum.PocketDimensionDoorVisuals.Open" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PocketDimensionDoorVisuals.Open:
+        enum.PocketDimensionDoorVisuals.Open:
+          True: { state: open }
+          False: { state: closed }
+  - type: WallMount
+    arc: 360
+  - type: Anchorable
+    flags:
+    - None
+  - type: PocketDimensionDoor
+  - type: ContainerContainer
+    containers:
+      pocket_dimension_sticker: !type:ContainerSlot
+
+- type: tile
+  id: STFloorPocketDimension
+  parent: FloorDark
+  indestructible: true
+  deconstructTools: []

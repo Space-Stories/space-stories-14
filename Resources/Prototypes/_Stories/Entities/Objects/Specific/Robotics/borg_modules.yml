@@ -1,6 +1,6 @@
 - type: entity
-  id: STBaseBorgModuleSecurity
   parent: BaseBorgModule
+  id: STBaseBorgModuleSecurity
   abstract: true
   components:
   - type: BorgModule
@@ -29,19 +29,21 @@
         color: "#C3C3C3"
 
 - type: entity
-  name: cyborg stun baton
   parent: Stunbaton
   id: STStunbatonBorg
+  name: cyborg stun baton
   description: A stun baton integrated with a self-recharging capacitor for cyborg usage.
+  suffix: Borg
   components:
   - type: BatterySelfRecharger
     autoRechargeRate: 15
 
 - type: entity
-  name: cyborg disabler
   parent: WeaponDisabler
   id: STWeaponDisablerBorg
+  name: cyborg disabler
   description: An integrated energy disabler gun that slowly regenerates charge from the cyborg's power system.
+  suffix: Borg
   components:
   - type: BatterySelfRecharger
     autoRechargeRate: 15
@@ -50,27 +52,46 @@
     fireCost: 50
 
 - type: entity
-  name: cyborg flash
   parent: Flash
   id: STFlashBorg
+  name: cyborg flash
   description: A high-output optical flash unit modified for sustained cyborg use.
+  suffix: Borg
   components:
   - type: LimitedCharges
     maxCharges: 10
 
 - type: entity
-  name: cyborg laser gun
+  parent: HoloprojectorSecurity
+  id: STHoloprojectorSecurityBorg
+  name: cyborg holobarrier projector
+  description: Creates a solid but fragile holographic barrier. It automatically recharges from the cyborg's power system.
+  suffix: Borg
+  components:
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium
+        disableEject: true
+        swap: false
+  - type: BatterySelfRecharger
+    autoRechargeRate: 5
+
+- type: entity
   parent: WeaponLaserGun
   id: STWeaponLaserGunBorg
+  name: cyborg laser gun
   description: A modified laser gun that draws power directly from internal capacitor banks.
+  suffix: Borg
   components:
   - type: BatterySelfRecharger
     autoRechargeRate: 20
 
 - type: entity
   parent: [ STBaseBorgModuleSecurity, BaseProviderBorgModule ]
-  id: STBorgModuleSecurity
-  name: security cyborg module
+  id: STBorgModuleSecurityNonLethal
+  name: non-lethal security cyborg module
   description: A security module containing a disabler, stun baton, flash, zipties, and a security whistle.
   components:
   - type: Sprite
@@ -90,15 +111,41 @@
         whitelist:
           tags:
           - Handcuffs
+    - item: STHoloprojectorSecurityBorg
     - item: SecurityWhistle
   - type: BorgModuleIcon
     icon: { sprite: _Stories/Interface/Actions/actions_borg.rsi, state: security-arest-module }
 
 - type: entity
   parent: [ STBaseBorgModuleSecurity, BaseProviderBorgModule, BaseSecurityContraband ]
+  id: STBorgModuleSecurityServiceWeapon
+  name: service weapon security cyborg module
+  components:
+  - type: Sprite
+    layers: 
+    - state: security
+    - sprite: _Stories/Objects/Specific/Robotics/borgmodule.rsi
+      state: icon-pistol
+  - type: ItemBorgModule
+    hands:
+    - item: WeaponPistolMk58
+    - item: MagazinePistol
+      forceRemovable: true
+      hand:
+        emptyRepresentative: MagazinePistol
+        emptyLabel: stories-borg-slot-magazine-empty
+        whitelist:
+          tags:
+          - MagazinePistol
+    - item: CombatKnife
+  - type: BorgModuleIcon
+    icon: { sprite: _Stories/Interface/Actions/actions_borg.rsi, state: security-service-weapon-module }
+
+- type: entity
+  parent: [ STBaseBorgModuleSecurity, BaseProviderBorgModule, BaseSecurityContraband ]
   id: STBorgModuleSecurityLaser
   name: overload laser cyborg module
-  description: An illegal security upgrade module providing a lethal laser weapon.
+  description: A legal security upgrade module providing a lethal laser weapon.
   components:
   - type: Sprite
     layers:

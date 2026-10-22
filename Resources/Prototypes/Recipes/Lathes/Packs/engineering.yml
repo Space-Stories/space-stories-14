@@ -23,6 +23,7 @@
   - HandheldStationMap
   - ClothingHeadHatWelding
   - ClothingHeadHatCone
+  - STHoloconeProjector # Stories-Projector
 
 - type: latheRecipePack
   id: AtmosStatic

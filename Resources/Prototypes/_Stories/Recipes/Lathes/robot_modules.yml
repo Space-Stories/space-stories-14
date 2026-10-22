@@ -1,0 +1,7 @@
+# Security Modules
+
+- type: latheRecipe
+  parent: BaseGoldBorgModuleRecipe
+  id: STBorgModuleSecurityLaser
+  result: STBorgModuleSecurityLaser
+  completetime: 5

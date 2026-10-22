@@ -22,3 +22,5 @@ ent-STClothingNeckMantleCapGeneral = { ent-ClothingNeckMantleCap }
     .desc = { ent-ClothingNeckMantleCap.desc }
 ent-STClothingNeckCloakQmGold = { ent-ClothingNeckCloakQm }
     .desc = { ent-ClothingNeckCloakQm.desc }
+ent-STClothingNeckCloakOpium = плащ Опиум
+    .desc = Чёрный плащ в пол с воротником-воронкой, острыми плечами и подолом, изорванным в ленты, которые не перестают колыхаться. С него сыплется пепел, будто он всё ещё горит.
