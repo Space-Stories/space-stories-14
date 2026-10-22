@@ -33,6 +33,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: Construction #Stories add component
+    graph: STAtmosDeviceFanDirectional
+    node: statmosfandirectional
   - type: Transform
     anchored: true
   - type: Physics

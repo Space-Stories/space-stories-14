@@ -249,6 +249,15 @@ public sealed partial class SiliconLawSystem : SharedSiliconLawSystem
         return ev.Laws;
     }
 
+    public void SetLawset(EntityUid target, ProtoId<SiliconLawsetPrototype> lawset) //Stories lawset
+    {
+        var provider = EnsureComp<SiliconLawProviderComponent>(target);
+        provider.Laws = lawset;
+        provider.Lawset = GetLawset(lawset);
+        RankLaws(provider.Lawset.Laws);
+        NotifyLawsChanged((target, provider));
+    }
+
     public override void NotifyLawsChanged(Entity<SiliconLawProviderComponent> ent, SoundSpecifier? cue = null)
     {
         base.NotifyLawsChanged(ent, cue);

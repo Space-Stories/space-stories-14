@@ -1,0 +1,6 @@
+- type: construction
+  parent: BaseGasUnary
+  id: STAtmosDeviceFanDirectional
+  graph: STAtmosDeviceFanDirectional
+  startNode: start
+  targetNode: statmosfandirectional

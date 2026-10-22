@@ -1343,6 +1343,11 @@
   components:
   - type: VendingMachine
     pack: YouToolInventory
+    freeJobs:
+    - StationEngineer
+    - ChiefEngineer
+    - AtmosphericTechnician
+    - TechnicalAssistant
   - type: VendingMachineVisuals
     ejectState: eject-unshaded
     denyState: deny-unshaded
@@ -2164,6 +2169,9 @@
   components:
   - type: VendingMachine
     pack: ChemVendInventory
+    freeJobs:
+    - ChiefMedicalOfficer
+    - Chemist
   - type: VendingMachineEject
     ejectDelay: 2
   - type: VendingMachineVisuals
