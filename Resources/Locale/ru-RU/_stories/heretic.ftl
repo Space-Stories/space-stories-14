@@ -10,6 +10,8 @@ stories-heretic-learn-ascension-objectives = Сначала выполните �
 stories-heretic-learn-no-points = Недостаточно знаний Мансуса.
 stories-roles-antag-heretic-name = Еретик
 stories-roles-antag-heretic-objective = Постигайте запретные знания Мансуса, приносите жертвы и вознеситесь.
+stories-roles-antag-heretic-servant-name = Слуга Мансуса
+stories-roles-antag-heretic-servant-objective = Служите еретику, который вас призвал.
 stories-heretic-role-greeting = Вы — Еретик. Завеса реальности истончилась, и вы слышите шёпот Мансуса. Собирайте влияния, приносите жертвы и вознеситесь. Откройте дерево знаний действием «Знания Мансуса».
 stories-heretic-round-end-agent-name = еретик
 stories-heretic-title = Еретики
@@ -18,11 +20,22 @@ stories-heretic-round-end-count = Еретиков было: { $count }.
 stories-heretic-round-end-entry = { $name } ({ $user }) — путь: { $path }, знаний: { $knowledge }, жертв: { $sacrifices }.
 stories-heretic-round-end-ascended = [color=#58a65c]{ $name } ({ $user }) вознёсся![/color] Путь: { $path }, знаний: { $knowledge }, жертв: { $sacrifices }.
 stories-heretic-round-end-lost = { $name } ({ $user }) — тело еретика утрачено.
+stories-heretic-round-end-summons = Призвано чудовищ: { $count } из { $required }.
 stories-heretic-path-none = не выбран
 stories-heretic-path-STHereticPathAsh = Пепел
+stories-heretic-path-STHereticPathFlesh = Плоть
 stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
-stories-heretic-objective-knowledge = Изучить { $count } знаний Мансуса.
-stories-heretic-objective-sacrifice = Принести в жертву { $count } целей.
+stories-heretic-objective-knowledge = Изучить { $count } { $count ->
+    [one] знание
+    [few] знания
+   *[other] знаний
+} Мансуса.
+stories-heretic-objective-summon = Призвать монстров Мансуса: { $count }.
+stories-heretic-objective-sacrifice = Принести в жертву { $count } { $count ->
+    [one] цель
+    [few] цели
+   *[other] целей
+}.
 stories-heretic-objective-head-sacrifice = { $count ->
     [0] Жертва главы отдела не требуется: живых глав на станции не осталось.
    *[other] Принести в жертву главу отдела ({ $count }).
@@ -54,6 +67,7 @@ stories-heretic-ingredient-hide = шкура или кожа
 
 stories-heretic-grasp-blocked = Святая сила отталкивает Хватку!
 stories-heretic-blade-no-place = Мансусу некуда вас перенести.
+stories-heretic-blade-break-ash = Ночной дозорный слышит твой зов…
 stories-heretic-sacrifice-not-target = Мансус не примет эту жертву.
 stories-heretic-sacrifice-resisting = Жертва ещё сопротивляется.
 stories-heretic-sacrifice-victim = Вас утягивает сквозь завесу реальности...
@@ -98,7 +112,11 @@ stories-heretic-ui-locked = Пока недоступно.
 stories-heretic-ash-rebirth = Вы вытягиваете жизнь из пламени. Жертв: { $count }.
 stories-heretic-ingredient-fire = спичка или зажигалка
 
-stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $count } сгоревших тел.
+stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $count } { $count ->
+    [one] сгоревшее тело
+    [few] сгоревших тела
+   *[other] сгоревших тел
+}.
 stories-heretic-ascension-done = Вы уже вознеслись.
 stories-heretic-ash-ascension-announcement = Внимание! Обнаружен всплеск аномальной активности. { $name } вознёсся как Повелитель пепла. Огонь поглотит всех.
 stories-heretic-ingredient-glass-shard = осколок стекла
@@ -106,12 +124,16 @@ stories-heretic-ingredient-candle = свеча
 stories-heretic-ingredient-mask = дыхательная, противогазная или стерильная маска
 stories-heretic-ingredient-stunbaton = станбатон
 stories-heretic-ingredient-liver = печень
+stories-heretic-ingredient-blood = лужа крови
+
 stories-heretic-ingredient-table-or-suit = стол или любая верхняя одежда
 stories-heretic-ingredient-any-mask = любая маска
 stories-heretic-mantle-flames-on = Мантия разгорается.
 stories-heretic-mantle-flames-off = Пламя мантии гаснет.
 stories-heretic-mantle-burns = Мантия вспыхивает и вгрызается в вашу плоть!
 stories-heretic-mantle-limb-burnt = Мантия сжигает вашу конечность дотла!
+stories-heretic-embrace-wounds = Мантия извивается и вонзает в вас зубы!
+stories-heretic-embrace-wound = Что-то в мантии рвёт вашу плоть!
 stories-guide-entry-heretic = Еретик
 stories-heretic-aura-examine = [color=#3fbf3f]Вокруг { GENDER($ent) ->
     [female] неё
@@ -125,3 +147,19 @@ stories-heretic-admin-verb-make = Сделать еретиком
 stories-heretic-admin-verb-make-message = Делает цель еретиком: цели, задачи и роль выдаются через правило «Еретик».
 stories-heretic-admin-verb-arrivals = Игрок на шаттле прибытия: на нём роль антагониста не выдаётся. Дождитесь стыковки.
 stories-heretic-admin-verb-failed = Не удалось сделать игрока еретиком: он в призраке, на шаттле прибытия или не гуманоид.
+stories-heretic-dismember-category = Расчленить
+stories-heretic-dismember-verb = Отделить: { $part }
+stories-heretic-dismember-done = { CAPITALIZE($user) } отсекает { $part } от тела { $corpse }.
+stories-heretic-dismember-part-Head = голову
+stories-heretic-dismember-part-ArmLeft = левую руку
+stories-heretic-dismember-part-ArmRight = правую руку
+stories-heretic-dismember-part-LegLeft = левую ногу
+stories-heretic-dismember-part-LegRight = правую ногу
+stories-heretic-ingredient-arm = левая рука
+stories-heretic-ingredient-meat = кусок мяса
+stories-heretic-ingredient-paper = лист бумаги
+stories-heretic-stalker-form-cat = Кот
+stories-heretic-stalker-form-corgi = Корги
+stories-heretic-stalker-form-mouse = Мышь
+stories-heretic-stalker-form-fox = Лиса
+stories-heretic-stalker-form-carp = Карп

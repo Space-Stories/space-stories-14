@@ -10,6 +10,8 @@ stories-heretic-learn-ascension-objectives = Complete your objectives first.
 stories-heretic-learn-no-points = Not enough knowledge of the Mansus.
 stories-roles-antag-heretic-name = Heretic
 stories-roles-antag-heretic-objective = Learn the forbidden knowledge of the Mansus, perform sacrifices and ascend.
+stories-roles-antag-heretic-servant-name = Servant of the Mansus
+stories-roles-antag-heretic-servant-objective = Serve the heretic who summoned you.
 stories-heretic-role-greeting = You are a Heretic. The veil of reality has thinned and you hear the whispers of the Mansus. Gather influences, perform sacrifices and ascend. Open the knowledge tree with the "Mansus knowledge" action.
 stories-heretic-round-end-agent-name = heretic
 stories-heretic-title = Heretics
@@ -18,10 +20,13 @@ stories-heretic-round-end-count = There were { $count } heretics.
 stories-heretic-round-end-entry = { $name } ({ $user }) — path: { $path }, knowledge: { $knowledge }, sacrifices: { $sacrifices }.
 stories-heretic-round-end-ascended = [color=#58a65c]{ $name } ({ $user }) ascended![/color] Path: { $path }, knowledge: { $knowledge }, sacrifices: { $sacrifices }.
 stories-heretic-round-end-lost = { $name } ({ $user }) — the heretic's body was lost.
+stories-heretic-round-end-summons = Monsters summoned: { $count } of { $required }.
 stories-heretic-path-none = none
 stories-heretic-path-STHereticPathAsh = Ash
+stories-heretic-path-STHereticPathFlesh = Flesh
 stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
+stories-heretic-objective-summon = Summon { $count } Mansus monsters.
 stories-heretic-objective-sacrifice = Sacrifice { $count } targets.
 stories-heretic-objective-head-sacrifice = { $count ->
     [0] No head of staff sacrifice required: there are no living heads left on the station.
@@ -54,6 +59,7 @@ stories-heretic-ingredient-hide = hide or leather
 
 stories-heretic-grasp-blocked = Holy power repels the Grasp!
 stories-heretic-blade-no-place = The Mansus has nowhere to take you.
+stories-heretic-blade-break-ash = The Nightwatcher hears your call...
 stories-heretic-sacrifice-not-target = The Mansus will not accept this sacrifice.
 stories-heretic-sacrifice-resisting = The victim is still resisting.
 stories-heretic-sacrifice-victim = You are pulled through the veil of reality...
@@ -105,12 +111,16 @@ stories-heretic-ingredient-candle = candle
 stories-heretic-ingredient-mask = breath, gas or sterile mask
 stories-heretic-ingredient-stunbaton = stun baton
 stories-heretic-ingredient-liver = liver
+stories-heretic-ingredient-blood = pool of blood
+
 stories-heretic-ingredient-table-or-suit = table or any outer clothing
 stories-heretic-ingredient-any-mask = any mask
 stories-heretic-mantle-flames-on = The mantle flares up.
 stories-heretic-mantle-flames-off = The mantle's flames die down.
 stories-heretic-mantle-burns = The mantle bursts into flame and bites into your flesh!
 stories-heretic-mantle-limb-burnt = The mantle burns your limb to ash!
+stories-heretic-embrace-wounds = The mantle writhes and sinks its teeth into you!
+stories-heretic-embrace-wound = Something in the mantle tears your flesh open!
 stories-guide-entry-heretic = Heretic
 stories-heretic-aura-examine = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } crackling with a swirling green vortex of energy.[/color]
 stories-heretic-aura-examine-ascend = [color=#3fbf3f]{ CAPITALIZE(SUBJECT($ent)) } { CONJUGATE-BE($ent) } shedding { POSS-ADJ($ent) } mortal shell![/color]
@@ -120,3 +130,19 @@ stories-heretic-admin-verb-make = Make heretic
 stories-heretic-admin-verb-make-message = Makes the target a heretic: targets, objectives and the role are granted through the Heretic rule.
 stories-heretic-admin-verb-arrivals = The player is on the arrivals shuttle: antagonist roles are not granted there. Wait until it docks.
 stories-heretic-admin-verb-failed = Could not make the player a heretic: they are a ghost, on the arrivals shuttle or not a humanoid.
+stories-heretic-dismember-category = Dismember
+stories-heretic-dismember-verb = Detach: { $part }
+stories-heretic-dismember-done = { CAPITALIZE($user) } severs { $part } from { $corpse }'s body.
+stories-heretic-dismember-part-Head = head
+stories-heretic-dismember-part-ArmLeft = left arm
+stories-heretic-dismember-part-ArmRight = right arm
+stories-heretic-dismember-part-LegLeft = left leg
+stories-heretic-dismember-part-LegRight = right leg
+stories-heretic-ingredient-arm = left arm
+stories-heretic-ingredient-meat = piece of meat
+stories-heretic-ingredient-paper = sheet of paper
+stories-heretic-stalker-form-cat = Cat
+stories-heretic-stalker-form-corgi = Corgi
+stories-heretic-stalker-form-mouse = Mouse
+stories-heretic-stalker-form-fox = Fox
+stories-heretic-stalker-form-carp = Carp

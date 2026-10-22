@@ -15,7 +15,7 @@ namespace Content.Client._Stories.Heretic.UI;
 public sealed partial class StoriesHereticKnowledgeNodeControl : ContainerButton
 {
     private static readonly ProtoId<ShaderPrototype> GreyscaleShader = "Greyscale";
-    private static readonly ResPath KnowledgeRsi = new("/Textures/_Stories/Heretic/knowledge.rsi");
+    private static readonly ResPath KnowledgeRsi = new("/Textures/_Stories/Heretic/Interface/knowledge.rsi");
 
     private static readonly Color LockedColor = Color.FromHex("#6e6e74");
     private static readonly Color AvailableHintColor = Color.FromHex("#8fd18f");

@@ -1,0 +1,231 @@
+using Content.Shared._Stories.Heretic.Components;
+using Content.Shared._Stories.Heretic.Events;
+using Content.Shared.Access.Systems;
+using Content.Shared.Actions;
+using Content.Shared.Actions.Components;
+using Content.Shared.Bed.Sleep;
+using Content.Shared.Chat;
+using Content.Shared.Damage.Systems;
+using Content.Shared.IdentityManagement;
+using Content.Shared.IdentityManagement.Components;
+using Content.Shared.Inventory;
+using Content.Shared.Mobs;
+using Content.Shared.Movement.Systems;
+using Content.Shared.Popups;
+using Content.Shared.Stunnable;
+using Content.Shared.Tag;
+using Content.Shared.Verbs;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Map;
+using Robust.Shared.Network;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+using Robust.Shared.Timing;
+
+namespace Content.Shared._Stories.Heretic.Cloak;
+
+public sealed partial class StoriesHereticShadowCloakSystem : EntitySystem
+{
+    [Dependency] private SharedActionsSystem _actions = default!;
+    [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private IdentitySystem _identity = default!;
+    [Dependency] private MovementModStatusSystem _movementMod = default!;
+    [Dependency] private MovementSpeedModifierSystem _speed = default!;
+    [Dependency] private INetManager _net = default!;
+    [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private IRobustRandom _random = default!;
+    [Dependency] private SharedStunSystem _stun = default!;
+    [Dependency] private TagSystem _tag = default!;
+    [Dependency] private IGameTiming _timing = default!;
+
+    private static readonly ProtoId<TagPrototype> FootstepTag = "FootstepSound";
+    private static readonly EntProtoId SlowdownEffect = "STHereticShadowCloakSlowdownStatusEffect";
+    private static readonly SoundSpecifier ActivateSound = new SoundCollectionSpecifier("STHereticCurse");
+
+    public override void Initialize()
+    {
+        SubscribeLocalEvent<StoriesHereticComponent, StoriesHereticShadowCloakEvent>(OnCloakAction);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, TransformSpeakerNameEvent>(OnSpeakerName);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshSpeed);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, DamageDealtEvent>(OnDamage);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, MobStateChangedEvent>(OnMobState);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SleepStateChangedEvent>(OnSleep);
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, SeeIdentityAttemptEvent>(OnSeeIdentity,
+            after: new[] { typeof(IdentitySystem) });
+        SubscribeLocalEvent<StoriesHereticShadowCloakComponent, GetVerbsEvent<ExamineVerb>>(OnExamineVerbs,
+            after: new[] { typeof(IdExaminableSystem) });
+    }
+
+    private void OnCloakAction(Entity<StoriesHereticComponent> ent, ref StoriesHereticShadowCloakEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+        var uid = ent.Owner;
+        EntityUid? action = args.Action.Owner.Valid ? args.Action.Owner : null;
+
+        if (TryComp<StoriesHereticShadowCloakComponent>(uid, out var active))
+        {
+            var remaining = active.EndTime - _timing.CurTime;
+            var cooldown = remaining > active.MinCooldown ? remaining : active.MinCooldown;
+
+            RemCompDeferred<StoriesHereticShadowCloakComponent>(uid);
+            _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-off"), uid, uid);
+            _actions.SetUseDelay(active.Action ?? action, cooldown);
+            return;
+        }
+
+        _actions.SetUseDelay(action, args.MinCooldown);
+
+        var cloak = new StoriesHereticShadowCloakComponent
+        {
+            SpeedMultiplier = args.SpeedMultiplier,
+            EndTime = _timing.CurTime + args.Duration,
+            DamageThreshold = args.DamageThreshold,
+            Action = action,
+            MinCooldown = args.MinCooldown,
+            InterruptCooldown = args.InterruptCooldown,
+            InterruptKnockdown = args.InterruptKnockdown,
+            InterruptSlowdown = args.InterruptSlowdown,
+            InterruptSlowTime = args.InterruptSlowTime,
+        };
+
+        cloak.HadIdentityBlocker = HasComp<IdentityBlockerComponent>(uid);
+        if (!cloak.HadIdentityBlocker)
+            AddComp(uid, new IdentityBlockerComponent { Coverage = IdentityBlockerCoverage.FULL });
+
+        cloak.HadFootstepTag = _tag.HasTag(uid, FootstepTag);
+        if (cloak.HadFootstepTag)
+            _tag.RemoveTag(uid, FootstepTag);
+
+        cloak.Smoke = PredictedSpawnAttachedTo(args.Smoke, new EntityCoordinates(uid, default));
+
+        AddComp(uid, cloak);
+        _identity.QueueIdentityUpdate(uid);
+        _speed.RefreshMovementSpeedModifiers(uid);
+
+        _audio.PlayPredicted(ActivateSound, uid, uid);
+        _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-on"),
+            Loc.GetString("stories-heretic-cloak-on-others", ("ent", uid)),
+            uid,
+            uid);
+    }
+
+    private void OnShutdown(Entity<StoriesHereticShadowCloakComponent> ent, ref ComponentShutdown args)
+    {
+        if (TerminatingOrDeleted(ent))
+            return;
+
+        var uid = ent.Owner;
+        if (!ent.Comp.HadIdentityBlocker)
+            RemComp<IdentityBlockerComponent>(uid);
+
+        if (ent.Comp.HadFootstepTag)
+            _tag.AddTag(uid, FootstepTag);
+
+        if (ent.Comp.Smoke is { } smoke)
+            PredictedQueueDel(smoke);
+
+        _identity.QueueIdentityUpdate(uid);
+        _speed.RefreshMovementSpeedModifiers(uid);
+    }
+
+    private void OnSpeakerName(Entity<StoriesHereticShadowCloakComponent> ent, ref TransformSpeakerNameEvent args)
+    {
+        args.VoiceName = Loc.GetString("stories-heretic-cloak-voice");
+    }
+
+    private void OnSeeIdentity(Entity<StoriesHereticShadowCloakComponent> ent, ref SeeIdentityAttemptEvent args)
+    {
+        if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
+            return;
+
+        args.Uncancel();
+        args.NameOverride = Loc.GetString("stories-heretic-cloak-voice");
+    }
+
+    private void OnExamineVerbs(Entity<StoriesHereticShadowCloakComponent> ent, ref GetVerbsEvent<ExamineVerb> args)
+    {
+        if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
+            return;
+
+        var idText = Loc.GetString("id-examinable-component-verb-text");
+        args.Verbs.RemoveWhere(verb => verb.Text == idText);
+    }
+
+    private void OnRefreshSpeed(Entity<StoriesHereticShadowCloakComponent> ent, ref RefreshMovementSpeedModifiersEvent args)
+    {
+        if (ent.Comp.LifeStage >= ComponentLifeStage.Stopping)
+            return;
+
+        args.ModifySpeed(ent.Comp.SpeedMultiplier, ent.Comp.SpeedMultiplier);
+    }
+
+    private void OnDamage(Entity<StoriesHereticShadowCloakComponent> ent, ref DamageDealtEvent args)
+    {
+        if (_net.IsClient)
+            return;
+
+        foreach (var value in args.Damage.DamageDict.Values)
+        {
+            if (value > 0)
+                ent.Comp.DamageTaken += (float) value;
+        }
+
+        if (!args.Damage.AnyPositive() || ent.Comp.DamageTaken < ent.Comp.DamageThreshold)
+            return;
+
+        if (_random.Prob(Math.Min(1f, ent.Comp.DamageTaken / 100f)))
+            Break(ent);
+    }
+
+    private void OnMobState(Entity<StoriesHereticShadowCloakComponent> ent, ref MobStateChangedEvent args)
+    {
+        if (args.NewMobState != MobState.Alive && !_net.IsClient)
+            Break(ent);
+    }
+
+    private void OnSleep(Entity<StoriesHereticShadowCloakComponent> ent, ref SleepStateChangedEvent args)
+    {
+        if (args.FellAsleep && !_net.IsClient)
+            Break(ent);
+    }
+
+    private void Break(Entity<StoriesHereticShadowCloakComponent> ent)
+    {
+        var uid = ent.Owner;
+        var comp = ent.Comp;
+        RemComp<StoriesHereticShadowCloakComponent>(uid);
+
+        _stun.TryKnockdown(uid, comp.InterruptKnockdown, true);
+        _movementMod.TryUpdateMovementSpeedModDuration(uid, SlowdownEffect, comp.InterruptSlowTime, comp.InterruptSlowdown);
+        SetCooldown(comp.Action, comp.InterruptCooldown);
+        _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-broken"), uid, uid, PopupType.MediumCaution);
+    }
+
+    private void SetCooldown(EntityUid? action, TimeSpan cooldown)
+    {
+        if (action != null)
+            _actions.SetCooldown(action.Value, cooldown);
+    }
+
+    public override void Update(float frameTime)
+    {
+        if (_net.IsClient)
+            return;
+
+        var query = EntityQueryEnumerator<StoriesHereticShadowCloakComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (_timing.CurTime < comp.EndTime)
+                continue;
+
+            RemCompDeferred<StoriesHereticShadowCloakComponent>(uid);
+            _popup.PopupEntity(Loc.GetString("stories-heretic-cloak-off"), uid, uid);
+            SetCooldown(comp.Action, comp.MinCooldown);
+        }
+    }
+}

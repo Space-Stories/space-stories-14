@@ -1,5 +1,6 @@
 using Content.Shared.Actions;
 using Content.Shared.Damage;
+using Content.Shared.Polymorph;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 
@@ -31,6 +32,14 @@ public sealed partial class StoriesHereticGraspEvent : EntityTargetActionEvent
 
     [DataField]
     public TimeSpan SlurTime = TimeSpan.FromSeconds(5);
+}
+
+public sealed partial class StoriesHereticKnitFleshEvent : EntityTargetActionEvent;
+
+public sealed partial class StoriesHereticEldritchBlindEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(10);
 }
 
 public sealed partial class StoriesHereticLivingHeartEvent : InstantActionEvent
@@ -125,4 +134,96 @@ public sealed partial class StoriesHereticFlameEffects
 
     [DataField]
     public Angle MaxRotation = Angle.FromDegrees(25);
+}
+
+public sealed partial class StoriesHereticShadowCloakEvent : InstantActionEvent
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromMinutes(3);
+
+    [DataField]
+    public TimeSpan MinCooldown = TimeSpan.FromSeconds(6);
+
+    [DataField]
+    public TimeSpan InterruptCooldown = TimeSpan.FromMinutes(3);
+
+    [DataField]
+    public float SpeedMultiplier = 1.25f;
+
+    [DataField]
+    public float DamageThreshold = 25f;
+
+    [DataField]
+    public TimeSpan InterruptKnockdown = TimeSpan.FromSeconds(0.5);
+
+    [DataField]
+    public float InterruptSlowdown = 0.5f;
+
+    [DataField]
+    public TimeSpan InterruptSlowTime = TimeSpan.FromMinutes(2);
+
+    [DataField]
+    public EntProtoId Smoke = "STHereticShadowCloakSmoke";
+}
+
+public sealed partial class StoriesHereticMansusLinkEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(6);
+
+    [DataField]
+    public float Range = 7f;
+}
+
+public sealed partial class StoriesHereticExpandSightEvent : InstantActionEvent
+{
+    [DataField]
+    public float Zoom = 1.5f;
+}
+
+public sealed partial class StoriesHereticEldritchEmpEvent : InstantActionEvent
+{
+    [DataField]
+    public float Range = 6f;
+
+    [DataField]
+    public float Energy = 50000f;
+
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(15);
+}
+
+public sealed partial class StoriesHereticStalkerShapeshiftEvent : InstantActionEvent;
+
+public sealed partial class StoriesHereticShedFormEvent : InstantActionEvent
+{
+    [DataField]
+    public ProtoId<PolymorphPrototype> Polymorph = "STHereticLordOfNight";
+
+    [DataField]
+    public float FearRange = 9f;
+
+    [DataField]
+    public float FearChance = 0.25f;
+
+    [DataField]
+    public TimeSpan JitterTime = TimeSpan.FromSeconds(60);
+
+    [DataField]
+    public TimeSpan StutterTime = TimeSpan.FromSeconds(60);
+
+    [DataField]
+    public TimeSpan DizzyTime = TimeSpan.FromSeconds(30);
+
+    [DataField]
+    public EntProtoId StutterEffect = "StatusEffectStutter";
+
+    [DataField]
+    public EntProtoId DizzyEffect = "StatusEffectWoozy";
+
+    [DataField]
+    public LocId FearMessage = "stories-heretic-lord-fear";
+
+    [DataField]
+    public LocId Speech = "stories-heretic-shed-form-speech";
 }

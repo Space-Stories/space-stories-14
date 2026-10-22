@@ -1,0 +1,32 @@
+stories-heretic-flesh-ghoul-raised = { $target } rises to serve you.
+stories-heretic-flesh-imperfect-no-body = There is no suitable corpse on the rune.
+stories-heretic-flesh-imperfect-offered = The corpse lies soulless. Someone must answer.
+stories-heretic-flesh-imperfect-busy = This corpse is already waiting for a soul.
+stories-heretic-flesh-imperfect-expired = Nobody answered, and the poppy returned to the rune.
+stories-heretic-flesh-imperfect-no-master = Your master is gone: the Mansus has no one to bind you to.
+stories-heretic-flesh-voiceless-name = Voiceless Dead
+stories-heretic-flesh-voiceless-description = You are a corpse raised by a heretic on the Path of Flesh. You are mute.
+stories-heretic-flesh-voiceless-rules = You are the Voiceless Dead and serve your master. You are an antagonist.
+stories-heretic-knit-speech = CL'M M'N!
+stories-heretic-knit-category = Extract organ
+stories-heretic-knit-verb = Extract: { $part }
+stories-heretic-knit-done = { CAPITALIZE($user) } tears { $part } out of { $target }.
+stories-heretic-knit-part-Eyes = the eyes
+stories-heretic-knit-part-Tongue = the tongue
+stories-heretic-knit-part-Heart = the heart
+stories-heretic-knit-part-Lungs = the lungs
+stories-heretic-knit-part-Liver = the liver
+stories-heretic-knit-part-Stomach = the stomach
+stories-heretic-knit-part-Appendix = the appendix
+stories-heretic-knit-part-Kidneys = the kidneys
+stories-heretic-knit-part-Ears = the ears
+
+stories-chat-radio-heretic-mansus-link = Mansus Link
+stories-heretic-mansus-link-blocked = The mind resists the link!
+stories-heretic-mansus-link-linked = A foreign whisper creeps into your head.
+
+stories-heretic-flesh-ascension-corpses = The hymn needs { $count } more dead bodies.
+stories-heretic-flesh-ascension-announcement = Ever coiling vortex. Reality unfolded. ARMS OUTREACHED, THE LORD OF THE NIGHT, { $name } has ascended! Fear the ever twisting hand!
+stories-heretic-shed-form-speech = REALITY UNCOIL!
+stories-heretic-blade-break-flesh = The Marshal hears your call...
+stories-heretic-lord-fear = You glimpse the Gates of the Mansus, and your mind cracks.

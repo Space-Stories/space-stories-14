@@ -1,8 +1,14 @@
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Body;
+using Content.Shared.Body.Components;
+using Content.Shared.Mobs.Components;
+using Robust.Shared.Containers;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Clothing.Components;
 using Content.Shared.DoAfter;
+using Content.Shared.Fluids.Components;
+using Content.Shared.FixedPoint;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Maps;
@@ -19,6 +25,7 @@ namespace Content.Shared._Stories.Heretic;
 
 public sealed partial class StoriesHereticRitualSystem : EntitySystem
 {
+    [Dependency] private SharedContainerSystem _containers = default!;
     [Dependency] private IComponentFactory _factory = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
@@ -27,6 +34,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
     [Dependency] private StoriesHereticSystem _heretic = default!;
     [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
+    [Dependency] private SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private TagSystem _tag = default!;
     [Dependency] private TurfSystem _turf = default!;
@@ -34,6 +42,11 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
 
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
     private static readonly SoundSpecifier RitualSound = new SoundPathSpecifier("/Audio/Magic/staff_animation.ogg");
+
+    private static readonly HashSet<ProtoId<OrganCategoryPrototype>> LimbCategories =
+    [
+        "Head", "ArmLeft", "ArmRight", "HandLeft", "HandRight", "LegLeft", "LegRight", "FootLeft", "FootRight",
+    ];
 
     private readonly HashSet<EntityUid> _nearby = new();
     private readonly HashSet<EntityUid> _used = new();
@@ -127,6 +140,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
         _lookup.GetEntitiesInRange(coords, radius, _nearby, LookupFlags.Uncontained);
         _nearby.Remove(heretic);
         _nearby.Remove(rune);
+        _nearby.RemoveWhere(uid => TerminatingOrDeleted(uid) || EntityManager.IsQueuedForDeletion(uid));
 
         string? failReason = null;
         var bestScore = 0;
@@ -142,7 +156,9 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 continue;
             }
 
-            if (ritual.Limit is { } limit && _heretic.CountLimitedResults(heretic, ritualId) >= limit)
+            if (ritual.Limit is { } limit
+                && !(ritual.AscendedUnlimited && heretic.Comp.Ascended)
+                && _heretic.CountLimitedResults(heretic, ritualId) >= limit)
             {
                 RecordFailure(Loc.GetString("stories-heretic-ritual-limit"), matched + 1);
                 continue;
@@ -295,6 +311,9 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
 
     public bool Matches(StoriesHereticIngredient ingredient, EntityUid uid)
     {
+        if (ingredient.Blacklist != null && _whitelist.IsValid(ingredient.Blacklist, uid))
+            return false;
+
         if (ingredient.Whitelist != null && _whitelist.IsValid(ingredient.Whitelist, uid))
             return true;
 
@@ -307,6 +326,32 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
             && TryComp<OrganComponent>(uid, out var organ)
             && organ.Category == ingredient.OrganCategory)
             return true;
+
+        if (ingredient.OrganCategory != null
+            && LimbCategories.Contains(ingredient.OrganCategory.Value)
+            && !HasComp<MobStateComponent>(uid)
+            && _containers.TryGetContainer(uid, BodyComponent.ContainerID, out var bodyOrgans))
+        {
+            foreach (var contained in bodyOrgans.ContainedEntities)
+            {
+                if (TryComp<OrganComponent>(contained, out var inner) && inner.Category == ingredient.OrganCategory)
+                    return true;
+            }
+        }
+
+        if (ingredient.Reagents != null
+            && TryComp<PuddleComponent>(uid, out var puddle)
+            && _solutions.TryGetSolution(uid, puddle.SolutionName, out _, out var solution))
+        {
+            var amount = FixedPoint2.Zero;
+            foreach (var reagent in ingredient.Reagents)
+            {
+                amount += solution.GetTotalPrototypeQuantity(reagent);
+            }
+
+            if (amount >= ingredient.ReagentAmount)
+                return true;
+        }
 
         if (ingredient.ClothingSlots is { } slots
             && TryComp<ClothingComponent>(uid, out var clothing)

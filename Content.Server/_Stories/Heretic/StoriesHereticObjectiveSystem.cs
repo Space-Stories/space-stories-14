@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Server.Roles;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared._Stories.Heretic;
+using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Objectives.Components;
@@ -11,6 +13,8 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
 {
     [Dependency] private MetaDataSystem _metaData = default!;
     [Dependency] private RoleSystem _roles = default!;
+    [Dependency] private SharedMindSystem _mind = default!;
+    [Dependency] private StoriesHereticSystem _heretic = default!;
 
     public override void Initialize()
     {
@@ -19,6 +23,21 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticObjectiveConditionComponent, ObjectiveAfterAssignEvent>(OnAfterAssign);
         SubscribeLocalEvent<StoriesHereticObjectiveConditionComponent, ObjectiveGetProgressEvent>(OnGetProgress);
         SubscribeLocalEvent<StoriesHereticComponent, MindRemovedMessage>(OnMindRemoved);
+        SubscribeLocalEvent<StoriesHereticComponent, StoriesHereticKnowledgeLearnedEvent>(OnKnowledgeLearned);
+    }
+
+    private void OnKnowledgeLearned(Entity<StoriesHereticComponent> ent, ref StoriesHereticKnowledgeLearnedEvent args)
+    {
+        if (!_heretic.TryGetKnowledge(args.Knowledge, out var knowledge)
+            || knowledge.Objectives.Count == 0
+            || !_mind.TryGetMind(ent, out var mindId, out var mind))
+            return;
+
+        foreach (var objective in knowledge.Objectives)
+        {
+            if (!_mind.TryAddObjective(mindId, mind, objective))
+                Log.Error($"Failed to add objective {objective} to heretic {ToPrettyString(ent)} for knowledge {args.Knowledge}");
+        }
     }
 
     private void OnMindRemoved(Entity<StoriesHereticComponent> ent, ref MindRemovedMessage args)
@@ -85,6 +104,8 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
         progress.RequiredKnowledge = heretic.RequiredKnowledge;
         progress.RequiredSacrifices = heretic.RequiredSacrifices;
         progress.RequiredHeadSacrifices = heretic.RequiredHeadSacrifices;
+        progress.SummonCount = heretic.SummonCount;
+        progress.RequiredSummons = heretic.RequiredSummons;
         progress.Ascended = heretic.Ascended;
     }
 
@@ -95,6 +116,7 @@ public sealed partial class StoriesHereticObjectiveSystem : EntitySystem
             StoriesHereticObjectiveKind.Knowledge => (progress.LearnedCount, progress.RequiredKnowledge),
             StoriesHereticObjectiveKind.Sacrifice => (progress.SacrificeCount, progress.RequiredSacrifices),
             StoriesHereticObjectiveKind.HeadSacrifice => (progress.HeadSacrificeCount, progress.RequiredHeadSacrifices),
+            StoriesHereticObjectiveKind.Summon => (progress.SummonCount, progress.RequiredSummons),
             _ => (0, 0),
         };
     }

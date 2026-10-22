@@ -1,0 +1,10 @@
+stories-heretic-summon-rules = Вы — монстр Мансуса, призванный еретиком. Служите хозяину и помогайте ему вознестись. Вы антагонист.
+stories-heretic-summon-waiting = Ритуал зовёт сквозь Мансус… Кто-то должен откликнуться.
+stories-heretic-summon-claimed = Ваш зов услышан: { $mob } пришёл служить.
+stories-heretic-summon-briefing = Вы — тварь, явившаяся через Врата Мансуса. Ваш хозяин — { $master }. Служите ему любой ценой.
+stories-heretic-summon-unclaimed = { CAPITALIZE($mob) } так и не обрёл душу и растворяется.
+stories-heretic-summon-collapse = { CAPITALIZE($mob) } схлопывается сам в себя!
+stories-heretic-ghost-role-raw-prophet-name = Сырой пророк
+stories-heretic-ghost-role-raw-prophet-desc = Мерзость, сшитая из нескольких отрубленных рук и одного распухшего осиротевшего глаза. Служите своему хозяину.
+stories-heretic-ghost-role-stalker-name = Сталкер
+stories-heretic-ghost-role-stalker-desc = Мерзость, собранная из разных останков. Её облик чуть меняется всякий раз, когда вы моргаете. Служите своему хозяину.

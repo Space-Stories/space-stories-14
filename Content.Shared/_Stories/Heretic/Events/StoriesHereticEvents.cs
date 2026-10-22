@@ -60,3 +60,15 @@ public sealed partial class StoriesHereticHarvestDoAfterEvent : SimpleDoAfterEve
 
 [Serializable, NetSerializable]
 public sealed partial class StoriesHereticBladeBreakDoAfterEvent : SimpleDoAfterEvent;
+
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticDismemberDoAfterEvent : SimpleDoAfterEvent;
+
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticKnitExtractDoAfterEvent : SimpleDoAfterEvent;
+
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticKnitHealDoAfterEvent : SimpleDoAfterEvent;
+
+[Serializable, NetSerializable]
+public sealed partial class StoriesHereticMansusLinkDoAfterEvent : SimpleDoAfterEvent;
