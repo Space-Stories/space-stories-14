@@ -162,6 +162,13 @@
     id: SyndiCommanderPDA
     neck: SyndicateWhistle
     outerClothing: ClothingOuterHardsuitSyndieCommander
+  # Stories-Weapon-Start
+  storage:
+    back:
+    - STWeaponPistolDeagle
+    - PinpointerSyndicateNuclear
+    - DeathAcidifierImplanter
+  # Stories-Weapon-End
   inhand:
   - NukeOpsDeclarationOfWar
 

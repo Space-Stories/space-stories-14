@@ -158,14 +158,16 @@
     - FoodBakedBunHotX
     - FoodBakedBunHotX
     belt:
+    # Stories-Weapon-Start
     - Bible
     - Lantern
-    - Lantern
-    - Lantern
     - CrowbarRed
-    - WeaponPistolMk58
-    - MagazinePistol
+    - STWeaponPistolDeagle
+    - STMagazineDeagleSilver
+    - STMagazineDeagleSilver
+    - STMagazineDeagleSilver
     - FlippoEngravedLighter
+    # Stories-Weapon-End
 
 - type: chameleonOutfit
   id: ERTChaplainChameleonOutfit

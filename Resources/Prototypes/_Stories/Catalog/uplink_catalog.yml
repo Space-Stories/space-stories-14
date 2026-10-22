@@ -1,7 +1,7 @@
 # Weapons
 - type: listing
   id: STUplinkGarrote
-  name: uplink-garrote-name 
+  name: uplink-garrote-name
   description: uplink-garrote-desc
   productEntity: STGarrote
   discountCategory: usualDiscounts
@@ -11,6 +11,37 @@
     Telecrystal: 8
   categories:
   - UplinkWeaponry
+
+- type: listing
+  id: STUplinkDeagle
+  name: stories-uplink-deagle-name
+  description: stories-uplink-deagle-desc
+  productEntity: STWeaponPistolDeagle
+  cost:
+    Telecrystal: 8
+  categories:
+  - UplinkWeaponry
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - NukeOpsUplink
+
+# Ammo
+- type: listing
+  id: STUplinkMagazineDeagle
+  name: stories-uplink-magazine-deagle-name
+  description: stories-uplink-magazine-deagle-desc
+  productEntity: STMagazineDeagle
+  cost:
+    Telecrystal: 3
+  categories:
+  - UplinkAmmo
+  conditions:
+  - !type:StoreWhitelistCondition
+    whitelist:
+      tags:
+      - NukeOpsUplink
 
 # Pointless  
 - type: listing

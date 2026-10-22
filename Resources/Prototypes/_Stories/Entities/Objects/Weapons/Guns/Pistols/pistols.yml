@@ -1,0 +1,41 @@
+- type: entity
+  name: desert eagle
+  parent: [BaseWeaponPistol, BaseSecurityContraband]
+  id: STWeaponPistolDeagle
+  description: A military-grade weapon used primarily by Nuclear operatives, as well as by certain Syndicate officers.
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Weapons/Guns/Pistols/deagle.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Clothing
+    sprite: _Stories/Objects/Weapons/Guns/Pistols/deagle.rsi
+  - type: Item
+    storedOffset: 0,-5
+  - type: Gun
+    fireRate: 2
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/hpistol.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: STMagazineDeagle
+        insertSound: /Audio/Weapons/Guns/MagIn/pistol_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - STMagazineDeagle
+        whitelistFailPopup: gun-magazine-whitelist-fail
+      gun_chamber:
+        name: Chamber
+        priority: 1
+        whitelist:
+          tags:
+          - STCartridgeDeagle
