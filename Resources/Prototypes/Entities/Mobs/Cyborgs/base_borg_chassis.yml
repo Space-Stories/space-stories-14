@@ -361,6 +361,14 @@
   - type: InteractionPopup
     interactSuccessSound:
       path: /Audio/Ambience/Objects/periodic_beep.ogg
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - FootstepSound
+    - CanPilot
+    - SiliconEmotes
+    - Unimplantable
+    - STFreeVendNT # Stories-Economy
 
 - type: entity
   id: BaseBorgChassisSyndicate

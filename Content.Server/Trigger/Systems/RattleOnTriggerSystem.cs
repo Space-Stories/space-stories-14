@@ -1,8 +1,9 @@
-using Content.Server.Radio.EntitySystems;
 using Content.Server.Pinpointer;
+using Content.Server.Radio.EntitySystems;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Trigger;
 using Content.Shared.Trigger.Components.Effects;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 
@@ -12,6 +13,7 @@ public sealed partial class RattleOnTriggerSystem : EntitySystem
 {
     [Dependency] private RadioSystem _radio = default!;
     [Dependency] private NavMapSystem _navMap = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -41,7 +43,20 @@ public sealed partial class RattleOnTriggerSystem : EntitySystem
         // Gets the location of the user
         var posText = FormattedMessage.RemoveMarkupOrThrow(_navMap.GetNearestBeaconString(target.Value));
 
-        var message = Loc.GetString(messageId, ("user", target.Value), ("position", posText));
+        // Stories-RattleCoordinates-Start
+        var coordsText = Loc.GetString("stories-rattle-on-trigger-coordinates-error");
+
+        var coords = _transform.GetMapCoordinates(ent);
+
+        if (coords.MapId != MapId.Nullspace) // Gets the coordinates of the user
+        {
+            var x = (int) coords.Position.X;
+            var y = (int) coords.Position.Y;
+            coordsText = $"({x}, {y})";
+        }
+        // Stories-RattleCoordinates-End
+
+        var message = Loc.GetString(messageId, ("user", target.Value), ("position", posText), ("coordinates", coordsText));
         // Sends a message to the radio channel specified by the implant
         _radio.SendRadioMessage(ent.Owner, message, ProtoMan.Index(ent.Comp.RadioChannel), ent.Owner);
     }

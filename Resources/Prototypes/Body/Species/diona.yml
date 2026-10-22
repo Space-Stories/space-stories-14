@@ -318,6 +318,14 @@
   id: OrganDionaNymphBrain
   suffix: brain
   components:
+  - type: Language # Stories-Language
+    currentLanguage: Sylvan
+    defaultLanguage: Sylvan
+    spokenLanguages:
+    - Sylvan
+    understoodLanguages:
+    - Sylvan
+    - GalacticCommon
   - type: IsDeadIC
   - type: EntityTableContainerFill
     containers:

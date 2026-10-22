@@ -108,7 +108,7 @@
     - state:
       map: [ "enum.FaxMachineVisuals.VisualState" ]
   - type: FaxMachine
-    name: "Central Command"
+    name: Центральное Командование # Stories-Localization
     notifyAdmins: true
 
 - type: entity
@@ -142,7 +142,7 @@
   suffix: NukeCodes
   components:
     - type: FaxMachine
-      name: "Captain's Office"
+      name: "Офис Капитана" # Stories-Localization
       receiveNukeCodes: true
       receiveStationGoal: true # Corvax-StationGoal
     - type: StealTarget

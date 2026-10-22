@@ -10,22 +10,9 @@
   - AllHostile
   - Wizard
   - Xenoborg
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
-
-# Stories-Demons-Start
-- type: npcFaction
-  id: STDemon
-  hostile:
-  - NanoTrasen
-  - Syndicate
-  - Xeno
-  - PetsNT
-  - Zombie
-  - Revolutionary
-  - AllHostile
-  - Wizard
-  - Xenoborg
-# Stories-Demons-End
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: NanoTrasen
@@ -64,7 +51,9 @@
   - Xeno
   - AllHostile
   - Dragon
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: SimpleHostile
@@ -80,7 +69,9 @@
   - AllHostile
   - Wizard
   - Xenoborg
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: SimpleNeutral
@@ -99,6 +90,7 @@
   - Xenoborg
   - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: Xeno
@@ -113,7 +105,9 @@
   - Wizard
   - Dragon
   - Xenoborg
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: Zombie
@@ -129,6 +123,7 @@
   - Wizard
   - Dragon
   - Xenoborg
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: Revolutionary
@@ -137,11 +132,12 @@
   - Zombie
   - SimpleHostile
   - Dragon
-  - STShadowling # Stories-Shadowling
   - AllHostile
   - Wizard
   - Xenoborg
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: AllHostile
@@ -159,7 +155,9 @@
   - Revolutionary
   - Wizard
   - Xenoborg
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: Wizard
@@ -177,7 +175,9 @@
   - Revolutionary
   - AllHostile
   - Xenoborg
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons
 
 - type: npcFaction
   id: Xenoborg
@@ -194,4 +194,6 @@
   # cause they are hostile to them
   - SimpleHostile
   - AllHostile
+  - STShadowling # Stories-Shadowling
   - STUnholy # Stories-Pontific
+  - STDemon # Stories-Demons

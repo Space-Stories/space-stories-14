@@ -15,7 +15,7 @@
     proto: STBullet585Trappiste
   - type: Tag
     tags:
-    - Cartridge585Trappiste
+    - STCartridge585Trappiste
 
 - type: entity
   parent: BaseCartridgePistol
@@ -34,7 +34,7 @@
     proto: STBullet585TrappisteIncapacitator
   - type: Tag
     tags:
-    - Cartridge585Trappiste
+    - STCartridge585Trappiste
 
 - type: entity
   parent: BaseCartridgePistol
@@ -53,4 +53,4 @@
     proto: STBullet585TrappisteHollowpoint
   - type: Tag
     tags:
-    - Cartridge585Trappiste
+    - STCartridge585Trappiste

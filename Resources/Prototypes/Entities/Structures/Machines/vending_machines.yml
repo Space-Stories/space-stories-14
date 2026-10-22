@@ -106,6 +106,9 @@
   - type: VendingMachineDispenseOnHit
     chance: 0.25
     threshold: 2
+  - type: VendingMachine
+    freeTags:
+    - STFreeVendNT
 
 - type: entity
   id: VendingMachine
@@ -178,6 +181,9 @@
     enabled: false
     usesApcPower: true
   - type: Rotatable
+  - type: VendingMachine
+    freeTags:
+    - STFreeVendNT
 
 # Vending machines
 
@@ -1967,6 +1973,10 @@
   components:
   - type: VendingMachine
     pack: RoboDrobeInventory
+    freeJobs:
+    - Scientist
+    - ResearchDirector
+    - ResearchAssistant
   - type: DatasetVocalizer
     dataset: RoboDrobeAds
   - type: SpeakOnUIClosed

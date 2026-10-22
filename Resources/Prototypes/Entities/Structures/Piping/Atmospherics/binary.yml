@@ -90,6 +90,7 @@
   - type: GuideHelp
     guides:
     - Pumps
+  - type: StationAiWhitelist # Stories-StationAiWhitelist
 
 - type: entity
   parent: GasBinaryBase
@@ -162,6 +163,7 @@
     - type: GuideHelp
       guides:
       - Pumps
+    - type: StationAiWhitelist # Stories-StationAiWhitelist
 
 - type: entity
   parent: GasBinaryBase
@@ -222,6 +224,7 @@
   - type: GuideHelp
     guides:
     - PressureRegulator
+  - type: StationAiWhitelist # Stories-StationAiWhitelist
 
 - type: entity
   parent: GasBinaryBase

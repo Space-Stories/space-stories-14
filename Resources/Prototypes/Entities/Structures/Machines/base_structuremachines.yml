@@ -52,6 +52,7 @@
   - type: ExtensionCableReceiver
   - type: LightningTarget
     priority: 1
+  - type: StationAiWhitelist # Stories-StationAiWhitelist
 
 - type: entity
   abstract: true

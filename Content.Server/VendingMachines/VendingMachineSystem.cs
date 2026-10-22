@@ -18,6 +18,7 @@ using Content.Shared.Emp;
 using Content.Shared.PDA;
 using Content.Shared.Power;
 using Content.Shared.Roles;
+using Content.Shared.Tag;
 using Content.Shared.Throwing;
 using Content.Shared.UserInterface;
 using Content.Shared.VendingMachines;
@@ -37,6 +38,7 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
     [Dependency] private StationSystem _station = default!;
     [Dependency] private SharedIdCardSystem _idCard = default!;
     [Dependency] private PowerReceiverSystem _power = default!;
+    [Dependency] private TagSystem _tags = default!;
 
     private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -268,14 +270,21 @@ public sealed partial class VendingMachineSystem : SharedVendingMachineSystem
     /// <summary>
     /// Checks if the user gets free items from this vending machine.
     /// Returns true if the user's ID card has a PresetIdCardComponent and its JobName is in the machine's FreeJobs list.
+    /// Returns true if the user or their ID card has a tag from the machine's FreeTags list.
     /// </summary>
     private bool IsFreeForUser(EntityUid uid, EntityUid user, VendingMachineComponent component)
     {
-        if (component.FreeJobs.Count == 0)
+        if (component.FreeJobs.Count == 0 && component.FreeTags.Count == 0)
             return false;
+
+        if (_tags.HasAnyTag(user, component.FreeTags))
+            return true;
 
         if (!_idCard.TryFindIdCard(user, out var idCard))
             return false;
+        
+        if (_tags.HasAnyTag(idCard, component.FreeTags))
+            return true;
 
         ProtoId<JobPrototype>? jobId = null;
         if (idCard.Comp.JobPrototype != null)

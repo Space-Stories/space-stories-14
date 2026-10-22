@@ -30,6 +30,6 @@
     walkModifier: 0.85
     sprintModifier: 0.85
   - type: ClothingSlowOnDamageModifier
-    modifier: 0.75
+    modifier: 0.25
   - type: StaticPrice
     price: 350

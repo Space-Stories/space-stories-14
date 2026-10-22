@@ -42,6 +42,9 @@
   - type: Tag
     tags:
     - ForceNoFixRotations # Don't want the fixrotations command to target these
+    - DoorRemoteWhitelist # Stories-DoorRemote-For-Shutters
+  - type: AccessReader # Stories-DoorRemote-For-Shutters
+    containerAccessProvider: board
   - type: Door
     openDrawDepth: BlastDoors
     closedDrawDepth: BlastDoors

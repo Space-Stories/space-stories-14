@@ -42,7 +42,7 @@
   - type: StationMap
   - type: Sprite
     sprite: Structures/Wallmounts/station-map.rsi
-    offset: 0, -0.25
+    offset: 0, -0.13
     layers:
     - state: base
     - state: unshaded
