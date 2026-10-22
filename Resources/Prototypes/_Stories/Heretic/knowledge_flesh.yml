@@ -6,7 +6,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/flesh_blade.rsi
+      sprite: _Stories/Heretic/Objects/Weapons/flesh_blade.rsi
       state: icon
     path: STHereticPathFlesh
     choosesPath: true
@@ -25,7 +25,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: grasp_flesh
     path: STHereticPathFlesh
     pathLocked: true
@@ -42,7 +42,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: ghoul_voiceless
     path: STHereticPathFlesh
     stage: 3
@@ -58,7 +58,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: mansus_grasp
     path: STHereticPathFlesh
     pathLocked: true
@@ -78,7 +78,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: blade_upgrade_flesh
     path: STHereticPathFlesh
     pathLocked: true
@@ -96,7 +96,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: mad_touch
     path: STHereticPathFlesh
     stage: 5
@@ -114,7 +114,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: summon_raw_prophet
     path: STHereticPathFlesh
     stage: 6
@@ -130,7 +130,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: summon_stalker
     path: STHereticPathFlesh
     stage: 8
@@ -146,7 +146,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: node_finished
     path: STHereticPathFlesh
     stage: 9
@@ -167,7 +167,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/writhing_embrace.rsi
+      sprite: _Stories/Heretic/Clothing/OuterClothing/writhing_embrace.rsi
       state: icon
     path: STHereticPathFlesh
     side: true

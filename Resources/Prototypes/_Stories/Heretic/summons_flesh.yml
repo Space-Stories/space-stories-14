@@ -20,7 +20,7 @@
   description: An abomination stitched together from several severed arms and one swollen, orphaned eye.
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/raw_prophet.rsi
+    sprite: _Stories/Heretic/Mobs/raw_prophet.rsi
     layers:
     - state: icon
   - type: Damageable
@@ -66,7 +66,7 @@
   description: An abomination assembled from assorted remains. Its shape shifts a little every time you blink.
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/stalker.rsi
+    sprite: _Stories/Heretic/Mobs/stalker.rsi
     layers:
     - state: icon
   - type: Damageable
@@ -170,7 +170,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/lord_of_night.rsi
+    sprite: _Stories/Heretic/Mobs/lord_of_night.rsi
     layers:
     - state: icon
   - type: Fixtures

@@ -11,7 +11,7 @@
     difficulty: 1
     issuer: STHeretic
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: eye
 
 - type: entity

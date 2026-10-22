@@ -8,7 +8,7 @@
     itemIconStyle: NoItem
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: eye
   - type: InstantAction
@@ -24,7 +24,7 @@
     itemIconStyle: NoItem
     useDelay: 1
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: draw_rune
   - type: TargetAction
@@ -44,7 +44,7 @@
     sound: !type:SoundPathSpecifier
       path: /Audio/Magic/disintegrate.ogg
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: mansus_grasp
   - type: TargetAction
@@ -69,7 +69,7 @@
     useDelay: 10
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: living_heart
   - type: InstantAction
@@ -85,7 +85,7 @@
     itemIconStyle: NoItem
     useDelay: 6
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: ninja_cloak
   - type: StoriesHereticRequiresFocus

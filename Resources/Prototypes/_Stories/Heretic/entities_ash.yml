@@ -7,10 +7,10 @@
   - type: StoriesHereticBlade
     breakMessage: stories-heretic-blade-break-ash
   - type: Sprite
-    sprite: _Stories/Heretic/ash_blade.rsi
+    sprite: _Stories/Heretic/Objects/Weapons/ash_blade.rsi
     state: icon
   - type: Item
-    sprite: _Stories/Heretic/ash_blade_inhand.rsi
+    sprite: _Stories/Heretic/Objects/Weapons/ash_blade_inhand.rsi
     size: Normal
   - type: MeleeWeapon
     wideAnimationRotation: -135
@@ -28,10 +28,10 @@
   description: A smouldering medallion with an eye. Through it you see the warmth of the living.
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/ashen_eyes.rsi
+    sprite: _Stories/Heretic/Clothing/Neck/ashen_eyes.rsi
     state: icon
   - type: Clothing
-    sprite: _Stories/Heretic/ashen_eyes.rsi
+    sprite: _Stories/Heretic/Clothing/Neck/ashen_eyes.rsi
   - type: StoriesHereticFocus
   - type: VisionProvider
     isActive: true
@@ -47,10 +47,10 @@
   components:
   - type: StoriesHereticMadnessMask
   - type: Sprite
-    sprite: _Stories/Heretic/madness_mask.rsi
+    sprite: _Stories/Heretic/Clothing/Mask/madness_mask.rsi
     state: icon
   - type: Clothing
-    sprite: _Stories/Heretic/madness_mask.rsi
+    sprite: _Stories/Heretic/Clothing/Mask/madness_mask.rsi
 
 - type: entity
   id: STHereticFireRingEffect
@@ -59,7 +59,7 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/fire_ring.rsi
+    sprite: _Stories/Heretic/Effects/fire_ring.rsi
     color: "#ff7a22dd"
     layers:
     - state: ring
@@ -84,7 +84,7 @@
   - type: TimedDespawn
     lifetime: 0.6
   - type: Sprite
-    sprite: _Stories/Heretic/effects.rsi
+    sprite: _Stories/Heretic/Effects/effects.rsi
     layers:
     - state: flame
       shader: unshaded
@@ -101,9 +101,9 @@
   components:
   - type: StoriesHereticScorchedMantle
   - type: Sprite
-    sprite: _Stories/Heretic/scorched_mantle.rsi
+    sprite: _Stories/Heretic/Clothing/OuterClothing/scorched_mantle.rsi
   - type: Clothing
-    sprite: _Stories/Heretic/scorched_mantle.rsi
+    sprite: _Stories/Heretic/Clothing/OuterClothing/scorched_mantle.rsi
   - type: Item
     size: Normal
   - type: ToggleableClothing
@@ -146,9 +146,9 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/scorched_mantle_hood.rsi
+    sprite: _Stories/Heretic/Clothing/Head/scorched_mantle_hood.rsi
   - type: Clothing
-    sprite: _Stories/Heretic/scorched_mantle_hood.rsi
+    sprite: _Stories/Heretic/Clothing/Head/scorched_mantle_hood.rsi
     quickEquip: false
   - type: HideLayerClothing
     layers:

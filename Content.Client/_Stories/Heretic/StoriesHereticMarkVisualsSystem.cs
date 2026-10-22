@@ -11,7 +11,7 @@ public sealed partial class StoriesHereticMarkVisualsSystem : EntitySystem
     [Dependency] private SpriteSystem _sprite = default!;
 
     public const string LayerKey = "STHereticMark";
-    public static readonly ResPath Rsi = new("/Textures/_Stories/Heretic/marks.rsi");
+    public static readonly ResPath Rsi = new("/Textures/_Stories/Heretic/Effects/marks.rsi");
 
     public static readonly IReadOnlyDictionary<ProtoId<TagPrototype>, string> States = new Dictionary<ProtoId<TagPrototype>, string>
     {

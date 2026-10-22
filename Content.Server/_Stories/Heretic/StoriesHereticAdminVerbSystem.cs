@@ -55,7 +55,7 @@ public sealed partial class StoriesHereticAdminVerbSystem : EntitySystem
         {
             Text = name,
             Category = VerbCategory.Antag,
-            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Stories/Heretic/actions.rsi"), "eye"),
+            Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/_Stories/Heretic/Interface/actions.rsi"), "eye"),
             Act = () =>
             {
                 _antag.ForceMakeAntag<StoriesHereticRuleComponent>(target, HereticRule, HereticSpecifier);

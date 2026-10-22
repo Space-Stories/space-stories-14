@@ -27,7 +27,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: eye
     cost: 0
     stage: 1

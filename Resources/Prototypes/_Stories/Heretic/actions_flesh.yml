@@ -8,7 +8,7 @@
     itemIconStyle: NoItem
     useDelay: 20
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: mad_touch
   - type: TargetAction
@@ -33,7 +33,7 @@
     useDelay: 10
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: worm_ascend
   - type: InstantAction
@@ -50,7 +50,7 @@
     useDelay: 15
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: ash_shift
   - type: InstantAction
@@ -67,7 +67,7 @@
     itemIconStyle: NoItem
     useDelay: 20
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: eye
   - type: TargetAction
@@ -90,7 +90,7 @@
     itemIconStyle: NoItem
     useDelay: 20
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: mansus_link
   - type: TargetAction
@@ -115,7 +115,7 @@
     useDelay: 8
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: eye
   - type: InstantAction
@@ -133,7 +133,7 @@
     useDelay: 30
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: shatter
   - type: InstantAction
@@ -153,7 +153,7 @@
     useDelay: 15
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: voidblink
   - type: InstantAction
@@ -171,7 +171,7 @@
     useDelay: 5
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: blood_siphon
   - type: InstantAction

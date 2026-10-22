@@ -7,10 +7,10 @@
   - type: StoriesHereticBlade
     breakMessage: stories-heretic-blade-break-flesh
   - type: Sprite
-    sprite: _Stories/Heretic/flesh_blade.rsi
+    sprite: _Stories/Heretic/Objects/Weapons/flesh_blade.rsi
     state: icon
   - type: Item
-    sprite: _Stories/Heretic/flesh_blade_inhand.rsi
+    sprite: _Stories/Heretic/Objects/Weapons/flesh_blade_inhand.rsi
     size: Normal
   - type: MeleeWeapon
     wideAnimationRotation: -135
@@ -29,9 +29,9 @@
   components:
   - type: StoriesHereticWrithingEmbrace
   - type: Sprite
-    sprite: _Stories/Heretic/writhing_embrace.rsi
+    sprite: _Stories/Heretic/Clothing/OuterClothing/writhing_embrace.rsi
   - type: Clothing
-    sprite: _Stories/Heretic/writhing_embrace.rsi
+    sprite: _Stories/Heretic/Clothing/OuterClothing/writhing_embrace.rsi
   - type: Item
     size: Normal
   - type: ToggleableClothing
@@ -64,9 +64,9 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: _Stories/Heretic/writhing_embrace_hood.rsi
+    sprite: _Stories/Heretic/Clothing/Head/writhing_embrace_hood.rsi
   - type: Clothing
-    sprite: _Stories/Heretic/writhing_embrace_hood.rsi
+    sprite: _Stories/Heretic/Clothing/Head/writhing_embrace_hood.rsi
     quickEquip: false
   - type: HideLayerClothing
     layers:
