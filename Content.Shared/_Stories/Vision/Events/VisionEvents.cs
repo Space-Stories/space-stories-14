@@ -22,7 +22,7 @@ public record struct RefreshVisionEvent : IInventoryRelayEvent
     {
     }
 
-    public SlotFlags TargetSlots => SlotFlags.EYES | SlotFlags.HEAD | SlotFlags.MASK | SlotFlags.OUTERCLOTHING | SlotFlags.NECK;
+    public SlotFlags TargetSlots => SlotFlags.EYES | SlotFlags.HEAD | SlotFlags.MASK | SlotFlags.OUTERCLOTHING;
 }
 
 public sealed partial class ToggleVisionActionEvent : InstantActionEvent;
