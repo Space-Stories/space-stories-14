@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/commit/ca79910d79497cf1ab56ebcf8db52a7289a3d412",
+  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/mob/actions/actions_ecult.dmi, https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/effects/eldritch.dmi, https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/obj/antags/eldritch.dmi",
   "size": {
     "x": 32,
     "y": 32
