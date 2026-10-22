@@ -10,17 +10,9 @@
   - type: Item
     size: Normal
     sprite: _Stories/Objects/Weapons/Melee/shield_blade.rsi
-  - type: MeleeWeapon
-    attackRate: 1.0
-    soundHit:
-      path: /Audio/_Stories/Weapons/bladeslice.ogg
-    damage:
-      types:
-        Slash: 12
-        Piercing: 6
   - type: Tool
     qualities:
-    - Slicing
+    - Prying
   - type: Prying
     speedModifier: 1.2
     pryPowered: true
@@ -41,14 +33,14 @@
     passiveBlockFraction: 0.2
     blockSound:
       path: /Audio/Weapons/block_metal1.ogg
-  - type: Damageable
   - type: Injurable
     damageContainer: Shield
   - type: ExaminableDamage
     messages: ShieldMessages
+  - type: Damageable
 
 - type: entity
-  name: shield blade
+  name: combat blade
   parent: BaseItem
   id: STWeaponShieldBladeRight
   description: Durable retractable blade made from hard materials, featuring a wide shield design. Purposefully sacrificing offensive capabilities and user mobility in favor of enhanced protection. Installed in the right arm.
@@ -65,33 +57,11 @@
       path: /Audio/_Stories/Weapons/bladeslice.ogg
     damage:
       types:
-        Slash: 12
-        Piercing: 6
+        Slash: 16
+        Piercing: 8
   - type: Tool
     qualities:
     - Slicing
   - type: Prying
     speedModifier: 1.2
     pryPowered: true
-  - type: Blocking
-    passiveBlockModifier:
-      flatReductions:
-        Blunt: 10
-        Slash: 10
-        Piercing: 10
-        Heat: 8
-    activeBlockModifier:
-      flatReductions:
-        Blunt: 20
-        Slash: 20
-        Piercing: 20
-        Heat: 15
-    activeBlockFraction: 0.6
-    passiveBlockFraction: 0.2
-    blockSound:
-      path: /Audio/Weapons/block_metal1.ogg
-  - type: Damageable
-  - type: Injurable
-    damageContainer: Shield
-  - type: ExaminableDamage
-    messages: ShieldMessages

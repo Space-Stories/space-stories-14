@@ -33,3 +33,11 @@
   - type: Implanter
     implant: STShieldBladeImplantRight
     allowMultipleImplants: true
+
+- type: entity
+  id: STDeathRattleImplanterSecurity
+  name: security death rattle implanter
+  parent: BaseImplantOnlyImplanter
+  components:
+  - type: Implanter
+    implant: STDeathRattleImplantSecurity

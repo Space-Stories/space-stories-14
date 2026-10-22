@@ -19,9 +19,9 @@
       path: /Audio/Weapons/Guns/Gunshots/revolver.ogg
   - type: RevolverAmmoProvider
     proto: STCartridge585Trappiste
-    capacity: 5
-    chambers: [ True, True, True, True, True ]
-    ammoSlots: [ null, null, null, null, null ]
+    capacity: 6
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]
     whitelist:
       tags:
       - Cartridge585Trappiste
@@ -79,7 +79,7 @@
           - Cartridge585Trappiste
 
 - type: entity
-  parent: BaseWeaponBattery
+  parent: [ BaseWeaponBattery, BaseGunWieldable ]
   id: STWeaponLaserHellfireBlueshield
   name: modified hellfire laser gun
   description: A lightly overtuned version of NT's Hellfire Laser rifle, scratches showing its age and the fact it has definitely been owned before. This one is more energy efficient without sacrificing damage.
@@ -101,9 +101,52 @@
     proto: STProjectileLaserHellfire
     fireCost: 100
   - type: Battery
-    maxCharge: 1300
-    startingCharge: 1300
+    maxCharge: 1600
+    startingCharge: 1600
   - type: MagazineVisuals
     magState: hellgun_charge
     steps: 5
     zeroVisible: false
+
+- type: entity
+  name: modified lightning laser pistol
+  parent: BaseWeaponBatterySmall
+  id: STWeaponEnergyPistolLightning
+  description: A pistol designed specifically for officers whose tasks include protecting members of the command staff.
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Weapons/Guns/Battery/blueshield_gun.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-4
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: Clothing
+    sprite: _Stories/Objects/Weapons/Guns/Battery/blueshield_gun.rsi
+  - type: Gun
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser_cannon.ogg
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    fireRate: 1.5
+  - type: Appearance
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: true
+  - type: Battery
+    maxCharge: 750
+    startingCharge: 750
+  - type: BatteryWeaponFireModes
+    fireModes:
+    - proto: BulletDisabler
+      fireCost: 50
+    - proto: BulletTaser
+      fireCost: 75
+    - proto: BulletLaser
+      fireCost: 50
+  - type: BatteryAmmoProvider
+    proto: BulletDisabler
+    fireCost: 50
