@@ -1,4 +1,3 @@
-using Content.Server.Damage.Systems;
 using Content.Server.Popups;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Bridges;
@@ -8,7 +7,6 @@ using Content.Shared._Stories.Heretic.Void;
 using Content.Shared.Maps;
 using Content.Shared.Physics;
 using Content.Shared.Popups;
-using Content.Shared.StatusEffectNew;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
@@ -22,17 +20,13 @@ public sealed partial class StoriesHereticBridgeSystem
     [Dependency] private SharedAppearanceSystem _appearance = default!;
     [Dependency] private StoriesHereticVoidChillSystem _chill = default!;
     [Dependency] private SharedContainerSystem _containers = default!;
-    [Dependency] private GodmodeSystem _godmode = default!;
     [Dependency] private StoriesHereticGraspSystem _grasp = default!;
     [Dependency] private SharedMapSystem _map = default!;
     [Dependency] private PopupSystem _popup = default!;
     [Dependency] private StoriesHereticRuleSystem _rule = default!;
-    [Dependency] private StatusEffectsSystem _statusEffects = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TurfSystem _turf = default!;
-
-    private static readonly EntProtoId MutedEffect = "StatusEffectMuted";
 
     private void InitializePrison()
     {
@@ -73,8 +67,7 @@ public sealed partial class StoriesHereticBridgeSystem
         comp.Prisoner = target;
         comp.ActiveTime = _timing.CurTime + comp.OpeningTime;
         comp.EndTime = _timing.CurTime + comp.Duration;
-        _godmode.EnableGodmode(target);
-        _statusEffects.TryUpdateStatusEffectDuration(target, MutedEffect, comp.Duration);
+        EnsureComp<StoriesHereticVoidPrisonerComponent>(target);
         _appearance.SetData(prison, StoriesHereticVoidPrisonVisuals.State, comp.State);
     }
 
@@ -89,8 +82,7 @@ public sealed partial class StoriesHereticBridgeSystem
 
         var coords = Transform(ent).Coordinates;
         _containers.Remove(target, container, destination: coords);
-        _godmode.DisableGodmode(target);
-        _statusEffects.TryRemoveStatusEffect(target, MutedEffect);
+        RemComp<StoriesHereticVoidPrisonerComponent>(target);
 
         if (!IsTileFree(coords) && _rule.TryGetRandomStationCoordinates(out var safe))
         {
@@ -108,7 +100,7 @@ public sealed partial class StoriesHereticBridgeSystem
         if (_containers.TryGetContainer(ent, ent.Comp.ContainerId, out var container) && container.Contains(target))
             _containers.Remove(target, container, destination: Transform(ent).Coordinates);
 
-        _godmode.DisableGodmode(target);
+        RemComp<StoriesHereticVoidPrisonerComponent>(target);
         _chill.ApplyChill(target, ent.Comp.ChillStacks);
     }
 

@@ -86,10 +86,28 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: StoriesHereticVoidPrison
-  - type: Transform
-    anchored: true
+  - type: Damageable
+  - type: Injurable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
   - type: Physics
     bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        hard: false
+        layer:
+        - MobLayer
   - type: Sprite
     sprite: _Stories/Heretic/Effects/void_prison.rsi
     layers:
