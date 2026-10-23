@@ -120,6 +120,8 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
                 var bridgeIsLeft = i + 1 < _columns.Count && _columns[i + 1].Path == column.Path && _columns[i + 1].BridgeTo == null;
                 var from = StoriesHereticPalette.Get(bridgeIsLeft ? column.BridgeTo : column.Path).Dark;
                 var to = StoriesHereticPalette.Get(bridgeIsLeft ? column.Path : column.BridgeTo).Dark;
+                left = _columnX[i] * UIScale;
+                right = (_columnX[i] + _columnWidth[i]) * UIScale;
                 var step = (right - left) / GradientSteps;
                 for (var s = 0; s < GradientSteps; s++)
                 {
@@ -162,8 +164,17 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
                     continue;
                 }
 
-                var row = Math.Max(to.Node.Stage - 1, 0);
-                var gapY = (HeaderHeight + Padding + row * RowHeight - RouteGapOffset) * UIScale;
+                var gapY = to.PixelPosition.Y - RouteGapOffset * UIScale;
+                var previousBottom = float.MinValue;
+                foreach (var other in _controls.Values)
+                {
+                    if (other.Node.Stage == to.Node.Stage - 1)
+                        previousBottom = Math.Max(previousBottom, other.PixelPosition.Y + other.PixelSize.Y);
+                }
+
+                if (previousBottom > float.MinValue)
+                    gapY = (to.PixelPosition.Y + previousBottom) / 2;
+
                 var a = new Vector2(start.X, gapY);
                 var b = new Vector2(end.X, gapY);
                 DrawThickLine(handle, start, a, thickness, color);
