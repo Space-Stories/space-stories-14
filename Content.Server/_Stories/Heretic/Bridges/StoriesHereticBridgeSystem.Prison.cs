@@ -77,18 +77,22 @@ public sealed partial class StoriesHereticBridgeSystem
             return;
 
         ent.Comp.Prisoner = null;
-        if (!_containers.TryGetContainer(ent, ent.Comp.ContainerId, out var container) || !container.Contains(target))
+        RemComp<StoriesHereticVoidPrisonerComponent>(target);
+        if (TerminatingOrDeleted(Transform(ent).ParentUid)
+            || !_containers.TryGetContainer(ent, ent.Comp.ContainerId, out var container)
+            || !container.Contains(target))
             return;
 
         var coords = Transform(ent).Coordinates;
         _containers.Remove(target, container, destination: coords);
-        RemComp<StoriesHereticVoidPrisonerComponent>(target);
 
         if (!IsTileFree(coords) && _rule.TryGetRandomStationCoordinates(out var safe))
         {
             _transform.SetCoordinates(target, safe);
             _transform.AttachToGridOrMap(target);
         }
+
+        _chill.ApplyChill(target, ent.Comp.ChillStacks);
     }
 
     private void ReleasePrisoner(Entity<StoriesHereticVoidPrisonComponent> ent)

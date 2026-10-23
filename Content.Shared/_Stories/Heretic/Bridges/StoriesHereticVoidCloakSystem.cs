@@ -1,8 +1,8 @@
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared._Stories.Strip;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Clothing.EntitySystems;
 using Content.Shared.Inventory.Events;
-using Content.Shared._Stories.Strip;
 using Content.Shared.Popups;
 using Robust.Shared.Network;
 
@@ -30,7 +30,7 @@ public sealed partial class StoriesHereticVoidCloakSystem : EntitySystem
             return;
 
         args.Handled = true;
-        _popup.PopupClient(Loc.GetString("stories-heretic-void-cloak-refuse"), args.Performer, args.Performer);
+        _popup.PopupEntity(Loc.GetString("stories-heretic-void-cloak-refuse"), args.Performer, args.Performer);
     }
 
     private void OnStripHidden(Entity<StoriesHereticVoidCloakComponent> ent, ref StoriesStripItemHiddenEvent args)
