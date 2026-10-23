@@ -60,3 +60,54 @@
       Snout: HEAD
       HeadTop: HEAD
       HeadSide: HEAD
+
+- type: entity
+  id: STHereticCleaveEffect
+  name: bloody cleave
+  description: A gash in the air, dripping red.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/cleave.rsi
+    layers:
+    - state: cleave
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticVoidPrison
+  name: void sphere
+  description: A sphere of the Void. Whatever is inside is gone from the world.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticVoidPrison
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_prison.rsi
+    layers:
+    - state: opening
+      map: [ "base" ]
+    drawdepth: Effects
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.StoriesHereticVoidPrisonVisuals.State:
+        base:
+          Opening: { state: opening }
+          Active: { state: effect }
+          Closing: { state: closing }
+  - type: PointLight
+    radius: 2
+    energy: 1
+    color: "#6f3cc9"
+  - type: Tag
+    tags:
+    - HideContextMenu

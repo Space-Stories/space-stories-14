@@ -14,3 +14,5 @@ stories-heretic-void-ascension-corpses = Вальсу нужно ещё { $count
 } в холоде.
 
 stories-heretic-void-cloak-refuse = Капюшон выскальзывает из пальцев, будто его нет.
+
+stories-heretic-bridge-prison-invalid = Пустота не принимает эту цель.

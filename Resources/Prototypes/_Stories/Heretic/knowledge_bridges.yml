@@ -16,3 +16,54 @@
     requires: [ STHereticKnowledgeFleshImperfect, STHereticKnowledgeVoidAristocrat ]
     rituals:
     - STHereticRitualVoidCloak
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeBridgeBloodSiphon
+  name: Blood Siphon
+  description: Drain the life of a creature within 7 tiles. It takes slash damage, you mend brute wounds and regain blood. Sometimes half of your bleeding passes to the victim. Cooldown 15 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: blood_siphon
+    bridge: [ STHereticPathFlesh, STHereticPathVoid ]
+    stage: 6
+    cost: 1
+    requires: [ STHereticKnowledgeFleshRaw, STHereticKnowledgeVoidPhase ]
+    actions:
+    - STActionHereticBloodSiphon
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeBridgeBloodCleave
+  name: Blood Cleave
+  description: A bloody blow at a creature within 9 tiles and everyone within 1 tile of it, except heretics and their servants. Heat and slash damage and bleeding. Cooldown 45 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: cleave
+    bridge: [ STHereticPathFlesh, STHereticPathVoid ]
+    stage: 8
+    cost: 1
+    requires: [ STHereticKnowledgeFleshLonely, STHereticKnowledgeVoidPull ]
+    actions:
+    - STActionHereticBloodCleave
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeBridgeVoidPrison
+  name: Void Prison
+  description: Lock a creature within 7 tiles in a sphere of the Void for 10 seconds. Inside it cannot act or speak, and nothing can harm it. Afterwards it is chilled. Does not work on those in the Shadow Realm or under holy protection. Cooldown 60 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: voidball
+    bridge: [ STHereticPathFlesh, STHereticPathVoid ]
+    stage: 8
+    cost: 1
+    requires: [ STHereticKnowledgeFleshLonely, STHereticKnowledgeVoidPull ]
+    actions:
+    - STActionHereticVoidPrison

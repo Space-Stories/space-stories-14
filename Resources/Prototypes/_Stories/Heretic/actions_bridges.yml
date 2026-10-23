@@ -1,0 +1,78 @@
+- type: entity
+  id: STActionHereticBloodSiphon
+  name: Blood Siphon
+  description: Drain the life of a creature. It takes slash damage, you mend wounds and regain blood.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 15
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: blood_siphon
+  - type: TargetAction
+    range: 7
+    checkCanAccess: true
+  - type: EntityTargetAction
+    event: !type:StoriesHereticBloodSiphonEvent
+      damage:
+        types:
+          Slash: 15
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticBloodCleave
+  name: Blood Cleave
+  description: A bloody blow at a creature and everyone close to it.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 45
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: cleave
+  - type: TargetAction
+    range: 9
+    checkCanAccess: true
+  - type: EntityTargetAction
+    event: !type:StoriesHereticBloodCleaveEvent
+      damage:
+        types:
+          Heat: 10
+          Slash: 10
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticVoidPrison
+  name: Void Prison
+  description: Lock a creature in a sphere of the Void for a short while.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 60
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: voidball
+  - type: TargetAction
+    range: 7
+    checkCanAccess: true
+  - type: EntityTargetAction
+    event: !type:StoriesHereticVoidPrisonEvent
+    canTargetSelf: false
+    whitelist:
+      components:
+      - MobState
+  - type: StoriesHereticRequiresFocus

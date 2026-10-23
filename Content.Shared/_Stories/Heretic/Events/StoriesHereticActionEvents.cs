@@ -1,5 +1,6 @@
 using Content.Shared.Actions;
 using Content.Shared.Damage;
+using Content.Shared.FixedPoint;
 using Content.Shared.Polymorph;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
@@ -316,4 +317,55 @@ public sealed partial class StoriesHereticShedFormEvent : InstantActionEvent
 
     [DataField]
     public LocId Speech = "stories-heretic-shed-form-speech";
+}
+
+public sealed partial class StoriesHereticBloodSiphonEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public FixedPoint2 Heal = 15;
+
+    [DataField]
+    public FixedPoint2 Blood = 15;
+
+    [DataField]
+    public float BleedChance = 0.5f;
+
+    [DataField]
+    public float BleedShare = 0.5f;
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/Effects/Fluids/splat.ogg");
+}
+
+public sealed partial class StoriesHereticBloodCleaveEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public float Radius = 1f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public float Bleed = 5f;
+
+    [DataField]
+    public EntProtoId Effect = "STHereticCleaveEffect";
+
+    [DataField]
+    public EntProtoId Puddle = "PuddleBlood";
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/_Stories/Heretic/slice.ogg");
+}
+
+public sealed partial class StoriesHereticVoidPrisonEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public EntProtoId Prison = "STHereticVoidPrison";
+
+    [DataField]
+    public LocId Invalid = "stories-heretic-bridge-prison-invalid";
 }

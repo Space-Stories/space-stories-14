@@ -10,3 +10,5 @@ stories-heretic-void-ascension-announcement = The Nobleman of the Void { $name }
 stories-heretic-void-ascension-corpses = The Waltz needs { $count } more bodies in the cold.
 
 stories-heretic-void-cloak-refuse = The hood slips from your fingers, as if it were not there.
+
+stories-heretic-bridge-prison-invalid = The Void refuses this target.
