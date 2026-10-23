@@ -114,6 +114,8 @@
     - state: opening
       map: [ "base" ]
     drawdepth: Effects
+  - type: Clickable
+  - type: InteractionOutline
   - type: Appearance
   - type: GenericVisualizer
     visuals:
