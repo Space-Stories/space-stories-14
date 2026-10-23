@@ -257,7 +257,7 @@ public sealed partial class StoriesHereticAshSystem
 
         var origin = _transform.GetMapCoordinates(ent).Position;
         var facing = _transform.GetWorldRotation(ent).ToWorldVec();
-        var minDot = MathF.Cos((float) Angle.FromDegrees(args.HalfAngleDegrees).Theta);
+        var halfAngle = (float) Angle.FromDegrees(args.HalfAngleDegrees).Theta;
 
         _mobs.Clear();
         _lookup.GetEntitiesInRange(Transform(ent).Coordinates, args.Range, _mobs);
@@ -266,8 +266,7 @@ public sealed partial class StoriesHereticAshSystem
             if (mob.Owner == ent.Owner)
                 continue;
 
-            var direction = _transform.GetMapCoordinates(mob).Position - origin;
-            if (direction.LengthSquared() < 0.01f || Vector2.Dot(Vector2.Normalize(direction), facing) < minDot)
+            if (!StoriesHereticGeometry.IsInCone(origin, facing, _transform.GetMapCoordinates(mob).Position, halfAngle))
                 continue;
 
             _damageable.TryChangeDamage(mob.Owner, args.Damage, origin: ent);

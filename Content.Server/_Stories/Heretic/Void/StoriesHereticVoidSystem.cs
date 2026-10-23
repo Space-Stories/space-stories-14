@@ -27,6 +27,8 @@ public sealed partial class StoriesHereticVoidSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticGraspVoidComponent, StoriesHereticGraspHitEvent>(OnGraspVoid);
         SubscribeLocalEvent<StoriesHereticColdImmuneComponent, ComponentStartup>(OnColdImmuneStartup);
         SubscribeLocalEvent<StoriesHereticColdImmuneComponent, ComponentShutdown>(OnColdImmuneShutdown);
+
+        InitializeBlast();
     }
 
     private void OnGraspVoid(Entity<StoriesHereticGraspVoidComponent> ent, ref StoriesHereticGraspHitEvent args)

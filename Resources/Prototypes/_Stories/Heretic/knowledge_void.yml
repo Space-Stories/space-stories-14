@@ -66,3 +66,19 @@
     - type: StoriesHereticGraspMark
       path: STHereticPathVoid
     - type: StoriesHereticVoidMark
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidChannel
+  name: Void Channel
+  description: A cone of Void blasts out in front of you, dealing cold damage, adding 2 stacks of Void Chill and covering the floor with slippery ice.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: void_rift
+    path: STHereticPathVoid
+    stage: 5
+    requires: [ STHereticKnowledgeVoidMark ]
+    actions:
+    - STActionHereticVoidBlast

@@ -1,0 +1,19 @@
+- type: entity
+  id: STActionHereticVoidBlast
+  name: Void Blast
+  description: A cone of freezing Void in front of you. Chills those caught in it and glazes the floor with slippery ice.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: void_rift
+  - type: InstantAction
+    event: !type:StoriesHereticVoidBlastEvent
+      damage:
+        types:
+          Cold: 15
+  - type: StoriesHereticRequiresFocus

@@ -20,3 +20,68 @@
         Slash: 17
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+
+- type: entity
+  id: STHereticVoidIce
+  name: void ice
+  description: A slick crust of frost left by the Void.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticVoidIce
+  - type: Clickable
+  - type: Slippery
+    staminaDamage: 0
+  - type: StepTrigger
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_ice.rsi
+    layers:
+    - state: ice1
+      map: [ "iceLayer" ]
+    drawdepth: FloorObjects
+    color: "#FFFFFFCC"
+  - type: RandomSprite
+    getAllGroups: true
+    available:
+    - iceLayer:
+        ice1: null
+        ice2: null
+        ice3: null
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      slipFixture:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        mask:
+        - ItemMask
+        layer:
+        - SlipLayer
+        hard: false
+
+- type: entity
+  id: STHereticVoidFrostEffect
+  name: frost
+  description: Drifting snowflakes.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.8
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_ice.rsi
+    layers:
+    - state: ice1
+      shader: unshaded
+    drawdepth: Effects
+    color: "#BFEFFF"
+  - type: PointLight
+    radius: 1.5
+    energy: 0.8
+    color: "#9fd8ff"
+  - type: Tag
+    tags:
+    - HideContextMenu

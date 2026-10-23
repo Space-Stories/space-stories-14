@@ -111,6 +111,36 @@ public sealed partial class StoriesHereticFireWaveEvent : InstantActionEvent
     public float FlameMinDistance = 0.5f;
 }
 
+public sealed partial class StoriesHereticVoidBlastEvent : InstantActionEvent
+{
+    [DataField]
+    public float Range = 3f;
+
+    [DataField]
+    public float HalfAngleDegrees = 35f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public int ChillStacks = 2;
+
+    [DataField]
+    public EntProtoId Ice = "STHereticVoidIce";
+
+    [DataField]
+    public StoriesHereticFlameEffects Frost = new()
+    {
+        Effect = "STHereticVoidFrostEffect",
+        Count = 20,
+        MinScale = 0.3f,
+        MaxScale = 0.6f,
+        MinLifetime = 0.5f,
+        MaxLifetime = 1f,
+        MaxRotation = Angle.FromDegrees(180),
+    };
+}
+
 [DataDefinition]
 public sealed partial class StoriesHereticFlameEffects
 {
