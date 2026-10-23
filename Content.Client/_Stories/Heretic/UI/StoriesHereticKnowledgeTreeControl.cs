@@ -17,9 +17,6 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
     private const float BridgeGap = 14f;
     private const int GradientSteps = 24;
     private const float BridgeAlpha = 0.3f;
-    private const float ObstacleInset = 6f;
-    private const float ObstacleStep = 6f;
-    private const float RouteGapOffset = Padding / 2;
 
     private readonly Dictionary<string, StoriesHereticKnowledgeNodeControl> _controls = new();
     private readonly Vector2[] _quad = new Vector2[4];
@@ -137,74 +134,88 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
             handle.DrawRect(new UIBox2(left, (HeaderHeight - 4) * UIScale, right, (HeaderHeight - 2) * UIScale), palette.Accent.WithAlpha(0.6f));
         }
 
+        var thickness = LineThickness * UIScale;
+        var rails = new HashSet<(int Column, int Stage)>();
         foreach (var to in _controls.Values)
         {
-            var palette = StoriesHereticPalette.Get(to.Node.Path);
-            var color = to.Node.State switch
-            {
-                StoriesHereticNodeState.Learned => palette.Accent,
-                StoriesHereticNodeState.Available => palette.Accent.WithAlpha(0.55f),
-                _ => palette.Accent.WithAlpha(0.2f),
-            };
+            var color = LineColor(to.Node);
+            var bridge = _columns[to.Node.Column].BridgeTo != null;
+            if (bridge)
+                rails.Add((to.Node.Column, to.Node.Stage));
 
             foreach (var required in to.Node.Requires)
             {
                 if (!_controls.TryGetValue(required, out var from))
                     continue;
 
+                if (bridge && from.Node.Stage == to.Node.Stage && _columns[from.Node.Column].BridgeTo == null)
+                    continue;
+
                 var start = to.Node.Stage > from.Node.Stage
                     ? (Vector2) from.PixelPosition + new Vector2(from.SealCenter.X, from.PixelSize.Y)
                     : (Vector2) from.PixelPosition + from.SealCenter;
 
-                var end = (Vector2) to.PixelPosition + to.SealCenter;
-                var thickness = LineThickness * UIScale;
-                if (!IsBlocked(start, end, from, to))
-                {
-                    DrawThickLine(handle, start, end, thickness, color);
-                    continue;
-                }
-
-                var gapY = to.PixelPosition.Y - RouteGapOffset * UIScale;
-                var previousBottom = float.MinValue;
-                foreach (var other in _controls.Values)
-                {
-                    if (other.Node.Stage == to.Node.Stage - 1)
-                        previousBottom = Math.Max(previousBottom, other.PixelPosition.Y + other.PixelSize.Y);
-                }
-
-                if (previousBottom > float.MinValue)
-                    gapY = (to.PixelPosition.Y + previousBottom) / 2;
-
-                var a = new Vector2(start.X, gapY);
-                var b = new Vector2(end.X, gapY);
-                DrawThickLine(handle, start, a, thickness, color);
-                DrawThickLine(handle, a, b, thickness, color);
-                DrawThickLine(handle, b, end, thickness, color);
+                DrawThickLine(handle, start, (Vector2) to.PixelPosition + to.SealCenter, thickness, color);
             }
+        }
+
+        foreach (var (column, stage) in rails)
+        {
+            var middle = (_columnX[column] + _columnWidth[column] / 2) * UIScale;
+            StoriesHereticKnowledgeNodeControl? leftNode = null;
+            StoriesHereticKnowledgeNodeControl? rightNode = null;
+            StoriesHereticKnowledgeNodeControl? best = null;
+            foreach (var node in _controls.Values)
+            {
+                if (node.Node.Column != column || node.Node.Stage != stage)
+                    continue;
+
+                if (best == null || node.Node.State < best.Node.State)
+                    best = node;
+
+                foreach (var required in node.Node.Requires)
+                {
+                    if (!_controls.TryGetValue(required, out var from) ||
+                        from.Node.Stage != stage ||
+                        _columns[from.Node.Column].BridgeTo != null)
+                        continue;
+
+                    var x = from.PixelPosition.X + from.SealCenter.X;
+                    if (x < middle)
+                    {
+                        if (leftNode == null || x > leftNode.PixelPosition.X + leftNode.SealCenter.X)
+                            leftNode = from;
+                    }
+                    else if (rightNode == null || x < rightNode.PixelPosition.X + rightNode.SealCenter.X)
+                    {
+                        rightNode = from;
+                    }
+                }
+            }
+
+            if (best == null || leftNode == null && rightNode == null)
+                continue;
+
+            var y = best.PixelPosition.Y + best.SealCenter.Y;
+            var railStart = leftNode != null
+                ? new Vector2(leftNode.PixelPosition.X + leftNode.SealCenter.X, y)
+                : new Vector2(_columnX[column] * UIScale, y);
+            var railEnd = rightNode != null
+                ? new Vector2(rightNode.PixelPosition.X + rightNode.SealCenter.X, y)
+                : new Vector2((_columnX[column] + _columnWidth[column]) * UIScale, y);
+            DrawThickLine(handle, railStart, railEnd, thickness, LineColor(best.Node));
         }
     }
 
-    private bool IsBlocked(Vector2 start, Vector2 end, StoriesHereticKnowledgeNodeControl from, StoriesHereticKnowledgeNodeControl to)
+    private static Color LineColor(StoriesHereticKnowledgeNode node)
     {
-        var length = (end - start).Length();
-        var steps = Math.Max(1, (int) (length / (ObstacleStep * UIScale)));
-        var inset = ObstacleInset * UIScale;
-        foreach (var other in _controls.Values)
+        var palette = StoriesHereticPalette.Get(node.Path);
+        return node.State switch
         {
-            if (other == from || other == to)
-                continue;
-
-            var min = (Vector2) other.PixelPosition + new Vector2(inset);
-            var max = (Vector2) other.PixelPosition + (Vector2) other.PixelSize - new Vector2(inset);
-            for (var i = 0; i <= steps; i++)
-            {
-                var point = Vector2.Lerp(start, end, i / (float) steps);
-                if (point.X >= min.X && point.X <= max.X && point.Y >= min.Y && point.Y <= max.Y)
-                    return true;
-            }
-        }
-
-        return false;
+            StoriesHereticNodeState.Learned => palette.Accent,
+            StoriesHereticNodeState.Available => palette.Accent.WithAlpha(0.55f),
+            _ => palette.Accent.WithAlpha(0.2f),
+        };
     }
 
     private void DrawThickLine(DrawingHandleScreen handle, Vector2 from, Vector2 to, float thickness, Color color)
