@@ -19,6 +19,7 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
     private const float BridgeAlpha = 0.3f;
 
     private readonly Dictionary<string, StoriesHereticKnowledgeNodeControl> _controls = new();
+    private readonly HashSet<(int Column, int Stage)> _rails = new();
     private readonly Vector2[] _quad = new Vector2[4];
     private IReadOnlyList<StoriesHereticKnowledgeColumn> _columns = Array.Empty<StoriesHereticKnowledgeColumn>();
     private float[] _columnX = Array.Empty<float>();
@@ -135,13 +136,13 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
         }
 
         var thickness = LineThickness * UIScale;
-        var rails = new HashSet<(int Column, int Stage)>();
+        _rails.Clear();
         foreach (var to in _controls.Values)
         {
             var color = LineColor(to.Node);
             var bridge = _columns[to.Node.Column].BridgeTo != null;
             if (bridge)
-                rails.Add((to.Node.Column, to.Node.Stage));
+                _rails.Add((to.Node.Column, to.Node.Stage));
 
             foreach (var required in to.Node.Requires)
             {
@@ -159,7 +160,7 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
             }
         }
 
-        foreach (var (column, stage) in rails)
+        foreach (var (column, stage) in _rails)
         {
             var middle = (_columnX[column] + _columnWidth[column] / 2) * UIScale;
             StoriesHereticKnowledgeNodeControl? leftNode = null;
