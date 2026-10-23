@@ -1,3 +1,4 @@
+using Content.Server.Chat.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
@@ -18,7 +19,7 @@ namespace Content.Server._Stories.Heretic.Void;
 public sealed partial class StoriesHereticVoidSystem
 {
     [Dependency] private SharedAudioSystem _audio = default!;
-    [Dependency] private SharedChatSystem _chat = default!;
+    [Dependency] private ChatSystem _chat = default!;
     [Dependency] private ExamineSystemShared _examine = default!;
     [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private PullingSystem _pulling = default!;

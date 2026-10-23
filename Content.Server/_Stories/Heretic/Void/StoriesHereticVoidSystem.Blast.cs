@@ -30,8 +30,6 @@ public sealed partial class StoriesHereticVoidSystem
     [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private TurfSystem _turf = default!;
 
-    private const int IceRows = 3;
-
     private readonly List<EntityUid> _anchored = new();
     private readonly HashSet<Entity<MobStateComponent>> _mobs = new();
 
@@ -73,7 +71,7 @@ public sealed partial class StoriesHereticVoidSystem
             if (mob.Owner == ent.Owner
                 || HasComp<StoriesHereticComponent>(mob)
                 || _heretic.IsServant(mob)
-                || _chill.IsImmune(mob))
+                || !_mobState.IsAlive(mob))
                 continue;
 
             if (!StoriesHereticGeometry.IsInCone(origin.Position, facing, _transform.GetMapCoordinates(mob).Position, halfAngle))
@@ -103,7 +101,7 @@ public sealed partial class StoriesHereticVoidSystem
         var side = new Vector2i(-forward.Y, forward.X);
         var start = _map.CoordinatesToTile(gridUid, grid, xform.Coordinates);
 
-        for (var row = 1; row <= IceRows; row++)
+        for (var row = 1; row <= args.IceRows; row++)
         {
             for (var lateral = -(row - 1); lateral <= row - 1; lateral++)
             {

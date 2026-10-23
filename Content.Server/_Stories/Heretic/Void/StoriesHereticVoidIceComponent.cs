@@ -1,3 +1,5 @@
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
+
 namespace Content.Server._Stories.Heretic.Void;
 
 [RegisterComponent, AutoGenerateComponentPause, Access(typeof(StoriesHereticVoidSystem))]
@@ -12,6 +14,6 @@ public sealed partial class StoriesHereticVoidIceComponent : Component
     [DataField]
     public float WarmThreshold = 273.15f;
 
-    [DataField, AutoPausedField]
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer)), AutoPausedField]
     public TimeSpan EndTime;
 }

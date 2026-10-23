@@ -127,6 +127,9 @@ public sealed partial class StoriesHereticVoidBlastEvent : InstantActionEvent
     public int ChillStacks = 2;
 
     [DataField]
+    public int IceRows = 3;
+
+    [DataField]
     public EntProtoId Ice = "STHereticVoidIce";
 
     [DataField]

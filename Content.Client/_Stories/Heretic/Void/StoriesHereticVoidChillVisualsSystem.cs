@@ -64,7 +64,7 @@ public sealed partial class StoriesHereticVoidChillVisualsSystem : EntitySystem
             return;
         }
 
-        var layer = _sprite.AddLayer(uid, new SpriteSpecifier.Rsi(Rsi, state), 0);
+        var layer = _sprite.AddLayer(uid, new SpriteSpecifier.Rsi(Rsi, state));
         _sprite.LayerMapSet(uid, LayerKey, layer);
     }
 }

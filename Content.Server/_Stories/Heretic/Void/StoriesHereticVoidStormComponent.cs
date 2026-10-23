@@ -27,9 +27,6 @@ public sealed partial class StoriesHereticVoidStormComponent : Component
     public DamageSpecifier Damage = new() { DamageDict = { ["Cold"] = 2 } };
 
     [DataField]
-    public TimeSpan BlurTime = TimeSpan.FromSeconds(2);
-
-    [DataField]
     public EntityUid? MusicStream;
 
     [DataField]

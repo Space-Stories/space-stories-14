@@ -1,6 +1,5 @@
 using System.Numerics;
 using Content.Server.Body.Components;
-using Content.Server.Chat.Systems;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
@@ -16,7 +15,6 @@ namespace Content.Server._Stories.Heretic.Void;
 
 public sealed partial class StoriesHereticVoidSystem
 {
-    [Dependency] private ChatSystem _announcer = default!;
     [Dependency] private IComponentFactory _factory = default!;
 
     private static readonly EntProtoId PressureImmunityEffect = "StatusEffectPressureImmunity";
@@ -34,6 +32,12 @@ public sealed partial class StoriesHereticVoidSystem
         var query = EntityQueryEnumerator<StoriesHereticVoidStormComponent>();
         while (query.MoveNext(out var uid, out var storm))
         {
+            if (!HasComp<StoriesHereticComponent>(uid))
+            {
+                RemCompDeferred<StoriesHereticVoidStormComponent>(uid);
+                continue;
+            }
+
             if (now < storm.NextPulse)
                 continue;
 
@@ -51,9 +55,6 @@ public sealed partial class StoriesHereticVoidSystem
                     continue;
 
                 _statusEffects.TryUpdateStatusEffectDuration(mob, MutedEffect, storm.MuteTime);
-
-                if (_chill.IsImmune(mob))
-                    continue;
 
                 _chill.ApplyChill(mob, storm.ChillStacks);
                 _damageable.TryChangeDamage(mob.Owner, storm.Damage, origin: uid);
@@ -144,7 +145,7 @@ public sealed partial class StoriesHereticVoidSystem
         if (ritual.RemoveBreathing)
             RemComp<RespiratorComponent>(heretic);
 
-        _announcer.DispatchGlobalAnnouncement(Loc.GetString(ritual.Announcement, ("name", Name(heretic))),
+        _chat.DispatchGlobalAnnouncement(Loc.GetString(ritual.Announcement, ("name", Name(heretic))),
             colorOverride: ritual.AnnouncementColor);
         _audio.PlayGlobal(ritual.Sound, Filter.Broadcast(), true);
 

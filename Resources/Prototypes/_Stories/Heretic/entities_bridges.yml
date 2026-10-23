@@ -53,13 +53,6 @@
   - type: Clothing
     sprite: _Stories/Heretic/Clothing/Head/void_cloak_hood.rsi
     quickEquip: false
-  - type: HideLayerClothing
-    layers:
-      Hair: HEAD
-      FacialHair: HEAD
-      Snout: HEAD
-      HeadTop: HEAD
-      HeadSide: HEAD
 
 - type: entity
   id: STHereticCleaveEffect

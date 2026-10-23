@@ -2,6 +2,7 @@ using Content.Server.Body.Components;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared._Stories.Heretic.Void;
+using Content.Shared.Mobs.Components;
 using Content.Shared.StatusEffectNew;
 using Content.Shared.Tag;
 using Content.Shared.Temperature.Components;
@@ -37,6 +38,9 @@ public sealed partial class StoriesHereticVoidSystem : EntitySystem
 
     private void OnGraspVoid(Entity<StoriesHereticGraspVoidComponent> ent, ref StoriesHereticGraspHitEvent args)
     {
+        if (args.Target == ent.Owner || !HasComp<MobStateComponent>(args.Target))
+            return;
+
         _statusEffects.TryUpdateStatusEffectDuration(args.Target, MutedEffect, ent.Comp.MuteTime);
         _chill.ApplyChill(args.Target, ent.Comp.ChillStacks);
     }
