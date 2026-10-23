@@ -23,6 +23,9 @@ public sealed partial class StoriesHereticRitualComponent : Component
     public bool AscendedUnlimited;
 
     [DataField]
+    public float? MaxTemperature;
+
+    [DataField]
     public StoriesHereticRitualEffect Effect = StoriesHereticRitualEffect.None;
 }
 

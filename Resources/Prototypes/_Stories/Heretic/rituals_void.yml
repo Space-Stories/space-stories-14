@@ -1,0 +1,15 @@
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualVoidBlade
+  name: Void Blade
+  description: A knife on a rune in the cold, at or below 0 °C.
+  components:
+  - type: StoriesHereticRitual
+    limit: 3
+    maxTemperature: 273.15
+    ingredients:
+    - name: stories-heretic-ingredient-knife
+      whitelist:
+        tags: [ Knife ]
+    results:
+    - STHereticBladeVoid

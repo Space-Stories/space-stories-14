@@ -24,6 +24,7 @@ stories-heretic-round-end-summons = Призвано чудовищ: { $count } 
 stories-heretic-path-none = не выбран
 stories-heretic-path-STHereticPathAsh = Пепел
 stories-heretic-path-STHereticPathFlesh = Плоть
+stories-heretic-path-STHereticPathVoid = Пустота
 stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
 stories-heretic-objective-knowledge = Изучить { $count } { $count ->
     [one] знание

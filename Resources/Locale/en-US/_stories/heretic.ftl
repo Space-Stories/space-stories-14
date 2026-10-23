@@ -24,6 +24,7 @@ stories-heretic-round-end-summons = Monsters summoned: { $count } of { $required
 stories-heretic-path-none = none
 stories-heretic-path-STHereticPathAsh = Ash
 stories-heretic-path-STHereticPathFlesh = Flesh
+stories-heretic-path-STHereticPathVoid = Void
 stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
 stories-heretic-objective-summon = Summon { $count } Mansus monsters.

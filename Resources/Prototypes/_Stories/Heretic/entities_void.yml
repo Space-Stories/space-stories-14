@@ -1,0 +1,22 @@
+- type: entity
+  parent: BaseKnife
+  id: STHereticBladeVoid
+  name: void blade
+  description: A shard of frozen silence. Breaking it carries you away through the Mansus.
+  components:
+  - type: StoriesHereticBlade
+    breakMessage: stories-heretic-blade-break-void
+  - type: Sprite
+    sprite: _Stories/Heretic/Objects/Weapons/void_blade.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Heretic/Objects/Weapons/void_blade_inhand.rsi
+    size: Normal
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 17
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg

@@ -1,0 +1,15 @@
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidRoot
+  name: Glimmer of Winter
+  description: Step onto the Path of Void. Forge void blades from a knife in the cold.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Objects/Weapons/void_blade.rsi
+      state: icon
+    path: STHereticPathVoid
+    choosesPath: true
+    stage: 1
+    rituals:
+    - STHereticRitualVoidBlade

@@ -150,6 +150,17 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 || !proto.TryComp<StoriesHereticRitualComponent>(out var ritual, _factory))
                 continue;
 
+            if (ritual.MaxTemperature is { } maxTemperature)
+            {
+                var temperatureEv = new StoriesHereticRuneTemperatureEvent(rune);
+                RaiseLocalEvent(ref temperatureEv);
+                if (temperatureEv.Handled && temperatureEv.Temperature > maxTemperature)
+                {
+                    RecordFailure(Loc.GetString("stories-heretic-ritual-too-warm"), 1);
+                    continue;
+                }
+            }
+
             if (!TryMatch(ritual.Ingredients, out var missing, out var matched))
             {
                 RecordFailure(missing, matched);
