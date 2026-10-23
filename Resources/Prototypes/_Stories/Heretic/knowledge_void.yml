@@ -46,3 +46,23 @@
     requires: [ STHereticKnowledgeVoidGrasp ]
     addComponents:
     - type: StoriesHereticColdImmune
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidMark
+  name: Mark of Void
+  description: Your Grasp marks victims. A blade strike on a marked victim adds 3 stacks of Void Chill and instantly drops body temperature by 40 K.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Effects/marks.rsi
+      state: emark4
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 4
+    cost: 2
+    requires: [ STHereticKnowledgeVoidAristocrat ]
+    addComponents:
+    - type: StoriesHereticGraspMark
+      path: STHereticPathVoid
+    - type: StoriesHereticVoidMark
