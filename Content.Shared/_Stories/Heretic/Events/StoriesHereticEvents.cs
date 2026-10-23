@@ -22,6 +22,7 @@ public record struct StoriesHereticRitualEffectEvent(
     public bool Handled;
     public bool Success;
     public string? FailReason;
+    public int FailScore = 1;
 }
 
 [ByRefEvent]

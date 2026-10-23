@@ -128,6 +128,7 @@ public sealed partial class StoriesHereticAshSystem
             args.FailReason = Loc.GetString(args.Heretic.Comp.Ascended
                 ? "stories-heretic-ascension-done"
                 : "stories-heretic-learn-ascension-locked");
+            args.FailScore = 2;
             return;
         }
 
@@ -143,8 +144,11 @@ public sealed partial class StoriesHereticAshSystem
 
         if (corpses.Count < ritual.Corpses)
         {
+            args.FailScore = 2;
             if (corpses.Count > 0)
                 args.FailReason = Loc.GetString("stories-heretic-ash-ascension-corpses", ("count", ritual.Corpses - corpses.Count));
+            else if (HasLivingHumanoid(args.Nearby))
+                args.FailReason = Loc.GetString("stories-heretic-ascension-not-dead");
             return;
         }
 
@@ -167,6 +171,17 @@ public sealed partial class StoriesHereticAshSystem
         return TryComp<DamageableComponent>(uid, out var damageable)
                && _damageable.GetPositiveDamage((uid, damageable)).DamageDict.TryGetValue("Heat", out var heat)
                && heat >= threshold;
+    }
+
+    private bool HasLivingHumanoid(HashSet<EntityUid> nearby)
+    {
+        foreach (var uid in nearby)
+        {
+            if (HasComp<HumanoidProfileComponent>(uid) && !_mobState.IsDead(uid))
+                return true;
+        }
+
+        return false;
     }
 
     private void Ascend(Entity<StoriesHereticComponent> heretic, StoriesHereticAshAscensionRitualComponent ritual)

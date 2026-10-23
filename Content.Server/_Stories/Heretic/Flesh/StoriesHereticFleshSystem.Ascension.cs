@@ -52,6 +52,7 @@ public sealed partial class StoriesHereticFleshSystem
             args.FailReason = Loc.GetString(args.Heretic.Comp.Ascended
                 ? "stories-heretic-ascension-done"
                 : "stories-heretic-learn-ascension-locked");
+            args.FailScore = 2;
             return;
         }
 
@@ -67,8 +68,11 @@ public sealed partial class StoriesHereticFleshSystem
 
         if (corpses.Count < ritual.Corpses)
         {
+            args.FailScore = 2;
             if (corpses.Count > 0)
                 args.FailReason = Loc.GetString("stories-heretic-flesh-ascension-corpses", ("count", ritual.Corpses - corpses.Count));
+            else if (HasLivingHumanoid(args.Nearby))
+                args.FailReason = Loc.GetString("stories-heretic-ascension-not-dead");
             return;
         }
 
@@ -89,6 +93,17 @@ public sealed partial class StoriesHereticFleshSystem
         _audio.PlayGlobal(ritual.Sound, Filter.Broadcast(), true);
         _heretic.RemoveRitual(args.Heretic, args.Ritual);
         args.Success = true;
+    }
+
+    private bool HasLivingHumanoid(HashSet<EntityUid> nearby)
+    {
+        foreach (var uid in nearby)
+        {
+            if (HasComp<HumanoidProfileComponent>(uid) && !_mobState.IsDead(uid))
+                return true;
+        }
+
+        return false;
     }
 
     private void OnShedForm(Entity<StoriesHereticComponent> ent, ref StoriesHereticShedFormEvent args)

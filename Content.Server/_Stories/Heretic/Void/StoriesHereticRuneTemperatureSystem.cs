@@ -8,6 +8,8 @@ public sealed partial class StoriesHereticRuneTemperatureSystem : EntitySystem
 {
     [Dependency] private AtmosphereSystem _atmosphere = default!;
 
+    private static readonly float VacuumMoles = 0.1f;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -17,7 +19,10 @@ public sealed partial class StoriesHereticRuneTemperatureSystem : EntitySystem
 
     private void OnRuneTemperature(ref StoriesHereticRuneTemperatureEvent args)
     {
-        args.Temperature = _atmosphere.GetTileMixture(args.Rune)?.Temperature ?? Atmospherics.TCMB;
+        var mixture = _atmosphere.GetTileMixture(args.Rune);
+        args.Temperature = mixture == null || mixture.TotalMoles < VacuumMoles
+            ? Atmospherics.TCMB
+            : mixture.Temperature;
         args.Handled = true;
     }
 }

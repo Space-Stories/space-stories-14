@@ -106,6 +106,7 @@ stories-heretic-ingredient-fire = matchstick or lighter
 
 stories-heretic-ash-ascension-corpses = The flame needs { $count } more burnt bodies.
 stories-heretic-ascension-done = You have already ascended.
+stories-heretic-ascension-not-dead = The bodies for Ascension must be dead.
 stories-heretic-ash-ascension-announcement = Attention! A surge of anomalous activity detected. { $name } has ascended as the Ashlord. Fire will consume everyone.
 stories-heretic-ingredient-glass-shard = glass shard
 stories-heretic-ingredient-any-outer-clothing = any outer clothing

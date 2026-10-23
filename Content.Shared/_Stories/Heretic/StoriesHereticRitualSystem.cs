@@ -162,7 +162,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 RaiseLocalEvent(ref temperatureEv);
                 if (temperatureEv.Handled && temperatureEv.Temperature > maxTemperature)
                 {
-                    RecordFailure(Loc.GetString("stories-heretic-ritual-too-warm"), matched + 1);
+                    RecordFailure(Loc.GetString("stories-heretic-ritual-too-warm"), matched + 2);
                     continue;
                 }
             }
@@ -262,7 +262,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                     return true;
 
                 failReason = ev.FailReason;
-                score = 1;
+                score = ev.FailScore;
                 return false;
         }
     }

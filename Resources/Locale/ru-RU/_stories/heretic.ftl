@@ -119,6 +119,7 @@ stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $coun
    *[other] сгоревших тел
 }.
 stories-heretic-ascension-done = Вы уже вознеслись.
+stories-heretic-ascension-not-dead = Тела для Вознесения должны быть мертвы.
 stories-heretic-ash-ascension-announcement = Внимание! Обнаружен всплеск аномальной активности. { $name } вознёсся как Повелитель пепла. Огонь поглотит всех.
 stories-heretic-ingredient-glass-shard = осколок стекла
 stories-heretic-ingredient-any-outer-clothing = любая верхняя одежда
