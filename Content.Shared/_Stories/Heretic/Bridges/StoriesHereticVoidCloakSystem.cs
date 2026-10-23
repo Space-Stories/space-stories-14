@@ -2,6 +2,7 @@ using Content.Shared._Stories.Heretic.Components;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Clothing.EntitySystems;
 using Content.Shared.Inventory.Events;
+using Content.Shared._Stories.Strip;
 using Content.Shared.Popups;
 using Robust.Shared.Network;
 
@@ -18,6 +19,7 @@ public sealed partial class StoriesHereticVoidCloakSystem : EntitySystem
 
         SubscribeLocalEvent<StoriesHereticVoidCloakComponent, ToggleClothingEvent>(OnToggle,
             before: new[] { typeof(ToggleableClothingSystem) });
+        SubscribeLocalEvent<StoriesHereticVoidCloakComponent, StoriesStripItemHiddenEvent>(OnStripHidden);
         SubscribeLocalEvent<StoriesHereticVoidCloakHoodComponent, GotEquippedEvent>(OnHoodEquipped);
         SubscribeLocalEvent<StoriesHereticVoidCloakHoodComponent, GotUnequippedEvent>(OnHoodUnequipped);
     }
@@ -29,6 +31,12 @@ public sealed partial class StoriesHereticVoidCloakSystem : EntitySystem
 
         args.Handled = true;
         _popup.PopupClient(Loc.GetString("stories-heretic-void-cloak-refuse"), args.Performer, args.Performer);
+    }
+
+    private void OnStripHidden(Entity<StoriesHereticVoidCloakComponent> ent, ref StoriesStripItemHiddenEvent args)
+    {
+        if (ent.Comp.Hidden && args.Viewer != Transform(ent).ParentUid)
+            args.Hidden = true;
     }
 
     private void OnHoodEquipped(Entity<StoriesHereticVoidCloakHoodComponent> ent, ref GotEquippedEvent args)
