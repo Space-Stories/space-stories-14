@@ -171,6 +171,36 @@ public sealed partial class StoriesHereticVoidPhaseEvent : WorldTargetActionEven
     public LocId Speech = "stories-heretic-void-phase-speech";
 }
 
+public sealed partial class StoriesHereticVoidPullEvent : InstantActionEvent
+{
+    [DataField]
+    public float DamageRadius = 1f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public float KnockdownRadius = 4f;
+
+    [DataField]
+    public TimeSpan Knockdown = TimeSpan.FromSeconds(3);
+
+    [DataField]
+    public float PullRadius = 7f;
+
+    [DataField]
+    public float PullDistance = 3f;
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/_Stories/Heretic/voidblink.ogg");
+
+    [DataField]
+    public EntProtoId Effect = "STHereticVoidPhaseIn";
+
+    [DataField]
+    public LocId Speech = "stories-heretic-void-pull-speech";
+}
+
 [DataDefinition]
 public sealed partial class StoriesHereticFlameEffects
 {

@@ -116,3 +116,20 @@
     requires: [ STHereticKnowledgeVoidPhase ]
     addComponents:
     - type: StoriesHereticSeekingBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidPull
+  name: Void Pull
+  description: Creatures within 1 tile take blunt damage, those within 4 tiles are knocked down, and those 4 to 7 tiles away are pulled 3 tiles toward you. Cooldown 40 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: voidpull
+    path: STHereticPathVoid
+    stage: 8
+    cost: 1
+    requires: [ STHereticKnowledgeVoidSeeking ]
+    actions:
+    - STActionHereticVoidPull

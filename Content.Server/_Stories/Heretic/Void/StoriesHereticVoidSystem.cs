@@ -30,6 +30,7 @@ public sealed partial class StoriesHereticVoidSystem : EntitySystem
 
         InitializeBlast();
         InitializePhase();
+        InitializePull();
         InitializeSeeking();
     }
 

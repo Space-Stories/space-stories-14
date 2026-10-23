@@ -4,3 +4,4 @@ stories-heretic-ritual-too-warm = It is too warm here.
 stories-heretic-blade-break-void = The Aristocrat hears your call...
 
 stories-heretic-void-phase-speech = RE'L'TY PH'S'E.
+stories-heretic-void-pull-speech = BR'NG F'RTH TH'M T' M'.

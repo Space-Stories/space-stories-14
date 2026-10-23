@@ -40,3 +40,23 @@
         types:
           Blunt: 30
   - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticVoidPull
+  name: Void Pull
+  description: Strike creatures around you and pull distant ones toward you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 40
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: voidpull
+  - type: InstantAction
+    event: !type:StoriesHereticVoidPullEvent
+      damage:
+        types:
+          Blunt: 30
+  - type: StoriesHereticRequiresFocus
