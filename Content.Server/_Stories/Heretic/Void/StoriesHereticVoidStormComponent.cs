@@ -30,20 +30,24 @@ public sealed partial class StoriesHereticVoidStormComponent : Component
     public EntityUid? MusicStream;
 
     [DataField]
-    public EntProtoId RingEffect = "STHereticVoidStormEffect";
-
-    [DataField]
-    public float RingSpriteRadius = 0.5f;
-
-    [DataField]
     public StoriesHereticFlameEffects Snowflakes = new()
     {
         Effect = "STHereticVoidSnowflake",
-        Count = 12,
-        MinLifetime = 0.8f,
-        MaxLifetime = 1.6f
+        Count = 6,
+        MinScale = 0.3f,
+        MaxScale = 0.5f,
+        MinLifetime = 0.5f,
+        MaxLifetime = 1f
     };
 
     [DataField]
-    public EntityUid? RingEntity;
+    public float LightRadius = 4f;
+
+    [DataField]
+    public float LightEnergy = 0.4f;
+
+    [DataField]
+    public Color LightColor = Color.FromHex("#9fd8ff");
+
+    public bool LightAdded;
 }

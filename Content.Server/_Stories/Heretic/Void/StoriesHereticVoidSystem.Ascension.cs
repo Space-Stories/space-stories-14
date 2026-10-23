@@ -1,13 +1,12 @@
-using System.Numerics;
 using Content.Server.Body.Components;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
 using Content.Shared._Stories.Heretic.Events;
 using Content.Shared.Humanoid;
 using Content.Shared.Mobs;
+using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
@@ -16,6 +15,7 @@ namespace Content.Server._Stories.Heretic.Void;
 public sealed partial class StoriesHereticVoidSystem
 {
     [Dependency] private IComponentFactory _factory = default!;
+    [Dependency] private SharedPointLightSystem _light = default!;
 
     private static readonly EntProtoId PressureImmunityEffect = "StatusEffectPressureImmunity";
 
@@ -75,13 +75,22 @@ public sealed partial class StoriesHereticVoidSystem
     private void OnStormStartup(Entity<StoriesHereticVoidStormComponent> ent, ref ComponentStartup args)
     {
         ent.Comp.NextPulse = _timing.CurTime;
-        ent.Comp.RingEntity = SpawnAttachedTo(ent.Comp.RingEffect, new EntityCoordinates(ent, Vector2.Zero));
-        _scale.SetSpriteScale(ent.Comp.RingEntity.Value, new Vector2(ent.Comp.Radius / ent.Comp.RingSpriteRadius));
+
+        if (HasComp<PointLightComponent>(ent))
+            return;
+
+        var light = AddComp<PointLightComponent>(ent);
+        ent.Comp.LightAdded = true;
+        _light.SetRadius(ent, ent.Comp.LightRadius, light);
+        _light.SetEnergy(ent, ent.Comp.LightEnergy, light);
+        _light.SetColor(ent, ent.Comp.LightColor, light);
     }
 
     private void OnStormShutdown(Entity<StoriesHereticVoidStormComponent> ent, ref ComponentShutdown args)
     {
-        QueueDel(ent.Comp.RingEntity);
+        if (ent.Comp.LightAdded)
+            RemComp<PointLightComponent>(ent);
+
         _audio.Stop(ent.Comp.MusicStream);
     }
 

@@ -123,24 +123,6 @@
     - HideContextMenu
 
 - type: entity
-  id: STHereticVoidStormEffect
-  name: void storm
-  description: A black blizzard that never ends.
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Sprite
-    sprite: _Stories/Heretic/Effects/void_storm.rsi
-    color: "#1a2a40cc"
-    layers:
-    - state: storm
-      shader: unshaded
-    drawdepth: Effects
-    noRot: true
-  - type: Tag
-    tags:
-    - HideContextMenu
-
-- type: entity
   id: STHereticVoidSnowflake
   name: snowflake
   description: A snowflake drifting on the wind of the Void.
