@@ -103,7 +103,7 @@
   parent: STHereticKnowledgeBase
   id: STHereticKnowledgeVoidSeeking
   name: Seeking Blade
-  description: Striking a distant marked target with a blade dashes you behind it and delivers the blow. Cooldown 10 seconds.
+  description: Striking a distant marked target with a blade dashes you behind it and delivers the blow, even outside combat mode. Cooldown 10 seconds.
   components:
   - type: StoriesHereticKnowledge
     icon:
