@@ -5,6 +5,9 @@ using Content.Shared.Chat;
 using Content.Shared.Examine;
 using Content.Shared.Maps;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.Movement.Pulling.Components;
+using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Physics;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
@@ -17,6 +20,8 @@ public sealed partial class StoriesHereticVoidSystem
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedChatSystem _chat = default!;
     [Dependency] private ExamineSystemShared _examine = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
+    [Dependency] private PullingSystem _pulling = default!;
 
     private readonly HashSet<Entity<MobStateComponent>> _phaseMobs = new();
 
@@ -44,6 +49,13 @@ public sealed partial class StoriesHereticVoidSystem
         _chat.TrySendInGameICMessage(ent, Loc.GetString(args.Speech), InGameICChatType.Whisper, false);
 
         PhaseBurst(ent, origin, args);
+
+        if (TryComp<PullableComponent>(ent, out var pullable) && _pulling.IsPulled(ent, pullable))
+            _pulling.TryStopPull(ent, pullable);
+
+        if (TryComp<PullerComponent>(ent, out var puller) && TryComp<PullableComponent>(puller.Pulling, out var pulled))
+            _pulling.TryStopPull(puller.Pulling.Value, pulled);
+
         _transform.SetCoordinates(ent, target);
         _transform.AttachToGridOrMap(ent);
         PhaseBurst(ent, target, args);
@@ -73,6 +85,7 @@ public sealed partial class StoriesHereticVoidSystem
         foreach (var mob in _phaseMobs)
         {
             if (mob.Owner == caster
+                || !_mobState.IsAlive(mob)
                 || HasComp<StoriesHereticComponent>(mob)
                 || _heretic.IsServant(mob))
                 continue;
