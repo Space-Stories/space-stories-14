@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Shared._Stories.Heretic;
 using Content.Shared._Stories.Heretic.Components;
+using Content.Shared.CombatMode;
 using Content.Shared.Interaction;
 using Content.Shared.Weapons.Melee;
 using Robust.Shared.Map;
@@ -10,6 +11,7 @@ namespace Content.Server._Stories.Heretic.Void;
 
 public sealed partial class StoriesHereticVoidSystem
 {
+    [Dependency] private SharedCombatModeSystem _combatMode = default!;
     [Dependency] private SharedMeleeWeaponSystem _melee = default!;
 
     private void InitializeSeeking()
@@ -28,7 +30,8 @@ public sealed partial class StoriesHereticVoidSystem
             || !TryComp<StoriesHereticMarkComponent>(target, out var mark)
             || mark.Path != VoidPath
             || !TryComp<MeleeWeaponComponent>(ent, out var weapon)
-            || _timing.CurTime < seeking.NextUse)
+            || _timing.CurTime < seeking.NextUse
+            || weapon.NextAttack > _timing.CurTime)
             return;
 
         var user = args.User;
@@ -44,12 +47,13 @@ public sealed partial class StoriesHereticVoidSystem
             return;
 
         args.Handled = true;
-        seeking.NextUse = _timing.CurTime + seeking.Cooldown;
 
         StopPulls(user);
         _transform.SetCoordinates(user, destination);
         _transform.AttachToGridOrMap(user);
-        _melee.AttemptLightAttack(user, ent, weapon, target);
+        _combatMode.SetInCombatMode(user, true);
+        if (_melee.AttemptLightAttack(user, ent, weapon, target))
+            seeking.NextUse = _timing.CurTime + seeking.Cooldown;
     }
 
     private bool TryFindBehind(EntityUid target, Vector2 direction, out EntityCoordinates destination)
