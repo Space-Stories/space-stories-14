@@ -5,3 +5,10 @@ stories-heretic-blade-break-void = Аристократ слышит твой з
 
 stories-heretic-void-phase-speech = RE'L'TY PH'S'E.
 stories-heretic-void-pull-speech = BR'NG F'RTH TH'M T' M'.
+
+stories-heretic-void-ascension-announcement = Дворянин Пустоты { $name } явился, ступая в Вальсе, что кончает миры!
+stories-heretic-void-ascension-corpses = Вальсу нужно ещё { $count } { $count ->
+    [one] тело
+    [few] тела
+   *[other] тел
+} в холоде.

@@ -133,3 +133,22 @@
     requires: [ STHereticKnowledgeVoidSeeking ]
     actions:
     - STActionHereticVoidPull
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidAscension
+  name: Waltz at the End of Time
+  description: Three corpses on a rune in the cold, and you ascend. Requires completed objectives.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: node_finished
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 9
+    cost: 2
+    ascension: true
+    requires: [ STHereticKnowledgeVoidPull ]
+    rituals:
+    - STHereticRitualVoidAscension

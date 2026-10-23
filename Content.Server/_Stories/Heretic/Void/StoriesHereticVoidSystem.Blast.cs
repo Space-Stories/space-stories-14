@@ -51,6 +51,8 @@ public sealed partial class StoriesHereticVoidSystem
             if (now >= ice.EndTime)
                 QueueDel(uid);
         }
+
+        UpdateStorms(now);
     }
 
     private void OnVoidBlast(Entity<StoriesHereticComponent> ent, ref StoriesHereticVoidBlastEvent args)

@@ -28,6 +28,7 @@ public sealed partial class StoriesHereticVoidSystem : EntitySystem
         SubscribeLocalEvent<StoriesHereticColdImmuneComponent, ComponentStartup>(OnColdImmuneStartup);
         SubscribeLocalEvent<StoriesHereticColdImmuneComponent, ComponentShutdown>(OnColdImmuneShutdown);
 
+        InitializeAscension();
         InitializeBlast();
         InitializePhase();
         InitializePull();

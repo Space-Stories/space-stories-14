@@ -13,3 +13,18 @@
         tags: [ Knife ]
     results:
     - STHereticBladeVoid
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualVoidAscension
+  name: Waltz at the End of Time
+  description: Three corpses on a rune in the cold, at or below 0 °C.
+  components:
+  - type: StoriesHereticRitual
+    effect: Ascension
+    maxTemperature: 273.15
+  - type: StoriesHereticVoidAscensionRitual
+    addComponents:
+    - type: MovementIgnoreGravity
+    - type: NightVision
+    - type: StoriesHereticVoidStorm

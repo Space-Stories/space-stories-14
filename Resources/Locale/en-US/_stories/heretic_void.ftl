@@ -5,3 +5,6 @@ stories-heretic-blade-break-void = The Aristocrat hears your call...
 
 stories-heretic-void-phase-speech = RE'L'TY PH'S'E.
 stories-heretic-void-pull-speech = BR'NG F'RTH TH'M T' M'.
+
+stories-heretic-void-ascension-announcement = The Nobleman of the Void { $name } has appeared, treading the Waltz that ends worlds!
+stories-heretic-void-ascension-corpses = The Waltz needs { $count } more bodies in the cold.
