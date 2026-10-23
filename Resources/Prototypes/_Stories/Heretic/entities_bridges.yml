@@ -1,0 +1,62 @@
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: STHereticVoidCloak
+  name: Void Cloak
+  description: A cloak stitched from a shard of the void. Raise the hood and it is gone.
+  components:
+  - type: StoriesHereticVoidCloak
+  - type: Sprite
+    sprite: _Stories/Heretic/Clothing/OuterClothing/void_cloak.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/Clothing/OuterClothing/void_cloak.rsi
+  - type: Item
+    size: Normal
+  - type: ToggleableClothing
+    clothingPrototype: STHereticVoidCloakHood
+    slot: head
+    verbText: toggle-clothing-verb-hood
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+      storagebase: !type:Container
+        ents: []
+  - type: Storage
+    grid:
+    - 0,0,1,1
+    maxItemSize: Normal
+    whitelist:
+      components:
+      - StoriesHereticBlade
+      - Organ
+  - type: AllowSuitStorage
+    whitelist:
+      components:
+      - StoriesHereticBlade
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
+        Heat: 0.85
+
+- type: entity
+  parent: ClothingHeadBase
+  id: STHereticVoidCloakHood
+  name: Void Cloak hood
+  description: A hood of the void. The one beneath it is not seen.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticVoidCloakHood
+  - type: Sprite
+    sprite: _Stories/Heretic/Clothing/Head/void_cloak_hood.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/Clothing/Head/void_cloak_hood.rsi
+    quickEquip: false
+  - type: HideLayerClothing
+    layers:
+      Hair: HEAD
+      FacialHair: HEAD
+      Snout: HEAD
+      HeadTop: HEAD
+      HeadSide: HEAD

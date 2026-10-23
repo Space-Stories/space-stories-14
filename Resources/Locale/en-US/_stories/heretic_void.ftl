@@ -8,3 +8,7 @@ stories-heretic-void-pull-speech = BR'NG F'RTH TH'M T' M'.
 
 stories-heretic-void-ascension-announcement = The Nobleman of the Void { $name } has appeared, treading the Waltz that ends worlds!
 stories-heretic-void-ascension-corpses = The Waltz needs { $count } more bodies in the cold.
+
+stories-heretic-void-cloak-refuse = The hood slips from your fingers, as if it were not there.
+stories-heretic-ingredient-any-outer-clothing = any outer clothing
+stories-heretic-ingredient-bedsheet = bed sheet

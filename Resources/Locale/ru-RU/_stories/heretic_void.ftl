@@ -12,3 +12,7 @@ stories-heretic-void-ascension-corpses = Вальсу нужно ещё { $count
     [few] тела
    *[other] тел
 } в холоде.
+
+stories-heretic-void-cloak-refuse = Капюшон выскальзывает из пальцев, будто его нет.
+stories-heretic-ingredient-any-outer-clothing = любая верхняя одежда
+stories-heretic-ingredient-bedsheet = простыня

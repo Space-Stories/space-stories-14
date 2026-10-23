@@ -1,0 +1,18 @@
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeBridgeVoidCloak
+  name: Void Cloak
+  description: |-
+    Forge a Void Cloak. With its hood raised the cloak vanishes from sight, along with everything hidden in its folds. Only a heretic can raise the hood.
+
+    The cloak is a seam in the world, and what is sewn into it is not seen.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Clothing/OuterClothing/void_cloak.rsi
+      state: icon
+    bridge: [ STHereticPathFlesh, STHereticPathVoid ]
+    stage: 3
+    requires: [ STHereticKnowledgeFleshImperfect, STHereticKnowledgeVoidAristocrat ]
+    rituals:
+    - STHereticRitualVoidCloak
