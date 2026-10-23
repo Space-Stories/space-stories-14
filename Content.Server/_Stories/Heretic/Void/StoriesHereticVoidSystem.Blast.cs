@@ -97,7 +97,7 @@ public sealed partial class StoriesHereticVoidSystem
         if (xform.GridUid is not { } gridUid || !TryComp<MapGridComponent>(gridUid, out var grid))
             return;
 
-        var forward = _transform.GetWorldRotation(heretic).ToAtmosDirectionCardinal().CardinalToIntVec();
+        var forward = (_transform.GetWorldRotation(heretic) - _transform.GetWorldRotation(gridUid)).ToAtmosDirectionCardinal().CardinalToIntVec();
         var side = new Vector2i(-forward.Y, forward.X);
         var start = _map.CoordinatesToTile(gridUid, grid, xform.Coordinates);
 
@@ -106,7 +106,10 @@ public sealed partial class StoriesHereticVoidSystem
             for (var lateral = -(row - 1); lateral <= row - 1; lateral++)
             {
                 var tile = start + forward * row + side * lateral;
-                if (_turf.IsTileBlocked(gridUid, tile, CollisionGroup.Impassable, grid) || HasIce(gridUid, grid, tile))
+                if (!_map.TryGetTileRef(gridUid, grid, tile, out var tileRef)
+                    || tileRef.Tile.IsEmpty
+                    || _turf.IsTileBlocked(gridUid, tile, CollisionGroup.Impassable, grid)
+                    || HasIce(gridUid, grid, tile))
                     continue;
 
                 var ice = Spawn(args.Ice, _map.GridTileToLocal(gridUid, grid, tile));
