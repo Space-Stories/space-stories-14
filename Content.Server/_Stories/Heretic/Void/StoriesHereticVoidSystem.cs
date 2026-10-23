@@ -30,6 +30,7 @@ public sealed partial class StoriesHereticVoidSystem : EntitySystem
 
         InitializeBlast();
         InitializePhase();
+        InitializeSeeking();
     }
 
     private void OnGraspVoid(Entity<StoriesHereticGraspVoidComponent> ent, ref StoriesHereticGraspHitEvent args)

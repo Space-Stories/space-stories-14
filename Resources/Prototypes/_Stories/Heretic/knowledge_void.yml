@@ -98,3 +98,21 @@
     requires: [ STHereticKnowledgeVoidChannel ]
     actions:
     - STActionHereticVoidPhase
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidSeeking
+  name: Seeking Blade
+  description: Striking a distant marked target with a blade dashes you behind it and delivers the blow. Cooldown 10 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: blade_upgrade_void
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 7
+    cost: 2
+    requires: [ STHereticKnowledgeVoidPhase ]
+    addComponents:
+    - type: StoriesHereticSeekingBlade

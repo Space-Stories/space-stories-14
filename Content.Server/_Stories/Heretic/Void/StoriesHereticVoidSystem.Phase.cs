@@ -50,11 +50,7 @@ public sealed partial class StoriesHereticVoidSystem
 
         PhaseBurst(ent, origin, args);
 
-        if (TryComp<PullableComponent>(ent, out var pullable) && _pulling.IsPulled(ent, pullable))
-            _pulling.TryStopPull(ent, pullable);
-
-        if (TryComp<PullerComponent>(ent, out var puller) && TryComp<PullableComponent>(puller.Pulling, out var pulled))
-            _pulling.TryStopPull(puller.Pulling.Value, pulled);
+        StopPulls(ent);
 
         _transform.SetCoordinates(ent, target);
         _transform.AttachToGridOrMap(ent);
@@ -64,6 +60,15 @@ public sealed partial class StoriesHereticVoidSystem
         Spawn(args.EffectIn, target);
         _audio.PlayPvs(args.Sound, origin);
         _audio.PlayPvs(args.Sound, target);
+    }
+
+    private void StopPulls(EntityUid uid)
+    {
+        if (TryComp<PullableComponent>(uid, out var pullable) && _pulling.IsPulled(uid, pullable))
+            _pulling.TryStopPull(uid, pullable);
+
+        if (TryComp<PullerComponent>(uid, out var puller) && TryComp<PullableComponent>(puller.Pulling, out var pulled))
+            _pulling.TryStopPull(puller.Pulling.Value, pulled);
     }
 
     private bool IsTileFree(EntityCoordinates coords)

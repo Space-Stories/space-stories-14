@@ -256,3 +256,5 @@ ent-STHereticVoidPhaseIn = всплеск Пустоты
     .desc = Пустота смыкается за прибывшим.
 ent-STHereticVoidPhaseOut = всплеск Пустоты
     .desc = Пустота поглощает ушедшего.
+ent-STHereticKnowledgeVoidSeeking = Ищущий клинок
+    .desc = Удар клинком по далёкой помеченной цели: рывок к ней и удар. Перезарядка 10 секунд.
