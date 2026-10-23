@@ -14,6 +14,12 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
     private const float HeaderHeight = 40f;
     private const float Padding = 10f;
     private const float LineThickness = 3f;
+    private const float BridgeGap = 14f;
+    private const int GradientSteps = 24;
+    private const float BridgeAlpha = 0.3f;
+    private const float ObstacleInset = 6f;
+    private const float ObstacleStep = 6f;
+    private const float RouteGapOffset = Padding / 2;
 
     private readonly Dictionary<string, StoriesHereticKnowledgeNodeControl> _controls = new();
     private readonly Vector2[] _quad = new Vector2[4];
@@ -31,12 +37,28 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
 
         _columnX = new float[columns.Count];
         _columnWidth = new float[columns.Count];
+        var slots = new Dictionary<(int Column, int Row), int>();
+        var slotOf = new Dictionary<string, int>();
+        var perColumn = new int[columns.Count];
+        foreach (var node in nodes)
+        {
+            if (columns[node.Column].BridgeTo == null)
+                continue;
+
+            var key = (node.Column, Math.Max(node.Stage - 1, 0));
+            slots[key] = slots.GetValueOrDefault(key) + 1;
+            slotOf[node.Id] = slots[key] - 1;
+            perColumn[node.Column] = Math.Max(perColumn[node.Column], slots[key]);
+        }
+
         var x = 0f;
         for (var i = 0; i < columns.Count; i++)
         {
             var column = i;
             _columnX[i] = x;
-            _columnWidth[i] = ColumnWidth + (nodes.Any(n => n.Side && n.Column == column) ? SideWidth : 0);
+            _columnWidth[i] = columns[i].BridgeTo != null
+                ? Math.Max(ColumnWidth, perColumn[i] * NodeWidth + (perColumn[i] + 1) * BridgeGap)
+                : ColumnWidth + (nodes.Any(n => n.Side && n.Column == column) ? SideWidth : 0);
             x += _columnWidth[i];
         }
 
@@ -63,9 +85,19 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
 
             AddChild(control);
             var row = Math.Max(node.Stage - 1, 0);
-            var left = _columnX[node.Column] + (node.Side
-                ? ColumnWidth + (SideWidth - NodeWidth) / 2
-                : (ColumnWidth - NodeWidth) / 2);
+            float left;
+            if (slotOf.TryGetValue(id, out var slot))
+            {
+                var count = slots[(node.Column, row)];
+                var total = count * NodeWidth + (count - 1) * BridgeGap;
+                left = _columnX[node.Column] + (_columnWidth[node.Column] - total) / 2 + slot * (NodeWidth + BridgeGap);
+            }
+            else
+            {
+                left = _columnX[node.Column] + (node.Side
+                    ? ColumnWidth + (SideWidth - NodeWidth) / 2
+                    : (ColumnWidth - NodeWidth) / 2);
+            }
             SetPosition(control, new Vector2(left, HeaderHeight + Padding + row * RowHeight));
             _controls[id] = control;
             maxRow = Math.Max(maxRow, row);
@@ -85,9 +117,16 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
             var right = (_columnX[i] + _columnWidth[i] - 4) * UIScale;
             if (column.BridgeTo != null)
             {
-                var mid = (left + right) / 2;
-                handle.DrawRect(new UIBox2(left, 0, mid, PixelSize.Y), StoriesHereticPalette.Get(column.Path).Dark.WithAlpha(0.25f));
-                handle.DrawRect(new UIBox2(mid, 0, right, PixelSize.Y), StoriesHereticPalette.Get(column.BridgeTo).Dark.WithAlpha(0.25f));
+                var bridgeIsLeft = i + 1 < _columns.Count && _columns[i + 1].Path == column.Path && _columns[i + 1].BridgeTo == null;
+                var from = StoriesHereticPalette.Get(bridgeIsLeft ? column.BridgeTo : column.Path).Dark;
+                var to = StoriesHereticPalette.Get(bridgeIsLeft ? column.Path : column.BridgeTo).Dark;
+                var step = (right - left) / GradientSteps;
+                for (var s = 0; s < GradientSteps; s++)
+                {
+                    var color = Color.InterpolateBetween(from, to, (s + 0.5f) / GradientSteps).WithAlpha(BridgeAlpha);
+                    handle.DrawRect(new UIBox2(left + s * step, 0, left + (s + 1) * step, PixelSize.Y), color);
+                }
+
                 continue;
             }
 
@@ -115,9 +154,46 @@ public sealed class StoriesHereticKnowledgeTreeControl : LayoutContainer
                     ? (Vector2) from.PixelPosition + new Vector2(from.SealCenter.X, from.PixelSize.Y)
                     : (Vector2) from.PixelPosition + from.SealCenter;
 
-                DrawThickLine(handle, start, (Vector2) to.PixelPosition + to.SealCenter, LineThickness * UIScale, color);
+                var end = (Vector2) to.PixelPosition + to.SealCenter;
+                var thickness = LineThickness * UIScale;
+                if (!IsBlocked(start, end, from, to))
+                {
+                    DrawThickLine(handle, start, end, thickness, color);
+                    continue;
+                }
+
+                var row = Math.Max(to.Node.Stage - 1, 0);
+                var gapY = (HeaderHeight + Padding + row * RowHeight - RouteGapOffset) * UIScale;
+                var a = new Vector2(start.X, gapY);
+                var b = new Vector2(end.X, gapY);
+                DrawThickLine(handle, start, a, thickness, color);
+                DrawThickLine(handle, a, b, thickness, color);
+                DrawThickLine(handle, b, end, thickness, color);
             }
         }
+    }
+
+    private bool IsBlocked(Vector2 start, Vector2 end, StoriesHereticKnowledgeNodeControl from, StoriesHereticKnowledgeNodeControl to)
+    {
+        var length = (end - start).Length();
+        var steps = Math.Max(1, (int) (length / (ObstacleStep * UIScale)));
+        var inset = ObstacleInset * UIScale;
+        foreach (var other in _controls.Values)
+        {
+            if (other == from || other == to)
+                continue;
+
+            var min = (Vector2) other.PixelPosition + new Vector2(inset);
+            var max = (Vector2) other.PixelPosition + (Vector2) other.PixelSize - new Vector2(inset);
+            for (var i = 0; i <= steps; i++)
+            {
+                var point = Vector2.Lerp(start, end, i / (float) steps);
+                if (point.X >= min.X && point.X <= max.X && point.Y >= min.Y && point.Y <= max.Y)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private void DrawThickLine(DrawingHandleScreen handle, Vector2 from, Vector2 to, float thickness, Color color)
