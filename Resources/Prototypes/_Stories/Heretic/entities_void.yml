@@ -85,3 +85,39 @@
   - type: Tag
     tags:
     - HideContextMenu
+
+- type: entity
+  id: STHereticVoidPhaseIn
+  name: void rift
+  description: The Void rips open and closes again.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_phase.rsi
+    layers:
+    - state: in
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticVoidPhaseOut
+  name: void rift
+  description: The Void rips open and closes again.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_phase.rsi
+    layers:
+    - state: out
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu

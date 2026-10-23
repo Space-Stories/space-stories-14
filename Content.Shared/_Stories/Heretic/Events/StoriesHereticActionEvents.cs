@@ -141,6 +141,36 @@ public sealed partial class StoriesHereticVoidBlastEvent : InstantActionEvent
     };
 }
 
+public sealed partial class StoriesHereticVoidPhaseEvent : WorldTargetActionEvent
+{
+    [DataField]
+    public float MinRange = 3f;
+
+    [DataField]
+    public float MaxRange = 9f;
+
+    [DataField]
+    public float Radius = 1f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public int ChillStacks = 1;
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/_Stories/Heretic/voidblink.ogg");
+
+    [DataField]
+    public EntProtoId EffectIn = "STHereticVoidPhaseIn";
+
+    [DataField]
+    public EntProtoId EffectOut = "STHereticVoidPhaseOut";
+
+    [DataField]
+    public LocId Speech = "stories-heretic-void-phase-speech";
+}
+
 [DataDefinition]
 public sealed partial class StoriesHereticFlameEffects
 {

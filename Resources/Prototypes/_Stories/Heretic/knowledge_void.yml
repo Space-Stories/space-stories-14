@@ -82,3 +82,19 @@
     requires: [ STHereticKnowledgeVoidMark ]
     actions:
     - STActionHereticVoidBlast
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidPhase
+  name: Void Phase
+  description: Teleport to a point in line of sight 3 to 9 tiles away. Creatures around both the departure and arrival points take blunt damage and gain a stack of Void Chill.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: voidblink
+    path: STHereticPathVoid
+    stage: 6
+    requires: [ STHereticKnowledgeVoidChannel ]
+    actions:
+    - STActionHereticVoidPhase
