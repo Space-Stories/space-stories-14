@@ -234,3 +234,7 @@ ent-STHereticKnowledgeVoidRoot = Проблеск зимы
     .desc = Ступите на Путь Пустоты. Научитесь ковать клинки Пустоты из ножа на морозе.
 ent-STHereticRitualVoidBlade = Клинок Пустоты
     .desc = Нож на руне в холоде, при 0 °C и ниже.
+ent-STHereticKnowledgeVoidGrasp = Хватка Пустоты
+    .desc = Хватка Мансуса лишает жертву голоса на 8 секунд и накладывает 2 слоя Холода Пустоты.
+ent-STHereticKnowledgeVoidAristocrat = Путь Аристократа
+    .desc = Вам больше не нужно дышать, холод вам не страшен. Давление по-прежнему опасно.

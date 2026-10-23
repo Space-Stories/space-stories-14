@@ -13,3 +13,36 @@
     stage: 1
     rituals:
     - STHereticRitualVoidBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidGrasp
+  name: Grasp of Void
+  description: Your Mansus Grasp silences the victim for 8 seconds and applies 2 stacks of Void Chill.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: grasp_void
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 2
+    requires: [ STHereticKnowledgeVoidRoot ]
+    addComponents:
+    - type: StoriesHereticGraspVoid
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidAristocrat
+  name: Aristocrat's Way
+  description: You no longer need to breathe and are immune to cold. Pressure is still dangerous.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: the_freezer
+    path: STHereticPathVoid
+    stage: 3
+    requires: [ STHereticKnowledgeVoidGrasp ]
+    addComponents:
+    - type: StoriesHereticColdImmune
