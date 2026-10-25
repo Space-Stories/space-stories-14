@@ -62,10 +62,6 @@
     sprite: _Stories/Clothing/Belt/assault_belt.rsi
   - type: Clothing
     sprite: _Stories/Clothing/Belt/assault_belt.rsi
-  - type: Storage
-    grid:
-    - 0,0,5,1
-    maxItemSize: Normal
   - type: StorageFill
     contents:
     - id: GrenadeFlashBang
@@ -74,3 +70,5 @@
     - id: Handcuffs
     - id: Flash
     - id: STWeaponTelescopicBaton
+    - id: STDeathRattleImplanterSecurity
+    - id: STDeathRattleImplanterSecurity

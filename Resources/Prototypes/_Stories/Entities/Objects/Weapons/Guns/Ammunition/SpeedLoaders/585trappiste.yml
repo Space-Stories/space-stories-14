@@ -12,7 +12,7 @@
     whitelist:
       tags:
         - Cartridge585Trappiste
-    capacity: 5
+    capacity: 6
   - type: Sprite
   - type: ContainerContainer
     containers:
@@ -32,11 +32,11 @@
     layers:
       - state: base
         map: [ "enum.GunVisualLayers.Base" ]
-      - state: base-5
+      - state: base-6
         map: [ "enum.GunVisualLayers.Mag" ]
   - type: MagazineVisuals
     magState: base
-    steps: 6
+    steps: 7
     zeroVisible: false
   - type: Appearance
   - type: Item
