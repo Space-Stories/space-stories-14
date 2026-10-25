@@ -1,0 +1,61 @@
+- type: gameMap
+  id: STLima
+  mapName: 'Lima Station'
+  mapPath: /Maps/_Stories/lima.yml
+  minPlayers: 50
+  stations:
+    Lima:
+      stationProto: StandardNanotrasenStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: '{0} Lima Station {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'
+        - type: StationEmergencyShuttle
+          emergencyShuttlePath: /Maps/_Stories/Shuttles/emergency_lima.yml
+        - type: StationCargoShuttle
+          path: /Maps/_Stories/Shuttles/cargo_lima.yml
+        - type: StationJobs
+          availableJobs:
+            Captain: [ 1, 1 ]
+            HeadOfPersonnel: [ 1, 1 ]
+            Bartender: [ 2, 2 ]
+            Botanist: [ 3, 3 ]
+            Chef: [ 2, 2 ]
+            Janitor: [ 2, 3 ]
+            Chaplain: [ 1, 1 ]
+            Librarian: [ 1, 1 ]
+            ServiceWorker: [ 2, 2 ]
+            Reporter: [ 2, 3 ]
+            ChiefEngineer: [ 1, 1 ]
+            AtmosphericTechnician: [ 2, 2 ]
+            StationEngineer: [ 4, 5 ]
+            TechnicalAssistant: [ 2, 2 ]
+            ChiefMedicalOfficer: [ 1, 1 ]
+            Chemist: [ 2, 2 ]
+            Paramedic: [ 1, 1 ]
+            MedicalDoctor: [ 4, 4 ]
+            MedicalIntern: [ 2, 3 ]
+            Psychologist: [ 1, 1 ]
+            ResearchDirector: [ 1, 1 ]
+            Scientist: [ 4, 6 ]
+            ResearchAssistant: [ 3, 3 ]
+            HeadOfSecurity: [ 1, 1 ]
+            Warden: [ 1, 1 ]
+            SecurityOfficer: [ 4, 4 ]
+            Detective: [ 1, 1 ]
+            SecurityCadet: [ 3, 3 ]
+            Lawyer: [ 2, 2 ]
+            Quartermaster: [ 1, 1 ]
+            SalvageSpecialist: [ 3, 3 ]
+            CargoTechnician: [ 3, 4 ]
+            Passenger: [ -1, -1 ]
+            Clown: [ 1, 1 ]
+            Mime: [ 1, 1 ]
+            Musician: [ 1, 1 ]
+            StationAi: [ 1, 1 ]
+            Borg: [ 2, 2 ]
+            STBlueshield: [ 1, 1 ]
+            STIAA: [ 1, 1 ]
+            STBrigmedic: [ 1, 1 ]
