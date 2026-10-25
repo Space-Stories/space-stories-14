@@ -9,7 +9,7 @@ public enum StoriesHereticNodeState : byte
     Locked,
 }
 
-public sealed record StoriesHereticKnowledgeColumn(string? Path, string Name);
+public sealed record StoriesHereticKnowledgeColumn(string? Path, string Name, string? BridgeTo = null);
 
 public sealed record StoriesHereticKnowledgeNode(
     string Id,

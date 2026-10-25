@@ -11,7 +11,7 @@
     difficulty: 1
     issuer: STHeretic
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: eye
 
 - type: entity
@@ -37,3 +37,17 @@
   - type: StoriesHereticObjectiveCondition
     kind: HeadSacrifice
     title: stories-heretic-objective-head-sacrifice
+
+- type: entity
+  parent: STBaseHereticObjective
+  id: STHereticObjectiveSummon
+  components:
+  - type: StoriesHereticObjectiveCondition
+    kind: Summon
+    title: stories-heretic-objective-summon
+
+- type: entity
+  parent: [ STBaseHereticObjective, BaseFreeObjective ]
+  id: STHereticObjectiveServeMaster
+  name: Serve your master.
+  description: Serve the heretic who summoned you.

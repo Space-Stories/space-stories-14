@@ -32,6 +32,12 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
     public bool Ascension;
 
     [DataField]
+    public bool PathLocked;
+
+    [DataField]
+    public List<ProtoId<TagPrototype>> Bridge = new();
+
+    [DataField]
     public List<EntProtoId> Actions = new();
 
     [DataField]
@@ -45,6 +51,12 @@ public sealed partial class StoriesHereticKnowledgeComponent : Component
 
     [DataField]
     public bool LocksAscension;
+
+    [DataField]
+    public List<EntProtoId> Objectives = new();
+
+    [DataField]
+    public int RequiredSummons;
 
     [DataField]
     public bool Side;

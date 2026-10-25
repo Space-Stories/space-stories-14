@@ -1,0 +1,13 @@
+- type: entity
+  abstract: true
+  id: STHereticSummonBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticSummon
+  - type: GhostTakeoverAvailable
+  - type: GhostRole
+    rules: stories-heretic-summon-rules
+    mindRoles:
+    - STMindRoleHereticMonster
+    raffle:
+      settings: short

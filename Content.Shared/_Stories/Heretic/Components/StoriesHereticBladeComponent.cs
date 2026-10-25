@@ -17,4 +17,7 @@ public sealed partial class StoriesHereticBladeComponent : Component
 
     [DataField]
     public SoundSpecifier? BreakSound = new SoundPathSpecifier("/Audio/Effects/glass_break1.ogg");
+
+    [DataField]
+    public LocId? BreakMessage;
 }

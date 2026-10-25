@@ -10,6 +10,8 @@
     - name: stories-heretic-ingredient-knife
       whitelist:
         tags: [ Knife ]
+      blacklist:
+        components: [ StoriesHereticBlade ]
     - name: stories-heretic-ingredient-fire
       whitelist:
         tags: [ Matchstick ]

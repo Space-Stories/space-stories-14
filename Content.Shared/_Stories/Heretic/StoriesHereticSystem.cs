@@ -193,7 +193,8 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     {
         return comp.LearnedCount >= comp.RequiredKnowledge
                && comp.SacrificeCount >= comp.RequiredSacrifices
-               && comp.HeadSacrificeCount >= comp.RequiredHeadSacrifices;
+               && comp.HeadSacrificeCount >= comp.RequiredHeadSacrifices
+               && comp.SummonCount >= comp.RequiredSummons;
     }
 
     public bool IsTarget(Entity<StoriesHereticComponent> ent, EntityUid uid)
@@ -242,6 +243,28 @@ public sealed partial class StoriesHereticSystem : EntitySystem
         Dirty(ent);
     }
 
+    public bool RegisterSummon(Entity<StoriesHereticComponent> ent, NetUserId player)
+    {
+        if (!ent.Comp.SummonedPlayers.Add(player))
+            return false;
+
+        ent.Comp.SummonCount++;
+        Dirty(ent);
+        return true;
+    }
+
+    public void MakeServant(EntityUid uid, EntityUid master)
+    {
+        var servant = EnsureComp<StoriesHereticServantComponent>(uid);
+        servant.Master = master;
+        Dirty(uid, servant);
+    }
+
+    public bool IsServant(EntityUid uid, EntityUid? master = null)
+    {
+        return TryComp<StoriesHereticServantComponent>(uid, out var servant) && (master == null || servant.Master == master);
+    }
+
     public void RegisterSacrifice(Entity<StoriesHereticComponent> ent, EntityUid victim, bool head)
     {
         ent.Comp.Targets.Remove(GetNetEntity(victim));
@@ -259,6 +282,19 @@ public sealed partial class StoriesHereticSystem : EntitySystem
     {
         if (ent.Comp.Rituals.Remove(ritual))
             Dirty(ent);
+    }
+
+    public void DropEverything(EntityUid uid)
+    {
+        if (_inventory.TryGetContainerSlotEnumerator(uid, out var slots))
+        {
+            while (slots.NextItem(out _, out var slot))
+            {
+                _inventory.TryUnequip(uid, slot.Name, true, true);
+            }
+        }
+
+        _hands.DropAll(uid, checkActionBlocker: false, doDropInteraction: false);
     }
 
     public void SetAscended(Entity<StoriesHereticComponent> ent)

@@ -38,11 +38,22 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
             .Where(k => k.Comp.Path != null)
             .Select(k => k.Comp.Path!.Value.Id)
             .Distinct()
-            .OrderBy(p => p)
             .ToList();
 
-        var columns = new List<StoriesHereticKnowledgeColumn> { new(null, Loc.GetString("stories-heretic-ui-column-general")) };
-        columns.AddRange(paths.Select(p => new StoriesHereticKnowledgeColumn(p, Loc.GetString($"stories-heretic-path-{p}"))));
+        var bridges = system.AllKnowledge
+            .Where(k => k.Comp.Bridge.Count == 2)
+            .Select(k => (k.Comp.Bridge[0].Id, k.Comp.Bridge[1].Id))
+            .Distinct()
+            .ToList();
+
+        var layout = StoriesHereticRing.BuildColumns(paths, bridges);
+        var columns = layout
+            .Select(c => new StoriesHereticKnowledgeColumn(c.Path,
+                c.Path == null
+                    ? Loc.GetString("stories-heretic-ui-column-general")
+                    : c.BridgeTo == null ? Loc.GetString($"stories-heretic-path-{c.Path}") : string.Empty,
+                c.BridgeTo))
+            .ToList();
 
         var nodes = new List<StoriesHereticKnowledgeNode>();
         foreach (var (id, knowledge) in system.AllKnowledge)
@@ -57,7 +68,7 @@ public sealed partial class StoriesHereticKnowledgeBoundUserInterface(EntityUid 
                     ? StoriesHereticNodeState.Available
                     : StoriesHereticNodeState.Locked;
 
-            var column = knowledge.Path is { } path ? paths.IndexOf(path.Id) + 1 : 0;
+            var column = StoriesHereticRing.ColumnOf(layout, knowledge.Path?.Id, knowledge.Bridge.Select(b => b.Id).ToList());
 
             nodes.Add(new StoriesHereticKnowledgeNode(id,
                 proto.Name,

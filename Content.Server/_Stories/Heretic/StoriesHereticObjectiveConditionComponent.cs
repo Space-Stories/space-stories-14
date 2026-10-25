@@ -15,4 +15,5 @@ public enum StoriesHereticObjectiveKind : byte
     Knowledge,
     Sacrifice,
     HeadSacrifice,
+    Summon,
 }

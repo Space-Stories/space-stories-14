@@ -9,7 +9,7 @@
     useDelay: 15
     checkCanInteract: false
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: ash_shift
   - type: InstantAction
@@ -27,7 +27,7 @@
     itemIconStyle: NoItem
     useDelay: 30
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: flames
   - type: InstantAction
@@ -50,7 +50,7 @@
     itemIconStyle: NoItem
     useDelay: 60
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: smoke
   - type: InstantAction
@@ -81,7 +81,7 @@
     itemIconStyle: NoItem
     useDelay: 90
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: fire_ring
   - type: InstantAction
@@ -97,7 +97,7 @@
     itemIconStyle: NoItem
     useDelay: 30
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: flames
   - type: InstantAction
@@ -116,7 +116,7 @@
     itemIconStyle: NoItem
     useDelay: 1
   - type: Sprite
-    sprite: _Stories/Heretic/actions.rsi
+    sprite: _Stories/Heretic/Interface/actions.rsi
     layers:
     - state: flames
   - type: InstantAction

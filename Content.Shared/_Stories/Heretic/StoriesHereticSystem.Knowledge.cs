@@ -94,7 +94,9 @@ public sealed partial class StoriesHereticSystem
             reason = Loc.GetString("stories-heretic-learn-feast-locked");
         else if (knowledge.ChoosesPath && ent.Comp.Path != null)
             reason = Loc.GetString("stories-heretic-learn-path-chosen");
-        else if (!knowledge.ChoosesPath && knowledge.Path != null && knowledge.Path != ent.Comp.Path)
+        else if (knowledge.Path != null
+                 && knowledge.Path != ent.Comp.Path
+                 && (knowledge.PathLocked || knowledge.Ascension || (!knowledge.ChoosesPath && ent.Comp.Path == null)))
             reason = Loc.GetString("stories-heretic-learn-wrong-path");
         else if (knowledge.Requires.Count > 0 && !knowledge.Requires.Any(r => ent.Comp.Knowledge.Contains(r)))
             reason = Loc.GetString("stories-heretic-learn-requires");
@@ -158,6 +160,9 @@ public sealed partial class StoriesHereticSystem
 
         if (knowledge.GrantPoints > 0)
             AddPoints(ent, knowledge.GrantPoints);
+
+        if (knowledge.RequiredSummons > ent.Comp.RequiredSummons)
+            ent.Comp.RequiredSummons = knowledge.RequiredSummons;
 
         EntityManager.AddComponents(ent, knowledge.AddComponents, removeExisting: false);
 

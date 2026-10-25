@@ -1,4 +1,6 @@
 using Content.Shared.Body;
+using Content.Shared.Chemistry.Reagent;
+using Content.Shared.FixedPoint;
 using Content.Shared.Inventory;
 using Content.Shared.Whitelist;
 using Robust.Shared.Prototypes;
@@ -18,6 +20,9 @@ public sealed partial class StoriesHereticRitualComponent : Component
     public int? Limit;
 
     [DataField]
+    public bool AscendedUnlimited;
+
+    [DataField]
     public StoriesHereticRitualEffect Effect = StoriesHereticRitualEffect.None;
 }
 
@@ -28,10 +33,19 @@ public sealed partial class StoriesHereticIngredient
     public EntityWhitelist? Whitelist;
 
     [DataField]
+    public EntityWhitelist? Blacklist;
+
+    [DataField]
     public List<EntProtoId>? Prototypes;
 
     [DataField]
     public ProtoId<OrganCategoryPrototype>? OrganCategory;
+
+    [DataField]
+    public List<ProtoId<ReagentPrototype>>? Reagents;
+
+    [DataField]
+    public FixedPoint2 ReagentAmount = 10;
 
     [DataField]
     public SlotFlags? ClothingSlots;
@@ -53,4 +67,6 @@ public enum StoriesHereticRitualEffect : byte
     Knowledge,
     RerollTargets,
     Ascension,
+    Summon,
+    Ghoul,
 }

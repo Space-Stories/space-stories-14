@@ -6,7 +6,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/ash_blade.rsi
+      sprite: _Stories/Heretic/Objects/Weapons/ash_blade.rsi
       state: icon
     path: STHereticPathAsh
     choosesPath: true
@@ -22,9 +22,10 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: grasp_ash
     path: STHereticPathAsh
+    pathLocked: true
     stage: 2
     requires: [ STHereticKnowledgeAshRoot ]
     addComponents:
@@ -39,7 +40,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: ash_shift
     path: STHereticPathAsh
     stage: 3
@@ -55,9 +56,10 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: mansus_grasp
     path: STHereticPathAsh
+    pathLocked: true
     stage: 4
     cost: 2
     requires: [ STHereticKnowledgeAshPassage ]
@@ -74,7 +76,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: flames
     path: STHereticPathAsh
     stage: 5
@@ -90,9 +92,10 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: blade_upgrade_ash
     path: STHereticPathAsh
+    pathLocked: true
     stage: 6
     cost: 2
     requires: [ STHereticKnowledgeAshVolcano ]
@@ -107,7 +110,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/actions.rsi
+      sprite: _Stories/Heretic/Interface/actions.rsi
       state: fire_ring
     path: STHereticPathAsh
     stage: 7
@@ -123,7 +126,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/ashen_eyes.rsi
+      sprite: _Stories/Heretic/Clothing/Neck/ashen_eyes.rsi
       state: icon
     stage: 3
     requires: [ STHereticKnowledgeAshPassage ]
@@ -138,7 +141,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/madness_mask.rsi
+      sprite: _Stories/Heretic/Clothing/Mask/madness_mask.rsi
       state: icon
     stage: 5
     requires: [ STHereticKnowledgeAshVolcano ]
@@ -153,7 +156,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/knowledge.rsi
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
       state: node_finished
     path: STHereticPathAsh
     stage: 8
@@ -174,7 +177,7 @@
   components:
   - type: StoriesHereticKnowledge
     icon:
-      sprite: _Stories/Heretic/scorched_mantle.rsi
+      sprite: _Stories/Heretic/Clothing/OuterClothing/scorched_mantle.rsi
       state: icon
     path: STHereticPathAsh
     side: true
