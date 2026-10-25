@@ -18,3 +18,26 @@
       types:
         Holy: 20
         Piercing: 10
+
+- type: entity
+  parent: BaseBullet
+  id: STBulletDeagle
+  categories: [ HideSpawnMenu ]
+  name: bullet (.50 AE)
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 50
+
+- type: entity
+  parent: STBulletPistolSilver
+  id: STBulletDeagleSilver
+  categories: [ HideSpawnMenu ]
+  name: bullet (.50 AE silver)
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Holy: 55
+        Blunt: 11

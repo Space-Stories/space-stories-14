@@ -1,6 +1,11 @@
 # Weapons
 uplink-garrote-name = Удавка
 uplink-garrote-desc = Излюбленный профессионалами инструмент для скрытых убийств. Позволяет взять стоящую к вам спиной жертву в мёртвую хватку, неминуемо убивая её.
+stories-uplink-deagle-name = Пустынный Орёл
+stories-uplink-deagle-desc = Военное оружие используемое в основном ядерными оперативниками, а также некоторыми офицерами Синдиката.
+# Ammo
+stories-uplink-magazine-deagle-name = тяжёлый пистолетный магазин (.50 AE)
+stories-uplink-magazine-deagle-desc = Магазин на 7 патронов с однорядным расположением для пистолета Пустынный Орёл.
 # Pointless
 uplink-costume-tactical-maid-name = Набор горничной синдиката
 uplink-costume-tactical-maid-desc = Предполагается, что у лучших горничных должны быть дизайнерские костюмы.

@@ -58,3 +58,40 @@
       - state: inhand-right-mag
       - state: inhand-right-stripe
         color: "#585b70"
+
+- type: entity
+  parent: BaseMagazinePistol
+  id: STMagazineDeagle
+  name: deagle magazine (.50 AE)
+  description: 7-round single-stack magazine for the Desert Eagle pistol.
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Weapons/Guns/Ammunition/Magazines/deagle.rsi
+  - type: BallisticAmmoProvider
+    proto: STCartridgeDeagle
+    whitelist:
+      tags:
+      - STCartridgeDeagle
+    capacity: 7
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left-mag
+      right:
+      - state: inhand-right-mag
+  - type: MagazineVisuals
+    steps: 2
+  - type: Tag
+    tags:
+    - STMagazineDeagle
+
+- type: entity
+  parent: STMagazineDeagle
+  id: STMagazineDeagleSilver
+  name: deagle magazine (.50 AE silver)
+  description: 7-round single-stack magazine for the Desert Eagle pistol. Intended to hold anti-demon silver ammunition.
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Weapons/Guns/Ammunition/Magazines/deagle_silver.rsi
+  - type: BallisticAmmoProvider
+    proto: STCartridgeDeagleSilver
