@@ -1,0 +1,17 @@
+- type: alert
+  id: STHereticVoidChill
+  icons:
+  - sprite: /Textures/_Stories/Heretic/Interface/void_chill_alert.rsi
+    state: chill1
+  - sprite: /Textures/_Stories/Heretic/Interface/void_chill_alert.rsi
+    state: chill2
+  - sprite: /Textures/_Stories/Heretic/Interface/void_chill_alert.rsi
+    state: chill3
+  - sprite: /Textures/_Stories/Heretic/Interface/void_chill_alert.rsi
+    state: chill4
+  - sprite: /Textures/_Stories/Heretic/Interface/void_chill_alert.rsi
+    state: chill5
+  name: stories-heretic-void-chill-name
+  description: stories-heretic-void-chill-desc
+  minSeverity: 1
+  maxSeverity: 5

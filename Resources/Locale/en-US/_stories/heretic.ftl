@@ -24,6 +24,7 @@ stories-heretic-round-end-summons = Monsters summoned: { $count } of { $required
 stories-heretic-path-none = none
 stories-heretic-path-STHereticPathAsh = Ash
 stories-heretic-path-STHereticPathFlesh = Flesh
+stories-heretic-path-STHereticPathVoid = Void
 stories-heretic-objective-issuer = [color=#58a65c]The Mansus[/color]
 stories-heretic-objective-knowledge = Learn { $count } Mansus knowledges.
 stories-heretic-objective-summon = Summon { $count } Mansus monsters.
@@ -105,8 +106,11 @@ stories-heretic-ingredient-fire = matchstick or lighter
 
 stories-heretic-ash-ascension-corpses = The flame needs { $count } more burnt bodies.
 stories-heretic-ascension-done = You have already ascended.
+stories-heretic-ascension-not-dead = The bodies for Ascension must be dead.
 stories-heretic-ash-ascension-announcement = Attention! A surge of anomalous activity detected. { $name } has ascended as the Ashlord. Fire will consume everyone.
 stories-heretic-ingredient-glass-shard = glass shard
+stories-heretic-ingredient-any-outer-clothing = any outer clothing
+stories-heretic-ingredient-bedsheet = bed sheet
 stories-heretic-ingredient-candle = candle
 stories-heretic-ingredient-mask = breath, gas or sterile mask
 stories-heretic-ingredient-stunbaton = stun baton

@@ -16,9 +16,9 @@ public sealed partial class StoriesHereticMarkVisualsSystem : EntitySystem
     public static readonly IReadOnlyDictionary<ProtoId<TagPrototype>, string> States = new Dictionary<ProtoId<TagPrototype>, string>
     {
         ["STHereticPathFlesh"] = "emark1",
-        ["STHereticPathVoid"] = "emark2",
-        ["STHereticPathAsh"] = "emark3",
-        ["STHereticPathRust"] = "emark4",
+        ["STHereticPathVoid"] = "emark4",
+        ["STHereticPathAsh"] = "emark2",
+        ["STHereticPathRust"] = "emark3",
         ["STHereticPathBlade"] = "emark5",
         ["STHereticPathCosmos"] = "emark6",
         ["STHereticPathLock"] = "emark7",

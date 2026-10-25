@@ -24,6 +24,7 @@ stories-heretic-round-end-summons = Призвано чудовищ: { $count } 
 stories-heretic-path-none = не выбран
 stories-heretic-path-STHereticPathAsh = Пепел
 stories-heretic-path-STHereticPathFlesh = Плоть
+stories-heretic-path-STHereticPathVoid = Пустота
 stories-heretic-objective-issuer = [color=#58a65c]Мансус[/color]
 stories-heretic-objective-knowledge = Изучить { $count } { $count ->
     [one] знание
@@ -118,8 +119,11 @@ stories-heretic-ash-ascension-corpses = Пламени нужно ещё { $coun
    *[other] сгоревших тел
 }.
 stories-heretic-ascension-done = Вы уже вознеслись.
+stories-heretic-ascension-not-dead = Тела для Вознесения должны быть мертвы.
 stories-heretic-ash-ascension-announcement = Внимание! Обнаружен всплеск аномальной активности. { $name } вознёсся как Повелитель пепла. Огонь поглотит всех.
 stories-heretic-ingredient-glass-shard = осколок стекла
+stories-heretic-ingredient-any-outer-clothing = любая верхняя одежда
+stories-heretic-ingredient-bedsheet = простыня
 stories-heretic-ingredient-candle = свеча
 stories-heretic-ingredient-mask = дыхательная, противогазная или стерильная маска
 stories-heretic-ingredient-stunbaton = станбатон

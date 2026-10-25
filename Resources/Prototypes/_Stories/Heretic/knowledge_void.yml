@@ -1,0 +1,154 @@
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidRoot
+  name: Glimmer of Winter
+  description: Step onto the Path of Void. Forge void blades from a knife in the cold.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Objects/Weapons/void_blade.rsi
+      state: icon
+    path: STHereticPathVoid
+    choosesPath: true
+    stage: 1
+    rituals:
+    - STHereticRitualVoidBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidGrasp
+  name: Grasp of Void
+  description: Your Mansus Grasp silences the victim for 8 seconds and applies 2 stacks of Void Chill.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: grasp_void
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 2
+    requires: [ STHereticKnowledgeVoidRoot ]
+    addComponents:
+    - type: StoriesHereticGraspVoid
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidAristocrat
+  name: Aristocrat's Way
+  description: You no longer need to breathe and are immune to cold. Pressure is still dangerous.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: the_freezer
+    path: STHereticPathVoid
+    stage: 3
+    requires: [ STHereticKnowledgeVoidGrasp ]
+    addComponents:
+    - type: StoriesHereticColdImmune
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidMark
+  name: Mark of Void
+  description: Your Grasp marks victims. A blade strike on a marked victim adds 3 stacks of Void Chill and instantly drops body temperature by 40 K.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Effects/marks.rsi
+      state: emark4
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 4
+    cost: 2
+    requires: [ STHereticKnowledgeVoidAristocrat ]
+    addComponents:
+    - type: StoriesHereticGraspMark
+      path: STHereticPathVoid
+    - type: StoriesHereticVoidMark
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidChannel
+  name: Void Channel
+  description: A cone of Void blasts out in front of you, dealing cold damage, adding 2 stacks of Void Chill and covering the floor with slippery ice.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: void_rift
+    path: STHereticPathVoid
+    stage: 5
+    requires: [ STHereticKnowledgeVoidMark ]
+    actions:
+    - STActionHereticVoidBlast
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidPhase
+  name: Void Phase
+  description: Teleport to a point in line of sight 3 to 9 tiles away. Creatures around both the departure and arrival points take blunt damage and gain a stack of Void Chill.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: voidblink
+    path: STHereticPathVoid
+    stage: 6
+    requires: [ STHereticKnowledgeVoidChannel ]
+    actions:
+    - STActionHereticVoidPhase
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidSeeking
+  name: Seeking Blade
+  description: Striking a distant marked target with a blade dashes you behind it and delivers the blow, even outside combat mode. Cooldown 10 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: blade_upgrade_void
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 7
+    cost: 2
+    requires: [ STHereticKnowledgeVoidPhase ]
+    addComponents:
+    - type: StoriesHereticSeekingBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidPull
+  name: Void Pull
+  description: Creatures within 1 tile take blunt damage, those within 4 tiles are knocked down, and those 4 to 7 tiles away are pulled 3 tiles toward you. Cooldown 40 seconds.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: voidpull
+    path: STHereticPathVoid
+    stage: 8
+    cost: 1
+    requires: [ STHereticKnowledgeVoidSeeking ]
+    actions:
+    - STActionHereticVoidPull
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeVoidAscension
+  name: Waltz at the End of Time
+  description: Three corpses on a rune in the cold, and you ascend. Requires completed objectives.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: node_finished
+    path: STHereticPathVoid
+    pathLocked: true
+    stage: 9
+    cost: 2
+    ascension: true
+    requires: [ STHereticKnowledgeVoidPull ]
+    rituals:
+    - STHereticRitualVoidAscension

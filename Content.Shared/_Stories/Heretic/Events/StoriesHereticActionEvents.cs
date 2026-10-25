@@ -1,5 +1,6 @@
 using Content.Shared.Actions;
 using Content.Shared.Damage;
+using Content.Shared.FixedPoint;
 using Content.Shared.Polymorph;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
@@ -109,6 +110,99 @@ public sealed partial class StoriesHereticFireWaveEvent : InstantActionEvent
 
     [DataField]
     public float FlameMinDistance = 0.5f;
+}
+
+public sealed partial class StoriesHereticVoidBlastEvent : InstantActionEvent
+{
+    [DataField]
+    public float Range = 3f;
+
+    [DataField]
+    public float HalfAngleDegrees = 35f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public int ChillStacks = 2;
+
+    [DataField]
+    public int IceRows = 3;
+
+    [DataField]
+    public EntProtoId Ice = "STHereticVoidIce";
+
+    [DataField]
+    public StoriesHereticFlameEffects Frost = new()
+    {
+        Effect = "STHereticVoidFrostEffect",
+        Count = 20,
+        MinScale = 0.3f,
+        MaxScale = 0.6f,
+        MinLifetime = 0.5f,
+        MaxLifetime = 1f,
+        MaxRotation = Angle.FromDegrees(180),
+    };
+}
+
+public sealed partial class StoriesHereticVoidPhaseEvent : WorldTargetActionEvent
+{
+    [DataField]
+    public float MinRange = 3f;
+
+    [DataField]
+    public float MaxRange = 9f;
+
+    [DataField]
+    public float Radius = 1f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public int ChillStacks = 1;
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/_Stories/Heretic/voidblink.ogg");
+
+    [DataField]
+    public EntProtoId EffectIn = "STHereticVoidPhaseIn";
+
+    [DataField]
+    public EntProtoId EffectOut = "STHereticVoidPhaseOut";
+
+    [DataField]
+    public LocId Speech = "stories-heretic-void-phase-speech";
+}
+
+public sealed partial class StoriesHereticVoidPullEvent : InstantActionEvent
+{
+    [DataField]
+    public float DamageRadius = 1f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public float KnockdownRadius = 4f;
+
+    [DataField]
+    public TimeSpan Knockdown = TimeSpan.FromSeconds(3);
+
+    [DataField]
+    public float PullRadius = 7f;
+
+    [DataField]
+    public float PullDistance = 3f;
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/_Stories/Heretic/voidblink.ogg");
+
+    [DataField]
+    public EntProtoId Effect = "STHereticVoidPhaseIn";
+
+    [DataField]
+    public LocId Speech = "stories-heretic-void-pull-speech";
 }
 
 [DataDefinition]
@@ -226,4 +320,55 @@ public sealed partial class StoriesHereticShedFormEvent : InstantActionEvent
 
     [DataField]
     public LocId Speech = "stories-heretic-shed-form-speech";
+}
+
+public sealed partial class StoriesHereticBloodSiphonEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public FixedPoint2 Heal = 15;
+
+    [DataField]
+    public FixedPoint2 Blood = 15;
+
+    [DataField]
+    public float BleedChance = 0.5f;
+
+    [DataField]
+    public float BleedShare = 0.5f;
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/Effects/Fluids/splat.ogg");
+}
+
+public sealed partial class StoriesHereticBloodCleaveEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public float Radius = 1f;
+
+    [DataField]
+    public DamageSpecifier Damage = new();
+
+    [DataField]
+    public float Bleed = 5f;
+
+    [DataField]
+    public EntProtoId Effect = "STHereticCleaveEffect";
+
+    [DataField]
+    public EntProtoId Puddle = "PuddleBlood";
+
+    [DataField]
+    public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/_Stories/Heretic/slice.ogg");
+}
+
+public sealed partial class StoriesHereticVoidPrisonEvent : EntityTargetActionEvent
+{
+    [DataField]
+    public EntProtoId Prison = "STHereticVoidPrison";
+
+    [DataField]
+    public LocId Invalid = "stories-heretic-bridge-prison-invalid";
 }

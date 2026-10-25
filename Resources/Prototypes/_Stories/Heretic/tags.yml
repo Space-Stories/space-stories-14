@@ -3,3 +3,6 @@
 
 - type: Tag
   id: STHereticPathFlesh
+
+- type: Tag
+  id: STHereticPathVoid

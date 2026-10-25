@@ -22,7 +22,11 @@ public record struct StoriesHereticRitualEffectEvent(
     public bool Handled;
     public bool Success;
     public string? FailReason;
+    public int FailScore = 1;
 }
+
+[ByRefEvent]
+public record struct StoriesHereticRuneTemperatureEvent(EntityUid Rune, float Temperature = float.MaxValue, bool Handled = false);
 
 [ByRefEvent]
 public readonly record struct StoriesHereticGraspHitEvent(EntityUid Heretic, EntityUid Target);

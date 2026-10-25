@@ -1,0 +1,62 @@
+- type: entity
+  id: STActionHereticVoidBlast
+  name: Void Blast
+  description: A cone of freezing Void in front of you. Chills those caught in it and glazes the floor with slippery ice.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: void_rift
+  - type: InstantAction
+    event: !type:StoriesHereticVoidBlastEvent
+      damage:
+        types:
+          Cold: 15
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticVoidPhase
+  name: Void Phase
+  description: Teleport to a point in line of sight. Creatures around the departure and arrival points take blunt damage and gain Void Chill.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 30
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: voidblink
+  - type: TargetAction
+    range: 9
+    checkCanAccess: true
+  - type: WorldTargetAction
+    event: !type:StoriesHereticVoidPhaseEvent
+      damage:
+        types:
+          Blunt: 30
+  - type: StoriesHereticRequiresFocus
+
+- type: entity
+  id: STActionHereticVoidPull
+  name: Void Pull
+  description: Strike creatures around you and pull distant ones toward you.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    itemIconStyle: NoItem
+    useDelay: 40
+  - type: Sprite
+    sprite: _Stories/Heretic/Interface/actions.rsi
+    layers:
+    - state: voidpull
+  - type: InstantAction
+    event: !type:StoriesHereticVoidPullEvent
+      damage:
+        types:
+          Blunt: 30
+  - type: StoriesHereticRequiresFocus

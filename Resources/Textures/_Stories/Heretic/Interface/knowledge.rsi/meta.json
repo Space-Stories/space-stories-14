@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/ui_icons/antags/heretic/knowledge.dmi, https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/mob/nonhuman-player/eldritch_mobs.dmi",
+  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/ui_icons/antags/heretic/knowledge.dmi, https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/mob/nonhuman-player/eldritch_mobs.dmi, https://github.com/tgstation/tgstation/blob/ca79910d79497cf1ab56ebcf8db52a7289a3d412/icons/effects/effects.dmi",
   "size": {
     "x": 32,
     "y": 32
@@ -60,6 +60,15 @@
     },
     {
       "name": "summon_stalker"
+    },
+    {
+      "name": "grasp_void"
+    },
+    {
+      "name": "blade_upgrade_void"
+    },
+    {
+      "name": "the_freezer"
     }
   ]
 }

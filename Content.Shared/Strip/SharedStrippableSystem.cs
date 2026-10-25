@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared.Administration.Logs;
+using Content.Shared._Stories.Strip;
 using Content.Shared.CombatMode;
 using Content.Shared.Cuffs;
 using Content.Shared.Cuffs.Components;
@@ -300,7 +301,7 @@ public abstract partial class SharedStrippableSystem : EntitySystem
 
         if (!stealth)
         {
-            if (IsStripHidden(slotDef, user))
+            if (IsStripHidden(slotDef, user, item)) // Stories-VoidCloak
             {
                 _popupSystem.PopupEntity(
                     Loc.GetString("strippable-component-alert-owner-hidden",
@@ -697,6 +698,21 @@ public abstract partial class SharedStrippableSystem : EntitySystem
         if (args.CanDrop)
             args.Handled = true;
     }
+
+    // Stories-VoidCloak-Start
+    public bool IsStripHidden(SlotDefinition definition, EntityUid? viewer, EntityUid? item)
+    {
+        if (IsStripHidden(definition, viewer))
+            return true;
+
+        if (item == null || (viewer != null && HasComp<BypassInteractionChecksComponent>(viewer)))
+            return false;
+
+        var ev = new StoriesStripItemHiddenEvent(viewer);
+        RaiseLocalEvent(item.Value, ref ev);
+        return ev.Hidden;
+    }
+    // Stories-VoidCloak-End
 
     public bool IsStripHidden(SlotDefinition definition, EntityUid? viewer)
     {

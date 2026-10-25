@@ -156,6 +156,17 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                 continue;
             }
 
+            if (ritual.MaxTemperature is { } maxTemperature)
+            {
+                var temperatureEv = new StoriesHereticRuneTemperatureEvent(rune);
+                RaiseLocalEvent(ref temperatureEv);
+                if (temperatureEv.Handled && temperatureEv.Temperature > maxTemperature)
+                {
+                    RecordFailure(Loc.GetString("stories-heretic-ritual-too-warm"), matched + 2);
+                    continue;
+                }
+            }
+
             if (ritual.Limit is { } limit
                 && !(ritual.AscendedUnlimited && heretic.Comp.Ascended)
                 && _heretic.CountLimitedResults(heretic, ritualId) >= limit)
@@ -251,7 +262,7 @@ public sealed partial class StoriesHereticRitualSystem : EntitySystem
                     return true;
 
                 failReason = ev.FailReason;
-                score = 1;
+                score = ev.FailScore;
                 return false;
         }
     }
