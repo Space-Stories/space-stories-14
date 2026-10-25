@@ -1,0 +1,33 @@
+- type: constructionGraph
+  id: STAtmosDeviceFanDirectional
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: statmosfandirectional
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 2
+      - material: Silver
+        amount: 6
+        doAfter: 6
+  - node: statmosfandirectional
+    entity: AtmosDeviceFanDirectional
+    edges:
+    - to: start
+      completed:
+      - !type:SpawnPrototype
+        prototype: IngotSilver1
+        amount: 2
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:DeleteEntity
+      steps:
+      - tool: Welding
+        doAfter: 8
+      - tool: Anchoring
+        doAfter: 6
+      - tool: Screwing
+        doAfter: 2

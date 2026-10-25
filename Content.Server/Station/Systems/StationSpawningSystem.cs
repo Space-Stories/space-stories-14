@@ -3,6 +3,7 @@ using Content.Server.Humanoid;
 using Content.Server.Mind;
 using Content.Server.PDA;
 using Content.Server.Station.Components;
+using Content.Server.Silicons.Laws; //Stories
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Body;
@@ -43,6 +44,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
     [Dependency] private MetaDataSystem _metaSystem = default!;
     [Dependency] private PdaSystem _pdaSystem = default!;
     [Dependency] private MindSystem _mindSystem = default!;
+    [Dependency] private SiliconLawSystem _siliconLaw = default!; //Stories
 
     /// <summary>
     /// Attempts to spawn a player character onto the given station.
@@ -118,6 +120,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             if (loadout != null)
             {
                 EquipRoleName(jobEntity, loadout, roleProto!);
+                ApplyLoadoutLawset(jobEntity, loadout); // Stories
             }
 
             DoJobSpecials(job, jobEntity);
@@ -168,6 +171,21 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         DoJobSpecials(job, entity.Value);
         _identity.QueueIdentityUpdate(entity.Value);
         return entity.Value;
+    }
+
+    private void ApplyLoadoutLawset(EntityUid entity, RoleLoadout loadout) // Stories
+    {
+        foreach (var selected in loadout.SelectedLoadouts.Values)
+        {
+            foreach (var item in selected)
+            {
+                if (!ProtoMan.TryIndex(item.Prototype, out LoadoutPrototype? proto) || proto.SiliconLawset == null)
+                    continue;
+
+                _siliconLaw.SetLawset(entity, proto.SiliconLawset.Value);
+                return;
+            }
+        }
     }
 
     private void DoJobSpecials(ProtoId<JobPrototype>? job, EntityUid entity, bool equipped = true) // Stories

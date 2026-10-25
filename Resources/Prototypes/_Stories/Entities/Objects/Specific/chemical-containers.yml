@@ -18,9 +18,6 @@
     - state: unlit
       shader: unshaded
   - type: Item
-    size: Normal
-    shape:
-    - 0,0,1,2
     sprite: _Stories/Objects/Specific/Chemistry/big_jug.rsi
   - type: SolutionContainerVisuals
     maxFillLevels: 9
