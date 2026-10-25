@@ -1,0 +1,60 @@
+- type: gameMap
+  id: STHelios
+  mapName: 'Helios Station'
+  mapPath: /Maps/_Stories/helios.yml
+  minPlayers: 15
+  maxPlayers: 50
+  stations:
+    Helios:
+      stationProto: StandardNanotrasenStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: '{0} Helios Station {1}'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: 'GD'
+      - type: StationEmergencyShuttle
+        emergencyShuttlePath: /Maps/Shuttles/emergency_lox.yml
+      - type: StationJobs
+        availableJobs:
+          Captain: [ 1, 1 ]
+          HeadOfPersonnel: [ 1, 1 ]
+          Bartender: [ 1, 1 ]
+          Botanist: [ 2, 2 ]
+          Chef: [ 2, 2 ]
+          Janitor: [ 2, 2 ]
+          Chaplain: [ 1, 1 ]
+          Librarian: [ 1, 1 ]
+          ServiceWorker: [ 2, 2 ]
+          ChiefEngineer: [ 1, 1 ]
+          AtmosphericTechnician: [ 2, 2 ]
+          StationEngineer: [ 4, 4 ]
+          TechnicalAssistant: [ 2, 2 ]
+          ChiefMedicalOfficer: [ 1, 1 ]
+          Chemist: [ 2, 2 ]
+          Paramedic: [ 1, 1 ]
+          MedicalDoctor: [ 3, 3 ]
+          Psychologist: [ 1, 1 ]
+          MedicalIntern: [ 2, 2 ]
+          ResearchDirector: [ 1, 1 ]
+          Scientist: [ 3, 3 ]
+          ResearchAssistant: [ 3, 3 ]
+          HeadOfSecurity: [ 1, 1 ]
+          Warden: [ 1, 1 ]
+          Detective: [ 1, 1 ]
+          SecurityOfficer: [ 4, 4 ]
+          SecurityCadet: [ 3, 3 ]
+          Lawyer: [ 2, 2 ]
+          Quartermaster: [ 1, 1 ]
+          SalvageSpecialist: [ 3, 3 ]
+          CargoTechnician: [ 3, 3 ]
+          Passenger: [ -1, -1 ]
+          Clown: [ 1, 1 ]
+          Mime: [ 1, 1 ]
+          Musician: [ 1, 1 ]
+          Reporter: [ 1, 1 ]
+          StationAi: [ 1, 1 ]
+          Borg: [ 2, 3 ]
+          STIAA: [ 1, 1 ]
+          STBlueshield: [ 1, 1 ]
+          STBrigmedic: [ 1, 1 ]
