@@ -2462,11 +2462,13 @@
   description: Infiltrates your domain, spies on you, and somehow still a cool pet.
   components:
   - type: Language # Stories-Language
-    currentLanguage: Avalese
-    defaultLanguage: Avalese
+    currentLanguage: GalacticCommon
+    defaultLanguage: GalacticCommon
     spokenLanguages:
+    - GalacticCommon
     - Avalese
     understoodLanguages:
+    - GalacticCommon
     - Avalese
   - type: MovementSpeedModifier
     baseWalkSpeed : 2.5

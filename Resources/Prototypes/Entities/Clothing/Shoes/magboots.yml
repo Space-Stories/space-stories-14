@@ -103,7 +103,7 @@
     sprintModifier: 0.95
     # Stories-Start
   - type: ClothingSlowOnDamageModifier
-    modifier: 0.3
+    modifier: 0.7
     # Stories-End
   - type: GasTank
     releasePressure: 42.6

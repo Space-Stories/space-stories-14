@@ -20,10 +20,16 @@
   id: STEncryptionJuridical
 
 - type: Tag
-  id: Cartridge585Trappiste
+  id: STCartridge585Trappiste
 
 - type: Tag
   id: STMagazine585Trappiste
 
 - type: Tag
-  id: SpeedLoader585Trappiste
+  id: STSpeedLoader585Trappiste
+
+- type: Tag
+  id: STBorgModuleSecurity
+
+- type: Tag
+  id: STFreeVendNT

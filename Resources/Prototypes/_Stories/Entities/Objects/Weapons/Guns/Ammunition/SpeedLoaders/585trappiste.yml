@@ -6,12 +6,12 @@
   components:
   - type: Tag
     tags:
-      - SpeedLoader585Trappiste
+      - STSpeedLoader585Trappiste
   - type: SpeedLoader
   - type: BallisticAmmoProvider
     whitelist:
       tags:
-        - Cartridge585Trappiste
+        - STCartridge585Trappiste
     capacity: 5
   - type: Sprite
   - type: ContainerContainer

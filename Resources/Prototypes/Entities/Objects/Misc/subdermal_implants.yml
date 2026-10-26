@@ -356,6 +356,9 @@
       - Dead
     - type: RattleOnTrigger
       targetUser: true
+      messages:
+        Critical: stories-rattle-on-trigger-critical-message-universal
+        Dead: stories-rattle-on-trigger-dead-message-universal
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -404,3 +407,6 @@
   components:
   - type: RattleOnTrigger
     radioChannel: CentCom
+    messages:
+      Critical: stories-rattle-on-trigger-critical-message-universal
+      Dead: stories-rattle-on-trigger-dead-message-universal
