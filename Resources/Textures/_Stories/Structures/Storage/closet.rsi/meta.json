@@ -128,9 +128,6 @@
       "name": "securitycentcomm_door"
     },
     {
-      "name": "headsecuritycentcomm"
-    },
-    {
       "name": "headsecuritycentcomm_door"
     },
     {
@@ -143,13 +140,13 @@
       "name": "cos_open"
     },
     {
-      "name": "DSO"
+      "name": "emergencyresponseunit"
     },
     {
-      "name": "DSO_door"
+      "name": "emergencyresponseunit_door"
     },
     {
-      "name": "DSO_open"
+      "name": "emergencyresponseunit_open"
     },
     {
       "name": "ERTchaplain"
@@ -188,6 +185,33 @@
       "name": "ERTsecurity_door"
     },
     {
+      "name": "quarantineservice"
+    },
+    {
+      "name": "quarantineservice_door"
+    },
+    {
+      "name": "quarantineservice_open"
+    },
+    {
+      "name": "quarantineservicecommander"
+    },
+    {
+      "name": "quarantineservicecommander_door"
+    },
+    {
+      "name": "DSO"
+    },
+    {
+      "name": "DSO_door"
+    },
+    {
+      "name": "DSO_open"
+    },
+    {
+      "name": "specialofficer_door"
+    },
+    {
       "name": "magistrate"
     },
     {
@@ -204,15 +228,6 @@
     },
     {
       "name": "quadrantmanagement_open"
-    },
-    {
-      "name": "specialofficer"
-    },
-    {
-      "name": "specialofficer_door"
-    },
-    {
-      "name": "specialofficer_open"
     }
   ]
 }

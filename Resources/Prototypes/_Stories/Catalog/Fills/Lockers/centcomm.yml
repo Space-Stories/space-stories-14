@@ -153,8 +153,8 @@
     - id: STClothingOuterHardsuitCentcomPersonnel
     - id: STClothingShoesBootsMagCentcomm
     - id: STClothingShoesBootsMagSec
-    - id: WeaponDisabler
     - id: WeaponEnergyMagnum
+    - id: WeaponPistolN1984
 
 - type: entity
   id: STLockerOperatorCentcommFilled
@@ -231,6 +231,174 @@
     - id: STRubberStampChiefCentcom
     - id: WeaponPistolN1984
     - id: WeaponTaser
+
+- type: entity
+  id: STLockerERTChaplainFilled
+  suffix: Filled
+  parent: STLockerERTChaplain
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTChaplain
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudMedSec
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTChaplain
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTEngineerFilled
+  suffix: Filled
+  parent: STLockerERTEngineer
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTEngineer
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudDiagnostic
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTEngineer
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTJanitorFilled
+  suffix: Filled
+  parent: STLockerERTJanitor
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTJanitor
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesGlassesChemical
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTJanitor
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTLeaderFilled
+  suffix: Filled
+  parent: STLockerERTLeader
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTLeader
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTLeader
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STClothingEyesGlassesCentcom
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTMedicFilled
+  suffix: Filled
+  parent: STLockerERTMedic
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTMedical
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudMedSec
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTMedical
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTSecurityFilled
+  suffix: Filled
+  parent: STLockerERTSecurity
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTSecurity
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudMedSec
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTSecurity
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerQuarantineServiceFilled
+  suffix: Filled
+  parent: STLockerQuarantineService
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackDuffelCBURN
+    - id: ClothingBeltBandolier
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesGlassesSecurity
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitCBURN
+    - id: ClothingShoesBootsMagERT
+    - id: PillAmbuzolPlus
+    - id: PillAmbuzol
+    - id: STRadioHandheldDSO
+    - id: WeaponLaserGun
+
+- type: entity
+  id: STLockerQuarantineServiceCommanderFilled
+  suffix: Filled
+  parent: STLockerQuarantineServiceCommander
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackDuffelCBURN
+    - id: ClothingBeltBandolier
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagERT
+    - id: PillAmbuzolPlus
+    - id: PillAmbuzol
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingOuterHardsuitCBURNCommander
+    - id: STRadioHandheldDSO
+    - id: WeaponAdvancedLaser
 
 - type: entity
   id: STLockerSpecialOfficerFilled

@@ -188,3 +188,41 @@
     layers:
     - state: green
     - state: special_officer
+
+# Other departments
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointOfficerSpecialAssignments
+  name: Officer of Special Assignments
+  components:
+  - type: SpawnPoint
+    job_id: STOfficerSpecialAssignments
+  - type: Sprite
+    layers:
+    - state: green
+    - state: osa
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointLogist
+  name: logist
+  components:
+  - type: SpawnPoint
+    job_id: STLogist
+  - type: Sprite
+    layers:
+    - state: green
+    - state: logist
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointAccountant
+  name: accountant
+  components:
+  - type: SpawnPoint
+    job_id: STAccountant
+  - type: Sprite
+    layers:
+    - state: green
+    - state: accountant

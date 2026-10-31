@@ -54,162 +54,116 @@
 
 - type: entity
   id: STLockerSpecialAssignments
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: officer of special assignment's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: OSA
-    stateDoorOpen: centcomm_open
     stateDoorClosed: OSA_door
   - type: AccessReader
     access: [["CentralCommand", "Quartermaster"]]
 
 - type: entity
   id: STLockerLogist
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: logist's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: logist
-    stateDoorOpen: centcomm_open
     stateDoorClosed: logist_door
   - type: AccessReader
     access: [["CentralCommand", "Cargo"]]
 
 - type: entity
   id: STLockerAccountant
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: accountant's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: accountant
-    stateDoorOpen: centcomm_open
     stateDoorClosed: accountant_door
   - type: AccessReader
     access: [["CentralCommand", "Command"]]
 
 - type: entity
   id: STLockerMedicCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: locker medical Centcomm
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: mediccentcom
-    stateDoorOpen: centcomm_open
     stateDoorClosed: mediccentcom_door
   - type: AccessReader
     access: [["CentralCommand", "Medical"]]
 
 - type: entity
   id: STLockerEngineerCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: locker engineer Centcomm
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: engineercentcomm
-    stateDoorOpen: centcomm_open
     stateDoorClosed: engineercentcomm_door
   - type: AccessReader
     access: [["CentralCommand", "Engineering"]]
 
 - type: entity
   id: STLockerWorkerCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: Centcomm employee's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: workercentcomm
-    stateDoorOpen: centcomm_open
     stateDoorClosed: workercentcomm_door
   - type: AccessReader
     access: [["CentralCommand", "Service"]]
 
 - type: entity
   id: STLockerSecurityOfficerCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: Centcomm security's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: securitycentcomm
-    stateDoorOpen: centcomm_open
     stateDoorClosed: securitycentcomm_door
   - type: AccessReader
     access: [["CentralCommand", "Security"]]
 
 - type: entity
   id: STLockerHeadOfSecurityCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: Centcomm head of security's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
-    stateBaseClosed: headsecuritycentcomm
-    stateDoorOpen: centcomm_open
     stateDoorClosed: headsecuritycentcomm_door
   - type: AccessReader
     access: [["CentralCommand", "HeadOfSecurity"]]
 
 - type: entity
   id: STLockerOperatorCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: Centcom operator's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
-    stateBaseClosed: centcomm
-    stateDoorOpen: centcomm_open
     stateDoorClosed: operator_door
   - type: AccessReader
     access: [["CentralCommand", "HeadOfPersonnel"]]
 
 - type: entity
   id: STLockerRepresentativeCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: Centcom representative's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
-    stateBaseClosed: centcomm
-    stateDoorOpen: centcomm_open
     stateDoorClosed: representative_door
   - type: AccessReader
     access: [["CentralCommand", "HeadOfPersonnel"]]
 
 - type: entity
   id: STLockerChiefCentcomm
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: head of the central command's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: cos
     stateDoorOpen: cos_open
@@ -218,13 +172,99 @@
     access: [["CentralCommand", "STDSO"]]
 
 - type: entity
+  id: STLockerEmergencyResponseUnit
+  parent: STLockerCentcomm
+  name: emergency response unit locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: emergencyresponseunit
+    stateDoorOpen: emergencyresponseunit_open
+    stateDoorClosed: emergencyresponseunit_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  id: STLockerERTChaplain
+  parent: STLockerEmergencyResponseUnit
+  name: ERT chaplain's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTchaplain
+    stateDoorClosed: ERTchaplain_door
+
+- type: entity
+  id: STLockerERTEngineer
+  parent: STLockerEmergencyResponseUnit
+  name: ERT engineer's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTengineer
+    stateDoorClosed: ERTengineer_door
+
+- type: entity
+  id: STLockerERTJanitor
+  parent: STLockerEmergencyResponseUnit
+  name: ERT janitor's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTjanitor
+    stateDoorClosed: ERTjanitor_door
+
+- type: entity
+  id: STLockerERTLeader
+  parent: STLockerEmergencyResponseUnit
+  name: ERT leader's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTleader
+    stateDoorClosed: ERTleader_door
+
+- type: entity
+  id: STLockerERTMedic
+  parent: STLockerEmergencyResponseUnit
+  name: ERT medic's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTmedic
+    stateDoorClosed: ERTmedic_door
+
+- type: entity
+  id: STLockerERTSecurity
+  parent: STLockerEmergencyResponseUnit
+  name: ERT security's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTsecurity
+    stateDoorClosed: ERTsecurity_door
+
+- type: entity
+  id: STLockerQuarantineService
+  parent: STLockerCentcomm
+  name: quarantine service locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: quarantineservice
+    stateDoorOpen: quarantineservice_open
+    stateDoorClosed: quarantineservice_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  id: STLockerQuarantineServiceCommander
+  parent: STLockerQuarantineService
+  name: quarantine service commander locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: quarantineservicecommander
+    stateDoorClosed: quarantineservicecommander_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
   id: STLockerDepartmentSpecialOperations
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: department of special operations locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: DSO
     stateDoorOpen: DSO_open
@@ -233,118 +273,20 @@
     access: [["STDSO"]]
 
 - type: entity
-  id: STLockerERTChaplain
-  parent: LockerBase
-  name: ERT chaplain's locker
-  components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
-  - type: EntityStorageVisuals
-    stateBaseClosed: ERTchaplain
-    stateDoorOpen: DSO_open
-    stateDoorClosed: ERTchaplain_door
-  - type: AccessReader
-    access: [["STDSO"]]
-
-- type: entity
-  id: STLockerERTEngineer
-  parent: LockerBase
-  name: ERT engineer's locker
-  components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
-  - type: EntityStorageVisuals
-    stateBaseClosed: ERTengineer
-    stateDoorOpen: DSO_open
-    stateDoorClosed: ERTengineer_door
-  - type: AccessReader
-    access: [["STDSO"]]
-
-- type: entity
-  id: STLockerERTJanitor
-  parent: LockerBase
-  name: ERT janitor's locker
-  components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
-  - type: EntityStorageVisuals
-    stateBaseClosed: ERTjanitor
-    stateDoorOpen: DSO_open
-    stateDoorClosed: ERTjanitor_door
-  - type: AccessReader
-    access: [["STDSO"]]
-
-- type: entity
-  id: STLockerERTLeader
-  parent: LockerBase
-  name: ERT leader's locker
-  components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
-  - type: EntityStorageVisuals
-    stateBaseClosed: ERTleader
-    stateDoorOpen: DSO_open
-    stateDoorClosed: ERTleader_door
-  - type: AccessReader
-    access: [["STDSO"]]
-
-- type: entity
-  id: STLockerERTMedic
-  parent: LockerBase
-  name: ERT medic's locker
-  components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
-  - type: EntityStorageVisuals
-    stateBaseClosed: ERTmedic
-    stateDoorOpen: DSO_open
-    stateDoorClosed: ERTmedic_door
-  - type: AccessReader
-    access: [["STDSO"]]
-
-- type: entity
-  id: STLockerERTSecurity
-  parent: LockerBase
-  name: ERT security's locker
-  components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
-  - type: EntityStorageVisuals
-    stateBaseClosed: ERTsecurity
-    stateDoorOpen: DSO_open
-    stateDoorClosed: ERTsecurity_door
-  - type: AccessReader
-    access: [["STDSO"]]
-
-- type: entity
   id: STLockerSpecialOfficer
-  parent: LockerBase
+  parent: STLockerDepartmentSpecialOperations
   name: special officer's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
-    stateBaseClosed: specialofficer
-    stateDoorOpen: specialofficer_open
     stateDoorClosed: specialofficer_door
   - type: AccessReader
     access: [["STDSO", "Captain"]]
 
 - type: entity
   id: STLockerMagistrate
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: magistrate's locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: magistrate
     stateDoorOpen: magistrate_open
@@ -354,12 +296,9 @@
 
 - type: entity
   id: STLockerQuadrantManagement
-  parent: LockerBase
+  parent: STLockerCentcomm
   name: quadrant management locker
   components:
-  - type: Sprite
-    sprite: _Stories/Structures/Storage/closet.rsi
-  - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: quadrantmanagement
     stateDoorOpen: quadrantmanagement_open

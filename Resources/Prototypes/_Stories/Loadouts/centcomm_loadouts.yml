@@ -152,7 +152,6 @@
 - type: roleLoadout
   id: JobSTAccountant
   groups:
-  - STCentCommOfficerJumpsuit
   - STCentCommOfficerBack
   - STCentCommOfficerEyes
   - STCentCommOfficerEars

@@ -2,7 +2,7 @@
   id: STCentComm
   isGrid: true
   mapName: 'Центральное Командование'
-  mapPath: /Maps/_Stories/centcomm.yml # New station needs
+  mapPath: /Maps/_Stories/CC2.yml
   minPlayers: 20 # Minimum player to create CentComm station
   stations:
     centcomm:
@@ -30,10 +30,7 @@
           STWorkerCentcom: [ 3, 3 ]
           STGuardianNt: [ 1, 1 ]
           # Non-Centcomm Personnel (5)
-          #STOfficerSpecialAssignments: [ 1, 1 ]
-          #STLogist: [ 3, 3 ]
-          #STAccountant: [ 1, 1 ]
-          # Silicon (3) # TODO: Make CentComm silicons
-          #StationAi: [ 1, 1 ]
-          #Borg: [ 2, 2 ]
+          STOfficerSpecialAssignments: [ 1, 1 ]
+          STLogist: [ 3, 3 ]
+          STAccountant: [ 1, 1 ]
           # Total: 27 roles

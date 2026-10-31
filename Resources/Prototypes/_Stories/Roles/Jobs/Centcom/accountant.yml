@@ -29,4 +29,5 @@
   id: STAccountantGear
   equipment:
     head: ClothingHeadHatBeret
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
     id: STAccountantPDA
