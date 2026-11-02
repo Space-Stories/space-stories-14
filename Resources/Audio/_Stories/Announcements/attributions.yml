@@ -1,4 +1,4 @@
-- files: ["DSO_announce.ogg"]
+- files: ["DSO_announce.ogg", "DSO_announce_old"]
   license: "CC-BY-SA-3.0"
   copyright: "The initial signal taken from tgstation (link); the rest was created by JustGiveMeALaserSword"
   source: "https://github.com/tgstation/tgstation/blob/40d89d11ea4a5cb81d61dc1018b46f4e7d32c62a/sound/ai/default/shuttlerecalled.ogg"

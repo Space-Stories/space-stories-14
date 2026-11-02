@@ -2,7 +2,7 @@
   id: STCentComm
   isGrid: true
   mapName: 'Центральное Командование'
-  mapPath: /Maps/_Stories/CC2.yml
+  mapPath: /Maps/_Stories/centcomm.yml
   minPlayers: 20 # Minimum player to create CentComm station
   stations:
     centcomm:

@@ -27,7 +27,7 @@
   - STDSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, STDeathRattleImplantDSO, RadioImplantCentcomm, STRadioImplantDSO ]
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm, STRadioImplantDSO ]
   whitelisted: true
   minBankBalance: 750
   maxBankBalance: 900

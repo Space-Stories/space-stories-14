@@ -64,3 +64,29 @@
   - type: Sprite
     sprite: _Stories/Objects/Devices/handheld_console.rsi
     state: shuttle_sp
+
+- type: entity
+  parent: BaseItem
+  id: STHandheldStationsControlConsole
+  categories: [ DoNotMap ]
+  name: asset control tablet
+  description: Allows for the control of any corporate asset.
+  suffix: DON'T MAP
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/qm_clipboard.rsi
+    layers:
+    - state: qm_clipboard
+    - state: qm_clipboard_over
+  - type: Item
+    sprite: Objects/Misc/qm_clipboard.rsi
+    size: Normal
+  - type: UserInterface
+    interfaces:
+      enum.StationsControlConsoleUiKey.Key:
+        type: StationsControlConsoleBoundUserInterface
+#      enum.AlertLevelTabletUiKey.Orders:
+#        type: CargoOrderConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StationsControlConsoleUiKey.Key
+  - type: StationsControlConsole
