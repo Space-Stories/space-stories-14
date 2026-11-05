@@ -434,7 +434,6 @@
   parent: IDCardStandard
   id: STCBURNCommanderIDcard
   name: CBURN Commander ID card
-  suffix: CBURN Commander
   components:
   - type: Sprite
     layers:

@@ -17,6 +17,7 @@ public sealed partial class StationsControlConsoleSystem : EntitySystem
     {
         base.Initialize();
 
+        SubscribeLocalEvent<RoundEndSystemChangedEvent>(_ => OnRoundEndChanged());
         SubscribeLocalEvent<StationsControlConsoleComponent, BoundUIOpenedEvent>(OnUiOpened);
 
         Subs.BuiEvents<StationsControlConsoleComponent>(StationsControlConsoleUiKey.Key, subs =>
@@ -41,7 +42,14 @@ public sealed partial class StationsControlConsoleSystem : EntitySystem
             }
         }
 
-        var state = new StationsControlConsoleState(stationsList, stationsNetIds);
+        var shuttleTimeLeft = _roundEnd.ShuttleTimeLeft;
+
+        var state = new StationsControlConsoleState(
+            stationsList,
+            stationsNetIds,
+            comp.AllowedAlertLevels,
+            comp.AllowAnyAlertLevel,
+            shuttleTimeLeft);
         _uiSystem.SetUiState(uid, StationsControlConsoleUiKey.Key, state);
     }
 
@@ -68,5 +76,34 @@ public sealed partial class StationsControlConsoleSystem : EntitySystem
             machine: uid,
             forceRecall: true
         );
+    }
+
+    private void OnRoundEndChanged()
+    {
+        var query = AllEntityQuery<StationsControlConsoleComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            var shuttleTimeLeft = _roundEnd.ShuttleTimeLeft;
+            var stationsList = new List<string>();
+            var stationsNetIds = new List<NetEntity>();
+            foreach (var station in _station.GetStations())
+            {
+                if (TryComp<MetaDataComponent>(station, out var meta))
+                {
+                    stationsList.Add(meta.EntityName);
+                    stationsNetIds.Add(GetNetEntity(station));
+                }
+            }
+
+            var state = new StationsControlConsoleState(
+                stationsList,
+                stationsNetIds,
+                comp.AllowedAlertLevels,
+                comp.AllowAnyAlertLevel,
+                shuttleTimeLeft
+            );
+
+            _uiSystem.SetUiState(uid, StationsControlConsoleUiKey.Key, state);
+        }
     }
 }

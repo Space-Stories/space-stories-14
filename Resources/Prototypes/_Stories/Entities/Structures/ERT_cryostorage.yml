@@ -1,0 +1,27 @@
+- type: entity
+  parent: CryogenicSleepUnit
+  id: STERTCryostorage
+  name: ERT cryostorage
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.ERTCryostorageUiKey.Key:
+        type: ERTCryostorageBoundUserInterface
+  - type: ActivatableUI
+    key: enum.ERTCryostorageUiKey.Key
+  - type: ERTCryostorage
+    titleName: stories-ert-cryostorage-title
+    containerId: storage
+    options:
+    - name: stories-ert-cryostorage-ert-security
+      sprite: { sprite: Markers/jobs.rsi, state: ertsecurity }
+      settings: ERTSecurity
+    - name: stories-ert-cryostorage-ert-leader
+      sprite: { sprite: Markers/jobs.rsi, state: ertleader }
+      settings: ERTLeader
+      requiresAdminAllow: true
+  - type: Cryostorage
+    noMindGracePeriod: 300
+  - type: ActivatableUIRequiresAccess
+  - type: AccessReader
+    access: [["STDSO"]]

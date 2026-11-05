@@ -290,3 +290,23 @@
     antags:
     - !type:FixedAntagCount
       proto: STShadowDemonAntag
+
+- type: entity
+  parent: BaseGameRule
+  id: STBaseERTSpawn
+  abstract: true
+  components:
+  - type: LoadMapRule
+  - type: AnnounceOnSpawn
+    message: stories-event-ert-spawn-announcement
+    sender: stories-comms-console-announcement-title-DSO
+    sound:
+      path: /Audio/_Stories/Announcements/DSO_announce.ogg
+    color: "#1D8BAD"
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnScout
+  components:
+  - type: LoadMapRule
+    mapPath: /Just/ert-spawn-scout.yml

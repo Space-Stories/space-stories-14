@@ -56,3 +56,5 @@ ent-STInternalInspectorIDCard = ID-карта внутреннего инспе�
 
 ent-STSpecialOfficerIDCard = ID-карта офицера спецопераций
     .desc = { ent-IDCardStandard.desc }
+ent-STCBURNCommanderIDcard = ID-карта командира РХБЗЗ
+    .desc = { ent-IDCardStandard.desc }

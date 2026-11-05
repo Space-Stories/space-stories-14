@@ -74,19 +74,29 @@
   suffix: DON'T MAP
   components:
   - type: Sprite
-    sprite: Objects/Misc/qm_clipboard.rsi
-    layers:
-    - state: qm_clipboard
-    - state: qm_clipboard_over
+    sprite: _Stories/Objects/Devices/handheld_stations_control_console.rsi
+    state: icon
   - type: Item
-    sprite: Objects/Misc/qm_clipboard.rsi
     size: Normal
   - type: UserInterface
     interfaces:
       enum.StationsControlConsoleUiKey.Key:
         type: StationsControlConsoleBoundUserInterface
-#      enum.AlertLevelTabletUiKey.Orders:
-#        type: CargoOrderConsoleBoundUserInterface
   - type: ActivatableUI
     key: enum.StationsControlConsoleUiKey.Key
   - type: StationsControlConsole
+    allowedAlertLevels:
+    - Blue
+    - DeltaNuke
+    - Gamma
+    - Green
+    - Red
+    - Violet
+    - Yellow
+    - STPrisonBlue
+    - STPrisonDelta
+    - STPrisonGamma
+    - STPrisonGreen
+    - STPrisonRed
+    - STPrisonViolet
+    - STPrisonYellow

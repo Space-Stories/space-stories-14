@@ -182,7 +182,7 @@
       state: generic_keyboard
     - map: ["computerLayerScreen"]
       sprite: _Stories/Structures/Machines/computers.rsi
-      state: id_cent-comm
+      state: id_centcomm
     - map: ["computerLayerKeys"]
       state: id_key
     - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
@@ -221,14 +221,22 @@
     - Security
     - Service
     - Theatre
+    - Prisoner
+    - STPrisonEng
+    - STPrisonMed
+    - Prison
+    - STPrisonBrig
+    - STHeadOfPrison
     - CentralCommand
     - STDSO
   - type: Computer
     board: STComputerIdCircuitboardCentcom
+  - type: AccessReader
+    access: [["CentralCommand"]]
 
 - type: entity
-  id: STComputerCargoOrdersCentComm
   parent: ComputerCargoOrders
+  id: STComputerCargoOrdersCentComm
   name: centcomm request computer
   description: Used by the Centcomm department to order supplies.
   components:
@@ -252,9 +260,132 @@
   - type: ActiveRadio
     channels:
     - CentCom
-  #- type: Computer
-  #  board: CargoRequestMedicalComputerCircuitboard
   - type: PointLight
     color: "#0f8551"
   - type: AccessReader
     access: [["CentralCommand", "Cargo"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: STCentcomComputerStationsControl
+  name: centcomm asset control computer
+  description: Allows for the control of any corporate asset.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Stories/Structures/Machines/computers.rsi
+      state: stations_control_centcomm
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.StationsControlConsoleUiKey.Key:
+        type: StationsControlConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StationsControlConsoleUiKey.Key
+  - type: StationsControlConsole
+    allowedAlertLevels:
+    - Blue
+    - DeltaNuke
+    - Gamma
+    - Green
+    - Red
+    - Violet
+    - Yellow
+    - STPrisonBlue
+    - STPrisonDelta
+    - STPrisonGamma
+    - STPrisonGreen
+    - STPrisonRed
+    - STPrisonViolet
+    - STPrisonYellow
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: STDSOComputerStationsControl
+  name: Department of Special Operations asset control computer
+  description: Allows for the control of any corporate asset.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Stories/Structures/Machines/computers.rsi
+      state: stations_control_DSO
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.StationsControlConsoleUiKey.Key:
+        type: StationsControlConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StationsControlConsoleUiKey.Key
+  - type: StationsControlConsole
+    allowedAlertLevels:
+    - DeltaNuke
+    - Gamma
+    - STPrisonDelta
+    - STPrisonGamma
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  parent: BaseComputerAiAccess
+  id: STDSOComputerERTSpawn
+  name: emergency response team call computer
+  description: Used for the remote awakening of ERT operatives aboard pre-staged shuttles.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      sprite: _Stories/Structures/Machines/computers.rsi
+      state: ert_call_DSO
+    - map: ["computerLayerKeys"]
+      state: id_key
+    - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
+      state: generic_panel_open
+  - type: UserInterface
+    interfaces:
+      enum.ERTSpawnConsoleUiKey.Key:
+        type: ERTSpawnConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.ERTSpawnConsoleUiKey.Key
+  - type: ERTSpawnConsole
+    titleName: stories-ert-console-title
+    delay: 300
+    balanceName: stories-ert-spawn-balance-name
+    balance: 50
+    options:
+    - name: stories-ert-spawn-scout-name
+      desc: stories-ert-spawn-scout-desc
+      rule: STERTSpawnScout
+      price: 5
+    - name: stories-ert-spawn-stage-1-name
+      desc: stories-ert-spawn-stage-1-desc
+      rule: STERTSpawnScout
+      price: 10
+    - name: stories-ert-spawn-stage-2-name
+      desc: stories-ert-spawn-stage-2-desc
+      rule: STERTSpawnScout
+      price: 15
+      requiresAdminAllow: true
+  - type: AccessReader
+    access: [["STDSO"]]

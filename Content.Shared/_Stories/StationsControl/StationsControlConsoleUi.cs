@@ -1,4 +1,7 @@
+using Content.Shared.AlertLevel;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
+using Robust.Shared.Timing;
 
 namespace Content.Shared._Stories.StationsControl;
 
@@ -13,11 +16,22 @@ public sealed class StationsControlConsoleState : BoundUserInterfaceState
 {
     public List<string> StationsList { get; }
     public List<NetEntity> StationsNetIds { get; }
+    public List<ProtoId<AlertLevelPrototype>> AllowedAlertLevels { get; }
+    public bool AllowAnyAlertLevel { get; }
+    public TimeSpan? ShuttleTimeLeft { get; }
 
-    public StationsControlConsoleState(List<string> stationsList, List<NetEntity> stationsNetIds)
+    public StationsControlConsoleState(
+        List<string> stationsList,
+        List<NetEntity> stationsNetIds,
+        List<ProtoId<AlertLevelPrototype>> allowedAlertLevels,
+        bool allowAnyAlertLevel,
+        TimeSpan? shuttleTimeLeft)
     {
         StationsList = stationsList;
         StationsNetIds = stationsNetIds;
+        AllowedAlertLevels = allowedAlertLevels;
+        AllowAnyAlertLevel = allowAnyAlertLevel;
+        ShuttleTimeLeft = shuttleTimeLeft;
     }
 }
 

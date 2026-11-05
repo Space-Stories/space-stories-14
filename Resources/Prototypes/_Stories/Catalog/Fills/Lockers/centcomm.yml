@@ -228,6 +228,7 @@
     - id: STClothingHandsGlovesChiefCentcom
     - id: STClothingNeckCloakChiefCentcom
     - id: STClothingOuterHardsuitChiefCentcom
+    - id: STHandheldStationsControlConsole
     - id: STRubberStampChiefCentcom
     - id: WeaponPistolN1984
     - id: WeaponTaser
