@@ -297,6 +297,7 @@
   abstract: true
   components:
   - type: LoadMapRule
+  - type: RuleGrids
   - type: AnnounceOnSpawn
     message: stories-event-ert-spawn-announcement
     sender: stories-comms-console-announcement-title-DSO
@@ -309,4 +310,11 @@
   id: STERTSpawnScout
   components:
   - type: LoadMapRule
-    mapPath: /Just/ert-spawn-scout.yml
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_scout.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnMedium
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_medium.yml

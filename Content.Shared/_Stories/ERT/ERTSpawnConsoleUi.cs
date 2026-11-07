@@ -3,7 +3,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._Stories.ERT;
 
 [Serializable, NetSerializable]
-public enum ERTSpawnConsoleUiKey : byte
+public enum ERTSpawnConsoleUiKey
 {
     Key
 }

@@ -2,8 +2,8 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._Stories.ERT;
 
-[NetSerializable, Serializable]
-public enum ERTCryostorageUiKey : byte
+[Serializable, NetSerializable]
+public enum ERTCryostorageUiKey
 {
     Key
 }

@@ -406,3 +406,147 @@
       nameSegments:
       - NamesMilitaryLast
       nameFormat: name-format-ert-leader
+
+- type: randomHumanoidSettings
+  id: STERTSecurityEmpty
+  parent: ERTSecurity
+  components:
+    - type: Loadout
+      prototypes: [ STERTSecurityEmpty ]
+
+- type: startingGear
+  id: STERTSecurityEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTSecurity
+    back: ClothingBackpackERTSecurity
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudSecurity
+    gloves: ClothingHandsGlovesCombat
+    id: ERTSecurityPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STERTChaplainEmpty
+  parent: ERTChaplain
+  components:
+    - type: Loadout
+      prototypes: [ STERTChaplainEmpty ]
+
+- type: startingGear
+  id: STERTChaplainEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTChaplain
+    back: ClothingBackpackERTChaplain
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudMedSec
+    gloves: ClothingHandsGlovesCombat
+    id: ERTChaplainPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STERTEngineerEmpty
+  parent: ERTEngineer
+  components:
+    - type: Loadout
+      prototypes: [ STERTEngineerEmpty ]
+
+- type: startingGear
+  id: STERTEngineerEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTEngineer
+    back: ClothingBackpackERTEngineer
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudDiagnostic
+    gloves: ClothingHandsGlovesCombat
+    id: ERTEngineerPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STERTMedicalEmpty
+  parent: ERTMedical
+  components:
+    - type: Loadout
+      prototypes: [ STERTMedicalEmpty ]
+
+- type: startingGear
+  id: STERTMedicalEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTMedic
+    back: ClothingBackpackERTMedical
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesHudMedical
+    gloves: ClothingHandsGlovesCombat
+    id: ERTMedicPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STERTJanitorEmpty
+  parent: ERTJanitor
+  components:
+    - type: Loadout
+      prototypes: [ STERTJanitorEmpty ]
+
+- type: startingGear
+  id: STERTJanitorEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTJanitor
+    back: ClothingBackpackERTJanitor
+    shoes: ClothingShoesBootsJackFilled
+    eyes: ClothingEyesGlassesChemical
+    gloves: ClothingHandsGlovesCombat
+    id: ERTJanitorPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STCBURNAgentEmpty
+  parent: CBURNAgent
+  components:
+    - type: Loadout
+      prototypes: [ STCBURNAgentEmpty ]
+
+- type: startingGear
+  id: STCBURNAgentEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    shoes: ClothingShoesBootsCombatFilled
+    eyes: ClothingEyesGlassesSecurity
+    gloves: ClothingHandsGlovesCombat
+    id: CBURNPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STERTLeaderEmpty
+  parent: ERTLeader
+  components:
+    - type: Loadout
+      prototypes: [ STERTLeaderEmpty ]
+
+- type: startingGear
+  id: STERTLeaderEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitERTLeader
+    back: ClothingBackpackERTLeader
+    shoes: ClothingShoesBootsJackFilled
+    eyes: STClothingEyesGlassesCentcom
+    gloves: ClothingHandsGlovesCombat
+    id: ERTLeaderPDA
+    ears: ClothingHeadsetAltCentCom
+
+- type: randomHumanoidSettings
+  id: STCBURNCommanderEmpty
+  parent: STCBURNCommander
+  components:
+    - type: Loadout
+      prototypes: [ STCBURNCommanderEmpty ]
+
+- type: startingGear
+  id: STCBURNCommanderEmpty
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    shoes: ClothingShoesBootsJackFilled
+    eyes: STClothingEyesGlassesCentcom
+    gloves: ClothingHandsGlovesCombat
+    id: STCBURNCommanderPDA
+    ears: ClothingHeadsetAltCentCom

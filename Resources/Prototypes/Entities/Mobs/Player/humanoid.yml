@@ -27,7 +27,7 @@
     - MindShieldImplant
     - DeathRattleImplantCentcomm
 
-- type: randomHumanoidSettings #Stories-DSO-Settings
+- type: randomHumanoidSettings # Stories-DSO-Settings
   id: STEventHumanoidDSO
   parent: EventHumanoidMindShielded
   randomizeName: false
@@ -58,7 +58,7 @@
 
 - type: randomHumanoidSettings
   id: DeathSquad
-  parent: STEventHumanoidDSO
+  parent: STEventHumanoidDSO # Stories-DSO-Settings
   components:
     - type: GhostRole
       name: ghost-role-information-Death-Squad-name
@@ -93,7 +93,7 @@
 
 - type: randomHumanoidSettings
   id: ERTLeader
-  parent: STEventHumanoidDSO
+  parent: STEventHumanoidDSO # Stories-DSO-Settings
   components:
     - type: GhostRole
       name: ghost-role-information-ert-leader-name
@@ -562,7 +562,7 @@
 
 - type: randomHumanoidSettings
   id: CBURNAgent
-  parent: STEventHumanoidDSO
+  parent: STEventHumanoidDSO # Stories-DSO-Settings
   components:
     - type: Loadout
       prototypes: [CBURNGear]

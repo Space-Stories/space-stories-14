@@ -372,20 +372,15 @@
     titleName: stories-ert-console-title
     delay: 300
     balanceName: stories-ert-spawn-balance-name
-    balance: 50
+    balance: 30
     options:
     - name: stories-ert-spawn-scout-name
       desc: stories-ert-spawn-scout-desc
       rule: STERTSpawnScout
       price: 5
-    - name: stories-ert-spawn-stage-1-name
-      desc: stories-ert-spawn-stage-1-desc
-      rule: STERTSpawnScout
+    - name: stories-ert-spawn-medium-name
+      desc: stories-ert-spawn-medium-desc
+      rule: STERTSpawnMedium
       price: 10
-    - name: stories-ert-spawn-stage-2-name
-      desc: stories-ert-spawn-stage-2-desc
-      rule: STERTSpawnScout
-      price: 15
-      requiresAdminAllow: true
   - type: AccessReader
     access: [["STDSO"]]
