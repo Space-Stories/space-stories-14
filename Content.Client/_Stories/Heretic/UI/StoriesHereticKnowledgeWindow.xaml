@@ -1,0 +1,27 @@
+<controls:FancyWindow
+    xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:ui="clr-namespace:Content.Client._Stories.Heretic.UI"
+    Title="{Loc stories-heretic-ui-title}"
+    MinSize="640 480"
+    SetSize="1000 720">
+    <PanelContainer Name="Backdrop">
+        <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="8">
+            <BoxContainer Orientation="Horizontal" SeparationOverride="16">
+                <PanelContainer Name="PointsBadge" VerticalAlignment="Center">
+                    <Label Name="PointsLabel" Margin="10 3" />
+                </PanelContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6" VerticalAlignment="Center">
+                    <Label Text="{Loc stories-heretic-ui-path}" />
+                    <Label Name="PathLabel" StyleClasses="LabelHeading" />
+                </BoxContainer>
+            </BoxContainer>
+            <Label Name="RitualLabel" FontColorOverride="#8fd18f" />
+            <PanelContainer Name="TreePanel" VerticalExpand="True" HorizontalExpand="True">
+                <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                    <ui:StoriesHereticKnowledgeTreeControl Name="Tree" />
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

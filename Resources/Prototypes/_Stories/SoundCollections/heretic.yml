@@ -1,0 +1,9 @@
+- type: soundCollection
+  id: STHereticCurse
+  files:
+  - /Audio/_Stories/Heretic/curse1.ogg
+  - /Audio/_Stories/Heretic/curse2.ogg
+  - /Audio/_Stories/Heretic/curse3.ogg
+  - /Audio/_Stories/Heretic/curse4.ogg
+  - /Audio/_Stories/Heretic/curse5.ogg
+  - /Audio/_Stories/Heretic/curse6.ogg

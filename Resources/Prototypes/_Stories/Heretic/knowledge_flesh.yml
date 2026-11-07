@@ -1,0 +1,177 @@
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshRoot
+  name: Principle of Hunger
+  description: Step onto the Path of Flesh. Learn to forge bloody blades from a knife and a pool of blood. You will also be tasked with summoning monsters. "Hundreds of us starved, but not me... I found strength in my greed."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Objects/Weapons/flesh_blade.rsi
+      state: icon
+    path: STHereticPathFlesh
+    choosesPath: true
+    stage: 1
+    requiredSummons: 2
+    objectives:
+    - STHereticObjectiveSummon
+    rituals:
+    - STHereticRitualFleshBlade
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshGrasp
+  name: Grasp of Flesh
+  description: Your Mansus Grasp raises the dead as ghouls - once per corpse. Ghouls are withered and fragile (25 health).
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: grasp_flesh
+    path: STHereticPathFlesh
+    pathLocked: true
+    stage: 2
+    requires: [ STHereticKnowledgeFleshRoot ]
+    addComponents:
+    - type: StoriesHereticGraspGhoul
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshImperfect
+  name: Imperfect Ritual
+  description: Learn the ritual of the Voiceless Dead. A poppy and a corpse on the rune raise a mute ghoul (50 health), up to 2 at a time. A corpse without a soul is offered to ghosts. "I found records of a dark ritual, unfinished... but I pressed on regardless."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: ghoul_voiceless
+    path: STHereticPathFlesh
+    stage: 3
+    requires: [ STHereticKnowledgeFleshGrasp ]
+    rituals:
+    - STHereticRitualFleshImperfect
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshMark
+  name: Mark of Flesh
+  description: Your Grasp marks victims. A blade strike on a marked victim opens heavy bleeding and a deep cut.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: mansus_grasp
+    path: STHereticPathFlesh
+    pathLocked: true
+    stage: 4
+    cost: 2
+    requires: [ STHereticKnowledgeFleshImperfect ]
+    addComponents:
+    - type: StoriesHereticGraspMark
+      path: STHereticPathFlesh
+    - type: StoriesHereticFleshMark
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshBleedingSteel
+  name: Bleeding Steel
+  description: Your blades make every living victim bleed. "The Lanky Man was not alone. They led me to the Marshal. I finally began to understand. And then blood rained from the heavens."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: blade_upgrade_flesh
+    path: STHereticPathFlesh
+    pathLocked: true
+    stage: 7
+    cost: 2
+    requires: [ STHereticKnowledgeFleshRaw ]
+    addComponents:
+    - type: StoriesHereticBladeBleed
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshKnitting
+  name: Knit Flesh
+  description: Learn to mend your servants with a touch. You can also pull organs out of humanoids without surgery - 3 seconds from a corpse, 15 from the living (not the heart or lungs). "But they did not stay out of my reach for long. With every step the screams grew, until at last I learned to drown them out."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/actions.rsi
+      state: mad_touch
+    path: STHereticPathFlesh
+    stage: 5
+    requires: [ STHereticKnowledgeFleshMark ]
+    actions:
+    - STActionHereticKnitFlesh
+    addComponents:
+    - type: StoriesHereticKnitFlesh
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshRaw
+  name: Raw Ritual
+  description: Learn the ritual of the Raw Prophet. Eyes, a left arm and a pool of blood on the rune summon a ghost-role prophet with long ethereal jaunt, thermal vision and a blinding spell. "I could not go on alone. I summoned the Lanky Man to help me see more. The screams... once unending, fell silent at the mere sight of him. Nothing was out of reach."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: summon_raw_prophet
+    path: STHereticPathFlesh
+    stage: 6
+    requires: [ STHereticKnowledgeFleshKnitting ]
+    rituals:
+    - STHereticRitualRawProphet
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshLonely
+  name: Lonely Ritual
+  description: Learn the ritual of the Stalker. Three slabs of meat, a pen and a sheet of paper on the rune summon a ghost-role stalker with an EMP, ethereal jaunt, thermal vision and a one-time chosen lesser form. "I managed to join greed and desire to summon an otherworldly beast the like of which I had never seen. A mass of flesh forever changing its shape - it knew my goals well. The Marshal approved."
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: summon_stalker
+    path: STHereticPathFlesh
+    stage: 8
+    requires: [ STHereticKnowledgeFleshBleedingSteel ]
+    rituals:
+    - STHereticRitualStalker
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshAscension
+  name: Priest's Final Hymn
+  description: Sacrifice four humanoid corpses on a rune and ascend. Requires completed objectives. Your ghoul limits grow, your blades become unlimited, and you learn to shed your form to become the Lord of the Night. "With the knowledge of the Marshal, my power had peaked. The throne was open to claim. Men of this world, hear me, for the time has come! The Marshal guides my army! Reality will bend to THE LORD OF THE NIGHT or be unraveled! WITNESS MY ASCENSION!"
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Interface/knowledge.rsi
+      state: node_finished
+    path: STHereticPathFlesh
+    stage: 9
+    cost: 2
+    ascension: true
+    requires: [ STHereticKnowledgeFleshLonely ]
+    rituals:
+    - STHereticRitualFleshAscension
+
+- type: entity
+  parent: STHereticKnowledgeBase
+  id: STHereticKnowledgeFleshMantle
+  name: Writhing Embrace
+  description: |-
+    Forge a Writhing Embrace. Its hood shows the health of everyone around, and the mantle slowly heals your servants nearby.
+
+    I tugged these wretched, slothing things about me, like one might a warm blanket. With eyes-not-mine, they will witness. With teeth-not-mine, they will clench. With limbs-not-mine, they will break.
+  components:
+  - type: StoriesHereticKnowledge
+    icon:
+      sprite: _Stories/Heretic/Clothing/OuterClothing/writhing_embrace.rsi
+      state: icon
+    path: STHereticPathFlesh
+    side: true
+    stage: 6
+    requires: [ STHereticKnowledgeFleshKnitting ]
+    rituals:
+    - STHereticRitualFleshMantle

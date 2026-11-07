@@ -1,0 +1,142 @@
+- type: entity
+  parent: BaseKnife
+  id: STHereticBladeVoid
+  name: void blade
+  description: A shard of frozen silence. Breaking it carries you away through the Mansus.
+  components:
+  - type: StoriesHereticBlade
+    breakMessage: stories-heretic-blade-break-void
+  - type: Sprite
+    sprite: _Stories/Heretic/Objects/Weapons/void_blade.rsi
+    state: icon
+  - type: Item
+    sprite: _Stories/Heretic/Objects/Weapons/void_blade_inhand.rsi
+    size: Normal
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.2
+    damage:
+      types:
+        Slash: 17
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+
+- type: entity
+  id: STHereticVoidIce
+  name: void ice
+  description: A slick crust of frost left by the Void.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticVoidIce
+  - type: Clickable
+  - type: Slippery
+    staminaDamage: 0
+  - type: StepTrigger
+  - type: Transform
+    noRot: true
+    anchored: true
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_ice.rsi
+    layers:
+    - state: ice1
+      map: [ "iceLayer" ]
+    drawdepth: FloorObjects
+    color: "#FFFFFFCC"
+  - type: RandomSprite
+    getAllGroups: true
+    available:
+    - iceLayer:
+        ice1: null
+        ice2: null
+        ice3: null
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      slipFixture:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4,0.4,0.4"
+        mask:
+        - ItemMask
+        layer:
+        - SlipLayer
+        hard: false
+
+- type: entity
+  id: STHereticVoidFrostEffect
+  name: frost
+  description: Drifting snowflakes.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.8
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_ice.rsi
+    layers:
+    - state: ice1
+      shader: unshaded
+    drawdepth: Effects
+    color: "#BFEFFF"
+  - type: PointLight
+    radius: 1.5
+    energy: 0.8
+    color: "#9fd8ff"
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticVoidPhaseIn
+  name: void rift
+  description: The Void rips open and closes again.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_phase.rsi
+    layers:
+    - state: in
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticVoidPhaseOut
+  name: void rift
+  description: The Void rips open and closes again.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_phase.rsi
+    layers:
+    - state: out
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticVoidSnowflake
+  name: snowflake
+  description: A snowflake drifting on the wind of the Void.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 1.2
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_ice.rsi
+    layers:
+    - state: ice1
+      shader: unshaded
+    drawdepth: Effects
+    color: "#E6F7FF"
+  - type: Tag
+    tags:
+    - HideContextMenu

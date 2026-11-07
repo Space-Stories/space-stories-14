@@ -1,0 +1,18 @@
+<ContainerButton
+    xmlns="https://spacestation14.io"
+    SetWidth="150">
+    <BoxContainer Orientation="Vertical" SeparationOverride="3">
+        <Control Name="SealBox" SetSize="80 80" HorizontalAlignment="Center">
+            <AnimatedTextureRect Name="Seal" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <AnimatedTextureRect Name="KnowledgeIcon" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <PanelContainer Name="CheckBadge" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                            Margin="0 0 4 4" Visible="False">
+                <Label Name="CheckLabel" Text="✔" Margin="3 0" />
+            </PanelContainer>
+        </Control>
+        <RichTextLabel Name="NameLabel" HorizontalAlignment="Center" />
+        <PanelContainer Name="CostBadge" HorizontalAlignment="Center">
+            <Label Name="CostLabel" StyleClasses="font-small" Margin="6 0" />
+        </PanelContainer>
+    </BoxContainer>
+</ContainerButton>

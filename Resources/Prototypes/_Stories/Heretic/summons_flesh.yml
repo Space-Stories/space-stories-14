@@ -1,0 +1,237 @@
+- type: damageModifierSet
+  id: STHereticSummonDamageModifierSet
+  coefficients:
+    Blunt: 0.7
+    Slash: 0.7
+    Piercing: 0.7
+    Heat: 0.7
+    Cold: 0.7
+    Shock: 0.7
+    Poison: 0
+    Asphyxiation: 0
+
+- type: entity
+  id: STHereticMobRawProphet
+  parent:
+  - BaseSimpleMob
+  - MobCombat
+  - STHereticSummonBase
+  name: Raw Prophet
+  description: An abomination stitched together from several severed arms and one swollen, orphaned eye.
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/Mobs/raw_prophet.rsi
+    layers:
+    - state: icon
+  - type: Damageable
+    damageModifierSet: STHereticSummonDamageModifierSet
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      65: Dead
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 7
+  - type: StoriesHereticFocusedAttack
+    bonus: 2
+    maxBonus: 10
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+  - type: ActionGrant
+    actions:
+    - STActionHereticRawProphetJaunt
+    - STActionHereticRawProphetBlind
+    - STActionHereticRawProphetMansusLink
+    - STActionHereticRawProphetExpandSight
+  - type: StoriesHereticRawProphet
+  - type: GhostRole
+    name: stories-heretic-ghost-role-raw-prophet-name
+    description: stories-heretic-ghost-role-raw-prophet-desc
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener
+
+- type: entity
+  id: STHereticMobStalker
+  parent:
+  - BaseSimpleMob
+  - MobCombat
+  - STHereticSummonBase
+  name: Stalker
+  description: An abomination assembled from assorted remains. Its shape shifts a little every time you blink.
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/Mobs/stalker.rsi
+    layers:
+    - state: icon
+  - type: Damageable
+    damageModifierSet: STHereticSummonDamageModifierSet
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      150: Dead
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 17
+  - type: VisionProvider
+    isActive: true
+    thermalVision: true
+    ambientColor: "#FFFFFF10"
+    priority: 5
+  - type: ActionGrant
+    actions:
+    - STActionHereticStalkerEmp
+    - STActionHereticStalkerJaunt
+    - STActionHereticStalkerShapeshift
+  - type: StoriesHereticStalkerForm
+    forms:
+    - polymorph: STHereticStalkerFormCat
+      mob: MobCat
+      name: stories-heretic-stalker-form-cat
+    - polymorph: STHereticStalkerFormCorgi
+      mob: MobCorgi
+      name: stories-heretic-stalker-form-corgi
+    - polymorph: STHereticStalkerFormMouse
+      mob: MobMouse
+      name: stories-heretic-stalker-form-mouse
+    - polymorph: STHereticStalkerFormFox
+      mob: MobFox
+      name: stories-heretic-stalker-form-fox
+    - polymorph: STHereticStalkerFormCarp
+      mob: MobCarp
+      name: stories-heretic-stalker-form-carp
+  - type: UserInterface
+    interfaces:
+      enum.StoriesHereticStalkerFormUiKey.Key:
+        type: StoriesHereticStalkerFormBoundUserInterface
+  - type: GhostRole
+    name: stories-heretic-ghost-role-stalker-name
+    description: stories-heretic-ghost-role-stalker-desc
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener
+
+- type: polymorph
+  abstract: true
+  id: STHereticStalkerFormBase
+  configuration:
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    allowRepeatedMorphs: true
+    delay: 5
+
+- type: polymorph
+  parent: STHereticStalkerFormBase
+  id: STHereticStalkerFormCat
+  configuration:
+    entity: MobCat
+
+- type: polymorph
+  parent: STHereticStalkerFormBase
+  id: STHereticStalkerFormCorgi
+  configuration:
+    entity: MobCorgi
+
+- type: polymorph
+  parent: STHereticStalkerFormBase
+  id: STHereticStalkerFormMouse
+  configuration:
+    entity: MobMouse
+
+- type: polymorph
+  parent: STHereticStalkerFormBase
+  id: STHereticStalkerFormFox
+  configuration:
+    entity: MobFox
+
+- type: polymorph
+  parent: STHereticStalkerFormBase
+  id: STHereticStalkerFormCarp
+  configuration:
+    entity: MobCarp
+
+- type: entity
+  id: STHereticMobLordOfNight
+  parent:
+  - BaseMob
+  - MobCombat
+  name: Lord of the Night
+  description: An abomination made of dozens and dozens of severed and mangled limbs, clinging to one another. Outside combat mode it devours severed arms by clicking them, healing itself.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _Stories/Heretic/Mobs/lord_of_night.rsi
+    layers:
+    - state: icon
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 1000
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: Damageable
+  - type: Injurable
+    damageContainer: Biological
+  - type: DamageOverlay
+  - type: MobState
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      1000: Dead
+  - type: HealthExaminable
+    examinableTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+    - Cold
+    - Caustic
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 4.5
+  - type: MeleeWeapon
+    hidden: true
+    angle: 0
+    animation: WeaponArcClaw
+    soundHit:
+      path: /Audio/Weapons/Xeno/alien_claw_flesh1.ogg
+    damage:
+      types:
+        Slash: 40
+        Structural: 150
+  - type: StoriesHereticArmEater
+  - type: Tag
+    tags:
+    - CannotSuicide
+    - DoorBumpOpener
+    - StunImmune
+
+- type: polymorph
+  id: STHereticLordOfNight
+  configuration:
+    entity: STHereticMobLordOfNight
+    transferName: true
+    inventory: None
+    forced: false
+    transferDamage: true
+    revertOnDeath: true
+    revertOnCrit: false
+    revertConfirmationPopup: false
+    allowRepeatedMorphs: false
+    delay: 10

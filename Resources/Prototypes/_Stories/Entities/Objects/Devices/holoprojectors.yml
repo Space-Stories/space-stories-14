@@ -1,0 +1,42 @@
+- type: entity
+  parent: Holoprojector
+  id: STHoloconeProjector
+  name: holocone projector
+  description: Creates warning cones made of pure light to block the path. It's a shame you can simply walk right through the light.
+  components:
+  - type: HolosignProjector
+    signProto: STHolocone
+    chargeUse: 80
+  - type: Sprite
+    sprite: _Stories/Objects/Devices/Holoprojectors/cone.rsi
+    state: icon
+  - type: Tag
+    tags:
+    - HolofanProjector
+  - type: StaticPrice
+    price: 50
+
+- type: entity
+  parent: STHoloconeProjector
+  id: STHoloconeProjectorEmpty
+  suffix: Empty
+  components:
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+
+- type: entity
+  parent: STHoloconeProjector
+  id: STHoloconeProjectorBorg
+  name: integrated holocone
+  description: Cyborg warning-holocone projector version. It recharges over time.
+  suffix: Borg
+  components:
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMicroreactor
+        disableEject: true
+        swap: false

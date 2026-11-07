@@ -27,3 +27,8 @@
     Silver: 200
     Gold: 100
     Diamond: 200
+
+- type: latheRecipe
+  parent: Holoprojector
+  id: STHoloconeProjector
+  result: STHoloconeProjectorEmpty
