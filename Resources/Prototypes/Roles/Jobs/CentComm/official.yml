@@ -1,20 +1,22 @@
-- type: job
-  id: CentralCommandOfficial
-  name: job-name-centcommoff
-  description: job-description-centcommoff
-  playTimeTracker: JobCentralCommandOfficial
-  setPreference: false
-  startingGear: CentcommGear
-  icon: "JobIconNanotrasen"
-  supervisors: job-supervisors-centcom # Corvax-JobSupervisors
-  accessGroups:
-  - AllAccess
-  - STPrisonAllAccess # Stories
-  access:
-  - CentralCommand
-  special:
-  - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm ]
+# Stories-Comment-Start
+#- type: job
+#  id: CentralCommandOfficial
+#  name: job-name-centcommoff
+#  description: job-description-centcommoff
+#  playTimeTracker: JobCentralCommandOfficial
+#  setPreference: false
+#  startingGear: CentcommGear
+#  icon: "JobIconNanotrasen"
+#  supervisors: job-supervisors-centcom # Corvax-JobSupervisors
+#  accessGroups:
+#  - AllAccess
+#  - STPrisonAllAccess # Stories
+#  access:
+#  - CentralCommand
+#  special:
+#  - !type:AddImplantSpecial
+#    implants: [ MindShieldImplant, DeathRattleImplantCentcomm ]
+# Stories-Comment-End
 
 - type: startingGear
   id: CentcommGear

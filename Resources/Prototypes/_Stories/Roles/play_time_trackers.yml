@@ -34,6 +34,9 @@
   id: STJobSpecialOfficer
 
 - type: playTimeTracker
+  id: STJobCBURNCommander
+
+- type: playTimeTracker
   id: STJobCommandMaid
 
 - type: playTimeTracker
@@ -71,3 +74,15 @@
 
 - type: playTimeTracker
   id: STJobMagistrate
+
+- type: playTimeTracker
+  id: STJobSpecialAssignments
+
+- type: playTimeTracker
+  id: STJobLogist
+
+- type: playTimeTracker
+  id: STJobAccountant
+
+- type: playTimeTracker
+  id: STJobInternalInspector

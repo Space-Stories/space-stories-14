@@ -2,12 +2,17 @@
   id: STWorkerCentcom
   name: stories-job-name-worker-centcom
   description: stories-job-description-worker-centcom
-  playTimeTracker: JobSTWorkerCentcom
-  setPreference: false
+  playTimeTracker: STJobWorkerCentcom
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Civilian
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
   startingGear: STWorkerCentcomGear
-  icon: "JobIconSTWorkerCentcom"
+  icon: "STJobIconWorkerCentcom"
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   access:
   - Theatre
   - Cargo
@@ -21,23 +26,18 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, RadioImplantCentcomm ]
-  - !type:AddComponentSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 400
+  maxBankBalance: 450
 
 - type: startingGear
   id: STWorkerCentcomGear
   equipment:
-    head: ClothingHeadBandGreen
     jumpsuit: ClothingUniformJumpsuitCentcomOfficer
-    back: ClothingBackpackSatchelHydroponics
     eyes: ClothingEyesHudBeer
     ears: ClothingHeadsetService
     gloves: ClothingHandsGlovesHop
     shoes: ClothingShoesColorBlack
     id: STWorkerCentcomPDA
     outerClothing: ClothingOuterArmorBasicSlim
-    neck: ClothingNeckCargomedal
     belt: ClothingBeltChefFilled
-  storage:
-    back:
-    - BoxSurvival

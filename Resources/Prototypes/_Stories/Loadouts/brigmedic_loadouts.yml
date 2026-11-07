@@ -1,5 +1,5 @@
 - type: roleLoadout
-  id: STJobBrigmedic
+  id: JobSTBrigmedic
   groups:
   - STBrigmedicHead
   - MedicalMask

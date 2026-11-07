@@ -30,12 +30,18 @@ stories-job-name-medic-centcom = медик Центком
 stories-job-name-engineer-centcom = инженер Центком
 stories-job-name-worker-centcom = работник Центком
 
+stories-job-name-officer-special-assignments = офицер спецзаказов
+stories-job-name-logist = логист
+stories-job-name-accountant = бухгалтер
+stories-job-name-internal-inspector = внутренний инспектор
+
 stories-job-name-blueshield = офицер синего щита
 JobSTBlueshield = офицер синего щита
 
 # DSO-Jobs
 
 stories-job-name-special-officer = офицер спецопераций
+stories-job-name-cburn-commander = командир карантинной службы
 
 # Prison-Jobs
 

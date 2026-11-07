@@ -1,27 +1,67 @@
 # Centcom
 - type: entity
   parent: DoorElectronics
-  id: STDoorElectronicsCentcomCommand
-  suffix: CentralCommand, Command locked
+  id: STDoorElectronicsCentcommCommand
+  suffix: CentralCommand, Command, Locked
   components:
   - type: AccessReader
     access: [["CentralCommand", "Command"]]
 
 - type: entity
   parent: DoorElectronics
-  id: STDoorElectronicsCentcomArmory
-  suffix: CentralCommand, Armory locked
-  components:
-  - type: AccessReader
-    access: [["CentralCommand", "Armory"]]
-
-- type: entity
-  parent: DoorElectronics
-  id: STDoorElectronicsCentcomSecurity
-  suffix: CentralCommand, Security locked
+  id: STDoorElectronicsCentcommSecurity
+  suffix: CentralCommand, Security, Locked
   components:
   - type: AccessReader
     access: [["CentralCommand", "Security"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: STDoorElectronicsCentcommEngineering
+  suffix: CentralCommand, Engineering, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Engineering"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: STDoorElectronicsCentcommMedical
+  suffix: CentralCommand, Medical, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Medical"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: STDoorElectronicsCentcommService
+  suffix: CentralCommand, Service, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Service"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: STDoorElectronicsCentcommCargo
+  suffix: CentralCommand, Cargo, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Cargo"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: STDoorElectronicsCentcommHighCommand
+  suffix: CentralCommand, High Command, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "STDSO"]]
+
+- type: entity
+  parent: DoorElectronics
+  id: STDoorElectronicsCentcommArmory
+  suffix: CentralCommand, Armory, Locked
+  components:
+  - type: AccessReader
+    access: [["CentralCommand", "Armory"]]
 
 - type: entity
   parent: DoorElectronics

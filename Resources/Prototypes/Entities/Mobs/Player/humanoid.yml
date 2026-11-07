@@ -26,9 +26,8 @@
     implants:
     - MindShieldImplant
     - DeathRattleImplantCentcomm
-    - STAdrenocorImplant # Stories-Implant
 
-- type: randomHumanoidSettings #Stories-DSO-Settings
+- type: randomHumanoidSettings # Stories-DSO-Settings
   id: STEventHumanoidDSO
   parent: EventHumanoidMindShielded
   randomizeName: false
@@ -38,6 +37,7 @@
     - MindShieldImplant
     - STDeathRattleImplantDSO #Stories-Implant
     - STRadioImplantDSO #Stories-Implant
+    - STAdrenocorImplant #Stories-Implant
 ## Death Squad
 
 - type: entity
@@ -58,7 +58,7 @@
 
 - type: randomHumanoidSettings
   id: DeathSquad
-  parent: STEventHumanoidDSO
+  parent: STEventHumanoidDSO # Stories-DSO-Settings
   components:
     - type: GhostRole
       name: ghost-role-information-Death-Squad-name
@@ -93,7 +93,7 @@
 
 - type: randomHumanoidSettings
   id: ERTLeader
-  parent: STEventHumanoidDSO
+  parent: STEventHumanoidDSO # Stories-DSO-Settings
   components:
     - type: GhostRole
       name: ghost-role-information-ert-leader-name
@@ -554,15 +554,15 @@
   name: CBURN Agent
   suffix: ERTRole
   components:
-    - type: Sprite
-      sprite: Markers/jobs.rsi
+    - type: Sprite # Stories-Sprite
+      sprite: _Stories/Markers/jobs.rsi
       state: cburn
     - type: RandomHumanoidSpawner
       settings: CBURNAgent
 
 - type: randomHumanoidSettings
   id: CBURNAgent
-  parent: STEventHumanoidDSO
+  parent: STEventHumanoidDSO # Stories-DSO-Settings
   components:
     - type: Loadout
       prototypes: [CBURNGear]

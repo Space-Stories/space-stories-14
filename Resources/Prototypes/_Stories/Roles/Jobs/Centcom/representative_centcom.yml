@@ -2,36 +2,31 @@
   id: STRepresentativeCentcom
   name: stories-job-name-representative-centcom
   description: stories-job-description-representative-centcom
-  playTimeTracker: JobSTRepresentativeCentcom
-  setPreference: false
+  playTimeTracker: STJobRepresentativeCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobCaptain
+  #   time: 10h
   startingGear: STRepresentativeCentcomGear
-  icon: "JobIconSTCentcom"
+  icon: "STJobIconCentcom"
   supervisors: stories-job-supervisors-chief-centcom
-  canBeAntag: false
   accessGroups:
   - AllAccess
-  - PrisonAllAccess # Stories
+  - STPrisonAllAccess
   access:
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
-  - !type:AddComponentSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+  minBankBalance: 500
+  maxBankBalance: 600
 
 - type: startingGear
   id: STRepresentativeCentcomGear
   equipment:
-    head: ClothingHeadHatCentcomcap
-    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
-    back: ClothingBackpackSatchelLeather
-    eyes: STClothingEyesGlassesCentcom
-    ears: ClothingHeadsetAltCentCom
-    gloves: ClothingHandsGlovesCombat
-    shoes: ClothingShoesBootsLaceup
     id: STRepresentativeCentcomPDA
-    outerClothing: ClothingOuterArmorCentcommCarapace
-    neck: ClothingNeckCloakCentcom
     belt: BoxFolderCentComClipboard
-  storage:
-    back:
-    - BoxSurvival

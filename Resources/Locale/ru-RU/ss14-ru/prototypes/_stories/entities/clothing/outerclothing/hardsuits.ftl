@@ -9,3 +9,12 @@ ent-STPRISONClothingOuterHardsuitHeadOfPrison = скафандр начальн�
 
 ent-STClothingOuterHardsuitCentcomSecutiry = скафандр безопасности центком
     .desc = Специальный костюм, защищающий от опасной среды с низким давлением. Имеет дополнительный слой брони.
+ent-STClothingOuterHardsuitCentcomPersonnel = лёгкий скафандр Центком
+    .desc = Элитарный модульный скафандр для защиты сотрудников центком от опасной среды с низким давлением.
+ent-STClothingOuterHardsuitChiefCentcom = скафандр руководящего офицера
+    .desc = Скафандр для босса боссов.
+ent-STClothingOuterHardsuitSpecialOfficer = скафандр офицера спецопераций
+    .desc = Крутой скафандр для крутого парня.
+
+ent-STClothingOuterHardsuitCBURNCommander = экзокостюм командира РХБЗЗ
+    .desc = Легковесный, но прочный экзокостюм, который используют специальные подразделения зачистки. Этот принадлежит командиру отряда.

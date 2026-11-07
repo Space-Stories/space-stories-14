@@ -25,6 +25,7 @@ easy_mode = false
 rate_limit_period = 1
 rate_limit_count = 1
 rate_limit_announce_admins_delay = 10
+max_announcement_length = 512
 max_message_length = 500
 
 [game]

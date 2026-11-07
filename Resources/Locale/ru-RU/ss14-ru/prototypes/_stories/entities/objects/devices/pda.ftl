@@ -1,18 +1,7 @@
-ent-PRISONPDAHeadOfPrison = КПК начальника тюрьмы
-    .desc = Этот КПК — ваш путь к свободе.
-ent-PRISONPDAOfficer = КПК офицера тюрьмы
-    .desc = { ent-PRISONPDAHeadOfPrison.desc }
-ent-PRISONPDAEngineer = КПК инженера тюрьмы
-    .desc = { ent-PRISONPDAHeadOfPrison.desc }
-ent-PRISONPDAMedic = КПК врача тюрьмы
-    .desc = { ent-PRISONPDAHeadOfPrison.desc }
-
 ent-STGuardianNtPDA = КПК стража клинка
     .desc = Красный значит мощный. На нём имеются царапины от светового меча.
 ent-STIAAPDA = КПК агента внутренних дел
     .desc = Корпорация и прибыль — лучшие друзья.
-ent-STJudgePDA = КПК судьи
-    .desc = Справедливость и выгода — лучшие друзья.
 ent-STPRISONPDAHeadOfPrison = КПК начальника тюрьмы
     .desc = Этот КПК — ваш путь к свободе.
 ent-STPRISONPDAOfficer = КПК офицера тюрьмы
@@ -65,7 +54,23 @@ ent-GuardianNtPDA = КПК стража клинка
     .desc = Красный значит мощный. На нём имеются царапины от светового меча.
 ent-STBlueshieldPDA = КПК офицера синего щита
     .desc = Специализированный КПК офицера синего щита, собранный по повышенным стандартам безопасности.
+ent-STSpecialAssignmentsPDA = КПК офицера спецзаказов
+    .desc = { ent-CentcomPDA.desc }
+    .suffix = Офицер спецзаказов
+ent-STLogistPDA = КПК логиста
+    .desc = { ent-CentcomPDA.desc }
+    .suffix = Логист
+ent-STAccountantPDA = КПК бухгалтера
+    .desc = { ent-CentcomPDA.desc }
+    .suffix = Бухгалтер
+ent-STInternalInspectorPDA = КПК внутреннего инспектора
+    .desc = { ent-CentcomPDA.desc }
+    .suffix = Внутренний инспектор
 
-ent-STSpecialOfficaerPDA = КПК офицера спецопераций
+
+ent-STSpecialOfficerPDA = КПК офицера спецопераций
     .desc = Он хранит страшную тайну и крайне опасную.
     .suffix = ОСО
+ent-STCBURNCommanderPDA = КПК командира РХБЗЗ
+    .desc = Пахнет очень гнилой плотью.
+    .suffix = Командир РХБЗЗ

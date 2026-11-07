@@ -2,35 +2,43 @@
   id: STMagistrate
   name: stories-job-name-magistrate
   description: stories-job-description-magistrate
-  playTimeTracker: JobSTMagistrate
-  setPreference: false
+  playTimeTracker: STJobMagistrate
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: STJuridical
+  #   time: 40h
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: STJobIAA
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: STJobJudge
+  #   time: 10h
   startingGear: STMagistrateGear
-  icon: "JobIconSTMagistrate"
+  icon: "STJobIconMagistrate"
   supervisors: stories-job-supervisors-management-juridical-department
-  canBeAntag: false
+  accessGroups:
+  - AllAccess
+  - STPrisonAllAccess
   access:
   - CentralCommand
-  - Command
-  - Brig
-  - Lawyer
-  - Cryogenics
-  - External
-  - Maintenance
+  - STDSO
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm ]
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm, STRadioImplantDSO ]
+  whitelisted: true
+  minBankBalance: 750
+  maxBankBalance: 900
 
 - type: startingGear
   id: STMagistrateGear
   equipment:
-    head: ClothingHeadHatTophat
-    jumpsuit: ClothingUniformJumpsuitCentcomAgent
-    back: ClothingBackpackSatchelLeather
-    eyes: ClothingEyesGlassesSunglasses
-    ears: ClothingHeadsetIAA
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesBootsLaceup
+    head: STClothingHeadHatMagistrate
+    jumpsuit: STClothingUniformJumpsuitMagistrate
+    gloves: STClothingHandsGlovesMagistrate
     id: STMagistratePDA
-    outerClothing: ClothingOuterRobesJudge #верхняя
-#    pocket1: STRubberStampSTMagistrate
-    belt: BoxFolderCentComClipboard
+    outerClothing: STClothingOuterRobesMagistrate
+    neck: STClothingNeckCloakMagistrate
+    belt: BoxFolderCentComClipboardThreePapers

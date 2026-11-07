@@ -1,0 +1,21 @@
+- type: entity
+  parent: BaseWeaponBallisticTurret
+  id: STWeaponTurretCentComm
+  components:
+  - type: NpcFactionMember
+    factions:
+    - AllHostile
+  - type: TurretTargetSettings
+    exemptAccessLevels:
+    - CentralCommand
+
+- type: entity
+  parent: BaseWeaponBallisticTurret
+  id: STWeaponTurretDepartmentSpecialOperations
+  components:
+  - type: NpcFactionMember
+    factions:
+    - AllHostile
+  - type: TurretTargetSettings
+    exemptAccessLevels:
+    - STDSO

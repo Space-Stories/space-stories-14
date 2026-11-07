@@ -2,12 +2,17 @@
   id: STEngineerCentcom
   name: stories-job-name-engineer-centcom
   description: stories-job-description-engineer-centcom
-  playTimeTracker: JobSTEngineerCentcom
-  setPreference: false
+  playTimeTracker: STJobEngineerCentcom
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Engineering
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
   startingGear: STEngineerCentcomGear
-  icon: "JobIconSTEngineerCentcom"
+  icon: "STJobIconEngineerCentcom"
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   access:
   - Atmospherics
   - Engineering
@@ -16,22 +21,16 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, RadioImplantCentcomm ]
-  - !type:AddComponentSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 400
+  maxBankBalance: 450
 
 - type: startingGear
   id: STEngineerCentcomGear
   equipment:
-    head: ClothingHeadHatBeretEngineering
     jumpsuit: STClothingUniformJumpsuitEngineerCentcom
-    back: ClothingBackpackSatchelEngineering
     eyes: ClothingEyesGlassesMeson
     ears: ClothingHeadsetEngineering
     gloves: ClothingHandsGlovesColorYellow
-    shoes: ClothingShoesColorWhite
     id: STEngineerCentcomPDA
-    neck: ClothingNeckEngineermedal
     belt: ClothingBeltUtilityEngineering
-  storage:
-    back:
-    - BoxSurvivalEngineering

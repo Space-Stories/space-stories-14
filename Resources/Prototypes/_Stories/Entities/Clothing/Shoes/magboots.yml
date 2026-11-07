@@ -33,3 +33,19 @@
     modifier: 0.75
   - type: StaticPrice
     price: 350
+
+- type: entity
+  parent: [ClothingShoesBootsMagBase, BaseCentcommContraband]
+  id: STClothingShoesBootsMagCentcomm
+  name: captain magboots
+  description: Magnetic boots, specially designed for Centcomm personnel. Provide enhanced mobility.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Shoes/Boots/magboots-centcomm.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Shoes/Boots/magboots-centcomm.rsi
+  - type: ClothingSpeedModifier
+    walkModifier: 0.95
+    sprintModifier: 0.95
+  - type: StaticPrice
+    price: 700

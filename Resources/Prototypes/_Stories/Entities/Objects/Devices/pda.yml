@@ -199,18 +199,19 @@
     borderColor: "#00842e"
     accentHColor: "#20b2aa"
     accentVColor: "#20b2aa"
-  - type: CartridgeLoader
-    uiKey: enum.PdaUiKey.Key
-    preinstalled:
-      - CrewManifestCartridge
-      - NotekeeperCartridge
-      - NanoTaskCartridge
-      - NewsReaderCartridge
-      - STBankCartridge # Stories-Economy
-      - MedTekCartridge
-      - WantedListCartridge
-      - LogProbeCartridge
-      - AstroNavCartridge
+  - type: EntityTableContainerFill
+    containers:
+      preinstalled-program-container: !type:AllSelector
+        children:
+        - id: CrewManifestCartridge
+        - id: NotekeeperCartridge
+        - id: NanoTaskCartridge
+        - id: NewsReaderCartridge
+        - id: LogProbeCartridge
+        - id: WantedListCartridge
+        - id: MedTekCartridge
+        - id: AstroNavCartridge
+        - id: STBankCartridge # Stories-Economy
 
 - type: entity
   parent: STChiefCentcomPDA
@@ -236,7 +237,7 @@
 - type: entity
   parent: STOperatorCentcomPDA
   id: STRepresentativeCentcomPDA
-  name: PDA representative of the Central Committee
+  name: PDA representative of the Central Command
   description: Light green sign of walking bureaucracy.
   suffix: RCC
   components:
@@ -246,7 +247,7 @@
 - type: entity
   parent: STOperatorCentcomPDA
   id: STHeadOfSecurityCentcomPDA
-  name: PDA of the head of security of the Central Committee
+  name: PDA of the head of security of the Central Command
   description: Green means powerful.
   suffix: HSCC
   components:
@@ -256,7 +257,7 @@
 - type: entity
   parent: STOperatorCentcomPDA
   id: STMagistratePDA
-  name: Magistrate's PDA
+  name: magistrate's PDA
   description: Light green sign of walking bureaucracy.
   suffix: Magistrate
   components:
@@ -266,7 +267,7 @@
 - type: entity
   parent: HoSPDA
   id: STSecurityOfficerCentcomPDA
-  name: PDA of the Central Security Officer
+  name: PDA of the Central Command Security Officer
   description: Whosoever bears this PDA is the law.
   suffix: SOCC
   components:
@@ -309,7 +310,7 @@
     sprite: _Stories/Objects/Devices/pda.rsi
   - type: Icon
     sprite: _Stories/Objects/Devices/pda.rsi
-    state: pda-centcom-medic
+    state: pda-centcom-medical
 
 - type: entity
   parent: BasePDA
@@ -338,7 +339,7 @@
 - type: entity
   parent: BasePDA
   id: STWorkerCentcomPDA
-  name: Central Committee employee's PDA
+  name: Central Command employee's PDA
   description: Gray does not exist.
   suffix: WCC
   components:
@@ -358,31 +359,6 @@
   - type: Icon
     sprite: _Stories/Objects/Devices/pda.rsi
     state: pda-centcom-worker
-- type: entity
-
-  parent: BaseSecurityPDA
-  id: GuardianNtPDA
-  name: КПК стража клинка
-  description: Красный значит мощный. На нём имеются царапины от светового меча.
-  components:
-  - type: Tag
-    tags:
-      - ForceRecallEquipment
-      - WhitelistChameleon
-      - WhitelistChameleonPDA
-  - type: Pda
-    id: GuardianNtIDCard
-  - type: Appearance
-    appearanceDataInit:
-      enum.PdaVisuals.PdaType:
-        !type:String
-        pda-ert
-  - type: PdaBorderColor
-    borderColor: "#A32D26"
-    accentHColor: "#447987"
-    accentVColor: "#447987"
-  - type: Icon
-    state: pda-ert
 
 - type: entity
   parent: BaseSecurityPDA
@@ -407,20 +383,80 @@
     sprite: _Stories/Objects/Devices/pda.rsi
     state: pda-blueshield
 
+- type: entity
+  parent: STOperatorCentcomPDA
+  id: STSpecialAssignmentsPDA
+  name: officer of special assignment's PDA
+  description: Light green sign of walking bureaucracy.
+  suffix: Special assignments
+  components:
+  - type: Pda
+    id: STSpecialAssignmentsIDCard
+
+- type: entity
+  parent: STOperatorCentcomPDA
+  id: STLogistPDA
+  name: logist's PDA
+  description: Light green sign of walking bureaucracy.
+  suffix: Logist
+  components:
+  - type: Pda
+    id: STLogistIDCard
+
+- type: entity
+  parent: STOperatorCentcomPDA
+  id: STAccountantPDA
+  name: accountant's PDA
+  description: Light green sign of walking bureaucracy.
+  suffix: Accountant
+  components:
+  - type: Pda
+    id: STAccountantIDCard
+
+- type: entity
+  parent: STOperatorCentcomPDA
+  id: STInternalInspectorPDA
+  name: internal inspector's PDA
+  description: Light green sign of walking bureaucracy.
+  suffix: Internal inspector
+  components:
+  - type: Pda
+    id: STInternalInspectorIDCard
+
 # DSO-Jobs
 
 - type: entity
   parent: ERTLeaderPDA
-  id: STSpecialOfficaerPDA
-  name: Special Officaer PDA
-  suffix: SOO
+  id: STSpecialOfficerPDA
+  name: Special Officer PDA
+  suffix: OSO
   description: He keeps a terrible and extremely dangerous secret.
   components:
   - type: Pda
-    id: STSpecialOfficaerIDCard
+    id: STSpecialOfficerIDCard
     penSlot:
       startingItem: PenCentcom
       priority: -1
       whitelist:
         tags:
         - Write
+
+- type: entity
+  parent: ERTLeaderPDA
+  id: STCBURNCommanderPDA
+  name: CBURN PDA
+  suffix: CBURN Commander
+  description: Smells like very rotten flesh.
+  components:
+  - type: Pda
+    id: STCBURNCommanderIDcard
+    penSlot:
+      startingItem: PenCentcom
+      priority: -1
+      whitelist:
+        tags:
+        - Write
+  - type: PdaBorderColor
+    borderColor: "#A32D26"
+    accentHColor: "#447987"
+    accentVColor: "#447987"

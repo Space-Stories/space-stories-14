@@ -16,10 +16,10 @@
   ttsCategory: stories-tts-category-radio-other
 
 - type: radioChannel
-  id: ShadowlingMind
-  name: chat-radio-shadowling
+  id: STShadowlingMind
+  name: stories-chat-radio-shadowling
   frequency: 98767
-  keycode: 'ш'
+  keycode: "ш"
   color: "#8b0000"
   longRange: true
   ttsCategory: stories-tts-category-radio-other
@@ -37,7 +37,7 @@
   id: STUnholy
   name: stories-chat-radio-unholy
   frequency: 98783
-  keycode: 'я'
+  keycode: "я"
   color: "#7d52a8"
   longRange: true
   ttsCategory: stories-tts-category-radio-other
@@ -45,7 +45,7 @@
 - type: radioChannel
   id: STJuridical
   name: stories-chat-radio-juridical
-  keycode: 'ю'
+  keycode: "ю"
   frequency: 98329
   color: "#008080"
   ttsCategory: stories-tts-category-radio-station

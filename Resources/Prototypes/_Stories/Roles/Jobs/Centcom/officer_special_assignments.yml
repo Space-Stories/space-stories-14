@@ -1,0 +1,42 @@
+- type: job
+  id: STOfficerSpecialAssignments
+  name: stories-job-name-officer-special-assignments
+  description: stories-job-description-officer-special-assignments
+  playTimeTracker: STJobSpecialAssignments
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: Cargo
+  #   time: 40h
+  # - !type:RoleTimeRequirement
+  #   role: JobQuartermaster
+  #   time: 15h
+  # - !type:RoleTimeRequirement
+  #   role: STJobLogist
+  #   time: 15h
+  startingGear: STSpecialAssignmentsGear
+  icon: "STJobIconSpecialAssignments"
+  supervisors: stories-job-supervisors-quadrant-management
+  access:
+  - Cargo
+  - Salvage
+  - Quartermaster
+  - Maintenance
+  - External
+  - Command
+  - Brig
+  - Cryogenics
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+  minBankBalance: 500
+  maxBankBalance: 600
+
+- type: startingGear
+  id: STSpecialAssignmentsGear
+  equipment:
+    head: STClothingHeadHatSpecialAssignments
+    jumpsuit: STClothingUniformJumpsuitSpecialAssignments
+    shoes: ClothingShoesBootsJackFilled
+    id: STSpecialAssignmentsPDA

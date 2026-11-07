@@ -870,8 +870,13 @@
   - type: CommunicationsConsole
     title: comms-console-announcement-title-centcom
     color: "#0f8551" #Stories-Color
+    announceSentBy: false # Stories-CentComm
     canShuttle: false
     global: true
+    sound: # Stories-CentComm
+      path: /Audio/Announcements/centcomm.ogg
+      params:
+        volume: -4
   - type: Computer
     board: CentcommCommsComputerCircuitboard
   - type: PointLight

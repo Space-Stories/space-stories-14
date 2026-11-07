@@ -141,10 +141,26 @@
     sprite: _Stories/Clothing/Neck/Cloaks/shadowmantle.rsi
 
 - type: entity
+  parent: ClothingNeckMantleCap
+  id: STClothingNeckMantleCapGeneral
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Neck/mantles/general_mantle.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Neck/mantles/general_mantle.rsi
+
+- type: entity
+  parent: ClothingNeckCloakQm
+  id: STClothingNeckCloakQmGold
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Neck/Cloaks/golden_qm.rsi
+
+- type: entity
   parent: [ ClothingNeckBase, BaseCentcommContraband ]
   id: STClothingNeckCloakChiefCentcom
   name: centcom chief's cloak
-  description: A pompous and elite turquoise cloak, tailored especially for the head of the central committee.
+  description: A pompous and elite turquoise cloak, tailored especially for the head of the central command.
   components:
   - type: Sprite
     sprite: _Stories/Clothing/Neck/Cloaks/cos.rsi
@@ -165,8 +181,8 @@
 - type: entity
   parent: [ ClothingNeckBase, BaseCentcommContraband ]
   id: STClothingNeckCloakHeadOfSecurityCentcom
-  name: cloak of the head of security of the Central Committee
-  description: A pompous and elite green cloak, tailored especially for the head of security at the Central Committee.
+  name: cloak of the head of security of the Central Command
+  description: A pompous and elite green cloak, tailored especially for the head of security at the Central Command.
   components:
   - type: Sprite
     sprite: _Stories/Clothing/Neck/Cloaks/hos_centcomm.rsi
@@ -174,12 +190,41 @@
     stealGroup: HeadCloak
 
 - type: entity
-  parent: [ ClothingNeckBase, BaseCentcommContraband ]
+  parent: [ ClothingNeckBase, ClothingUniformFoldableBase, BaseFoldable, BaseCentcommContraband ]
   id: STClothingNeckCloakSpecialOfficer
   name: Special Operations Officer's coat
   description: This black color makes your heart beat faster.
   components:
   - type: Sprite
     sprite: _Stories/Clothing/Neck/Cloaks/special_officer.rsi
+    layers:
+    - state: icon
+      map: ["unfoldedLayer"]
+    - state: folded
+      map: ["foldedLayer"]
+      visible: false
   - type: StealTarget
     stealGroup: HeadCloak
+  - type: Foldable
+    unfoldVerbText: stories-fold-throw-on-shoulders-verb
+    foldVerbText: stories-fold-throw-on-shoulder-verb
+
+- type: entity
+  parent: [ ClothingNeckBase, ClothingUniformFoldableBase, BaseFoldable, BaseCentcommContraband ]
+  id: STClothingNeckCloakMagistrate
+  name: magistrate's cloak
+  description: The mere sight of that cloak is enough to realize what an important person stands before you. Oh wait-no, it’s just a magistrate.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Neck/Cloaks/magistrate.rsi
+    layers:
+    - state: icon
+      map: ["unfoldedLayer"]
+    - state: folded
+      map: ["foldedLayer"]
+      visible: false
+  - type: StealTarget
+    stealGroup: HeadCloak
+  - type: Foldable
+    unfoldVerbText: stories-fold-throw-on-shoulders-verb
+    foldVerbText: stories-fold-throw-on-shoulder-verb

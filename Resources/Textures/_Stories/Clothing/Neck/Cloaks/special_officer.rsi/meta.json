@@ -11,7 +11,14 @@
         "name": "icon"
       },
       {
+        "name": "folded"
+      },
+      {
         "name": "equipped-NECK",
+        "directions": 4
+      },
+      {
+        "name": "folded-equipped-NECK",
         "directions": 4
       },
       {

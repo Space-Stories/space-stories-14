@@ -2,7 +2,7 @@
   abstract: true
   id: BaseAntagSpecifier
   jobBlacklist:
-  - CentralCommandOfficial
+#  - CentralCommandOfficial # Stories-Centcomm
   - DeathSquad
   - ERTLeader
   - ERTChaplain
@@ -11,6 +11,24 @@
   - ERTMedical
   - ERTJanitor
   - CBURN
+  # Stories-Roles-Start
+  - STInternalInspector
+  - STSpecialOfficer
+  - STCBURNCommander
+  - STMagistrate
+  - STChiefCentcom
+  - STOperatorCentcom
+  - STRepresentativeCentcom
+  - STHeadOfSecurityCentcom
+  - STSecurityOfficerCentcom
+  - STEngineerCentcom
+  - STMedicCentcom
+  - STGuardianNt
+  - STWorkerCentcom
+  - STAccountant
+  - STOfficerSpecialAssignments
+  - STLogist
+  # Stories-Roles-End
   blacklist:
     components:
     - AntagImmune
@@ -31,6 +49,7 @@
   # Stories-Roles-Start
   - STJudge
   - STIAA
+  - STBlueshield
   # Stories-Roles-End
 
 # Borgs
@@ -68,7 +87,6 @@
   # Stories-Roles-Start
   - STBrigmedic
   - STSecurityClown
-  - STGuardianNt
   # Stories-Roles-End
 
 - type: antagSpecifier

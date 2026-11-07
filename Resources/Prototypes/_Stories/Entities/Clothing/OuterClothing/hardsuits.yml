@@ -79,3 +79,210 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: STClothingHeadHelmetHardsuitCentcomSecurity
+  - type: BioCode
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+
+- type: entity
+  parent: [ClothingOuterHardsuitBase, BaseCentcommContraband]
+  id: STClothingOuterHardsuitCentcomPersonnel
+  name: lightweight centcom hardsuit
+  description: An elite modular spacesuit designed to protect Centcomm personnel from hazardous, low pressure environments.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/OuterClothing/Hardsuits/centcom_personnel.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/OuterClothing/Hardsuits/centcom_personnel.rsi
+  - type: Item
+    size: Huge
+  - type: PressureProtection
+    highPressureMultiplier: 0.5
+    lowPressureMultiplier: 1000
+  - type: ExplosionResistance
+    damageCoefficient: 0.85
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.8
+        Heat: 0.9
+  - type: ClothingSpeedModifier
+    walkModifier: 0.90
+    sprintModifier: 0.90
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: STClothingHeadHelmetHardsuitCentcomPersonnel
+  - type: BioCode
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+
+- type: entity
+  parent: [ClothingOuterHardsuitBase, BaseCentcommContraband]
+  id: STClothingOuterHardsuitChiefCentcom
+  name: commanding officer's hardsuit
+  description: A spacesuit for the boss of bosses.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/OuterClothing/Hardsuits/centcom_chief.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/OuterClothing/Hardsuits/centcom_chief.rsi
+  - type: Item
+    size: Huge
+  - type: PressureProtection
+    highPressureMultiplier: 0.5
+    lowPressureMultiplier: 1000
+  - type: ExplosionResistance
+    damageCoefficient: 0.2
+  - type: StaminaResistance
+    damageCoefficient: 0.4
+  - type: FireProtection
+    reduction: 0.75
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.3
+        Heat: 0.4
+        Radiation: 0.2
+        Caustic: 0.2
+  - type: ClothingSpeedModifier
+    walkModifier: 0.90
+    sprintModifier: 0.90
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: STClothingHeadHelmetHardsuitChiefCentcom
+  - type: BioCode
+    autoRecordDNA: true
+    hardDefense: true
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+
+- type: entity
+  parent: [ClothingOuterHardsuitBase, BaseCentcommContraband]
+  id: STClothingOuterHardsuitSpecialOfficer
+  name: special officer's hardsuit
+  description: A cool spacesuit for a cool guy.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/OuterClothing/Hardsuits/special_officer.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/OuterClothing/Hardsuits/special_officer.rsi
+  - type: Item
+    size: Huge
+  - type: PressureProtection
+    highPressureMultiplier: 0.5
+    lowPressureMultiplier: 1000
+  - type: ExplosionResistance
+    damageCoefficient: 0.15
+  - type: StaminaResistance
+    damageCoefficient: 0.2
+  - type: FireProtection
+    reduction: 0.8
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.15
+        Heat: 0.3
+        Radiation: 0.1
+        Caustic: 0.1
+  - type: ClothingSpeedModifier
+    walkModifier: 1
+    sprintModifier: 1
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: STClothingHeadHelmetHardsuitSpecialOfficer
+  - type: BioCode
+    autoRecordDNA: true
+    hardDefense: true
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+
+- type: entity
+  parent: [ BaseCentcommContraband, ClothingOuterHardsuitBase ]
+  id: STClothingOuterHardsuitCBURNCommander
+  name: CBURN commander's hardsuit
+  description: A lightweight yet strong exosuit used for special cleanup operations. This one belongs to the squad leader.
+  components:
+  - type: Sprite
+    sprite: _Corvax/Clothing/OuterClothing/Hardsuits/cburn_commander.rsi
+  - type: Clothing
+    sprite: _Corvax/Clothing/OuterClothing/Hardsuits/cburn_commander.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.02
+    lowPressureMultiplier: 1000
+  - type: ExplosionResistance
+    damageCoefficient: 0.6
+  - type: StaminaResistance
+    damageCoefficient: 0.4
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.5
+        Heat: 0.1
+        Cold: 0.1
+        Shock: 0.1
+        Radiation: 0.1
+        Caustic: 0.1
+  - type: ZombificationResistance
+    zombificationResistanceCoefficient: 0.1
+  - type: ClothingSpeedModifier
+    walkModifier: 1.0
+    sprintModifier: 1.0
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: STClothingHeadHelmetCBURNCommander
+  - type: BioCode
+    hardDefense: true
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false

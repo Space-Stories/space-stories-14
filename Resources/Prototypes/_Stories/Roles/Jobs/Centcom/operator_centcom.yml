@@ -2,36 +2,31 @@
   id: STOperatorCentcom
   name: stories-job-name-operator-centcom
   description: stories-job-description-operator-centcom
-  playTimeTracker: JobSTOperatorCentcom
-  setPreference: false
-  startingGear: STChiefCentcomGear
-  icon: "JobIconSTCentcom"
+  playTimeTracker: STJobOperatorCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobCaptain
+  #   time: 10h
+  startingGear: STOperatorCentcomGear
+  icon: "STJobIconCentcom"
   supervisors: stories-job-supervisors-chief-centcom
-  canBeAntag: false
   accessGroups:
   - AllAccess
-  - PrisonAllAccess # Stories
+  - STPrisonAllAccess
   access:
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
-  - !type:AddComponentSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+  minBankBalance: 500
+  maxBankBalance: 600
 
 - type: startingGear
   id: STOperatorCentcomGear
   equipment:
-    head: ClothingHeadHatCentcom
-    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
-    back: ClothingBackpackSatchelLeather
-    eyes: STClothingEyesGlassesCentcom
-    ears: ClothingHeadsetAltCentCom
-    gloves: ClothingHandsGlovesCombat
-    shoes: ClothingShoesBootsLaceup
     id: STOperatorCentcomPDA
-    outerClothing: ClothingOuterArmorCentcommCarapace
-    neck: STClothingNeckCloakOperatorCentcom
     belt: BoxFolderCentComClipboard
-  storage:
-    back:
-    - BoxSurvival

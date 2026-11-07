@@ -2,12 +2,20 @@
   id: STSecurityOfficerCentcom
   name: stories-job-name-officer-security-centcom
   description: stories-job-description-officer-security-centcom
-  playTimeTracker: JobSTSecurityOfficerCentcom
-  setPreference: false
+  playTimeTracker: STJobSecurityOfficerCentcom
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Security
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  - !type:DepartmentTimeRequirement
+    department: CentralCommand
+    time: 5h
   startingGear: STSecurityOfficerCentcomGear
-  icon: "JobIconSTSecurityOfficerCentcom"
+  icon: "STJobIconSecurityOfficerCentcom"
   supervisors: job-supervisors-centcom
-  canBeAntag: false
   access:
   - Security
   - Brig
@@ -21,25 +29,15 @@
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, RadioImplantCentcomm ]
-  - !type:AddComponentSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 450
+  maxBankBalance: 500
 
 - type: startingGear
   id: STSecurityOfficerCentcomGear
   equipment:
-    head: ClothingHeadHatBeretSecurity
     jumpsuit: STClothingUniformJumpsuitSecurityOfficerCentcom
-    back: ClothingBackpackSatchelEight
     eyes: ClothingEyesGlassesSecurity
     ears: ClothingHeadsetSecurity
     gloves: ClothingHandsGlovesCombat
-    shoes: ClothingShoesBootsJackFilled
     id: STSecurityOfficerCentcomPDA
-    outerClothing: ClothingOuterArmorBasic
-    pocket1: Flash
-    pocket2: WeaponDisabler
-    neck: ClothingNeckSecuritymedal
-    belt: ClothingBeltSecurityFilled
-  storage:
-    back:
-    - BoxSurvivalSecurity

@@ -17,16 +17,23 @@ stories-job-description-magistrate = Несите справедливость �
 stories-job-description-chief-centcom = Управляйте станцией Центрального командования и действуйте исключительно в интересах компании Nanotrasen.
 stories-job-description-operator-centcom = Вы мозг станции Центрального командования, сортируйте и берегите документы.
 stories-job-description-representative-centcom = Вы олицетворение воли станции Центрального командования, не ударите в грязь лицом перед скользкой лужей.
-stories-job-description-head-of-security-centcom = Возглавьте безопасности станции Центрального командования для устранения угрозы активам компании Nanotrasen.
+stories-job-description-head-of-security-centcom = Возглавьте безопасность станции Центрального командования для устранения угрозы активам компании Nanotrasen.
 stories-job-description-officer-security-centcom = Вы живой щит станции Центрального командования, не смейте умирать.
 stories-job-description-medic-centcom = Убедитесь, что экипаж станции Центрального командования, жив и здоров.
 stories-job-description-engineer-centcom = Поддерживайте целостность и работу жизненно важных систем станции Центрального командования.
 stories-job-description-worker-centcom = Выполняйте любую порученную вам работу, вы элитный уборщик.
+
+stories-job-description-officer-special-assignments = Вы отвечаете за все поставки на станции Центрального командования и поставки "особых" товаров на простые станции NT.
+stories-job-description-logist = Грузчик ЦК, но круче, Вы - логист!
+stories-job-description-accountant = Определяйте заработную плату за смену для экипажа станции и станции ЦК.
+stories-job-description-internal-inspector = Проверьте, действительно ли на станции Центрального командования всё хорошо, как это было сказано в отчёте от НШЦК. Увольте его при необходимости.
+
 stories-job-description-blueshield = Защищайте глав отделов ценой своей жизни. Вы не офицер службы безопасности и не проводите аресты.
 
 # DSO-Jobs
 
 stories-job-description-special-officer = Руководите силами департамента спецопераций.
+stories-job-description-cburn-commander = Руководите агентами карантинной службы ДСО
 
 # Prison-Jobs
 

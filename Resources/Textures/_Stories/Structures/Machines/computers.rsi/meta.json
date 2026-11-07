@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/bd6873fd4dd6a61d7e46f1d75cd4d90f64c40894; id_cent-comm (based on id) and comm_DSO (based on comm_logs) made by JustGiveMeALaserSword4 (github)",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+    "states": [
+        {
+            "name": "comm_DSO",
+            "directions": 4,
+            "delays": [
+                [
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2
+                ],
+                [
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2
+                ],
+                [
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2
+                ],
+                [
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2,
+                    0.1,
+                    0.2
+                ]
+            ]
+        },
+        {
+            "name": "id_centcomm",
+            "directions": 4,
+            "delays": [
+                [
+                    0.2,
+                    0.2
+                ],
+                [
+                    0.2,
+                    0.2
+                ],
+                [
+                    0.2,
+                    0.2
+                ],
+                [
+                    0.2,
+                    0.2
+                ]
+            ]
+        },
+        {
+            "name": "ert_call_DSO",
+            "directions": 4,
+            "delays": [
+                [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                [
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ]
+            ]
+        },
+        {
+            "name": "stations_control_centcomm",
+            "directions": 4,
+            "delays": [
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ]
+            ]
+        },
+        {
+            "name": "stations_control_DSO",
+            "directions": 4,
+            "delays": [
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ],
+                [
+                    2,
+                    2
+                ]
+            ]
+        }
+    ]
+}

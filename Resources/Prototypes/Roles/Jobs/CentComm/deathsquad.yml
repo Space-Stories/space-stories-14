@@ -6,7 +6,7 @@
   setPreference: false
   startingGear: DeathSquadGear
   icon: "JobIconDeathSquad"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
@@ -15,7 +15,7 @@
   - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   id: DeathSquadGear

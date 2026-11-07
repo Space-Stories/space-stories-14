@@ -2,38 +2,31 @@
   id: STHeadOfSecurityCentcom
   name: stories-job-name-head-of-security-centcom
   description: stories-job-description-head-of-security-centcom
-  playTimeTracker: JobSTHeadOfSecurityCentcom
-  setPreference: false
+  playTimeTracker: STJobHeadOfSecurityCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfSecurity
+  #   time: 10h
   startingGear: STHeadOfSecurityCentcomGear
-  icon: "JobIconSTCentcom"
+  icon: "STJobIconCentcom"
   supervisors: stories-job-supervisors-chief-centcom
-  canBeAntag: false
   accessGroups:
   - AllAccess
-  - PrisonAllAccess # Stories
+  - STPrisonAllAccess
   access:
   - CentralCommand
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
-  - !type:AddComponentSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+  minBankBalance: 500
+  maxBankBalance: 600
 
 - type: startingGear
   id: STHeadOfSecurityCentcomGear
   equipment:
-    head: STClothingHeadHatBeretHeadOfSecurityCentcom
-    jumpsuit: STClothingUniformJumpsuitHeadOfSecurityCentcom
-    back: ClothingBackpackSatchelEight
-    eyes: STClothingEyesGlassesCentcom
-    ears: ClothingHeadsetAltCentCom
-    gloves: ClothingHandsGlovesCombat
-    shoes: ClothingShoesBootsJackFilled
     id: STHeadOfSecurityCentcomPDA
-    outerClothing: ClothingOuterArmorCentcommCarapace
-    neck: STClothingNeckCloakHeadOfSecurityCentcom
-    pocket1: Flash
-    pocket2: WeaponDisabler
     belt: ClothingBeltSecurityFilled
-  storage:
-    back:
-    - BoxSurvivalSecurity

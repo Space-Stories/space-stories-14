@@ -1,0 +1,12 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="ERT Cryostorage"
+                      MinSize="400 300">
+    <BoxContainer Orientation="Vertical" Margin="10">
+
+        <ScrollContainer VerticalExpand="True">
+            <BoxContainer Name="OptionsContainer" Orientation="Vertical" />
+        </ScrollContainer>
+
+    </BoxContainer>
+</controls:FancyWindow>

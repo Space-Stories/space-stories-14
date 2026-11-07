@@ -12,7 +12,7 @@
 - type: entity
   parent: [ ClothingUniformBase, BaseCentcommContraband ]
   id: STClothingUniformJumpsuitHeadOfSecurityCentcom
-  name: jumpsuit of the head of security of the Central Committee
+  name: jumpsuit of the head of security of the Central Command
   description: This is the jumpsuit worn by senior Central Command officers.
   components:
   - type: Sprite
@@ -63,3 +63,36 @@
     sprite: _Stories/Clothing/Uniforms/Jumpsuit/special_officer.rsi
   - type: Clothing
     sprite: _Stories/Clothing/Uniforms/Jumpsuit/special_officer.rsi
+
+- type: entity
+  parent: [ ClothingUniformBase, BaseCentcommContraband ]
+  id: STClothingUniformJumpsuitMagistrate
+  name: magistrate uniform
+  description: An expensive suit with gold accents for a senior member of the legal department.
+  components:
+  - type: Sprite
+    sprite: _Corvax/Clothing/Uniforms/Jumpsuit/magistrate.rsi
+  - type: Clothing
+    sprite: _Corvax/Clothing/Uniforms/Jumpsuit/magistrate.rsi
+
+- type: entity
+  parent: [ ClothingUniformBase, BaseCentcommContraband ]
+  id: STClothingUniformJumpsuitSpecialAssignments
+  name: officer of special assignment coat
+  description: A coat with silver elements for the person in charge of supplies in this sector.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Uniforms/Jumpsuit/OSA.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Uniforms/Jumpsuit/OSA.rsi
+
+- type: entity
+  parent: [ ClothingUniformBase, BaseCentcommContraband ]
+  id: STClothingUniformJumpsuitInternalInspector
+  name: internal inspector uniform
+  description: Professional, stylish, high-end-and, above all, comfortable! It belongs to an incredibly important individual, for whom a single second of time is worth 10.000 credits. Its owner is the internal inspector for this quadrant-an exceptionally busy and high-ranking NanoTrasen official.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Uniforms/Jumpsuit/internalinspector.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Uniforms/Jumpsuit/internalinspector.rsi

@@ -28,7 +28,7 @@
   description: stories-department-DSO-description
   color: "#0a5fad"
   roles:
-  - CentralCommandOfficial
+  - STSpecialOfficer
   - CBURN
   - ERTLeader
   - ERTChaplain
@@ -46,7 +46,11 @@
   description: department-CentralCommand-description
   color: "#0f8551"
   roles:
+  # Head Command
   - STChiefCentcom
+  - STSpecialOfficer
+  - STMagistrate
+  # Centcomm Personnel
   - STOperatorCentcom
   - STRepresentativeCentcom
   - STHeadOfSecurityCentcom
@@ -54,5 +58,10 @@
   - STMedicCentcom
   - STEngineerCentcom
   - STWorkerCentcom
-  editorHidden: true
+  - STGuardianNt
+  # Non-Centcomm Personnel
+  - STOfficerSpecialAssignments
+  - STLogist
+  - STAccountant
+  editorHidden: false #true
   weight: 120

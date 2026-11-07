@@ -1,0 +1,64 @@
+- type: entity
+  parent: BulletDisabler
+  id: STBulletDisablerDerozer
+  categories: [ HideSpawnMenu ]
+  name: derozer disabler bolt
+  components:
+  - type: ChangeTemperatureOnCollide
+    heat: -1000000
+  - type: StaminaDamageOnCollide
+    damage: 18
+
+- type: entity
+  parent: BulletLaser
+  id: STBulletLetalDerozer
+  categories: [ HideSpawnMenu ]
+  name: derozer letal bolt
+  components:
+  - type: Sprite
+    layers:
+    - state: heavylaser
+      shader: unshaded
+      color: red
+  - type: PointLight
+    enabled: true
+    color: "#ff4300"
+  - type: IgniteOnCollide
+    fireStacks: 0.25
+  - type: Projectile
+    impactEffect: BulletImpactEffectOrangeDisabler
+    damage:
+      types:
+        Heat: 28
+
+- type: entity
+  parent: XrayLaser
+  id: STXrayHitscanDerozer
+  categories: [ HideSpawnMenu ]
+  name: derozer X-ray laser
+  components:
+  - type: HitscanBasicDamage
+    damage:
+      types:
+        Heat: 8
+        Radiation: 8
+
+- type: entity
+  parent: BulletTaser
+  id: STBulletTaserDerozer
+  categories: [ HideSpawnMenu ]
+  name: derozer taser bolt
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Shock: 5
+  - type: StunOnCollide
+    stunAmount: 0
+    knockdownAmount: 2.5
+    slowdownAmount: 2.5
+    walkSpeedModifier: 0.2
+    sprintSpeedModifier: 0.2
+    drop: true
+  - type: StaminaDamageOnCollide
+    damage: 45

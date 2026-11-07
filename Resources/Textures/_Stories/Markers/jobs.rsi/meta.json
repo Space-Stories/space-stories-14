@@ -48,6 +48,27 @@
     },
     {
       "name": "worker_centcom"
+    },
+    {
+      "name": "special_officer"
+    },
+    {
+      "name": "magistrate"
+    },
+    {
+      "name": "cburn"
+    },
+    {
+      "name": "cdurncommander"
+    },
+    {
+      "name": "osa"
+    },
+    {
+      "name": "logist"
+    },
+    {
+      "name": "accountant"
     }
   ]
 }

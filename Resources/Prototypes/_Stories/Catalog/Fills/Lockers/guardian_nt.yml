@@ -8,8 +8,8 @@
       - id: STClothingUniformJumpsuitGuardianNt
       - id: ClothingHandsGlovesCombat
       - id: STClothingHeadsetGuardianNtAlt
-      - id: ClothingEyesGlassesSecurity
       - id: ClothingBeltSecurityFilled
+      - id: STClothingEyesGlassesCentcom
       - id: STClothingOuterVestGuardianNt
       - id: STClothingHeadHatBeretGuardianNt
       - id: STClothingHeadHelmetGuardianNt
