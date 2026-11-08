@@ -5,7 +5,7 @@ using Robust.Shared.Containers;
 
 namespace Content.Server._Stories.ERT;
 
-public sealed class ERTCryostorageSystem : EntitySystem
+public sealed partial class ERTCryostorageSystem : EntitySystem
 {
     [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private RandomHumanoidSystem _randomHumanoid = default!;

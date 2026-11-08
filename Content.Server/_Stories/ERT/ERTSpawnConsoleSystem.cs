@@ -5,7 +5,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.ERT;
 
-public sealed class ERTSpawnConsoleSystem : EntitySystem
+public sealed partial class ERTSpawnConsoleSystem : EntitySystem
 {
     [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private UserInterfaceSystem _uiSystem = default!;

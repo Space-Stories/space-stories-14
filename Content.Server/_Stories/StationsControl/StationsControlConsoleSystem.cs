@@ -35,11 +35,9 @@ public sealed partial class StationsControlConsoleSystem : EntitySystem
 
         foreach (var station in _station.GetStations())
         {
-            if (TryComp<MetaDataComponent>(station, out var meta))
-            {
-                stationsList.Add(meta.EntityName);
-                stationsNetIds.Add(GetNetEntity(station));
-            }
+            var meta = MetaData(station);
+            stationsList.Add(meta.EntityName);
+            stationsNetIds.Add(GetNetEntity(station));
         }
 
         var shuttleTimeLeft = _roundEnd.ShuttleTimeLeft;
@@ -88,11 +86,9 @@ public sealed partial class StationsControlConsoleSystem : EntitySystem
             var stationsNetIds = new List<NetEntity>();
             foreach (var station in _station.GetStations())
             {
-                if (TryComp<MetaDataComponent>(station, out var meta))
-                {
-                    stationsList.Add(meta.EntityName);
-                    stationsNetIds.Add(GetNetEntity(station));
-                }
+                var meta = MetaData(station);
+                stationsList.Add(meta.EntityName);
+                stationsNetIds.Add(GetNetEntity(station));
             }
 
             var state = new StationsControlConsoleState(
