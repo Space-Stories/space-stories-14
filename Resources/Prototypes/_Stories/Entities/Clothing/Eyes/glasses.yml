@@ -47,7 +47,7 @@
     sprite: _Stories/Clothing/Eyes/Glasses/nvg.rsi
 
 - type: entity
-  parent: [ClothingEyesBase, ShowSecurityIcons, ShowMedicalIcons, BaseCentcommContraband]
+  parent: [ClothingEyesBase, ShowSecurityIcons, BaseCentcommContraband]
   id: STClothingEyesGlassesCentcom
   name: Centcom glasses
   description: Upgraded sunglasses with flash protection function, equipped with a medical and security visor.
@@ -57,6 +57,7 @@
   - type: Clothing
     sprite: _Stories/Clothing/Eyes/Glasses/centcomm_glasses.rsi
   - type: FlashImmunity
+  - type: ShowHealthIcons
   - type: EyeProtection
     protectionTime: 5
   - type: Construction

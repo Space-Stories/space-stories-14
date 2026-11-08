@@ -48,12 +48,10 @@
   roles:
   # Head Command
   - STChiefCentcom
-  - STSpecialOfficer
-  - STMagistrate
-  # Centcomm Personnel
   - STOperatorCentcom
   - STRepresentativeCentcom
   - STHeadOfSecurityCentcom
+  # Centcomm Personnel
   - STSecurityOfficerCentcom
   - STMedicCentcom
   - STEngineerCentcom
