@@ -318,3 +318,24 @@
   components:
   - type: LoadMapRule
     gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_medium.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnHigh
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_high.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnHolyMedium
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_holy-medium.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnMedical
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_medical.yml

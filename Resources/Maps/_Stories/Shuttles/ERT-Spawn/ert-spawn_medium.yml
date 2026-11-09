@@ -4,8 +4,8 @@ meta:
   engineVersion: 289.0.3
   forkId: ""
   forkVersion: ""
-  time: 11/07/2026 05:34:18
-  entityCount: 907
+  time: 11/09/2026 03:16:23
+  entityCount: 916
 maps: []
 grids:
 - 1
@@ -832,6 +832,26 @@ entities:
     - type: Transform
       parent: 1
       pos: 8.5,-29.5
+  - uid: 902
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,-4.5
+  - uid: 903
+    components:
+    - type: Transform
+      parent: 1
+      pos: 11.5,-4.5
+  - uid: 904
+    components:
+    - type: Transform
+      parent: 1
+      pos: 14.5,-22.5
+  - uid: 905
+    components:
+    - type: Transform
+      parent: 1
+      pos: 0.5,-22.5
 - proto: Bed
   entities:
   - uid: 307
@@ -1179,7 +1199,7 @@ entities:
     components:
     - type: Transform
       parent: 1
-      pos: 10.5,-15.5
+      pos: 10.5,-16.5
   - uid: 652
     components:
     - type: Transform
@@ -1189,27 +1209,27 @@ entities:
     components:
     - type: Transform
       parent: 1
-      pos: 9.5,-15.5
+      pos: 9.5,-16.5
   - uid: 654
     components:
     - type: Transform
       parent: 1
-      pos: 8.5,-15.5
+      pos: 9.5,-14.5
   - uid: 655
     components:
     - type: Transform
       parent: 1
-      pos: 6.5,-15.5
+      pos: 5.5,-14.5
   - uid: 656
     components:
     - type: Transform
       parent: 1
-      pos: 5.5,-15.5
+      pos: 5.5,-16.5
   - uid: 657
     components:
     - type: Transform
       parent: 1
-      pos: 4.5,-15.5
+      pos: 4.5,-16.5
   - uid: 658
     components:
     - type: Transform
@@ -1380,6 +1400,26 @@ entities:
     - type: Transform
       parent: 1
       pos: 7.5,-28.5
+  - uid: 906
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,-16.5
+  - uid: 907
+    components:
+    - type: Transform
+      parent: 1
+      pos: 3.5,-14.5
+  - uid: 908
+    components:
+    - type: Transform
+      parent: 1
+      pos: 11.5,-14.5
+  - uid: 909
+    components:
+    - type: Transform
+      parent: 1
+      pos: 11.5,-16.5
 - proto: CableHV
   entities:
   - uid: 213
@@ -5214,6 +5254,8 @@ entities:
   entities:
   - uid: 837
     components:
+    - type: MetaData
+      name: затворы вход
     - type: Transform
       parent: 1
       pos: 7.5,-7.5
@@ -5239,6 +5281,8 @@ entities:
           - Toggle
   - uid: 838
     components:
+    - type: MetaData
+      name: затворы
     - type: Transform
       parent: 1
       rot: -1.5707963267948966 rad
@@ -5256,6 +5300,8 @@ entities:
           - Toggle
   - uid: 839
     components:
+    - type: MetaData
+      name: затворы
     - type: Transform
       parent: 1
       rot: 1.5707963267948966 rad
@@ -5772,40 +5818,45 @@ entities:
       pos: 9.5,-18.5
 - proto: RandomHumanoidSpawnerERTLeaderArmed
   entities:
-  - uid: 905
+  - uid: 916
     components:
     - type: Transform
       parent: 1
       pos: 10.5,-15.5
 - proto: RandomHumanoidSpawnerERTMedicalArmed
   entities:
-  - uid: 906
+  - uid: 915
     components:
     - type: Transform
       parent: 1
       pos: 9.5,-15.5
 - proto: RandomHumanoidSpawnerERTSecurityArmedRifle
   entities:
-  - uid: 902
+  - uid: 910
     components:
     - type: Transform
       parent: 1
       pos: 4.5,-15.5
-  - uid: 903
+  - uid: 911
+    components:
+    - type: Transform
+      parent: 1
+      pos: 4.5,-15.5
+  - uid: 912
     components:
     - type: Transform
       parent: 1
       pos: 5.5,-15.5
 - proto: RandomHumanoidSpawnerERTSecurityArmedShotgun
   entities:
-  - uid: 904
+  - uid: 913
     components:
     - type: Transform
       parent: 1
       pos: 6.5,-15.5
 - proto: RandomHumanoidSpawnerERTSecurityArmedVanguard
   entities:
-  - uid: 907
+  - uid: 914
     components:
     - type: Transform
       parent: 1
@@ -6235,6 +6286,8 @@ entities:
     - type: Transform
       parent: 1
       pos: 3.5,-20.5
+    - type: VendingMachine
+      freeVend: True
 - proto: VendingMachineChefvend
   entities:
   - uid: 314
@@ -6242,6 +6295,8 @@ entities:
     - type: Transform
       parent: 1
       pos: 11.5,-18.5
+    - type: VendingMachine
+      freeVend: True
 - proto: VendingMachineChemicals
   entities:
   - uid: 204
@@ -6249,6 +6304,8 @@ entities:
     - type: Transform
       parent: 1
       pos: 2.5,-22.5
+    - type: VendingMachine
+      freeVend: True
 - proto: VendingMachineTankDispenserEVA
   entities:
   - uid: 440

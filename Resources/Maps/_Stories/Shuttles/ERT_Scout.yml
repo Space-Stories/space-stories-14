@@ -4,7 +4,7 @@ meta:
   engineVersion: 289.0.3
   forkId: ""
   forkVersion: ""
-  time: 11/07/2026 05:07:15
+  time: 11/09/2026 02:58:50
   entityCount: 343
 maps: []
 grids:
@@ -825,13 +825,13 @@ entities:
       parent: 1
       rot: -1.5707963267948966 rad
       pos: -3.5,-8.5
-  - uid: 94
+  - uid: 63
     components:
     - type: Transform
       parent: 1
       rot: -1.5707963267948966 rad
       pos: -2.5,2.5
-  - uid: 100
+  - uid: 94
     components:
     - type: Transform
       parent: 1
@@ -901,12 +901,6 @@ entities:
       parent: 1
       rot: -1.5707963267948966 rad
       pos: -1.5,-10.5
-  - uid: 63
-    components:
-    - type: Transform
-      parent: 1
-      rot: -1.5707963267948966 rad
-      pos: 4.5,-9.5
   - uid: 65
     components:
     - type: Transform
@@ -943,6 +937,12 @@ entities:
       parent: 1
       rot: -1.5707963267948966 rad
       pos: 2.5,2.5
+  - uid: 100
+    components:
+    - type: Transform
+      parent: 1
+      rot: -1.5707963267948966 rad
+      pos: 4.5,-9.5
   - uid: 295
     components:
     - type: Transform
@@ -2099,6 +2099,8 @@ entities:
   entities:
   - uid: 328
     components:
+    - type: MetaData
+      name: дастер
     - type: Transform
       parent: 1
       pos: -2.7155943,0.5
@@ -2106,9 +2108,11 @@ entities:
       linkedPorts:
         92:
         - - Pressed
-          - On
+          - Toggle
   - uid: 330
     components:
+    - type: MetaData
+      name: ставни
     - type: Transform
       parent: 1
       pos: -2.339024,0.5
@@ -2119,6 +2123,8 @@ entities:
           - Toggle
   - uid: 332
     components:
+    - type: MetaData
+      name: болты вход
     - type: Transform
       parent: 1
       pos: 0.5,2.5
