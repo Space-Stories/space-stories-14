@@ -130,7 +130,7 @@
 - type: roleLoadout
   id: JobSTOfficerSpecialAssignments
   groups:
-  - STCentCommHeadCommandBack
+  - STCentCommOfficerBack
   - STCentCommOfficerEyes
   - STCentCommOfficerEars
   - STCentCommOfficerGloves
