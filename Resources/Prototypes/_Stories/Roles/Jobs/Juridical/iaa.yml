@@ -14,9 +14,8 @@
     time: 5h
   startingGear: STIAAGear
   icon: "STJobIconIAA"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-magistrate
   access:
-  - Service
   - Brig
   - Maintenance
   - Command

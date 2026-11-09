@@ -1,0 +1,38 @@
+- type: job
+  id: STLogist
+  name: stories-job-name-logist
+  description: stories-job-description-logist
+  playTimeTracker: STJobLogist
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Cargo
+    time: 25h
+  - !type:RoleTimeRequirement
+    role: JobSalvageSpecialist
+    time: 10h
+  - !type:RoleTimeRequirement
+    role: JobCargoTechnician
+    time: 10h
+  startingGear: STLogistGear
+  icon: "STJobIconLogist"
+  supervisors: stories-job-supervisors-special-assignments
+  access:
+  - Cargo
+  - Salvage
+  - Maintenance
+  - External
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 400
+  maxBankBalance: 450
+
+- type: startingGear
+  id: STLogistGear
+  equipment:
+    jumpsuit: ClothingUniformOveralls
+    eyes: ClothingEyesHudCommand
+    ears: ClothingHeadsetCargo
+    gloves: ClothingHandsGlovesFingerless
+    id: STLogistPDA

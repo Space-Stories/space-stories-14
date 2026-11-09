@@ -1,0 +1,33 @@
+- type: job
+  id: STAccountant
+  name: stories-job-name-accountant
+  description: stories-job-description-accountant
+  playTimeTracker: STJobAccountant
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: Command
+  #   time: 25h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfPersonnel
+  #   time: 10h
+  startingGear: STAccountantGear
+  icon: "STJobIconAccountant"
+  supervisors: stories-job-supervisors-chief-centcom
+  access:
+  - Maintenance
+  - External
+  - Command
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+  minBankBalance: 500
+  maxBankBalance: 600
+
+- type: startingGear
+  id: STAccountantGear
+  equipment:
+    head: ClothingHeadHatBeret
+    jumpsuit: ClothingUniformJumpsuitCentcomAgent
+    id: STAccountantPDA

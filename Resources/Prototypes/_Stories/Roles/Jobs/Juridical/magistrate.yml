@@ -1,0 +1,44 @@
+- type: job
+  id: STMagistrate
+  name: stories-job-name-magistrate
+  description: stories-job-description-magistrate
+  playTimeTracker: STJobMagistrate
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: STJuridical
+  #   time: 40h
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: STJobIAA
+  #   time: 10h
+  # - !type:RoleTimeRequirement
+  #   role: STJobJudge
+  #   time: 10h
+  startingGear: STMagistrateGear
+  icon: "STJobIconMagistrate"
+  supervisors: stories-job-supervisors-management-juridical-department
+  accessGroups:
+  - AllAccess
+  - STPrisonAllAccess
+  access:
+  - CentralCommand
+  - STDSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm, STRadioImplantDSO ]
+  whitelisted: true
+  minBankBalance: 750
+  maxBankBalance: 900
+
+- type: startingGear
+  id: STMagistrateGear
+  equipment:
+    head: STClothingHeadHatMagistrate
+    jumpsuit: STClothingUniformJumpsuitMagistrate
+    gloves: STClothingHandsGlovesMagistrate
+    id: STMagistratePDA
+    outerClothing: STClothingOuterRobesMagistrate
+    neck: STClothingNeckCloakMagistrate
+    belt: BoxFolderCentComClipboardThreePapers

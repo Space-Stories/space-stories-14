@@ -1,0 +1,42 @@
+- type: job
+  id: STSpecialOfficer
+  name: stories-job-name-special-officer
+  description: stories-job-description-special-officer
+  playTimeTracker: STJobSpecialOfficer
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: STDSO
+  #   time: 40h
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobHeadOfSecurity
+  #   time: 20h
+  startingGear: STSpecialOfficerGear
+  icon: "STJobIconSpecialOfficer"
+  supervisors: stories-job-supervisors-admiralty
+  accessGroups:
+  - AllAccess
+  - STPrisonAllAccess # Stories
+  access:
+  - CentralCommand
+  - STDSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, STAdrenocorImplant, STDeathRattleImplantDSO, RadioImplantCentcomm, STRadioImplantDSO ]
+  whitelisted: true
+  minBankBalance: 750
+  maxBankBalance: 900
+
+- type: startingGear
+  id: STSpecialOfficerGear
+  equipment:
+    head: STClothingHeadHatSpecialOfficer
+    jumpsuit: STClothingUniformJumpsuitSpecialOfficer
+    mask: ClothingMaskNeckGaiter
+    gloves: ClothingHandsGlovesCombat
+    shoes: STClothingShoesBootsSpecialOfficer
+    id: STSpecialOfficerPDA
+    outerClothing: ClothingOuterArmorBulletproof
+    neck: STClothingNeckCloakSpecialOfficer

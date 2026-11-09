@@ -6,16 +6,17 @@
   playTimeTracker: JobERTLeader
   setPreference: false
   startingGear: ERTLeaderGearEVA
-  icon: "JobIconERTLeader"
-  supervisors: job-supervisors-centcom
+  icon: "STJobIconERTLeader" # Stories-Icon
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   parent: ERTLeaderGearEVA
@@ -106,12 +107,13 @@
   setPreference: false
   startingGear: ERTChaplainGear
   icon: "JobIconERTChaplain"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddComponentSpecial
     components:
@@ -120,7 +122,7 @@
     - type: Holy
     # Stories-Pontific-End
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   parent: ERTChaplainGearEVA
@@ -186,15 +188,16 @@
   setPreference: false
   startingGear: ERTEngineerGearEVA
   icon: "JobIconERTEngineer"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   parent: ERTEngineerGearEVA
@@ -280,15 +283,16 @@
   setPreference: false
   startingGear: ERTSecurityGearEVA
   icon: "JobIconERTSecurity"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   parent: ERTSecurityGearEVA
@@ -467,15 +471,16 @@
   setPreference: false
   startingGear: ERTMedicalGearEVA
   icon: "JobIconERTMedic"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   parent: ERTMedicalGearEVA
@@ -567,15 +572,16 @@
   setPreference: false
   startingGear: ERTJanitorGearEVA
   icon: "JobIconERTJanitor"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   parent: ERTJanitorGearEVA

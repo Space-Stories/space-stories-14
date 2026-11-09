@@ -21,6 +21,12 @@
     },
     {
       "name": "court_label"
+    },
+    {
+      "name": "crypt_green"
+    },
+    {
+      "name": "centcom_label"
     }
   ]
 }

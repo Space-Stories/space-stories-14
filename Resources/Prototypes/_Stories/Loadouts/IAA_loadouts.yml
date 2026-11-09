@@ -8,7 +8,7 @@
       time: 72000 # 20 hours
 
 - type: roleLoadout
-  id: STJobIAA
+  id: JobSTIAA
   groups:
   - STIAAHead
   - LawyerNeck

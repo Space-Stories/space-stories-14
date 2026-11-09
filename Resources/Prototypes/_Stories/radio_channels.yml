@@ -69,6 +69,15 @@
   ttsCategory: stories-tts-category-radio-other
 
 - type: radioChannel
+  id: STDSO
+  name: stories-chat-radio-DCO
+  keycode: 'в'
+  frequency: 1311
+  color: "#0a5fad"
+  longRange: true
+  ttsCategory: stories-tts-category-radio-other
+
+- type: radioChannel
   id: STHereticMansusLink
   name: stories-chat-radio-heretic-mansus-link
   frequency: 98769

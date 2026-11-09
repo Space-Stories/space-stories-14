@@ -1,5 +1,5 @@
 - type: roleLoadout
-  id: STJobGuardianNt
+  id: JobSTGuardianNt
   groups:
   - STGuardianNtHead
   - STGuardianNtMask
@@ -10,8 +10,8 @@
   - STGuardianNtOuterClothing
   - STGuardianNtShoes
   - STGuardianNtLightsaber
+  - AssistiveItems
   - SurvivalSecurity
-  - Trinkets
   - GroupSpeciesBreathTool
 
 - type: loadoutGroup

@@ -69,3 +69,18 @@
     layers:
     - state: crypt_silver
     - state: nano_label
+
+- type: entity
+  parent: [ EncryptionKey, BaseCentcommContraband ]
+  id: STEncryptionKeyDSO
+  name: Department of Special Operations encryption key
+  description: An encryption key used by powerful people.
+  components:
+  - type: EncryptionKey
+    channels:
+    - STDSO
+    defaultChannel: STDSO
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: nano_label

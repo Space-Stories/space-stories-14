@@ -4,8 +4,8 @@ meta:
   engineVersion: 267.1.0
   forkId: stories
   forkVersion: b090a82370372f4ec9d7a718667d60941efa1ec7
-  time: 11/12/2025 11:37:46
-  entityCount: 532
+  time: 09/11/2026 19:38:33
+  entityCount: 531
 maps: []
 grids:
 - 1
@@ -1698,15 +1698,6 @@ entities:
     - type: Transform
       pos: -0.73347855,-15.282332
       parent: 1
-- proto: FaxMachineBase
-  entities:
-  - uid: 226
-    components:
-    - type: Transform
-      pos: -1.5,-7.5
-      parent: 1
-    - type: FaxMachine
-      name: Факс шаттла ПЦК
 - proto: FlippoEngravedLighter
   entities:
   - uid: 95

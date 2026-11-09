@@ -73,3 +73,14 @@
     sprite: _Stories/Clothing/Shoes/Boots/exe_boots.rsi
   - type: Clothing
     sprite: _Stories/Clothing/Shoes/Boots/exe_boots.rsi
+
+- type: entity
+  parent: [ BaseCentcommContraband, STClothingShoesBootsJackGuardianNt ]
+  id: STClothingShoesBootsSpecialOfficer
+  name: Special Operations Officer's jackboots
+  description: A pair of gold-plated boots for a senior representative of the Special Operations Department. They prevent slipping and look stylish.
+  components:
+    - type: Sprite
+      sprite: _Stories/Clothing/Shoes/Boots/OSO.rsi
+    - type: Clothing
+      sprite: _Stories/Clothing/Shoes/Boots/OSO.rsi

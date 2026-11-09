@@ -1,0 +1,51 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      Title="{Loc 'stories-stations-control-title'}"
+                      MinSize="400 500">
+    <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="10">
+        <PanelContainer StyleClasses="BackgroundPanelDark">
+            <BoxContainer Orientation="Vertical" Margin="5" SeparationOverride="5">
+                <Label Text="{Loc 'stories-stations-control-alert-level-management'}" Align="Center" StyleClasses="StatusFieldTitle" />
+                <Label Text="{Loc 'stories-stations-control-station'}" />
+                <OptionButton Name="StationSelector" MinWidth="250" />
+
+                <BoxContainer Orientation="Horizontal" SeparationOverride="10">
+                    <Label Text="{Loc 'stories-stations-control-current-alert-level'}" />
+                    <Label Name="CurrentAlertLevelLabel" Text="{Loc 'stories-stations-control-alert-level-unknown'}" />
+                </BoxContainer>
+
+                <BoxContainer Margin="0 12 0 6">
+                    <Label Text="{Loc 'stories-stations-control-alert-level'}" StyleClasses="OpenRight"
+                        HorizontalExpand="True" SizeFlagsStretchRatio="1" />
+                    <OptionButton Name="AlertLevelSelector" StyleClasses="OpenLeft"
+                        ToolTip="{Loc 'comms-console-menu-alert-level-button-tooltip'}"
+                        HorizontalExpand="True" SizeFlagsStretchRatio="6"/>
+                </BoxContainer>
+
+                <Button Name="SetAlertLevelButton" Text="{Loc 'stories-stations-control-set-alert-level-button'}"
+                    Disabled="True" />
+            </BoxContainer>
+        </PanelContainer>
+
+        <Control StyleClasses="LowDivider" />
+
+        <PanelContainer StyleClasses="BackgroundPanelDark">
+            <BoxContainer Orientation="Vertical" Margin="5" SeparationOverride="5">
+                <Label Text="{Loc 'stories-stations-control-evacuation-management'}" Align="Center" StyleClasses="StatusFieldTitle" />
+                <Label Text="{Loc 'stories-stations-control-evacuation-time-input'}" StyleClasses="ButtonSmall" />
+                <LineEdit Name="EvacTimeInput" Text="4:00" PlaceHolder="{Loc 'stories-stations-control-evacuation-time-input-place-holder'}" />
+
+                <Button Name="CallEvacButton" Text="{Loc 'stories-stations-control-evacuation-call'}" />
+                <Button Name="RecallEvacButton" Text="{Loc 'stories-stations-control-evacuation-recall'}" />
+
+                <PanelContainer StyleClasses="BackgroundDark">
+                    <BoxContainer Orientation="Vertical">
+                        <Label StyleClasses="LabelSubText" Align="Center"
+                            Text="{Loc 'stories-stations-control-evacuation-countdown'}" />
+                        <Label Name="CountdownLabel" ReservesSpace="True" Align="Center"/>
+                    </BoxContainer>
+                </PanelContainer>
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

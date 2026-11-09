@@ -1,0 +1,43 @@
+- type: job
+  id: STWorkerCentcom
+  name: stories-job-name-worker-centcom
+  description: stories-job-description-worker-centcom
+  playTimeTracker: STJobWorkerCentcom
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Civilian
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  startingGear: STWorkerCentcomGear
+  icon: "STJobIconWorkerCentcom"
+  supervisors: job-supervisors-centcom
+  access:
+  - Theatre
+  - Cargo
+  - Janitor
+  - Chapel
+  - Service
+  - Bar
+  - Kitchen
+  - Hydroponics
+  - Maintenance
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 400
+  maxBankBalance: 450
+
+- type: startingGear
+  id: STWorkerCentcomGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficer
+    eyes: ClothingEyesHudBeer
+    ears: ClothingHeadsetService
+    gloves: ClothingHandsGlovesHop
+    shoes: ClothingShoesColorBlack
+    id: STWorkerCentcomPDA
+    outerClothing: ClothingOuterArmorBasicSlim
+    belt: ClothingBeltChefFilled

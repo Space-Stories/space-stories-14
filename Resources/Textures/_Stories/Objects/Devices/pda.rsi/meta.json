@@ -1,7 +1,7 @@
 {
   "version": 1,
   "license": "CC-BY-SA-3.0",
-  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/commit/59f2a4e10e5ba36033c9734ddebfbbdc6157472d, pda-cluwne made by brainfood1183 (github) ss14 | pda-brigmedic and pda-centcom made by PuroSlavKing (Github) | pda-brigemdic resprited by Hülle#2562 (Discord), pda-prosecutor, pda-judge by itak_privet_chat (discord), pda-blueshield taken from Monkestation at https://github.com/Monkestation/Monkestation2.0/blob/bdf60a966c1f57b8a0d9dc640c3e5dda340c7054/icons/obj/modular_pda.dmi",
+  "copyright": "Taken from tgstation at https://github.com/tgstation/tgstation/commit/59f2a4e10e5ba36033c9734ddebfbbdc6157472d, pda-cluwne made by brainfood1183 (github) ss14 | pda-brigmedic and pda-centcom made by PuroSlavKing (Github) | pda-brigemdic resprited by Hülle#2562 (Discord), pda-prosecutor, pda-judge by itak_privet_chat (discord), pda-blueshield taken from Monkestation at https://github.com/Monkestation/Monkestation2.0/blob/bdf60a966c1f57b8a0d9dc640c3e5dda340c7054/icons/obj/modular_pda.dmi, centcomm states by DeroCKs for SpaceStories(Server SS14).",
   "size": {
     "x": 32,
     "y": 32
@@ -48,6 +48,24 @@
     },
     {
       "name": "pda-prosecutor"
+    },
+    {
+      "name": "pda-chief-centcom"
+    },
+    {
+      "name": "pda-centcom"
+    },
+    {
+      "name": "pda-centcom-security"
+    },
+    {
+      "name": "pda-centcom-engineer"
+    },
+    {
+      "name": "pda-centcom-medical"
+    },
+    {
+      "name": "pda-centcom-worker"
     },
     {
       "name": "pda-blueshield"

@@ -1,0 +1,36 @@
+- type: gameMap
+  id: STCentComm
+  isGrid: true
+  mapName: 'Центральное Командование'
+  mapPath: /Maps/_Stories/centcomm.yml
+  minPlayers: 10 # Minimum player to create CentComm station
+  stations:
+    centcomm:
+      stationProto: STNanotrasenCentralCommand
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: '{0} Центральное Командование SCTR-14'
+        nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: 'ST'
+      - type: StationJobs
+        availableJobs:
+          # Head Command (3)
+          STChiefCentcom: [ 1, 1 ]
+          STSpecialOfficer: [ 1, 1 ]
+          STMagistrate: [ 1, 1 ]
+          # Centcomm Officers (3)
+          STHeadOfSecurityCentcom: [ 1, 1 ]
+          STOperatorCentcom: [ 1, 1 ]
+          STRepresentativeCentcom: [ 1, 1 ]
+          # Centcomm Personnel (13)
+          STEngineerCentcom: [ 3, 3 ]
+          STMedicCentcom: [ 3, 3 ]
+          STSecurityOfficerCentcom: [ 3, 3 ]
+          STWorkerCentcom: [ 3, 3 ]
+          STGuardianNt: [ 1, 1 ]
+          # Non-Centcomm Personnel (5)
+          STOfficerSpecialAssignments: [ 1, 1 ]
+          STLogist: [ 3, 3 ]
+          STAccountant: [ 1, 1 ]
+          # Total: 27 roles

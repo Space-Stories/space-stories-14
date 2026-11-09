@@ -31,3 +31,68 @@
   - type: Insulated
   - type: Fiber
     fiberMaterial: fibers-insulative
+
+- type: entity
+  parent: [ ClothingHandsBase, BaseCentcommContraband ]
+  id: STClothingHandsGlovesChiefCentcom
+  name: gloves of the head of the central command
+  description: Luxurious turquoise gloves with gold trim.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Hands/Gloves/cos_gloves.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Hands/Gloves/cos_gloves.rsi
+  - type: Insulated
+  - type: Fiber
+    fiberMaterial: fibers-durathread
+    fiberColor: fibers-regal-turquoise
+  - type: FingerprintMask
+  - type: Armor
+    modifiers:
+      coefficients:
+        Slash: 0.95
+
+- type: entity
+  parent: ClothingHandsBase
+  id: STClothingHandsGlovesMagistrate
+  name: magistrate's gloves
+  description: Premium cut-resistant gloves made from ultra-durable synthetic fabrics. They leave no fingerprints or lint, provide electrical insulation, and feature a gold-plated NT logo on the back.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Hands/Gloves/magistrate_gloves.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Hands/Gloves/magistrate_gloves.rsi
+  - type: Insulated
+  - type: FingerprintMask
+  - type: Armor
+    modifiers:
+      coefficients:
+        Slash: 0.95
+
+- type: entity
+  parent: ClothingHandsGlovesCombat
+  id: STClothingHandsGlovesCombatWhite
+  name: white combat gloves
+  description: These tactical gloves are fireproof and shock resistant.
+  components:
+  - type: Sprite
+    sprite: Clothing/Hands/Gloves/Color/color.rsi
+    layers:
+    - sprite: _Stories/Clothing/Hands/Gloves/white_combat_gloves.rsi
+      state: icon
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+        color: "#EAE8E8"
+      right:
+      - state: inhand-right
+        color: "#EAE8E8"
+  - type: Clothing
+    sprite: Clothing/Hands/Gloves/Color/color.rsi
+    clothingVisuals:
+      gloves:
+      - state: equipped-HAND
+        color: "#EAE8E8"
+  - type: Fiber
+    fiberColor: fibers-white

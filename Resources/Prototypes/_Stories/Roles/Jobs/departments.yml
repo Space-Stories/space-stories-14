@@ -17,6 +17,49 @@
   description: stories-department-Juridical-description
   color: "#6d5d53"
   roles:
+  - STMagistrate
   - STIAA
   - Lawyer
   - STJudge
+
+- type: department
+  id: STDSO
+  name: stories-department-DSO
+  description: stories-department-DSO-description
+  color: "#0a5fad"
+  roles:
+  - STSpecialOfficer
+  - CBURN
+  - ERTLeader
+  - ERTChaplain
+  - ERTJanitor
+  - ERTMedical
+  - ERTSecurity
+  - ERTEngineer
+  - DeathSquad
+  editorHidden: true
+  weight: 130
+
+- type: department
+  id: CentralCommand
+  name: department-CentralCommand
+  description: department-CentralCommand-description
+  color: "#0f8551"
+  roles:
+  # Head Command
+  - STChiefCentcom
+  - STOperatorCentcom
+  - STRepresentativeCentcom
+  - STHeadOfSecurityCentcom
+  # Centcomm Personnel
+  - STSecurityOfficerCentcom
+  - STMedicCentcom
+  - STEngineerCentcom
+  - STWorkerCentcom
+  - STGuardianNt
+  # Non-Centcomm Personnel
+  - STOfficerSpecialAssignments
+  - STLogist
+  - STAccountant
+  editorHidden: false #true
+  weight: 120

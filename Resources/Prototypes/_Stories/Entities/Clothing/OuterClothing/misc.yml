@@ -19,3 +19,14 @@
     sprite: _Stories/Clothing/OuterClothing/Misc/judge.rsi
   - type: Clothing
     sprite: _Stories/Clothing/OuterClothing/Misc/judge.rsi
+
+- type: entity
+  parent: [ ClothingOuterBase, BaseCentcommContraband ]
+  id: STClothingOuterRobesMagistrate
+  name: magistrate's robe
+  description: A long garment that hangs loosely from the shoulders, encircling the neck.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/OuterClothing/Misc/magistrate.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/OuterClothing/Misc/magistrate.rsi

@@ -1,0 +1,14 @@
+- files: ["artillery.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "TauCetiStation"
+  source: "https://github.com/TauCetiStation/TauCetiClassic/blob/92d2767dbb39f28540f78d5055e7be1eb7acee98/sound/AI/artillery.ogg"
+
+- files: ["ert_no.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "TauCetiStation"
+  source: "https://github.com/space-syndicate/space-station-14/blob/6f1a173231ee86ede45c8fb8c905054a0abcc4a8/Resources/Audio/Corvax/Adminbuse/noert.ogg"
+
+- files: ["ert_yes.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "TauCetiStation"
+  source: "https://github.com/TauCetiStation/TauCetiClassic/blob/92d2767dbb39f28540f78d5055e7be1eb7acee98/sound/AI/yesert.ogg"

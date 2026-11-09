@@ -135,6 +135,7 @@
     - STPrisonMed # Stories
     - STPrisonEng # Stories
     - Prisoner # Stories
+    - STDSO # Stories
     - CentralCommand
     - NuclearOperative
     - SyndicateAgent

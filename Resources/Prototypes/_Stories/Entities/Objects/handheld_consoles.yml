@@ -64,3 +64,39 @@
   - type: Sprite
     sprite: _Stories/Objects/Devices/handheld_console.rsi
     state: shuttle_sp
+
+- type: entity
+  parent: BaseItem
+  id: STHandheldStationsControlConsole
+  categories: [ DoNotMap ]
+  name: asset control tablet
+  description: Allows for the control of any corporate asset.
+  suffix: DON'T MAP
+  components:
+  - type: Sprite
+    sprite: _Stories/Objects/Devices/handheld_stations_control_console.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: UserInterface
+    interfaces:
+      enum.StationsControlConsoleUiKey.Key:
+        type: StationsControlConsoleBoundUserInterface
+  - type: ActivatableUI
+    key: enum.StationsControlConsoleUiKey.Key
+  - type: StationsControlConsole
+    allowedAlertLevels:
+    - Blue
+    - DeltaNuke
+    - Gamma
+    - Green
+    - Red
+    - Violet
+    - Yellow
+    - STPrisonBlue
+    - STPrisonDelta
+    - STPrisonGamma
+    - STPrisonGreen
+    - STPrisonRed
+    - STPrisonViolet
+    - STPrisonYellow

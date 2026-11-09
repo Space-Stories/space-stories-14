@@ -11,7 +11,7 @@
   name: chat-radio-centcom
   keycode: 'ц' # Stories-Localization
   frequency: 1337
-  color: "#2681a5"
+  color: "#0f8551" # Stories-Color
   longRange: true
   ttsCategory: stories-tts-category-radio-special # Stories-TTS
 

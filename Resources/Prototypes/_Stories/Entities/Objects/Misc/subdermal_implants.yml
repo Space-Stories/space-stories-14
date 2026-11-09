@@ -1,4 +1,26 @@
 - type: entity
+  parent: DeathRattleImplant
+  id: STDeathRattleImplantDSO
+  name: DSO death rattle implant
+  description: This implant will inform the DSO radio channel should the user fall into critical condition or die.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RattleOnTrigger
+    radioChannel: STDSO
+
+- type: entity
+  parent: BaseSubdermalImplant
+  id: STRadioImplantDSO
+  name: radio implant DSO
+  description: This implant grants access to the DSO channel without a headset.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SubdermalImplant
+  - type: RadioImplant
+    radioChannels:
+    - STDSO
+
+- type: entity
   parent: BaseSubdermalImplant
   id: STAfterburnerImplant
   name: afterburner implant

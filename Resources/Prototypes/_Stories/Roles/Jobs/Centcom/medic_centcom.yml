@@ -1,0 +1,35 @@
+- type: job
+  id: STMedicCentcom
+  name: stories-job-name-medic-centcom
+  description: stories-job-description-medic-centcom
+  playTimeTracker: STJobMedicCentcom
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Medical
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  startingGear: STMedicCentcomGear
+  icon: "STJobIconMedicCentcom"
+  supervisors: job-supervisors-centcom
+  access:
+  - Chemistry
+  - Medical
+  - Maintenance
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 400
+  maxBankBalance: 450
+
+- type: startingGear
+  id: STMedicCentcomGear
+  equipment:
+    jumpsuit: STClothingUniformJumpsuitMedicCentcom
+    eyes: ClothingEyesHudMedical
+    ears: ClothingHeadsetMedical
+    gloves: ClothingHandsGlovesNitrile
+    id: STMedicCentcomPDA
+    belt: ClothingBeltMedicalFilled
