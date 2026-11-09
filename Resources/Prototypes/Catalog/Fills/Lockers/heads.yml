@@ -171,6 +171,7 @@
     - id: MetalFoamGrenade
     - id: PlushieLizardJobChiefengineer
       prob: 0.02
+    - id: STHoloconeProjector # Stories-Projector
 
 # Hardsuit table, used for suit storage as well
 - type: entityTable

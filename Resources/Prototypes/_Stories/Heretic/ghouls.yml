@@ -1,0 +1,28 @@
+- type: conversion
+  id: STHereticGhoul
+  allowedMobStates: [ Dead, Alive ]
+  blacklist:
+    components:
+    - Zombie
+    - StoriesHeretic
+  components:
+  - type: StoriesHereticGhoul
+    critThreshold: 25
+    deadThreshold: 50
+  mindRoles:
+  - STMindRoleHereticGhoul
+
+- type: conversion
+  id: STHereticGhoulVoiceless
+  allowedMobStates: [ Dead, Alive ]
+  blacklist:
+    components:
+    - Zombie
+    - StoriesHeretic
+  components:
+  - type: StoriesHereticGhoul
+    critThreshold: 50
+    deadThreshold: 100
+    statusEffect: StatusEffectMuted
+  mindRoles:
+  - STMindRoleHereticGhoul

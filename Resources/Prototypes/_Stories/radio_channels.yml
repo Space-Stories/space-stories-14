@@ -67,3 +67,12 @@
   color: "#6557b3"
   longRange: true
   ttsCategory: stories-tts-category-radio-other
+
+- type: radioChannel
+  id: STHereticMansusLink
+  name: stories-chat-radio-heretic-mansus-link
+  frequency: 98769
+  keycode: "э"
+  color: "#568b00"
+  longRange: true
+  ttsCategory: stories-tts-category-radio-other

@@ -1,0 +1,126 @@
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: STHereticVoidCloak
+  name: Void Cloak
+  description: A cloak stitched from a shard of the void. Raise the hood and it is gone.
+  components:
+  - type: StoriesHereticVoidCloak
+  - type: Sprite
+    sprite: _Stories/Heretic/Clothing/OuterClothing/void_cloak.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/Clothing/OuterClothing/void_cloak.rsi
+  - type: Item
+    size: Normal
+  - type: ToggleableClothing
+    clothingPrototype: STHereticVoidCloakHood
+    slot: head
+    verbText: toggle-clothing-verb-hood
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
+      storagebase: !type:Container
+        ents: []
+  - type: Storage
+    grid:
+    - 0,0,1,1
+    maxItemSize: Normal
+    whitelist:
+      components:
+      - StoriesHereticBlade
+      - Organ
+  - type: AllowSuitStorage
+    whitelist:
+      components:
+      - StoriesHereticBlade
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
+        Heat: 0.85
+
+- type: entity
+  parent: ClothingHeadBase
+  id: STHereticVoidCloakHood
+  name: Void Cloak hood
+  description: A hood of the void. The one beneath it is not seen.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticVoidCloakHood
+  - type: Sprite
+    sprite: _Stories/Heretic/Clothing/Head/void_cloak_hood.rsi
+  - type: Clothing
+    sprite: _Stories/Heretic/Clothing/Head/void_cloak_hood.rsi
+    quickEquip: false
+
+- type: entity
+  id: STHereticCleaveEffect
+  name: bloody cleave
+  description: A gash in the air, dripping red.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: TimedDespawn
+    lifetime: 0.6
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/cleave.rsi
+    layers:
+    - state: cleave
+      shader: unshaded
+    drawdepth: Effects
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
+  id: STHereticVoidPrison
+  name: void sphere
+  description: A sphere of the Void. Whatever is inside is gone from the world.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticVoidPrison
+  - type: Damageable
+  - type: Injurable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 50
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        hard: false
+        layer:
+        - MobLayer
+  - type: Sprite
+    sprite: _Stories/Heretic/Effects/void_prison.rsi
+    layers:
+    - state: opening
+      map: [ "base" ]
+    drawdepth: Effects
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.StoriesHereticVoidPrisonVisuals.State:
+        base:
+          Opening: { state: opening }
+          Active: { state: effect }
+          Closing: { state: closing }
+  - type: PointLight
+    radius: 2
+    energy: 1
+    color: "#6f3cc9"
+  - type: Tag
+    tags:
+    - HideContextMenu

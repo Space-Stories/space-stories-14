@@ -144,6 +144,7 @@
   cost: 10000
   recipeUnlocks:
   - WeaponLaserCannon
+  - STBorgModuleSecurityLaser # Stories-BorgModule
 
 - type: technology
   id: WaveParticleHarnessing

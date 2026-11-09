@@ -1,0 +1,76 @@
+- type: entity
+  abstract: true
+  id: STHereticRitualBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StoriesHereticRitual
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualKnowledge
+  name: Ritual of Knowledge
+  description: Gather the four items the Mansus demands to gain knowledge. Can be performed once.
+  components:
+  - type: StoriesHereticRitual
+    effect: Knowledge
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualAmberFocus
+  name: Amber Focus
+  description: A glass sheet and a pair of eyes.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-glass-sheet
+      prototypes: [ SheetGlass, SheetGlass1, SheetGlass10 ]
+    - name: stories-heretic-ingredient-eyes
+      organCategory: Eyes
+    results:
+    - STHereticAmberFocus
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualCodex
+  name: Codex Cicatrix
+  description: A book, a writing tool and hide or leather.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-book
+      whitelist:
+        tags: [ Book ]
+    - name: stories-heretic-ingredient-pen
+      whitelist:
+        tags: [ Write ]
+    - name: stories-heretic-ingredient-hide
+      prototypes: [ MaterialHideBear, MaterialHideCorgi, ClothingHandsGlovesLeather ]
+    results:
+    - STHereticCodexCicatrix
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualSacrifice
+  name: Heartbeat of the Mansus
+  description: Place an incapacitated, cuffed or sleeping target on the rune.
+  components:
+  - type: StoriesHereticRitual
+    effect: Sacrifice
+
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualReroll
+  name: Relentless Heartbeat
+  description: A poppy, a book and any clothing. Grants new sacrifice targets.
+  components:
+  - type: StoriesHereticRitual
+    effect: RerollTargets
+    ingredients:
+    - name: stories-heretic-ingredient-poppy
+      prototypes: [ FoodPoppy ]
+    - name: stories-heretic-ingredient-book
+      whitelist:
+        tags: [ Book ]
+    - name: stories-heretic-ingredient-clothing
+      whitelist:
+        components: [ Clothing ]

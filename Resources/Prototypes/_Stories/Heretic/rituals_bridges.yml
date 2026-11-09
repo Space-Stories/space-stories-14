@@ -1,0 +1,18 @@
+- type: entity
+  parent: STHereticRitualBase
+  id: STHereticRitualVoidCloak
+  name: Void Cloak
+  description: A glass shard, any outer clothing and a bed sheet.
+  components:
+  - type: StoriesHereticRitual
+    ingredients:
+    - name: stories-heretic-ingredient-glass-shard
+      whitelist:
+        tags: [ GlassShard ]
+    - name: stories-heretic-ingredient-any-outer-clothing
+      clothingSlots: OUTERCLOTHING
+    - name: stories-heretic-ingredient-bedsheet
+      whitelist:
+        tags: [ Bedsheet ]
+    results:
+    - STHereticVoidCloak

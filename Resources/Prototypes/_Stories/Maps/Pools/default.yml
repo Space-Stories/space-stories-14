@@ -2,26 +2,21 @@
   id: STDefaultMapPool
   maps:
   - STBagel
+  - STBeta
   - STBox
+  - STCorvaxDelta
   - STElkridge
   - STExo
+  - STFland
+  - STHelios
+  - STKilo
+  - STLima
   - STMarathon
+  - STMeta
+  - STOmega
   - STPacked
   - STPlasma
   - STSaltern
   - STSnowball
   - STSushi
   - STTram2
-  # Старый маппул, удалён из за объёма работы требующися для переработки карт которые он содержит.
-  # - STBagel
-  # - STBeta
-  # - STBox
-  # - STFland
-  # - STKilo
-  # - STLima
-  # - STMeta
-  # - STOmega
-  # - STCorvaxDelta
-  # - STElkridge
-  # - STSaltern
-  # - STHelios

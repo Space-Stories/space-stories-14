@@ -1,0 +1,10 @@
+using Robust.Shared.GameStates;
+
+namespace Content.Shared._Stories.Heretic.Components;
+
+[RegisterComponent, NetworkedComponent]
+public sealed partial class StoriesHereticGraspBlindComponent : Component
+{
+    [DataField]
+    public TimeSpan Duration = TimeSpan.FromSeconds(5);
+}
