@@ -3,7 +3,7 @@ using Content.Server.Humanoid;
 using Content.Server.Mind;
 using Content.Server.PDA;
 using Content.Server.Station.Components;
-using Content.Server.Silicons.Laws; //Stories
+using Content.Server.Silicons.Laws;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Body;
@@ -173,7 +173,8 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
         return entity.Value;
     }
 
-    private void ApplyLoadoutLawset(EntityUid entity, RoleLoadout loadout) // Stories
+    // Stories-Lawset-Start
+    private void ApplyLoadoutLawset(EntityUid entity, RoleLoadout loadout)
     {
         foreach (var selected in loadout.SelectedLoadouts.Values)
         {
@@ -187,6 +188,7 @@ public sealed partial class StationSpawningSystem : SharedStationSpawningSystem
             }
         }
     }
+    // Stories-Lawset-End
 
     private void DoJobSpecials(ProtoId<JobPrototype>? job, EntityUid entity, bool equipped = true) // Stories
     {

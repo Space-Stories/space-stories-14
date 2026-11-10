@@ -12,9 +12,11 @@
   - STLawsetPaladin
   - STLawsetRobocop
   - STLawsetNutimov
-  - STLawsetLiveLetLive
+  - STLawsetDrone
   - STLawsetGameMaster
-  - STLawsetPainter
+#  - STLawsetLiveLetLive
+#  - STLawsetPainter
+#  - STLawsetOverlord
 
 - type: loadout
   id: STLawsetNTDefault
@@ -93,15 +95,15 @@
       time: 5h
 
 - type: loadout
-  id: STLawsetLiveLetLive
-  dummyEntity: LiveLetLiveCircuitBoard
-  siliconLawset: LiveLetLiveLaws
+  id: STLawsetDrone
+  dummyEntity: NTDefaultCircuitBoard
+  siliconLawset: Drone
   effects:
   - !type:JobRequirementLoadoutEffect
     requirement:
       !type:RoleTimeRequirement
       role: JobStationAi
-      time: 10h
+      time: 5h
 
 - type: loadout
   id: STLawsetGameMaster
@@ -114,13 +116,35 @@
       role: JobStationAi
       time: 10h
 
-- type: loadout
-  id: STLawsetPainter
-  dummyEntity: ArtistCircuitBoard
-  siliconLawset: PainterLawset
-  effects:
-  - !type:JobRequirementLoadoutEffect
-    requirement:
-      !type:RoleTimeRequirement
-      role: JobStationAi
-      time: 10h
+#- type: loadout
+#  id: STLawsetLiveLetLive
+#  dummyEntity: LiveLetLiveCircuitBoard
+#  siliconLawset: LiveLetLiveLaws
+#  effects:
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 10h
+
+#- type: loadout
+#  id: STLawsetPainter
+#  dummyEntity: ArtistCircuitBoard
+#  siliconLawset: PainterLawset
+#  effects:
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 10h
+
+#- type: loadout
+#  id: STLawsetOverlord
+#  dummyEntity: OverlordCircuitBoard
+#  siliconLawset: OverlordLawset
+#  effects:
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 10h

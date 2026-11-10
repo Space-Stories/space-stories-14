@@ -249,7 +249,8 @@ public sealed partial class SiliconLawSystem : SharedSiliconLawSystem
         return ev.Laws;
     }
 
-    public void SetLawset(EntityUid target, ProtoId<SiliconLawsetPrototype> lawset) //Stories lawset
+    //Stories-Lawset-Start
+    public void SetLawset(EntityUid target, ProtoId<SiliconLawsetPrototype> lawset)
     {
         var provider = EnsureComp<SiliconLawProviderComponent>(target);
         provider.Laws = lawset;
@@ -257,6 +258,7 @@ public sealed partial class SiliconLawSystem : SharedSiliconLawSystem
         RankLaws(provider.Lawset.Laws);
         NotifyLawsChanged((target, provider));
     }
+    //Stories-Lawset-End
 
     public override void NotifyLawsChanged(Entity<SiliconLawProviderComponent> ent, SoundSpecifier? cue = null)
     {
