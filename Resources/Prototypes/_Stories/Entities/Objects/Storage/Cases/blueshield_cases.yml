@@ -21,7 +21,7 @@
     sprite: _Stories/Objects/Storage/Cases/trappiste_case.rsi
   - type: Storage
     grid:
-    - 0,0,7,2
+    - 0,0,4,2
     maxItemSize: Large
   - type: StorageFill
     contents:
@@ -55,15 +55,14 @@
     sprite: _Stories/Objects/Storage/Cases/xhihao_case.rsi
   - type: Storage
     grid:
-    - 0,0,9,3
+    - 0,0,5,2
     maxItemSize: Huge
   - type: StorageFill
     contents:
     - id: STWeaponSubmachineGunBogseo
     - id: STAmmoBox585TrappisteIncapacitator
-      amount: 2
     - id: STAmmoBox585Trappiste
-      amount: 1
+      amount: 2
     - id: STMagazine585TrappistePistolEmpty
       amount: 3
 

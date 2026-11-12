@@ -36,7 +36,7 @@
         Blunt: 0.9
         Slash: 0.9
         Piercing: 0.9
-        Heat: 0.8
+        Heat: 0.9
         Caustic: 0.8
 
 - type: entity
@@ -55,5 +55,5 @@
         Blunt: 0.9
         Slash: 0.9
         Piercing: 0.9
-        Heat: 0.8
+        Heat: 0.9
         Caustic: 0.8

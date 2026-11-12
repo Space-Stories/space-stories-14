@@ -41,3 +41,14 @@
     STBlueshieldToken: 1
   categories:
   - STBlueshieldArmamentsCategory
+
+- type: listing
+  id: STListingPistolLightning
+  name: stories-store-listing-blueshield-lightning-name
+  description: stories-store-listing-blueshield-lightning-desc
+  icon: { sprite: _Stories/Objects/Weapons/Guns/Battery/blueshield_gun.rsi, state: icon }
+  productEntity: STWeaponEnergyPistolLightning
+  cost:
+    STBlueshieldToken: 1
+  categories:
+  - STBlueshieldArmamentsCategory

@@ -57,3 +57,13 @@
   components:
   - type: SubdermalImplant
     implantAction: STActionToggleShieldBladeRight
+
+- type: entity
+  parent: DeathRattleImplant
+  id: STDeathRattleImplantCommand
+  name: command death rattle implant
+  description: This implant will inform the command radio channel should the user fall into critical condition or die.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: RattleOnTrigger
+    radioChannel: Command
