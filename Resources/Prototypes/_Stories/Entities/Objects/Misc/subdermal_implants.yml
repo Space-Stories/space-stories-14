@@ -60,10 +60,10 @@
 
 - type: entity
   parent: DeathRattleImplant
-  id: STDeathRattleImplantSecurity
-  name: security death rattle implant
-  description: This implant will inform the security radio channel should the user fall into critical condition or die.
+  id: STDeathRattleImplantCommand
+  name: command death rattle implant
+  description: This implant will inform the command radio channel should the user fall into critical condition or die.
   categories: [ HideSpawnMenu ]
   components:
   - type: RattleOnTrigger
-    radioChannel: Security
+    radioChannel: Command

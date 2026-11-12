@@ -57,8 +57,8 @@
       path: /Audio/_Stories/Weapons/bladeslice.ogg
     damage:
       types:
-        Slash: 16
-        Piercing: 8
+        Slash: 12
+        Piercing: 6
   - type: Tool
     qualities:
     - Slicing

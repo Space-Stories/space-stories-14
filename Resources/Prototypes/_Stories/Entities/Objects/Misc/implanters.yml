@@ -35,9 +35,9 @@
     allowMultipleImplants: true
 
 - type: entity
-  id: STDeathRattleImplanterSecurity
-  name: security death rattle implanter
+  id: STDeathRattleImplanterCommand
+  name: command death rattle implanter
   parent: BaseImplantOnlyImplanter
   components:
   - type: Implanter
-    implant: STDeathRattleImplantSecurity
+    implant: STDeathRattleImplantCommand

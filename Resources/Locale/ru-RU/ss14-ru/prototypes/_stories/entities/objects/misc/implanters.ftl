@@ -6,5 +6,5 @@ ent-STShieldBladeImplanterLeft = имплантер защитного клин�
     .desc = Стерильный имплантер, содержащий кибернетический защитный клинок для левой руки.
 ent-STShieldBladeImplanterRight = имплантер боевого клинка (правая рука)
     .desc = Стерильный имплантер, содержащий кибернетический боевой клинок для правой руки.
-ent-STDeathRattleImplanterSecurity = имплантер "Предсмертный хрип СБ"
+ent-STDeathRattleImplanterCommand = имплантер "Предсмертный хрип командования"
     .desc = { ent-BaseImplantOnlyImplanter.desc }

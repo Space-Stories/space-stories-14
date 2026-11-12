@@ -143,8 +143,6 @@
     fireModes:
     - proto: BulletDisabler
       fireCost: 50
-    - proto: BulletTaser
-      fireCost: 125
     - proto: BulletLaser
       fireCost: 75
   - type: BatteryAmmoProvider
