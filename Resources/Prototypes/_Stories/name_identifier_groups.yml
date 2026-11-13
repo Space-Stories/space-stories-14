@@ -1,0 +1,4 @@
+- type: nameIdentifierGroup
+  id: STFeminineAdjectivePrefix
+  identifierDataset: STFeminineAdjectives
+  prefix: true
