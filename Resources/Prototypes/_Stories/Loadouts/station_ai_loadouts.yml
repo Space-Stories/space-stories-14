@@ -1,0 +1,164 @@
+- type: loadoutGroup
+  id: STLawset
+  name: stories-loadout-group-lawset
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - STLawsetCrewsimov
+  - STLawsetNTDefault
+  - STLawsetCorporate
+  - STLawsetEfficiency
+  - STLawsetCommandment
+  - STLawsetPaladin
+  - STLawsetRobocop
+  - STLawsetNutimov
+#  - STLawsetDrone
+  - STLawsetGameMaster
+#  - STLawsetLiveLetLive
+#  - STLawsetPainter
+#  - STLawsetOverlord
+
+- type: loadout
+  id: STLawsetCrewsimov
+  dummyEntity: AsimovCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: Crewsimov
+
+- type: loadout
+  id: STLawsetNTDefault
+  dummyEntity: NTDefaultCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: NTDefault
+
+- type: loadout
+  id: STLawsetCorporate
+  dummyEntity: CorporateCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: Corporate
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 2h
+
+- type: loadout
+  id: STLawsetEfficiency
+  dummyEntity: StationEfficiencyCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: EfficiencyLawset
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 2h
+
+- type: loadout
+  id: STLawsetCommandment
+  dummyEntity: CommandmentCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: CommandmentsLawset
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 5h
+
+- type: loadout
+  id: STLawsetPaladin
+  dummyEntity: PaladinCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: PaladinLawset
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 5h
+
+- type: loadout
+  id: STLawsetRobocop
+  dummyEntity: RobocopCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: RobocopLawset
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 5h
+
+- type: loadout
+  id: STLawsetNutimov
+  dummyEntity: NutimovCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: NutimovLawset
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 5h
+
+#- type: loadout
+#  id: STLawsetDrone
+#  dummyEntity: NTDefaultCircuitBoard #затычка
+#  effects:
+#  - !type:SiliconLawsetLoadoutEffect
+#    lawset: Drone
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 5h
+
+- type: loadout
+  id: STLawsetGameMaster
+  dummyEntity: GameMasterCircuitBoard
+  effects:
+  - !type:SiliconLawsetLoadoutEffect
+    lawset: GameMasterLawset
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobStationAi
+      time: 10h
+
+#- type: loadout
+#  id: STLawsetLiveLetLive
+#  dummyEntity: LiveLetLiveCircuitBoard
+#  effects:
+#  - !type:SiliconLawsetLoadoutEffect
+#    lawset: LiveLetLiveLaws
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 10h
+
+#- type: loadout
+#  id: STLawsetPainter
+#  dummyEntity: ArtistCircuitBoard
+#  effects:
+#  - !type:SiliconLawsetLoadoutEffect
+#    lawset: PainterLawset
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 10h
+
+#- type: loadout
+#  id: STLawsetOverlord
+#  effects:
+#  - !type:SiliconLawsetLoadoutEffect
+#    lawset: OverlordLawset
+#  - !type:JobRequirementLoadoutEffect
+#    requirement:
+#      !type:RoleTimeRequirement
+#      role: JobStationAi
+#      time: 20h
