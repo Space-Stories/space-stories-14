@@ -37,6 +37,7 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
     private TimeSpan _installStart;
     private TimeSpan _finishStart;
     private bool _hovered;
+    private Vector2? _mouse;
 
     public int PixelScale { get; set; } = 4;
 
@@ -48,6 +49,8 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
         MouseFilter = MouseFilterMode.Stop;
         RectClipContent = true;
     }
+
+    private bool FinishPlaying => _current == 0 && (float)(_timing.RealTime - _finishStart).TotalSeconds < (float)FinishLength().TotalSeconds;
 
     public bool Working => _workDuration > 0f && _workEnd > _timing.CurTime;
 
@@ -76,6 +79,7 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
         _current = current;
         _workEnd = workEnd;
         _workDuration = workDuration;
+        UpdateHover();
         InvalidateMeasure();
     }
 
@@ -96,7 +100,7 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
         DrawState(handle, BackgroundState, seconds, true, Color.White, 0f);
 
         var sinceFinish = (float)(now - _finishStart).TotalSeconds;
-        if (_current == 0 && sinceFinish < (float)FinishLength().TotalSeconds)
+        if (FinishPlaying)
         {
             DrawState(handle, FinishState, sinceFinish, false, Color.White, 0f);
             return;
@@ -152,7 +156,13 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
     {
         base.MouseMove(args);
 
-        _hovered = HitsZone(args.RelativePosition);
+        _mouse = args.RelativePosition;
+        UpdateHover();
+    }
+
+    private void UpdateHover()
+    {
+        _hovered = _mouse is { } mouse && HitsZone(mouse);
         DefaultCursorShape = _hovered ? CursorShape.Hand : CursorShape.Arrow;
     }
 
@@ -160,7 +170,8 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
     {
         base.MouseExited();
 
-        _hovered = false;
+        _mouse = null;
+        UpdateHover();
     }
 
     private TimeSpan FinishLength()
@@ -188,7 +199,7 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
 
     private bool HitsZone(Vector2 relative)
     {
-        if (_rsi == null || _current < 0 || _current >= _steps.Count || Working)
+        if (_rsi == null || _current < 0 || _current >= _steps.Count || Working || FinishPlaying)
             return false;
 
         var pos = (Vector2i)(relative / PixelScale);

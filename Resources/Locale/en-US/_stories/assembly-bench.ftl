@@ -7,8 +7,8 @@ stories-assembly-bench-amount = { $item } x{ $amount }
 stories-assembly-bench-finished = Assembly complete!
 stories-assembly-bench-examine = Current step: [color=yellow]{ $step }[/color]. Needed: { $item }.
 stories-assembly-bench-progress = Step { $step } of { $total }
-stories-assembly-bench-hint-insert = Take { $item } in your active hand and click the highlighted area.
-stories-assembly-bench-hint-tool = Tool in active hand: { $item }. Click the highlighted area and hold still.
+stories-assembly-bench-hint-insert = In your active hand: { $item }. Click the highlighted area.
+stories-assembly-bench-hint-tool = In your active hand: { $item }. Click the highlighted area and hold still.
 stories-assembly-bench-hint-working = Work in progress. Hold still.
 stories-assembly-bench-flavor-left = Correctional labor program
 stories-assembly-bench-flavor-right = v1.2

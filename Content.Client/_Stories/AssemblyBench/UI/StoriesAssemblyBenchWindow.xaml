@@ -8,12 +8,12 @@
             <BoxContainer Orientation="Horizontal" Margin="10 8 10 8" SeparationOverride="10">
                 <BoxContainer Orientation="Vertical" SeparationOverride="6">
                     <PanelContainer Name="CanvasPanel">
-                        <ui:StoriesAssemblyBenchCanvas Name="Canvas" Margin="2" />
+                        <ui:StoriesAssemblyBenchCanvas Name="Canvas" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </PanelContainer>
                     <PanelContainer Name="HintPanel">
                         <BoxContainer Orientation="Vertical" Margin="8 4">
                             <Label Name="StepLabel" StyleClasses="LabelHeading" HorizontalAlignment="Center" />
-                            <Label Name="HintLabel" HorizontalAlignment="Center" />
+                            <RichTextLabel Name="HintLabel" HorizontalAlignment="Center" MaxWidth="560" MinHeight="32" />
                         </BoxContainer>
                     </PanelContainer>
                 </BoxContainer>
