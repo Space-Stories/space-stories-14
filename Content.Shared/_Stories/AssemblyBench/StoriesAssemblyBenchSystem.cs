@@ -177,7 +177,7 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
             return;
 
         var result = Spawn(ent.Comp.Result, Transform(ent).Coordinates);
-        _hands.PickupOrDrop(user, result);
+        _hands.PickupOrDrop(user, result, dropNear: true);
     }
 
     private void UpdateUi(Entity<AssemblyBenchComponent> ent)

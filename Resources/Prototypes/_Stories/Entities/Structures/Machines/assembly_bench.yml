@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseMachine
+  parent: [ BaseMachine, BaseMachineDestructible ]
   id: STPdaAssembler
   name: PDA assembly bench
   description: A workbench for assembling PDAs by hand. Honest labor for those who have plenty of time.

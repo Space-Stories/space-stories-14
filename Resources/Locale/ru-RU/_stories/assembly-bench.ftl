@@ -7,8 +7,8 @@ stories-assembly-bench-amount = { $item } ×{ $amount }
 stories-assembly-bench-finished = Сборка завершена!
 stories-assembly-bench-examine = Текущий этап: [color=yellow]{ $step }[/color]. Нужно: { $item }.
 stories-assembly-bench-progress = Этап { $step } из { $total }
-stories-assembly-bench-hint-insert = В активной руке: { $item }. Нажмите на подсвеченную область.
-stories-assembly-bench-hint-tool = В активной руке: { $item }. Нажмите на подсвеченную область и не двигайтесь.
+stories-assembly-bench-hint-insert = Возьмите в руку: { $item } — и нажмите на подсвеченную область.
+stories-assembly-bench-hint-tool = Возьмите в руку: { $item } — нажмите на подсвеченную область и не двигайтесь.
 stories-assembly-bench-hint-working = Идёт работа. Не двигайтесь.
 stories-assembly-bench-flavor-left = Исправительно-трудовая программа
 stories-assembly-bench-flavor-right = v1.2

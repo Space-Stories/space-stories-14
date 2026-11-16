@@ -166,6 +166,14 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
         DefaultCursorShape = _hovered ? CursorShape.Hand : CursorShape.Arrow;
     }
 
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        if (_mouse != null)
+            UpdateHover();
+    }
+
     protected override void MouseExited()
     {
         base.MouseExited();
