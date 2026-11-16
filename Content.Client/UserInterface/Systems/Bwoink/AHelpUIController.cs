@@ -111,12 +111,7 @@ public sealed partial class AHelpUIController: UIController, IOnSystemChanged<Bw
         DebugTools.Assert(_bwoinkSystem != null);
         _bwoinkSystem!.OnBwoinkTextMessageRecieved -= ReceivedBwoink;
         _bwoinkSystem = null;
-
-        // Stories-AHelpReconnect-Start
-        UIHelper?.Close();
-        UIHelper?.Dispose();
-        UIHelper = null;
-        // Stories-AHelpReconnect-End
+        StoriesResetAdminControl(); // Stories-AHelpReconnect
     }
 
     private void SetAHelpPressed(bool pressed)
