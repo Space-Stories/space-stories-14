@@ -1,0 +1,29 @@
+- type: entity
+  parent: BaseItem
+  id: STCapacitorStockPart
+  name: capacitor
+  description: A basic capacitor used in the assembly of electronic devices.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: capacitor
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - STCapacitor
+
+- type: entity
+  parent: BaseItem
+  id: STMatterBinStockPart
+  name: matter bin
+  description: A container for storing compressed matter, used in the assembly of electronic devices.
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: matter_bin
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - STMatterBin

@@ -1,0 +1,9 @@
+- type: latheRecipe
+  parent: BaseStockPartRecipe
+  id: STCapacitorStockPart
+  result: STCapacitorStockPart
+
+- type: latheRecipe
+  parent: BaseStockPartRecipe
+  id: STMatterBinStockPart
+  result: STMatterBinStockPart

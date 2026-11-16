@@ -190,3 +190,9 @@
   - type: Icon
     sprite: _Stories/Objects/Devices/pda.rsi
     state: pda-blueshield
+
+- type: entity
+  parent: BasePDA
+  id: STAssembledPDA
+  name: assembled PDA
+  description: A freshly assembled PDA with no owner yet. Smells of solder and honest labor.

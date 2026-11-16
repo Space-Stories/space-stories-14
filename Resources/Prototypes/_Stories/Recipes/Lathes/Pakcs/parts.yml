@@ -1,0 +1,5 @@
+- type: latheRecipePack
+  id: STPartsStatic
+  recipes:
+  - STCapacitorStockPart
+  - STMatterBinStockPart

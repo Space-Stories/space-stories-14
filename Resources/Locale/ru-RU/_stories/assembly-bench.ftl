@@ -1,0 +1,26 @@
+stories-assembly-bench-window-title = Сборочный станок
+stories-assembly-bench-steps-heading = Технологическая карта
+stories-assembly-bench-product = Изделие
+stories-assembly-bench-completed = Собрано на станке: { $count }
+stories-assembly-bench-need = Нужно: { $item }
+stories-assembly-bench-amount = { $item } ×{ $amount }
+stories-assembly-bench-finished = Сборка завершена!
+stories-assembly-bench-examine = Текущий этап: [color=yellow]{ $step }[/color]. Нужно: { $item }.
+stories-assembly-bench-progress = Этап { $step } из { $total }
+stories-assembly-bench-hint-insert = Возьмите в активную руку: { $item } — и нажмите на подсвеченную область.
+stories-assembly-bench-hint-tool = Инструмент в активной руке: { $item }. Нажмите на подсвеченную область и не двигайтесь.
+stories-assembly-bench-hint-working = Идёт работа. Не двигайтесь.
+stories-assembly-bench-flavor-left = Исправительно-трудовая программа
+stories-assembly-bench-flavor-right = v1.2
+stories-assembly-bench-step-back-case = Задняя крышка
+stories-assembly-bench-step-frame = Несущая рама
+stories-assembly-bench-step-frame-screws = Крепление рамы
+stories-assembly-bench-step-capacitor = Конденсатор
+stories-assembly-bench-step-matter-bin = Ёмкость материи
+stories-assembly-bench-step-wiring = Проводка
+stories-assembly-bench-step-wiring-trim = Обрезка проводов
+stories-assembly-bench-step-solder = Пайка контактов
+stories-assembly-bench-step-front-case = Лицевая панель
+stories-assembly-bench-step-screen = Экран
+stories-assembly-bench-step-pen = Ручка
+stories-assembly-bench-step-close = Сборка корпуса
