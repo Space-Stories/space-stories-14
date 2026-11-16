@@ -1,0 +1,8 @@
+<PanelContainer xmlns="https://spacestation14.io">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="8 0 6 0">
+        <Label Name="Mark" MinWidth="14" VerticalAlignment="Center" />
+        <EntityPrototypeView Name="Icon" SetSize="32 32" VerticalAlignment="Center" />
+        <Label Name="NameLabel" HorizontalExpand="True" VerticalAlignment="Center" ClipText="True" />
+        <Label Name="RequirementLabel" VerticalAlignment="Center" />
+    </BoxContainer>
+</PanelContainer>

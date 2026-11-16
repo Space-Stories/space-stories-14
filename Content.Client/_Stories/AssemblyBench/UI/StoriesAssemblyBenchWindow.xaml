@@ -1,0 +1,50 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:ui="clr-namespace:Content.Client._Stories.AssemblyBench.UI"
+                      Title="{Loc 'stories-assembly-bench-window-title'}"
+                      Resizable="False">
+    <PanelContainer Name="Backdrop">
+        <BoxContainer Orientation="Vertical">
+            <BoxContainer Orientation="Horizontal" Margin="10 8 10 8" SeparationOverride="10">
+                <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                    <PanelContainer Name="CanvasPanel">
+                        <ui:StoriesAssemblyBenchCanvas Name="Canvas" Margin="2" />
+                    </PanelContainer>
+                    <PanelContainer Name="HintPanel">
+                        <BoxContainer Orientation="Vertical" Margin="8 4">
+                            <Label Name="StepLabel" StyleClasses="LabelHeading" HorizontalAlignment="Center" />
+                            <Label Name="HintLabel" HorizontalAlignment="Center" />
+                        </BoxContainer>
+                    </PanelContainer>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" MinWidth="340" SeparationOverride="6">
+                    <PanelContainer Name="ProductPanel">
+                        <BoxContainer Orientation="Horizontal" Margin="8 4" SeparationOverride="8">
+                            <EntityPrototypeView Name="ProductView" Scale="2 2" SetSize="64 64" VerticalAlignment="Center" />
+                            <BoxContainer Orientation="Vertical" VerticalAlignment="Center" HorizontalExpand="True">
+                                <Label Text="{Loc 'stories-assembly-bench-product'}" StyleClasses="LabelSubText" />
+                                <Label Name="ProductLabel" StyleClasses="LabelHeading" />
+                                <Label Name="CompletedLabel" />
+                            </BoxContainer>
+                        </BoxContainer>
+                    </PanelContainer>
+                    <Label Text="{Loc 'stories-assembly-bench-steps-heading'}" StyleClasses="LabelHeading" />
+                    <BoxContainer Name="StepList" Orientation="Vertical" SeparationOverride="2" />
+                </BoxContainer>
+            </BoxContainer>
+            <ProgressBar Name="Progress" MinValue="0" MaxValue="1" Value="0" Page="0" MinHeight="22" Margin="10 0 10 8">
+                <Label Name="ProgressLabel" Margin="6 0" />
+            </ProgressBar>
+            <BoxContainer Orientation="Vertical">
+                <PanelContainer StyleClasses="LowDivider" />
+                <BoxContainer Orientation="Horizontal" Margin="10 2 5 0" VerticalAlignment="Bottom">
+                    <Label Text="{Loc 'stories-assembly-bench-flavor-left'}" StyleClasses="WindowFooterText" />
+                    <Label Text="{Loc 'stories-assembly-bench-flavor-right'}" StyleClasses="WindowFooterText"
+                           HorizontalAlignment="Right" HorizontalExpand="True" Margin="0 0 5 0" />
+                    <TextureRect StyleClasses="NTLogoDark" Stretch="KeepAspectCentered"
+                                 VerticalAlignment="Center" HorizontalAlignment="Right" SetSize="19 19" />
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>
