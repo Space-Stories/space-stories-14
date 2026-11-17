@@ -579,7 +579,7 @@ public sealed partial class StoriesBlackjackSystem
     {
         hand.State = BlackjackHandState.Bust;
         Say(ent, "say-bust", ("name", seat.Name));
-        ent.Comp.Face = BlackjackFace.Sad;
+        ent.Comp.Face = BlackjackFace.Happy;
     }
 
     private void StartDealer(Entity<BlackjackTableComponent> ent)
@@ -697,7 +697,7 @@ public sealed partial class StoriesBlackjackSystem
 
         comp.ActiveSeat = -1;
         comp.Phase = BlackjackPhase.Payout;
-        comp.Face = anyWin ? BlackjackFace.Happy : anySettled && !anyPush ? BlackjackFace.Sad : BlackjackFace.Neutral;
+        comp.Face = anyWin ? BlackjackFace.Sad : anySettled && !anyPush ? BlackjackFace.Happy : BlackjackFace.Neutral;
         if (anyWin)
             _audio.PlayPvs(comp.WinSound, ent);
 
