@@ -4,9 +4,8 @@ namespace Content.Server._Stories.Blackjack;
 
 public sealed partial class StoriesBlackjackSystem
 {
-    private void OnSit(EntityUid uid, BlackjackTableComponent comp, BlackjackSitMessage args)
+    private void OnSit(Entity<BlackjackTableComponent> ent, ref BlackjackSitMessage args)
     {
-        var ent = new Entity<BlackjackTableComponent>(uid, comp);
         var actor = args.Actor;
         if (HasComp<BlackjackPlayerComponent>(actor))
         {
@@ -40,18 +39,12 @@ public sealed partial class StoriesBlackjackSystem
         Refresh(ent);
     }
 
-    private void OnReady(EntityUid uid, BlackjackTableComponent comp, BlackjackReadyMessage args)
+    private void OnReady(Entity<BlackjackTableComponent> ent, ref BlackjackReadyMessage args)
     {
-        var ent = new Entity<BlackjackTableComponent>(uid, comp);
         if (ent.Comp.Phase != BlackjackPhase.Lobby || !TryGetSeat(ent.Comp, args.Actor, out var index))
             return;
 
-        var anyReady = false;
-        foreach (var other in ent.Comp.Seats)
-        {
-            anyReady |= other.Occupied && other.Ready;
-        }
-
+        var anyReady = AnyReady(ent.Comp);
         ent.Comp.Seats[index].Ready = args.Ready;
         if (args.Ready && !anyReady)
         {
@@ -65,16 +58,14 @@ public sealed partial class StoriesBlackjackSystem
             Refresh(ent);
     }
 
-    private void OnSpectate(EntityUid uid, BlackjackTableComponent comp, BlackjackSpectateMessage args)
+    private void OnSpectate(Entity<BlackjackTableComponent> ent, ref BlackjackSpectateMessage args)
     {
-        var ent = new Entity<BlackjackTableComponent>(uid, comp);
         if (ent.Comp.Phase != BlackjackPhase.Idle && ent.Comp.Phase != BlackjackPhase.Lobby)
             _ui.OpenUi(ent.Owner, BlackjackUiKey.Game, args.Actor);
     }
 
-    private void OnLeave(EntityUid uid, BlackjackTableComponent comp, BlackjackLeaveMessage args)
+    private void OnLeave(Entity<BlackjackTableComponent> ent, ref BlackjackLeaveMessage args)
     {
-        var ent = new Entity<BlackjackTableComponent>(uid, comp);
         if (TryGetSeat(ent.Comp, args.Actor, out var index))
             Leave(ent, index);
         else
@@ -113,15 +104,20 @@ public sealed partial class StoriesBlackjackSystem
         return any;
     }
 
-    private void UpdateLobby(Entity<BlackjackTableComponent> ent, TimeSpan now)
+    private bool AnyReady(BlackjackTableComponent comp)
     {
-        var anyReady = false;
-        foreach (var seat in ent.Comp.Seats)
+        foreach (var seat in comp.Seats)
         {
-            anyReady |= seat.Occupied && seat.Ready;
+            if (seat.Occupied && seat.Ready)
+                return true;
         }
 
-        if (!anyReady || now < ent.Comp.PhaseEnd)
+        return false;
+    }
+
+    private void UpdateLobby(Entity<BlackjackTableComponent> ent, TimeSpan now)
+    {
+        if (!AllReady(ent.Comp) && !(AnyReady(ent.Comp) && now >= ent.Comp.PhaseEnd))
             return;
 
         for (var i = 0; i < ent.Comp.Seats.Count; i++)
@@ -156,7 +152,7 @@ public sealed partial class StoriesBlackjackSystem
         var seat = ent.Comp.Seats[index];
         if (seat.Occupied)
         {
-            EntityUid? player = TryGetEntity(seat.Player, out var uid) ? uid : null;
+            TryGetEntity(seat.Player, out var player);
             var amount = seat.Chips + seat.Bet;
             var spot = ent.Comp.SeatSpots[index];
             ent.Comp.Seats[index] = new BlackjackSeat();

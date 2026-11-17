@@ -43,13 +43,9 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
             subs.Event<BlackjackSitMessage>(OnSit);
             subs.Event<BlackjackReadyMessage>(OnReady);
             subs.Event<BlackjackSpectateMessage>(OnSpectate);
-            subs.Event<BlackjackLeaveMessage>(OnLeave);
         });
 
-        Subs.BuiEvents<BlackjackTableComponent>(BlackjackUiKey.Game, subs =>
-        {
-            subs.Event<BlackjackLeaveMessage>(OnLeave);
-        });
+        SubscribeLocalEvent<BlackjackTableComponent, BlackjackLeaveMessage>(OnLeave);
     }
 
     public override void Update(float frameTime)
@@ -84,10 +80,12 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
     private void OnShutdown(Entity<BlackjackTableComponent> ent, ref ComponentShutdown args)
     {
-        foreach (var seat in ent.Comp.Seats)
+        for (var i = 0; i < ent.Comp.Seats.Count; i++)
         {
-            if (TryGetEntity(seat.Player, out var player))
+            if (TryGetEntity(ent.Comp.Seats[i].Player, out var player))
                 RemComp<BlackjackPlayerComponent>(player.Value);
+
+            ent.Comp.Seats[i] = new BlackjackSeat();
         }
     }
 
@@ -114,7 +112,7 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
     private void OnUiClosed(Entity<BlackjackTableComponent> ent, ref BoundUIClosedEvent args)
     {
-        if (!TryGetSeat(ent.Comp, args.Actor, out var index))
+        if (TerminatingOrDeleted(ent) || !TryGetSeat(ent.Comp, args.Actor, out var index))
             return;
 
         if (args.UiKey is BlackjackUiKey.Lobby && ent.Comp.Phase == BlackjackPhase.Lobby)
@@ -159,7 +157,7 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
         if (amount <= 0)
             return;
 
-        var chips = Spawn(ent.Comp.ChipsProto, new EntityCoordinates(ent, fallbackSpot));
+        var chips = SpawnAtPosition(ent.Comp.ChipsProto, new EntityCoordinates(ent, fallbackSpot));
         _stack.SetCount((chips, null), amount);
     }
 }
