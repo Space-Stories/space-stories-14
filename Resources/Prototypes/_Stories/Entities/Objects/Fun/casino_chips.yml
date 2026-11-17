@@ -1,0 +1,41 @@
+- type: entity
+  parent: BaseItem
+  id: STCasinoChips
+  name: casino chips
+  description: Colored chips for the gaming tables.
+  components:
+  - type: Item
+    shape:
+    - 0,0,1,0
+    storedOffset: 0,-2
+  - type: Stack
+    stackType: STCasinoChip
+    count: 1
+    baseLayer: base
+    layerStates:
+    - chips-1
+    - chips-5
+    - chips-25
+    - chips-100
+    - chips-500
+    - chips-2500
+    layerFunction: Threshold
+  - type: StackLayerThreshold
+    thresholds: [5, 25, 100, 500, 2500]
+  - type: Sprite
+    sprite: _Stories/Objects/Fun/casino_chips.rsi
+    layers:
+    - state: chips-1
+      map: ["base"]
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        density: 30
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.2,0.25,0.1"
+        mask:
+        - ItemMask
+  - type: Appearance

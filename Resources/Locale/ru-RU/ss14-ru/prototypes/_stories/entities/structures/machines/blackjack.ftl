@@ -1,0 +1,8 @@
+ent-STBlackjackTable = робот-крупье
+    .desc = Вежливый робот-крупье со своим столом для блэкджека.
+    .suffix = Станция
+ent-STBlackjackTablePrison = робот-крупье
+    .desc = Вежливый робот-крупье со своим столом для блэкджека.
+    .suffix = КТ
+ent-STBlackjackTableCard = игральная карта
+ent-STBlackjackChipPile = фишки казино
