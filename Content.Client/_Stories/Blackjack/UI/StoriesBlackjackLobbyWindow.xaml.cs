@@ -19,7 +19,7 @@ namespace Content.Client._Stories.Blackjack.UI;
 public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
 {
     private const string TableState = "table";
-    private const int SeatCount = 5;
+    public const int SeatCount = 5;
     private const int SeatHalf = 36;
     private const int SeatTop = 28;
     private const int AmountDigits = 9;
@@ -33,23 +33,17 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         new(340, 120),
     ];
 
-    [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IResourceCache _cache = default!;
 
     private readonly StoriesBlackjackSeatControl[] _seats = new StoriesBlackjackSeatControl[SeatCount];
-    private ResPath _tableSprite;
-    private bool _seated;
-    private bool _ready;
-    private bool _anyReady;
-    private bool _lobby;
-    private TimeSpan _phaseEnd;
-    private int _timerSeconds = int.MinValue;
 
     public event Action<int>? OnSit;
-    public event Action<bool>? OnReady;
+    public event Action? OnReady;
     public event Action? OnLeave;
     public event Action? OnSpectate;
-    public event Action<BlackjackCashierOp, int>? OnCashier;
+    public event Action<BlackjackCashierOp>? OnCashier;
+    public event Action? OnAmountChanged;
+    public event Action? OnFrame;
 
     public StoriesBlackjackLobbyWindow()
     {
@@ -80,155 +74,94 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
             LayoutContainer.SetPosition(seat, SeatCentres[i] - new Vector2(SeatHalf, SeatTop));
         }
 
-        ReadyButton.OnPressed += _ => OnReady?.Invoke(!_ready);
+        ReadyButton.OnPressed += _ => OnReady?.Invoke();
         LeaveButton.OnPressed += _ => OnLeave?.Invoke();
         SpectateButton.OnPressed += _ => OnSpectate?.Invoke();
 
         AmountEdit.IsValid = text => text.Length <= AmountDigits && text.All(char.IsAsciiDigit);
-        AmountEdit.OnTextChanged += _ => UpdateCashierButtons();
-        BuyCashButton.OnPressed += _ => SendCashier(BlackjackCashierOp.BuyCash);
-        BuyCardButton.OnPressed += _ => SendCashier(BlackjackCashierOp.BuyCard);
-        DepositButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.Deposit, 0);
-        CashOutButton.OnPressed += _ => SendCashier(BlackjackCashierOp.CashOut);
-        CashOutCardButton.OnPressed += _ => SendCashier(BlackjackCashierOp.CashOutCard);
-        WithdrawButton.OnPressed += _ => SendCashier(BlackjackCashierOp.Withdraw);
+        AmountEdit.OnTextChanged += _ => OnAmountChanged?.Invoke();
+        BuyCashButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.BuyCash);
+        BuyCardButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.BuyCard);
+        DepositButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.Deposit);
+        CashOutButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.CashOut);
+        CashOutCardButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.CashOutCard);
+        WithdrawButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.Withdraw);
     }
 
-    public void UpdateState(BlackjackTableComponent table, NetEntity me)
+    public void SetTitle(string text)
     {
-        Title = Loc.GetString(table.Wager ? "stories-blackjack-window-title" : "stories-blackjack-window-title-prison");
-
-        if (_tableSprite != table.LobbySprite)
-        {
-            _tableSprite = table.LobbySprite;
-            var rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / table.LobbySprite).RSI;
-            TableImage.Texture = rsi.TryGetState(TableState, out var state) ? state.GetFrame(RsiDirection.South, 0) : null;
-        }
-
-        var seats = table.Seats;
-        var mine = -1;
-        for (var i = 0; i < seats.Count; i++)
-        {
-            if (me.IsValid() && seats[i].Player == me)
-                mine = i;
-        }
-
-        _seated = mine >= 0;
-        _ready = _seated && seats[mine].Ready;
-        _lobby = table.Phase == BlackjackPhase.Lobby;
-        _anyReady = false;
-        var waiting = new List<string>();
-        var occupied = 0;
-
-        for (var i = 0; i < SeatCount; i++)
-        {
-            var control = _seats[i];
-            if (i >= seats.Count)
-            {
-                control.Visible = false;
-                continue;
-            }
-
-            control.Visible = true;
-            var seat = seats[i];
-            if (seat.Occupied)
-            {
-                occupied++;
-                _anyReady |= seat.Ready;
-                if (!seat.Ready)
-                    waiting.Add(seat.Name);
-
-                control.SetTaken(seat, i == mine, _lobby);
-            }
-            else
-            {
-                control.SetFree(!_seated);
-            }
-        }
-
-        _phaseEnd = table.PhaseEnd;
-        UpdateStatus(table.Phase, occupied, waiting);
-        UpdateButtons(table.Phase, mine >= 0 && seats[mine].Leaving);
-        UpdateRules(table);
-        UpdateCashier(table, mine);
-        UpdateWins(table);
+        Title = text;
     }
 
-    protected override void FrameUpdate(FrameEventArgs args)
+    public void SetTableSprite(ResPath sprite)
     {
-        base.FrameUpdate(args);
-
-        UpdateTimer();
+        var rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / sprite).RSI;
+        TableImage.Texture = rsi.TryGetState(TableState, out var state) ? state.GetFrame(RsiDirection.South, 0) : null;
     }
 
-    private void UpdateStatus(BlackjackPhase phase, int occupied, List<string> waiting)
+    public void SetSeatHidden(int index)
     {
-        string text;
-        if (phase == BlackjackPhase.Idle || occupied == 0)
-            text = Loc.GetString("stories-blackjack-status-idle");
-        else if (phase == BlackjackPhase.Lobby && waiting.Count > 0)
-            text = Loc.GetString("stories-blackjack-status-waiting", ("names", string.Join(", ", waiting)));
-        else
-            text = Loc.GetString("stories-blackjack-status-playing");
+        _seats[index].Visible = false;
+    }
 
+    public void SetSeatFree(int index, bool clickable)
+    {
+        var control = _seats[index];
+        control.Visible = true;
+        control.SetFree(clickable);
+    }
+
+    public void SetSeatTaken(int index, BlackjackSeat seat, bool mine, bool showLamp)
+    {
+        var control = _seats[index];
+        control.Visible = true;
+        control.SetTaken(seat, mine, showLamp);
+    }
+
+    public void SetStatus(string text)
+    {
         StatusLabel.SetMessage(FormattedMessage.FromUnformatted(text), defaultColor: StoriesBlackjackPalette.Text);
-        _timerSeconds = int.MinValue;
-        UpdateTimer();
     }
 
-    private void UpdateTimer()
+    public void SetTimerVisible(bool visible)
     {
-        var show = _lobby && _anyReady;
-        var seconds = show ? Math.Max(0, (int) Math.Ceiling((_phaseEnd - _timing.CurTime).TotalSeconds)) : -1;
-        TimerLabel.Visible = show;
-        if (seconds == _timerSeconds)
-            return;
-
-        _timerSeconds = seconds;
-        if (show)
-            TimerLabel.Text = Loc.GetString("stories-blackjack-status-starting", ("seconds", seconds));
+        TimerLabel.Visible = visible;
     }
 
-    private void UpdateButtons(BlackjackPhase phase, bool leaving)
+    public void SetTimerText(string text)
     {
-        ReadyButton.Visible = _seated && phase == BlackjackPhase.Lobby;
-        ReadyButton.Text = Loc.GetString(_ready ? "stories-blackjack-not-ready" : "stories-blackjack-ready");
-        LeaveButton.Visible = _seated;
-        LeaveButton.Disabled = leaving;
-        SpectateButton.Visible = !_seated && phase != BlackjackPhase.Idle && phase != BlackjackPhase.Lobby;
+        TimerLabel.Text = text;
     }
 
-    private void UpdateRules(BlackjackTableComponent table)
+    public void SetButtons(bool readyVisible, string readyText, bool leaveVisible, bool leaveDisabled, bool spectateVisible)
     {
-        var body = Loc.GetString(table.Wager ? "stories-blackjack-rules-body" : "stories-blackjack-rules-body-prison");
+        ReadyButton.Visible = readyVisible;
+        ReadyButton.Text = readyText;
+        LeaveButton.Visible = leaveVisible;
+        LeaveButton.Disabled = leaveDisabled;
+        SpectateButton.Visible = spectateVisible;
+    }
+
+    public void SetRules(string body, bool limitsVisible, string limits)
+    {
         RulesBody.SetMessage(FormattedMessage.FromUnformatted(body), defaultColor: StoriesBlackjackPalette.Text);
-
-        LimitsLabel.Visible = table.Wager;
-        if (!table.Wager)
-            return;
-
-        LimitsLabel.Text = table.MaxBet > 0
-            ? Loc.GetString("stories-blackjack-rules-limits", ("min", table.MinBet), ("max", table.MaxBet))
-            : Loc.GetString("stories-blackjack-rules-limits-min", ("min", table.MinBet));
+        LimitsLabel.Visible = limitsVisible;
+        if (limitsVisible)
+            LimitsLabel.Text = limits;
     }
 
-    private void UpdateCashier(BlackjackTableComponent table, int mine)
+    public void SetCashier(bool visible, string stackText)
     {
-        CashierPanel.Visible = table.Wager;
-        WinsPanel.Visible = !table.Wager;
-        if (!table.Wager)
-            return;
-
-        var chips = mine >= 0 ? table.Seats[mine].Chips : 0;
-        StackLabel.Text = Loc.GetString("stories-blackjack-cashier-stack", ("amount", chips));
-        UpdateCashierButtons();
+        CashierPanel.Visible = visible;
+        if (visible)
+            StackLabel.Text = stackText;
     }
 
-    private void UpdateCashierButtons()
+    public void SetCashierEnabled(bool seated, bool amountValid)
     {
-        var disabled = !_seated || !TryGetAmount(out _);
-        AmountEdit.Editable = _seated;
-        DepositButton.Disabled = !_seated;
+        var disabled = !seated || !amountValid;
+        AmountEdit.Editable = seated;
+        DepositButton.Disabled = !seated;
         BuyCashButton.Disabled = disabled;
         BuyCardButton.Disabled = disabled;
         CashOutButton.Disabled = disabled;
@@ -236,13 +169,19 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         WithdrawButton.Disabled = disabled;
     }
 
-    private void UpdateWins(BlackjackTableComponent table)
+    public string GetAmountText()
     {
-        if (table.Wager)
+        return AmountEdit.Text;
+    }
+
+    public void SetWins(bool visible, IReadOnlyList<KeyValuePair<string, int>> rows)
+    {
+        WinsPanel.Visible = visible;
+        if (!visible)
             return;
 
         WinsList.RemoveAllChildren();
-        if (table.Wins.Count == 0)
+        if (rows.Count == 0)
         {
             WinsList.AddChild(new Label
             {
@@ -252,8 +191,6 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
             return;
         }
 
-        var rows = new List<KeyValuePair<string, int>>(table.Wins);
-        rows.Sort((a, b) => b.Value.CompareTo(a.Value));
         foreach (var (name, count) in rows)
         {
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
@@ -273,15 +210,11 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         }
     }
 
-    private void SendCashier(BlackjackCashierOp op)
+    protected override void FrameUpdate(FrameEventArgs args)
     {
-        if (TryGetAmount(out var amount))
-            OnCashier?.Invoke(op, amount);
-    }
+        base.FrameUpdate(args);
 
-    private bool TryGetAmount(out int amount)
-    {
-        return int.TryParse(AmountEdit.Text, out amount) && amount >= 1;
+        OnFrame?.Invoke();
     }
 
     private static StyleBoxFlat MakePanel(Color accent)

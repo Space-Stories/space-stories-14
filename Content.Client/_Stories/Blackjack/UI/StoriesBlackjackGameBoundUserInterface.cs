@@ -21,7 +21,7 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface(EntityUid own
     [ViewVariables]
     private StoriesBlackjackPanel? _panel;
 
-    private readonly record struct Snapshot(BlackjackPhase Phase, int ActiveSeat, int ActiveHand, int Cards, BlackjackHandState State, int Bet, int Chips);
+    private readonly record struct Snapshot(BlackjackPhase Phase, int ActiveSeat, int ActiveHand, int Cards, BlackjackHandState State, int Bet, int Chips, int Hands);
 
     private int _mySeat = -1;
     private int _betSum;

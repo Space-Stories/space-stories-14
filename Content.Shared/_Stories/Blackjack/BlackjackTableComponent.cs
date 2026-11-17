@@ -23,7 +23,7 @@ public sealed partial class BlackjackTableComponent : Component
     public int MaxChips = 1000000;
 
     [DataField]
-    public float ReturnRange = 3f;
+    public float ReturnRange = 4.5f;
 
     [DataField]
     public int Decks = 4;

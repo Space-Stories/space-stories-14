@@ -155,7 +155,7 @@ public sealed partial class StoriesBlackjackSystem
 
     private bool IsAbsent(BlackjackSeat seat)
     {
-        return seat.Leaving || !TryGetEntity(seat.Player, out _);
+        return seat.Leaving || !TryGetEntity(seat.Player, out var player) || _mobState.IsDead(player.Value);
     }
 
     private void BeginRound(Entity<BlackjackTableComponent> ent)
@@ -653,12 +653,15 @@ public sealed partial class StoriesBlackjackSystem
     {
         var comp = ent.Comp;
         var anyWin = false;
+        var anyPush = false;
+        var anySettled = false;
         for (var i = 0; i < comp.Seats.Count; i++)
         {
             var seat = comp.Seats[i];
             if (!seat.Occupied || seat.Hands.Count == 0)
                 continue;
 
+            anySettled = true;
             var best = BlackjackResult.None;
             foreach (var hand in seat.Hands)
             {
@@ -677,10 +680,13 @@ public sealed partial class StoriesBlackjackSystem
                 case BlackjackResult.Win:
                 case BlackjackResult.Blackjack:
                     anyWin = true;
-                    comp.Wins[seat.Name] = comp.Wins.GetValueOrDefault(seat.Name) + 1;
+                    if (!comp.Wager)
+                        comp.Wins[seat.Name] = comp.Wins.GetValueOrDefault(seat.Name) + 1;
+
                     Say(ent, "say-win", ("name", seat.Name));
                     break;
                 case BlackjackResult.Push:
+                    anyPush = true;
                     Say(ent, "say-push", ("name", seat.Name));
                     break;
                 default:
@@ -691,7 +697,7 @@ public sealed partial class StoriesBlackjackSystem
 
         comp.ActiveSeat = -1;
         comp.Phase = BlackjackPhase.Payout;
-        comp.Face = anyWin ? BlackjackFace.Sad : BlackjackFace.Happy;
+        comp.Face = anyWin ? BlackjackFace.Happy : anySettled && !anyPush ? BlackjackFace.Sad : BlackjackFace.Neutral;
         if (anyWin)
             _audio.PlayPvs(comp.WinSound, ent);
 

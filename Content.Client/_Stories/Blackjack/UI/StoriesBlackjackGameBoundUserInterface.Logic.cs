@@ -75,7 +75,8 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface
             hand?.Cards.Count ?? -1,
             hand?.State ?? default,
             seat?.Bet ?? 0,
-            seat?.Chips ?? 0);
+            seat?.Chips ?? 0,
+            seat?.Hands.Count ?? 0);
     }
 
     private void Lock()

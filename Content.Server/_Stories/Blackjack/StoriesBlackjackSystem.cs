@@ -11,6 +11,7 @@ using Content.Shared.Database;
 using Content.Shared.Destructible;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Robust.Server.GameObjects;
@@ -29,6 +30,7 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private MobStateSystem _mobState = default!;
     [Dependency] private ServerInventorySystem _inventory = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
@@ -73,6 +75,12 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
         var query = EntityQueryEnumerator<ActiveBlackjackTableComponent, BlackjackTableComponent>();
         while (query.MoveNext(out var uid, out var active, out var table))
         {
+            if (table.Phase == BlackjackPhase.Idle)
+            {
+                RemCompDeferred<ActiveBlackjackTableComponent>(uid);
+                continue;
+            }
+
             var ent = new Entity<BlackjackTableComponent>(uid, table);
             if (table.Pose != BlackjackPose.Idle && now >= active.PoseEnd)
             {
@@ -213,8 +221,10 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
         var chips = SpawnAtPosition(ent.Comp.ChipsProto, new EntityCoordinates(ent, fallbackSpot));
         _stack.SetCount((chips, null), amount);
-        var who = player is { } other ? ToPrettyString(other) : "никого рядом";
-        _adminLogger.Add(LogType.Action, LogImpact.Low, $"{who} не получил {amount} фишек в руки, они лежат на полу у стола {ToPrettyString(ent):target}");
+        if (player is { } other)
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(other):player} не получил {amount} фишек в руки, они лежат на полу у стола {ToPrettyString(ent):target}");
+        else
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"Никто не получил {amount} фишек в руки, они лежат на полу у стола {ToPrettyString(ent):target}");
     }
 
     private bool CanReturnTo(Entity<BlackjackTableComponent> ent, EntityUid user)

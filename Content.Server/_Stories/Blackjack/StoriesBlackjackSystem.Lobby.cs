@@ -60,6 +60,12 @@ public sealed partial class StoriesBlackjackSystem
 
     private void OnSpectate(Entity<BlackjackTableComponent> ent, ref BlackjackSpectateMessage args)
     {
+        if (TryComp<BlackjackPlayerComponent>(args.Actor, out var player) && player.Table != ent.Owner)
+        {
+            _popup.PopupEntity(Loc.GetString("stories-blackjack-popup-already-seated"), args.Actor, args.Actor);
+            return;
+        }
+
         if (ent.Comp.Phase != BlackjackPhase.Idle && ent.Comp.Phase != BlackjackPhase.Lobby)
             _ui.OpenUi(ent.Owner, BlackjackUiKey.Game, args.Actor);
     }
@@ -183,6 +189,9 @@ public sealed partial class StoriesBlackjackSystem
 
     private void ResetTable(Entity<BlackjackTableComponent> ent)
     {
+        if (ent.Comp.Phase is not (BlackjackPhase.Idle or BlackjackPhase.Lobby))
+            Say(ent, "say-end");
+
         ent.Comp.Phase = BlackjackPhase.Idle;
         ent.Comp.ActiveSeat = -1;
         ent.Comp.DealerHand.Clear();
@@ -193,7 +202,6 @@ public sealed partial class StoriesBlackjackSystem
         var shoe = Comp<BlackjackShoeComponent>(ent);
         shoe.Hole = null;
         shoe.Cards.Clear();
-        RemCompDeferred<ActiveBlackjackTableComponent>(ent);
         _ui.CloseUi(ent.Owner, BlackjackUiKey.Game);
     }
 }
