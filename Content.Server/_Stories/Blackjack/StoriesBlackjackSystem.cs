@@ -1,5 +1,8 @@
 using System.Numerics;
+using Content.Server._Stories.Economy;
 using Content.Server.Chat.Systems;
+using Content.Server.Inventory;
+using Content.Server.Station.Systems;
 using Content.Shared._Stories.Blackjack;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Chat;
@@ -18,15 +21,18 @@ namespace Content.Server._Stories.Blackjack;
 
 public sealed partial class StoriesBlackjackSystem : EntitySystem
 {
+    [Dependency] private BankSystem _bank = default!;
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private ServerInventorySystem _inventory = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private SharedTransformSystem _transform = default!;
+    [Dependency] private StationSystem _station = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
 
     public override void Initialize()
@@ -43,6 +49,7 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
             subs.Event<BlackjackSitMessage>(OnSit);
             subs.Event<BlackjackReadyMessage>(OnReady);
             subs.Event<BlackjackSpectateMessage>(OnSpectate);
+            subs.Event<BlackjackCashierMessage>(OnCashier);
         });
 
         Subs.BuiEvents<BlackjackTableComponent>(BlackjackUiKey.Game, subs =>
@@ -193,6 +200,9 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
     private void GiveChips(Entity<BlackjackTableComponent> ent, EntityUid? player, int amount, Vector2 fallbackSpot)
     {
         if (amount <= 0)
+            return;
+
+        if (player is { } user && !TerminatingOrDeleted(user) && TryGive(user, ent.Comp.ChipsProto, ent.Comp.ChipStack, amount))
             return;
 
         var chips = SpawnAtPosition(ent.Comp.ChipsProto, new EntityCoordinates(ent, fallbackSpot));

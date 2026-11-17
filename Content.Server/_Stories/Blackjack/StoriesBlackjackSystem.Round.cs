@@ -50,7 +50,7 @@ public sealed partial class StoriesBlackjackSystem
         var amount = seat.Bet;
         foreach (var hand in seat.Hands)
         {
-            if (hand.Result == BlackjackResult.None)
+            if (hand.Result == BlackjackResult.None && hand.State != BlackjackHandState.Bust)
                 amount += hand.Bet;
         }
 
