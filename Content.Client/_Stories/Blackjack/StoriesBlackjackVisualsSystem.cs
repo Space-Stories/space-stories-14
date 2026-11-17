@@ -37,7 +37,14 @@ public sealed partial class StoriesBlackjackVisualsSystem : EntitySystem
             Log.Error($"Failed to update blackjack table visuals for {ToPrettyString(ent)}: {e}");
         }
 
-        TableStateChanged?.Invoke(ent.Owner);
+        try
+        {
+            TableStateChanged?.Invoke(ent.Owner);
+        }
+        catch (Exception e)
+        {
+            Log.Error($"Blackjack table state subscriber failed for {ToPrettyString(ent)}: {e}");
+        }
     }
 
     private void OnCardStartup(Entity<BlackjackTableCardComponent> ent, ref ComponentStartup args)
@@ -96,7 +103,7 @@ public sealed partial class StoriesBlackjackVisualsSystem : EntitySystem
             _ => "face-neutral",
         });
 
-        for (var i = 0; i < 5; i++)
+        for (var i = 0; i < comp.SeatSpots.Count; i++)
         {
             var visible = comp.Phase == BlackjackPhase.Turns && comp.ActiveSeat == i;
             if (_sprite.LayerMapTryGet(target, $"lamp{i}", out var index, false))
@@ -134,12 +141,7 @@ public sealed partial class StoriesBlackjackVisualsSystem : EntitySystem
 
     private void SetState(Entity<SpriteComponent?> sprite, string key, string state)
     {
-        if (!_sprite.TryGetLayer(sprite, key, out var layer, false))
-            return;
-
-        if (layer.State == state)
-            return;
-
-        _sprite.LayerSetRsiState(sprite, key, state);
+        if (_sprite.TryGetLayer(sprite, key, out var layer, false))
+            _sprite.LayerSetRsiState(layer, state);
     }
 }
