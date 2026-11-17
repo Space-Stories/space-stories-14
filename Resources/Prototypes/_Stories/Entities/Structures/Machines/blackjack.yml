@@ -164,7 +164,7 @@
   id: STBlackjackTablePrison
   name: robot croupier
   suffix: Prison
-  description: A polite robot croupier with its own blackjack table.
+  description: A polite robot croupier with its own blackjack table. Played without stakes.
   components:
   - type: Sprite
     sprite: _Stories/Structures/Machines/Blackjack/dealer_prison.rsi

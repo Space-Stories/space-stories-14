@@ -17,7 +17,8 @@ namespace Content.Client._Stories.Blackjack.UI;
 [GenerateTypedNameReferences]
 public sealed partial class StoriesBlackjackSeatControl : Control
 {
-    private const int NameLength = 12;
+    private const int NameLength = 9;
+    private const int NameLimit = 10;
     private const int FrameSize = 56;
     private const int FrameOffset = 8;
     private const int AvatarOffset = 14;
@@ -57,6 +58,7 @@ public sealed partial class StoriesBlackjackSeatControl : Control
         LayoutContainer.SetPosition(Caption, new Vector2(0, CaptionTop));
 
         Avatar.OverrideDirection = Direction.South;
+        Avatar.WorldRotation = Angle.Zero;
         Highlight.PanelOverride = new StyleBoxFlat
         {
             BackgroundColor = Color.Transparent,
@@ -192,6 +194,6 @@ public sealed partial class StoriesBlackjackSeatControl : Control
 
     private static string Truncate(string name)
     {
-        return name.Length <= NameLength ? name : name[..NameLength];
+        return name.Length <= NameLimit ? name : name[..NameLength] + "…";
     }
 }

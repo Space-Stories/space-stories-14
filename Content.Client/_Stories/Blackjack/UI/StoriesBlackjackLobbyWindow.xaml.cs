@@ -43,7 +43,7 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
     private bool _anyReady;
     private bool _lobby;
     private TimeSpan _phaseEnd;
-    private int _timerSeconds = -1;
+    private int _timerSeconds = int.MinValue;
 
     public event Action<int>? OnSit;
     public event Action<bool>? OnReady;
@@ -65,8 +65,7 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         RulesTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
         CashierTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
         WinsTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
-        StatusLabel.FontColorOverride = StoriesBlackjackPalette.Text;
-        TimerLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
+                TimerLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
         LimitsLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
         StackLabel.FontColorOverride = StoriesBlackjackPalette.Text;
 
@@ -164,14 +163,16 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
 
     private void UpdateStatus(BlackjackPhase phase, int occupied, List<string> waiting)
     {
+        string text;
         if (phase == BlackjackPhase.Idle || occupied == 0)
-            StatusLabel.Text = Loc.GetString("stories-blackjack-status-idle");
+            text = Loc.GetString("stories-blackjack-status-idle");
         else if (phase == BlackjackPhase.Lobby && waiting.Count > 0)
-            StatusLabel.Text = Loc.GetString("stories-blackjack-status-waiting", ("names", string.Join(", ", waiting)));
+            text = Loc.GetString("stories-blackjack-status-waiting", ("names", string.Join(", ", waiting)));
         else
-            StatusLabel.Text = Loc.GetString("stories-blackjack-status-playing");
+            text = Loc.GetString("stories-blackjack-status-playing");
 
-        _timerSeconds = -1;
+        StatusLabel.SetMessage(FormattedMessage.FromUnformatted(text), defaultColor: StoriesBlackjackPalette.Text);
+        _timerSeconds = int.MinValue;
         UpdateTimer();
     }
 
@@ -179,11 +180,11 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
     {
         var show = _lobby && _anyReady;
         var seconds = show ? Math.Max(0, (int) Math.Ceiling((_phaseEnd - _timing.CurTime).TotalSeconds)) : -1;
+        TimerLabel.Visible = show;
         if (seconds == _timerSeconds)
             return;
 
         _timerSeconds = seconds;
-        TimerLabel.Visible = show;
         if (show)
             TimerLabel.Text = Loc.GetString("stories-blackjack-status-starting", ("seconds", seconds));
     }

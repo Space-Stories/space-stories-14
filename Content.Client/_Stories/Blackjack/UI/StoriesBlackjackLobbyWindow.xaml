@@ -7,14 +7,14 @@
             <BoxContainer Orientation="Horizontal" Margin="10 8 10 8" SeparationOverride="10">
                 <BoxContainer Orientation="Vertical" SeparationOverride="6" MinWidth="420">
                     <PanelContainer Name="TablePanel">
-                        <LayoutContainer Name="TableLayout" Margin="6" MinSize="384 260">
+                        <LayoutContainer Name="TableLayout" Margin="6" MinSize="384 260" HorizontalAlignment="Center">
                             <TextureRect Name="TableImage" SetSize="384 224" Stretch="KeepCentered" TextureScale="2 2" />
                         </LayoutContainer>
                     </PanelContainer>
                     <PanelContainer Name="StatusPanel">
                         <BoxContainer Orientation="Vertical" Margin="8 4">
-                            <Label Name="StatusLabel" HorizontalAlignment="Center" />
-                            <Label Name="TimerLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center" />
+                            <RichTextLabel Name="StatusLabel" HorizontalAlignment="Center" MaxWidth="400" />
+                            <Label Name="TimerLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center" Visible="False" />
                         </BoxContainer>
                     </PanelContainer>
                     <BoxContainer Orientation="Horizontal" SeparationOverride="6">
@@ -39,14 +39,20 @@
                                 <Label Text="{Loc 'stories-blackjack-cashier-amount'}" VerticalAlignment="Center" />
                                 <LineEdit Name="AmountEdit" Text="50" HorizontalExpand="True" />
                             </BoxContainer>
-                            <GridContainer Columns="2" HSeparationOverride="4" VSeparationOverride="4">
-                                <Button Name="BuyCashButton" Text="{Loc 'stories-blackjack-cashier-buy-cash'}" HorizontalExpand="True" ClipText="True" />
-                                <Button Name="BuyCardButton" Text="{Loc 'stories-blackjack-cashier-buy-card'}" HorizontalExpand="True" ClipText="True" />
-                                <Button Name="DepositButton" Text="{Loc 'stories-blackjack-cashier-deposit'}" HorizontalExpand="True" ClipText="True" />
-                                <Button Name="WithdrawButton" Text="{Loc 'stories-blackjack-cashier-withdraw'}" HorizontalExpand="True" ClipText="True" />
-                                <Button Name="CashOutButton" Text="{Loc 'stories-blackjack-cashier-cashout'}" HorizontalExpand="True" ClipText="True" />
-                                <Button Name="CashOutCardButton" Text="{Loc 'stories-blackjack-cashier-cashout-card'}" HorizontalExpand="True" ClipText="True" />
-                            </GridContainer>
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                                <Label Text="{Loc 'stories-blackjack-cashier-buy-label'}" MinWidth="90" VerticalAlignment="Center" />
+                                <Button Name="BuyCashButton" Text="{Loc 'stories-blackjack-cashier-buy-cash'}" HorizontalExpand="True" />
+                                <Button Name="BuyCardButton" Text="{Loc 'stories-blackjack-cashier-buy-card'}" HorizontalExpand="True" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                                <Label Text="{Loc 'stories-blackjack-cashier-cashout-label'}" MinWidth="90" VerticalAlignment="Center" />
+                                <Button Name="CashOutButton" Text="{Loc 'stories-blackjack-cashier-cashout'}" HorizontalExpand="True" />
+                                <Button Name="CashOutCardButton" Text="{Loc 'stories-blackjack-cashier-cashout-card'}" HorizontalExpand="True" />
+                            </BoxContainer>
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                                <Button Name="DepositButton" Text="{Loc 'stories-blackjack-cashier-deposit'}" HorizontalExpand="True" />
+                                <Button Name="WithdrawButton" Text="{Loc 'stories-blackjack-cashier-withdraw'}" HorizontalExpand="True" />
+                            </BoxContainer>
                         </BoxContainer>
                     </PanelContainer>
                     <PanelContainer Name="WinsPanel" Visible="False" VerticalExpand="True">
