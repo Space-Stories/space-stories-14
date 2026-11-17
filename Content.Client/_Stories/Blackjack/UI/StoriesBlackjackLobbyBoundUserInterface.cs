@@ -56,12 +56,7 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
         }
 
         var seats = table.Seats;
-        var mine = -1;
-        for (var i = 0; i < seats.Count; i++)
-        {
-            if (me.IsValid() && seats[i].Player == me)
-                mine = i;
-        }
+        var mine = BlackjackRules.FindSeat(seats, me);
 
         _seated = mine >= 0;
         _ready = _seated && seats[mine].Ready;

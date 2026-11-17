@@ -9,20 +9,6 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface
         return EntMan.TryGetComponent(Owner, out BlackjackTableComponent? table) ? table : null;
     }
 
-    private static int FindSeat(BlackjackTableComponent table, NetEntity me)
-    {
-        if (!me.IsValid())
-            return -1;
-
-        for (var i = 0; i < table.Seats.Count; i++)
-        {
-            if (table.Seats[i].Occupied && table.Seats[i].Player == me)
-                return i;
-        }
-
-        return -1;
-    }
-
     private BlackjackSeat? MySeat()
     {
         if (Table() is not { } table || _mySeat < 0 || _mySeat >= table.Seats.Count)

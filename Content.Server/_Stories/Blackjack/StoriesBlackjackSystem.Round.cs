@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using Content.Shared._Stories.Blackjack;
 using Content.Shared.Chat;
@@ -7,6 +8,8 @@ namespace Content.Server._Stories.Blackjack;
 
 public sealed partial class StoriesBlackjackSystem
 {
+    private static readonly char[] VoiceSeparators = [',', ';', '.', '!'];
+
     private void OnBet(Entity<BlackjackTableComponent> ent, ref BlackjackBetMessage args)
     {
         var comp = ent.Comp;
@@ -76,15 +79,15 @@ public sealed partial class StoriesBlackjackSystem
         if (args.Message.Contains('?'))
             return;
 
-        var text = NormalizeVoice(args.Message);
+        var clauses = args.Message.Split(VoiceSeparators).Select(NormalizeVoice).ToArray();
         var tableEnt = new Entity<BlackjackTableComponent>(comp.Table, table);
-        if (HasVoicePhrase(text, "stories-blackjack-voice-stand"))
+        if (HasVoicePhrase(clauses, "stories-blackjack-voice-stand", false))
             TryAction(tableEnt, index, BlackjackAction.Stand);
-        else if (HasVoicePhrase(text, "stories-blackjack-voice-split"))
+        else if (HasVoicePhrase(clauses, "stories-blackjack-voice-split", true))
             TryAction(tableEnt, index, BlackjackAction.Split);
-        else if (HasVoicePhrase(text, "stories-blackjack-voice-double"))
+        else if (HasVoicePhrase(clauses, "stories-blackjack-voice-double", true))
             TryAction(tableEnt, index, BlackjackAction.Double);
-        else if (HasVoicePhrase(text, "stories-blackjack-voice-hit"))
+        else if (HasVoicePhrase(clauses, "stories-blackjack-voice-hit", true))
             TryAction(tableEnt, index, BlackjackAction.Hit);
     }
 
@@ -95,7 +98,7 @@ public sealed partial class StoriesBlackjackSystem
         var last = ' ';
         foreach (var raw in message.ToLowerInvariant())
         {
-            var symbol = raw == 'ё' ? 'е' : raw;
+            var symbol = raw;
             if (!char.IsLetter(symbol))
                 symbol = ' ';
 
@@ -112,12 +115,43 @@ public sealed partial class StoriesBlackjackSystem
         return builder.ToString();
     }
 
-    private bool HasVoicePhrase(string text, string key)
+    private bool HasVoicePhrase(string[] clauses, string key, bool negation)
     {
+        var negations = new HashSet<string>();
+        if (negation)
+        {
+            foreach (var word in Loc.GetString("stories-blackjack-voice-negation").Split(','))
+                negations.Add(word.Trim());
+        }
+
         foreach (var variant in Loc.GetString(key).Split(','))
         {
             var phrase = NormalizeVoice(variant);
-            if (phrase.Length > 1 && text.Contains(phrase))
+            if (phrase.Length <= 1)
+                continue;
+
+            foreach (var text in clauses)
+            {
+                var at = text.IndexOf(phrase, StringComparison.Ordinal);
+                while (at >= 0)
+                {
+                    if (!negation || !IsNegated(text, at, negations))
+                        return true;
+
+                    at = text.IndexOf(phrase, at + 1, StringComparison.Ordinal);
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsNegated(string text, int at, HashSet<string> negations)
+    {
+        var words = text[..at].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        for (var i = Math.Max(0, words.Length - 2); i < words.Length; i++)
+        {
+            if (negations.Contains(words[i]))
                 return true;
         }
 
@@ -201,13 +235,7 @@ public sealed partial class StoriesBlackjackSystem
                 Unseat(ent, i);
         }
 
-        var anySeated = false;
-        foreach (var seat in comp.Seats)
-        {
-            anySeated |= seat.Occupied;
-        }
-
-        if (!anySeated)
+        if (!AnySeated(comp))
         {
             if (comp.Phase != BlackjackPhase.Idle)
                 ResetTable(ent);
@@ -262,11 +290,10 @@ public sealed partial class StoriesBlackjackSystem
         }
 
         var participants = new List<int>();
-        var anySeated = false;
+        var anySeated = AnySeated(comp);
         for (var i = 0; i < comp.Seats.Count; i++)
         {
             var seat = comp.Seats[i];
-            anySeated |= seat.Occupied;
             if (seat.Occupied && (!comp.Wager || seat.Bet > 0))
                 participants.Add(i);
         }
@@ -480,23 +507,23 @@ public sealed partial class StoriesBlackjackSystem
         NextTurn(ent);
     }
 
-    private bool TryAction(Entity<BlackjackTableComponent> ent, int seatIndex, BlackjackAction action)
+    private void TryAction(Entity<BlackjackTableComponent> ent, int seatIndex, BlackjackAction action)
     {
         var comp = ent.Comp;
         if (comp.Phase != BlackjackPhase.Turns || seatIndex != comp.ActiveSeat || seatIndex < 0 || seatIndex >= comp.Seats.Count)
-            return false;
+            return;
 
         if (!TryComp<ActiveBlackjackTableComponent>(ent, out var active) || active.Deals.Count > 0)
-            return false;
+            return;
 
         var seat = comp.Seats[seatIndex];
         if (comp.ActiveHand >= seat.Hands.Count)
-            return false;
+            return;
 
         var handIndex = comp.ActiveHand;
         var hand = seat.Hands[handIndex];
         if (hand.State != BlackjackHandState.Playing)
-            return false;
+            return;
 
         seat.Missed = 0;
         switch (action)
@@ -532,13 +559,13 @@ public sealed partial class StoriesBlackjackSystem
                 if (!BlackjackRules.CanDouble(hand))
                 {
                     Say(ent, "say-cannot-double");
-                    return false;
+                    return;
                 }
 
                 if (comp.Wager && seat.Chips < hand.Bet)
                 {
                     Say(ent, "say-no-funds");
-                    return false;
+                    return;
                 }
 
                 seat.Chips -= hand.Bet;
@@ -556,13 +583,13 @@ public sealed partial class StoriesBlackjackSystem
                 if (!BlackjackRules.CanSplit(seat, hand))
                 {
                     Say(ent, "say-cannot-split");
-                    return false;
+                    return;
                 }
 
                 if (comp.Wager && seat.Chips < hand.Bet)
                 {
                     Say(ent, "say-no-funds");
-                    return false;
+                    return;
                 }
 
                 seat.Chips -= hand.Bet;
@@ -590,7 +617,6 @@ public sealed partial class StoriesBlackjackSystem
         }
 
         Refresh(ent);
-        return true;
     }
 
     private void Bust(Entity<BlackjackTableComponent> ent, BlackjackSeat seat, BlackjackHand hand)
@@ -727,8 +753,8 @@ public sealed partial class StoriesBlackjackSystem
     private void LogPayout(Entity<BlackjackTableComponent> ent, BlackjackSeat seat, int payout)
     {
         if (TryGetEntity(seat.Player, out var player))
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player.Value):player} получил {payout} фишек за столом {ToPrettyString(ent):target}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player.Value):player} won {payout} chips at {ToPrettyString(ent):target}");
         else
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{seat.Name} получил {payout} фишек за столом {ToPrettyString(ent):target}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{seat.Name} won {payout} chips at {ToPrettyString(ent):target}");
     }
 }

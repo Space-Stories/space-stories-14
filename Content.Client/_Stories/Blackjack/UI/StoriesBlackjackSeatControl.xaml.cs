@@ -10,7 +10,6 @@ using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Input;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Timing;
-using Robust.Shared.Utility;
 
 namespace Content.Client._Stories.Blackjack.UI;
 
@@ -26,8 +25,6 @@ public sealed partial class StoriesBlackjackSeatControl : Control
     private const int LampOffset = 44;
     private const int LampTop = -10;
     private const int CaptionTop = 57;
-
-    private static readonly ResPath UiSprite = new("_Stories/Interface/Blackjack/ui.rsi");
 
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IResourceCache _cache = default!;
@@ -48,7 +45,7 @@ public sealed partial class StoriesBlackjackSeatControl : Control
         IoCManager.InjectDependencies(this);
         RobustXamlLoader.Load(this);
 
-        _rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / UiSprite).RSI;
+        _rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / StoriesBlackjackArt.UiSprite).RSI;
         MouseFilter = MouseFilterMode.Pass;
 
         LayoutContainer.SetPosition(Frame, new Vector2(FrameOffset, 0));
@@ -154,7 +151,7 @@ public sealed partial class StoriesBlackjackSeatControl : Control
     private void UpdateFreeFrame()
     {
         var state = _rsi["seat-free"];
-        var frame = FrameAt(state, (float) _timing.RealTime.TotalSeconds);
+        var frame = StoriesBlackjackArt.FrameAt(state, (float) _timing.RealTime.TotalSeconds);
         if (frame == _freeFrame)
             return;
 
@@ -166,29 +163,12 @@ public sealed partial class StoriesBlackjackSeatControl : Control
     private void UpdateLamp()
     {
         var state = _rsi[_lampReady ? "lamp-ready" : "lamp-wait"];
-        var frame = FrameAt(state, (float) _timing.RealTime.TotalSeconds);
+        var frame = StoriesBlackjackArt.FrameAt(state, (float) _timing.RealTime.TotalSeconds);
         if (frame == _lampFrame)
             return;
 
         _lampFrame = frame;
         Lamp.Texture = state.GetFrame(RsiDirection.South, frame);
-    }
-
-    private static int FrameAt(RSI.State state, float time)
-    {
-        if (state.DelayCount <= 1 || state.AnimationLength <= 0f)
-            return 0;
-
-        var position = time % state.AnimationLength;
-        var accumulated = 0f;
-        for (var i = 0; i < state.DelayCount; i++)
-        {
-            accumulated += state.GetDelay(i);
-            if (position < accumulated)
-                return i;
-        }
-
-        return state.DelayCount - 1;
     }
 
     private static string Truncate(string name)

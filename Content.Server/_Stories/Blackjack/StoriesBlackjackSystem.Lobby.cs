@@ -95,6 +95,17 @@ public sealed partial class StoriesBlackjackSystem
         }
     }
 
+    private static bool AnySeated(BlackjackTableComponent comp)
+    {
+        foreach (var seat in comp.Seats)
+        {
+            if (seat.Occupied)
+                return true;
+        }
+
+        return false;
+    }
+
     private bool AllReady(BlackjackTableComponent comp)
     {
         var any = false;
@@ -175,13 +186,7 @@ public sealed partial class StoriesBlackjackSystem
                 _ui.CloseUi(ent.Owner, BlackjackUiKey.Game, player.Value);
         }
 
-        var anySeated = false;
-        foreach (var other in ent.Comp.Seats)
-        {
-            anySeated |= other.Occupied;
-        }
-
-        if (!anySeated)
+        if (!AnySeated(ent.Comp))
             ResetTable(ent);
 
         Refresh(ent);

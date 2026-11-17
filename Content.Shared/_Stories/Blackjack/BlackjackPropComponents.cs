@@ -2,7 +2,7 @@ using Robust.Shared.GameStates;
 
 namespace Content.Shared._Stories.Blackjack;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), Access(typeof(SharedStoriesBlackjackSystem))]
 public sealed partial class BlackjackTableCardComponent : Component
 {
     [AutoNetworkedField]
@@ -15,7 +15,7 @@ public sealed partial class BlackjackTableCardComponent : Component
     public int Order;
 }
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), Access(typeof(SharedStoriesBlackjackSystem))]
 public sealed partial class BlackjackChipPileComponent : Component
 {
     [AutoNetworkedField]

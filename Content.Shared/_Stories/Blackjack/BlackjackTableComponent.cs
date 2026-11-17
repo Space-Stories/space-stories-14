@@ -7,7 +7,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Shared._Stories.Blackjack;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), AutoGenerateComponentPause]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true), AutoGenerateComponentPause, Access(typeof(SharedStoriesBlackjackSystem))]
 public sealed partial class BlackjackTableComponent : Component
 {
     [DataField]

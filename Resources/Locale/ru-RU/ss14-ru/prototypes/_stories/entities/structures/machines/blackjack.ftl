@@ -5,4 +5,6 @@ ent-STBlackjackTablePrison = робот-крупье
     .desc = Вежливый робот-крупье со своим столом для блэкджека. Играют без ставок.
     .suffix = КТ
 ent-STBlackjackTableCard = игральная карта
+    .desc = { "" }
 ent-STBlackjackChipPile = фишки казино
+    .desc = { "" }

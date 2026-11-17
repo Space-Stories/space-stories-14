@@ -10,7 +10,7 @@
             <Button Name="CollapseButton" MinWidth="130" />
             <Button Name="LeaveButton" MinWidth="210" />
         </BoxContainer>
-        <Label Name="TurnLabel" HorizontalAlignment="Center" Visible="False" />
+        <Label Name="TurnLabel" Text="{Loc 'stories-blackjack-panel-your-turn'}" HorizontalAlignment="Center" Visible="False" />
         <BoxContainer Name="Body" Orientation="Vertical" SeparationOverride="4">
             <ui:StoriesBlackjackCanvas Name="Canvas" HorizontalAlignment="Center" />
             <ProgressBar Name="TimerBar" MinHeight="6" MaxHeight="6" MinValue="0" MaxValue="1" />
@@ -26,20 +26,20 @@
                     <Label Name="SumLabel" StyleClasses="LabelHeading" MinWidth="150" HorizontalExpand="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     <BoxContainer Orientation="Vertical" SeparationOverride="4">
                         <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                            <Button Name="PlaceButton" MinWidth="120" MinHeight="32" />
-                            <Button Name="RepeatButton" MinWidth="120" MinHeight="32" />
+                            <Button Name="PlaceButton" Text="{Loc 'stories-blackjack-panel-place'}" MinWidth="120" MinHeight="32" />
+                            <Button Name="RepeatButton" Text="{Loc 'stories-blackjack-panel-repeat'}" MinWidth="120" MinHeight="32" />
                         </BoxContainer>
                         <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                            <Button Name="AllInButton" MinWidth="120" MinHeight="32" />
-                            <Button Name="ClearButton" MinWidth="120" MinHeight="32" />
+                            <Button Name="AllInButton" Text="{Loc 'stories-blackjack-panel-allin'}" MinWidth="120" MinHeight="32" />
+                            <Button Name="ClearButton" Text="{Loc 'stories-blackjack-panel-clear'}" MinWidth="120" MinHeight="32" />
                         </BoxContainer>
                     </BoxContainer>
                 </BoxContainer>
                 <BoxContainer Name="ActionBox" Orientation="Horizontal" SeparationOverride="6" HorizontalAlignment="Center" VerticalAlignment="Center" Visible="False">
-                    <Button Name="HitButton" MinWidth="110" MinHeight="40" />
-                    <Button Name="StandButton" MinWidth="110" MinHeight="40" />
-                    <Button Name="DoubleButton" MinWidth="120" MinHeight="40" />
-                    <Button Name="SplitButton" MinWidth="130" MinHeight="40" />
+                    <Button Name="HitButton" Text="{Loc 'stories-blackjack-panel-hit'}" MinWidth="110" MinHeight="40" />
+                    <Button Name="StandButton" Text="{Loc 'stories-blackjack-panel-stand'}" MinWidth="110" MinHeight="40" />
+                    <Button Name="DoubleButton" Text="{Loc 'stories-blackjack-panel-double'}" MinWidth="120" MinHeight="40" />
+                    <Button Name="SplitButton" Text="{Loc 'stories-blackjack-panel-split'}" MinWidth="130" MinHeight="40" />
                 </BoxContainer>
             </BoxContainer>
         </BoxContainer>

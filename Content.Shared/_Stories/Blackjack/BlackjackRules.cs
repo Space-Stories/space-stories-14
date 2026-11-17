@@ -5,6 +5,20 @@ public static class BlackjackRules
     public const int Target = 21;
     public const int DealerStand = 17;
 
+    public static int FindSeat(IReadOnlyList<BlackjackSeat> seats, NetEntity player)
+    {
+        if (!player.IsValid())
+            return -1;
+
+        for (var i = 0; i < seats.Count; i++)
+        {
+            if (seats[i].Player == player)
+                return i;
+        }
+
+        return -1;
+    }
+
     public static int CardValue(BlackjackCard card)
     {
         return card.Rank >= 10 ? 10 : card.Rank;

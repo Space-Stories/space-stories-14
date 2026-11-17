@@ -8,15 +8,12 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Graphics.RSI;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Timing;
-using Robust.Shared.Utility;
 
 namespace Content.Client._Stories.Blackjack.UI;
 
 [GenerateTypedNameReferences]
 public sealed partial class StoriesBlackjackPanel : PanelContainer
 {
-    private static readonly ResPath UiSprite = new("_Stories/Interface/Blackjack/ui.rsi");
-
     [Dependency] private IResourceCache _cache = default!;
 
     private readonly StyleBoxFlat _barNormal = new(StoriesBlackjackPalette.Gold);
@@ -54,26 +51,17 @@ public sealed partial class StoriesBlackjackPanel : PanelContainer
         TimerBar.ForegroundStyleBoxOverride = _barNormal;
         TimerBar.Modulate = Color.Transparent;
 
-        var rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / UiSprite).RSI;
-        Chip5.TextureNormal = rsi["chip-5"].GetFrame(RsiDirection.South, 0);
-        Chip25.TextureNormal = rsi["chip-25"].GetFrame(RsiDirection.South, 0);
-        Chip100.TextureNormal = rsi["chip-100"].GetFrame(RsiDirection.South, 0);
-        Chip500.TextureNormal = rsi["chip-500"].GetFrame(RsiDirection.South, 0);
+        var rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / StoriesBlackjackArt.UiSprite).RSI;
+        Chip5.TextureNormal = rsi[$"chip-{StoriesBlackjackArt.ChipValues[0]}"].GetFrame(RsiDirection.South, 0);
+        Chip25.TextureNormal = rsi[$"chip-{StoriesBlackjackArt.ChipValues[1]}"].GetFrame(RsiDirection.South, 0);
+        Chip100.TextureNormal = rsi[$"chip-{StoriesBlackjackArt.ChipValues[2]}"].GetFrame(RsiDirection.South, 0);
+        Chip500.TextureNormal = rsi[$"chip-{StoriesBlackjackArt.ChipValues[3]}"].GetFrame(RsiDirection.South, 0);
 
-        PlaceButton.Text = Loc.GetString("stories-blackjack-panel-place");
-        RepeatButton.Text = Loc.GetString("stories-blackjack-panel-repeat");
-        AllInButton.Text = Loc.GetString("stories-blackjack-panel-allin");
-        ClearButton.Text = Loc.GetString("stories-blackjack-panel-clear");
-        HitButton.Text = Loc.GetString("stories-blackjack-panel-hit");
-        StandButton.Text = Loc.GetString("stories-blackjack-panel-stand");
-        DoubleButton.Text = Loc.GetString("stories-blackjack-panel-double");
-        SplitButton.Text = Loc.GetString("stories-blackjack-panel-split");
-        TurnLabel.Text = Loc.GetString("stories-blackjack-panel-your-turn");
 
-        Chip5.OnPressed += _ => OnChip?.Invoke(5);
-        Chip25.OnPressed += _ => OnChip?.Invoke(25);
-        Chip100.OnPressed += _ => OnChip?.Invoke(100);
-        Chip500.OnPressed += _ => OnChip?.Invoke(500);
+        Chip5.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[0]);
+        Chip25.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[1]);
+        Chip100.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[2]);
+        Chip500.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[3]);
         ClearButton.OnPressed += _ => OnClear?.Invoke();
         AllInButton.OnPressed += _ => OnAllIn?.Invoke();
         RepeatButton.OnPressed += _ => OnRepeat?.Invoke();

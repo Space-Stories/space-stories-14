@@ -2,12 +2,13 @@ using System.Numerics;
 using Content.Shared._Stories.Blackjack;
 using Robust.Client.Graphics;
 using Robust.Shared.Graphics.RSI;
-using Robust.Shared.Utility;
 
 namespace Content.Client._Stories.Blackjack.UI;
 
 public sealed partial class StoriesBlackjackCanvas
 {
+    private const float RingSize = 28f;
+
     private readonly List<int> _others = new();
 
     private float Sx(float value)
@@ -173,28 +174,11 @@ public sealed partial class StoriesBlackjackCanvas
         }
     }
 
-    private static int FrameAt(RSI.State state, float time)
-    {
-        if (state.DelayCount <= 1 || state.AnimationLength <= 0f)
-            return 0;
-
-        var position = time % state.AnimationLength;
-        var accumulated = 0f;
-        for (var i = 0; i < state.DelayCount; i++)
-        {
-            accumulated += state.GetDelay(i);
-            if (position < accumulated)
-                return i;
-        }
-
-        return state.DelayCount - 1;
-    }
-
     private void DrawRing(DrawingHandleScreen handle, float x, float centreY, TimeSpan now)
     {
         var state = _ui["turn-ring"];
-        var frame = FrameAt(state, (float) now.TotalSeconds);
-        var size = 28f * _k;
+        var frame = StoriesBlackjackArt.FrameAt(state, (float) now.TotalSeconds);
+        var size = RingSize * _k;
         handle.DrawTextureRect(state.GetFrame(RsiDirection.South, frame), UIBox2.FromDimensions(MathF.Round(x), MathF.Round(centreY - size / 2f), size, size));
     }
 
@@ -382,7 +366,7 @@ public sealed partial class StoriesBlackjackCanvas
             return;
         }
 
-        var count = Math.Max(1, Math.Min(table.Seats.Count, 5));
+        var count = Math.Max(1, table.Seats.Count);
         var each = width / count;
         for (var s = 0; s < table.Seats.Count; s++)
         {
@@ -436,7 +420,7 @@ public sealed partial class StoriesBlackjackCanvas
         var labelY = Sx(PlayerLabelY);
         DrawCentred(handle, _bold, _youLabel, centre, labelY, StoriesBlackjackPalette.Gold);
         if (myTurn)
-            DrawRing(handle, centre - TextWidth(_bold, _youLabel) / 2f - 28f * _k - Sx(4), labelY + _bold.GetLineHeight(_u) / 2f, now);
+            DrawRing(handle, centre - TextWidth(_bold, _youLabel) / 2f - RingSize * _k - Sx(4), labelY + _bold.GetLineHeight(_u) / 2f, now);
 
         var count = seat.Hands.Count;
         if (count == 0 || seatText.Hands.Length < count)
@@ -492,7 +476,7 @@ public sealed partial class StoriesBlackjackCanvas
         if (text.Stake == null)
             return;
 
-        var name = bet >= 500 ? "chip-500" : bet >= 100 ? "chip-100" : bet >= 25 ? "chip-25" : "chip-5";
+        var name = StoriesBlackjackArt.ChipState(bet);
         var size = 56f * _k;
         var y = Sx(PlayerCardsY + 24);
         handle.DrawTextureRect(_ui[name].GetFrame(RsiDirection.South, 0), UIBox2.FromDimensions(MathF.Round(centre - size / 2f), y, size, size));
@@ -504,7 +488,7 @@ public sealed partial class StoriesBlackjackCanvas
         var seat = table.Seats[index];
         var text = _seatTexts[index];
         var active = table.Phase == BlackjackPhase.Turns && table.ActiveSeat == index;
-        var ring = 28f * _k;
+        var ring = RingSize * _k;
         var nameX = x;
         var nameWidth = width;
         if (active)

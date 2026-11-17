@@ -15,7 +15,7 @@ public sealed partial class StoriesBlackjackSystem
         return comp.CardSpots[seat] + shift + comp.CardSteps[seat] * index;
     }
 
-    private EntityUid SpawnCard(Entity<BlackjackTableComponent> ent, int seat, int hand, int index, BlackjackCard card, bool faceUp, bool slide = true)
+    private void SpawnCard(Entity<BlackjackTableComponent> ent, int seat, int hand, int index, BlackjackCard card, bool faceUp, bool slide = true)
     {
         var comp = ent.Comp;
         var target = CardSpot(comp, seat, hand, index);
@@ -37,8 +37,6 @@ public sealed partial class StoriesBlackjackSystem
         props.Cards.Add((uid, seat, hand));
         if (!faceUp)
             props.HoleCard = uid;
-
-        return uid;
     }
 
     private void RevealHole(Entity<BlackjackTableComponent> ent)

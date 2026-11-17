@@ -164,7 +164,7 @@ public sealed partial class StoriesBlackjackSystem
 
         _audio.PlayPvs(comp.ChipSound, ent);
         _popup.PopupEntity(Loc.GetString(buying ? "stories-blackjack-popup-done-buy" : "stories-blackjack-popup-done-cashout", ("amount", amount)), ent, actor);
-        _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(actor):player} выполнил операцию {op} на {amount} фишек за столом {ToPrettyString(ent):target}");
+        _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(actor):player} did {op} for {amount} chips at {ToPrettyString(ent):target}");
         Refresh(ent);
     }
 

@@ -22,7 +22,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._Stories.Blackjack;
 
-public sealed partial class StoriesBlackjackSystem : EntitySystem
+public sealed partial class StoriesBlackjackSystem : SharedStoriesBlackjackSystem
 {
     [Dependency] private ActionBlockerSystem _blocker = default!;
     [Dependency] private BankSystem _bank = default!;
@@ -188,18 +188,8 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
     private bool TryGetSeat(BlackjackTableComponent comp, EntityUid player, out int index)
     {
-        var net = GetNetEntity(player);
-        for (var i = 0; i < comp.Seats.Count; i++)
-        {
-            if (comp.Seats[i].Player == net)
-            {
-                index = i;
-                return true;
-            }
-        }
-
-        index = -1;
-        return false;
+        index = BlackjackRules.FindSeat(comp.Seats, GetNetEntity(player));
+        return index >= 0;
     }
 
     private void Refresh(Entity<BlackjackTableComponent> ent)
@@ -215,16 +205,16 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
         if (player is { } user && CanReturnTo(ent, user) && TryGive(user, ent.Comp.ChipsProto, ent.Comp.ChipStack, amount))
         {
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user):player} получил {amount} фишек в руки при уходе от стола {ToPrettyString(ent):target}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user):player} received {amount} chips in hand on leaving {ToPrettyString(ent):target}");
             return;
         }
 
         var chips = SpawnAtPosition(ent.Comp.ChipsProto, new EntityCoordinates(ent, fallbackSpot));
         _stack.SetCount((chips, null), amount);
         if (player is { } other)
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(other):player} не получил {amount} фишек в руки, они лежат на полу у стола {ToPrettyString(ent):target}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{amount} chips for {ToPrettyString(other):player} were dropped next to {ToPrettyString(ent):target}");
         else
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"Никто не получил {amount} фишек в руки, они лежат на полу у стола {ToPrettyString(ent):target}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{amount} chips were dropped next to {ToPrettyString(ent):target}");
     }
 
     private bool CanReturnTo(Entity<BlackjackTableComponent> ent, EntityUid user)

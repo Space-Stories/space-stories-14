@@ -153,6 +153,9 @@
   components:
   - type: Sprite
     sprite: _Stories/Structures/Machines/Blackjack/dealer.rsi
+  - type: Icon
+    sprite: _Stories/Structures/Machines/Blackjack/dealer.rsi
+    state: icon
   - type: BlackjackTable
     cardSprite: _Stories/Interface/Blackjack/cards.rsi
     lobbySprite: _Stories/Interface/Blackjack/lobby.rsi
@@ -168,6 +171,9 @@
   components:
   - type: Sprite
     sprite: _Stories/Structures/Machines/Blackjack/dealer_prison.rsi
+  - type: Icon
+    sprite: _Stories/Structures/Machines/Blackjack/dealer_prison.rsi
+    state: icon
   - type: BlackjackTable
     wager: false
     cardSprite: _Stories/Interface/Blackjack/cards_prison.rsi

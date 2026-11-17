@@ -66,7 +66,7 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface(EntityUid own
             return;
 
         var me = _player.LocalEntity is { } local ? EntMan.GetNetEntity(local) : NetEntity.Invalid;
-        _mySeat = FindSeat(table, me);
+        _mySeat = BlackjackRules.FindSeat(table.Seats, me);
 
         if (table.Phase != _lastPhase)
         {

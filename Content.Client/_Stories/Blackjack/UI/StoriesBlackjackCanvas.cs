@@ -3,8 +3,6 @@ using Content.Shared._Stories.Blackjack;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
-using Robust.Shared.Graphics.RSI;
-using Robust.Shared.Log;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -40,7 +38,6 @@ public sealed partial class StoriesBlackjackCanvas : Control
     private const int SparkCount = 10;
     private const int NameLimit = 24;
 
-    private static readonly ResPath UiSprite = new("_Stories/Interface/Blackjack/ui.rsi");
     private static readonly Vector2 AppearFrom = new(90f, -70f);
 
     [Dependency] private IGameTiming _timing = default!;
@@ -114,7 +111,7 @@ public sealed partial class StoriesBlackjackCanvas : Control
         IoCManager.InjectDependencies(this);
 
         _sawmill = _logMan.GetSawmill("blackjack.canvas");
-        _ui = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / UiSprite).RSI;
+        _ui = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / StoriesBlackjackArt.UiSprite).RSI;
         _font = new VectorFont(_cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 12);
         _bold = new VectorFont(_cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Bold.ttf"), 12);
         _small = new VectorFont(_cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 10);

@@ -3,7 +3,7 @@ using Content.Shared._Stories.Blackjack;
 
 namespace Content.Server._Stories.Blackjack;
 
-[RegisterComponent]
+[RegisterComponent, Access(typeof(StoriesBlackjackSystem))]
 public sealed partial class BlackjackShoeComponent : Component
 {
     public List<BlackjackCard> Cards = new();
@@ -11,7 +11,7 @@ public sealed partial class BlackjackShoeComponent : Component
     public int Size;
 }
 
-[RegisterComponent, AutoGenerateComponentPause]
+[RegisterComponent, AutoGenerateComponentPause, Access(typeof(StoriesBlackjackSystem))]
 public sealed partial class ActiveBlackjackTableComponent : Component
 {
     [AutoPausedField]
@@ -23,13 +23,13 @@ public sealed partial class ActiveBlackjackTableComponent : Component
     public Queue<BlackjackDeal> Deals = new();
 }
 
-[RegisterComponent]
+[RegisterComponent, Access(typeof(StoriesBlackjackSystem))]
 public sealed partial class BlackjackPlayerComponent : Component
 {
     public EntityUid Table;
 }
 
-[RegisterComponent]
+[RegisterComponent, Access(typeof(StoriesBlackjackSystem))]
 public sealed partial class BlackjackPropsComponent : Component
 {
     public List<(EntityUid Uid, int Seat, int Hand)> Cards = new();
@@ -38,7 +38,7 @@ public sealed partial class BlackjackPropsComponent : Component
     public EntityUid?[] StackPiles = new EntityUid?[0];
 }
 
-[RegisterComponent]
+[RegisterComponent, Access(typeof(StoriesBlackjackSystem))]
 public sealed partial class BlackjackSlideComponent : Component
 {
     public Vector2 Target;
