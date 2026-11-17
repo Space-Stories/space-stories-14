@@ -107,7 +107,7 @@ stories-blackjack-popup-done-cashout = Chips cashed out: { $amount }.
 
 stories-blackjack-voice-negation = no,not,dont,don,t,never
 stories-blackjack-voice-hit = hit,hit me,card,more,another,one more,deal,draw,take,gimme
-stories-blackjack-voice-stand = stand,stay,enough,stop,pass,hold,no more,no card,i am good,i m good,don t
+stories-blackjack-voice-stand = stand,stay,enough,stop,pass,hold,no more,no card,i am good,i m good
 stories-blackjack-voice-double = double,double down,dbl,doubling
 stories-blackjack-voice-split = split,splitting,split them
 

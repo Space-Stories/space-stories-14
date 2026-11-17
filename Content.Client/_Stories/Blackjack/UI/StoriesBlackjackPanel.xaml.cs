@@ -57,7 +57,6 @@ public sealed partial class StoriesBlackjackPanel : PanelContainer
         Chip100.TextureNormal = rsi[$"chip-{StoriesBlackjackArt.ChipValues[2]}"].GetFrame(RsiDirection.South, 0);
         Chip500.TextureNormal = rsi[$"chip-{StoriesBlackjackArt.ChipValues[3]}"].GetFrame(RsiDirection.South, 0);
 
-
         Chip5.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[0]);
         Chip25.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[1]);
         Chip100.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[2]);
