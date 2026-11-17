@@ -20,7 +20,7 @@ public sealed partial class StoriesBlackjackStep : PanelContainer
     private const string CurrentIcon = "arrow-right";
 
     private static readonly StyleBoxFlat PendingBox = MakeBox(StoriesBlackjackPalette.Panel, StoriesBlackjackPalette.StepIdleBorder, 1f);
-    private static readonly StyleBoxFlat DoneBox = MakeBox(StoriesBlackjackPalette.Panel, StoriesBlackjackPalette.StepIdleBorder, 1f);
+    private static readonly StyleBoxFlat DoneBox = MakeBox(StoriesBlackjackPalette.Panel, StoriesBlackjackPalette.StepDoneBorder, 1f);
     private static readonly StyleBoxFlat CurrentBox = MakeBox(StoriesBlackjackPalette.StepCurrentFill, StoriesBlackjackPalette.Gold, 2f);
 
     [Dependency] private IResourceCache _cache = default!;
@@ -46,7 +46,7 @@ public sealed partial class StoriesBlackjackStep : PanelContainer
                 Frame.PanelOverride = DoneBox;
                 TextLabel.FontColorOverride = StoriesBlackjackPalette.Dim;
                 Marker.Texture = StoriesBlackjackArt.Icon(_cache, DoneIcon);
-                Marker.Modulate = Color.White;
+                Marker.Modulate = StoriesBlackjackPalette.IconTint;
                 break;
             default:
                 Frame.PanelOverride = PendingBox;

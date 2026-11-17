@@ -17,6 +17,11 @@ public static class StoriesBlackjackPalette
     public static readonly Color Win = Color.FromHex("#6fcf73");
     public static readonly Color Lose = Color.FromHex("#e5534b");
     public static readonly Color Shade = Color.FromHex("#000000");
+    public static readonly Color StepDoneBorder = Color.FromHex("#2d5a43");
+    public static readonly Color IconTint = Color.White;
+    public static readonly Color IconDisabled = Color.White.WithAlpha(0.4f);
+    public static readonly Color ChipDisabled = Color.White.WithAlpha(0.35f);
+    public static readonly Color ChipPressed = Color.FromHex("#b3b3b3");
     public static readonly Color StepCurrentFill = Color.FromHex("#18140a");
     public static readonly Color StepIdleBorder = Color.FromHex("#232a34");
     public static readonly Color BadgeFill = Color.FromHex("#10151c");

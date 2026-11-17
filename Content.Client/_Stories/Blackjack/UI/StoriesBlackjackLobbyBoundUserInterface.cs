@@ -154,7 +154,7 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
         var current = mine < 0 ? 0 : table.Wager && !HasChips(table, mine) ? 1 : _ready ? int.MaxValue : readyIndex;
         _window.SetStep(0, Loc.GetString("stories-blackjack-step-sit", ("n", 1)), StepState(0, current));
         if (table.Wager)
-            _window.SetStep(1, Loc.GetString("stories-blackjack-step-buy", ("n", 2)), StepState(1, current));
+            _window.SetStep(1, Loc.GetString("stories-blackjack-step-buy", ("n", 2), ("min", table.MinBet)), StepState(1, current));
 
         _window.SetStep(readyIndex, Loc.GetString("stories-blackjack-step-ready", ("n", readyIndex + 1)), StepState(readyIndex, current));
         if (!table.Wager)
@@ -175,6 +175,7 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
             _seated && table.Phase == BlackjackPhase.Lobby,
             Loc.GetString(_ready ? "stories-blackjack-not-ready" : "stories-blackjack-ready"),
             !_ready && (!table.Wager || HasChips(table, mine)),
+            !_ready,
             _seated,
             mine >= 0 && table.Seats[mine].Leaving,
             !_seated && table.Phase != BlackjackPhase.Idle && table.Phase != BlackjackPhase.Lobby);

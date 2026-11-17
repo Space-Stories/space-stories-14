@@ -47,10 +47,10 @@ public sealed partial class StoriesBlackjackPanel : PanelContainer
         TimerBar.ForegroundStyleBoxOverride = _barNormal;
         TimerBar.Modulate = Color.Transparent;
 
-        Chip5.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[0]);
-        Chip25.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[1]);
-        Chip100.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[2]);
-        Chip500.OnPressed += _ => OnChip?.Invoke(StoriesBlackjackArt.ChipValues[3]);
+        Chip5.OnPressed += _ => OnChip?.Invoke(Chip5.Value);
+        Chip25.OnPressed += _ => OnChip?.Invoke(Chip25.Value);
+        Chip100.OnPressed += _ => OnChip?.Invoke(Chip100.Value);
+        Chip500.OnPressed += _ => OnChip?.Invoke(Chip500.Value);
         ClearButton.OnPressed += _ => OnClear?.Invoke();
         AllInButton.OnPressed += _ => OnAllIn?.Invoke();
         RepeatButton.OnPressed += _ => OnRepeat?.Invoke();

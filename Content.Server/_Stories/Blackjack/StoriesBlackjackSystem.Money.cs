@@ -95,7 +95,7 @@ public sealed partial class StoriesBlackjackSystem
                     return;
                 }
 
-                amount = Math.Min(held, comp.MaxChips - seat.Chips);
+                amount = (int) Math.Min(held, comp.MaxChips - seat.Chips);
                 if (amount <= 0)
                 {
                     Fail(ent, actor, "stack-full");
@@ -185,12 +185,20 @@ public sealed partial class StoriesBlackjackSystem
     private void SellHeld(Entity<BlackjackTableComponent> ent, EntityUid actor, BlackjackCashierOp op)
     {
         var comp = ent.Comp;
-        var amount = CountHeld(actor, comp.ChipStack);
-        if (amount <= 0)
+        var held = CountHeld(actor, comp.ChipStack);
+        if (held <= 0)
         {
             Fail(ent, actor, "no-chips");
             return;
         }
+
+        if (held > int.MaxValue)
+        {
+            Fail(ent, actor, "bad-amount");
+            return;
+        }
+
+        var amount = (int) held;
 
         if (op == BlackjackCashierOp.SellHeldCard)
         {
@@ -246,9 +254,9 @@ public sealed partial class StoriesBlackjackSystem
         return stack.Count > 0 && !TerminatingOrDeleted(held) && !EntityManager.IsQueuedForDeletion(held);
     }
 
-    private int CountHeld(EntityUid user, ProtoId<StackPrototype> type)
+    private long CountHeld(EntityUid user, ProtoId<StackPrototype> type)
     {
-        var total = 0;
+        long total = 0;
         foreach (var held in _hands.EnumerateHeld(user))
         {
             if (TryComp<StackComponent>(held, out var stack) && stack.StackTypeId == type && IsLiveStack(held, stack))

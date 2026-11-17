@@ -18,6 +18,7 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
 {
     private const string TableState = "table";
     public const int SeatCount = 5;
+    private const string ReadyIcon = "icon-check";
     private const int SeatHalf = 36;
     private const int SeatTop = 28;
 
@@ -134,11 +135,12 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
             step.SetStep(text, state);
     }
 
-    public void SetButtons(bool readyVisible, string readyText, bool readyPrimary, bool leaveVisible, bool leaveDisabled, bool spectateVisible)
+    public void SetButtons(bool readyVisible, string readyText, bool readyPrimary, bool readyIcon, bool leaveVisible, bool leaveDisabled, bool spectateVisible)
     {
         ReadyButton.Visible = readyVisible;
         ReadyButton.Title = readyText;
         ReadyButton.Variant = readyPrimary ? StoriesBlackjackButtonVariant.Primary : StoriesBlackjackButtonVariant.Quiet;
+        ReadyButton.Icon = readyIcon ? ReadyIcon : null;
         LeaveButton.Visible = leaveVisible;
         LeaveButton.Disabled = leaveDisabled;
         SpectateButton.Visible = spectateVisible;

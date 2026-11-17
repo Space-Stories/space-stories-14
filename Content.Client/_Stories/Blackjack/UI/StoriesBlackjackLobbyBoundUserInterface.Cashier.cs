@@ -64,39 +64,42 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface
         var hasCash = _cash >= amount;
         var fits = valid && amount <= chips;
 
-        var buyHint = string.Empty;
+        var amountHint = string.Empty;
         if (!valid)
-            buyHint = Loc.GetString("stories-blackjack-cashier-hint-amount", ("max", table.MaxChips));
-        else if (!room)
+            amountHint = Loc.GetString("stories-blackjack-cashier-hint-amount", ("max", table.MaxChips));
+        else if (amount >= table.MaxChips)
+            amountHint = Loc.GetString("stories-blackjack-cashier-hint-max");
+
+        var buyHint = string.Empty;
+        if (valid && !room)
             buyHint = Loc.GetString("stories-blackjack-cashier-hint-full");
-        else if (!hasCash)
+        else if (valid && !hasCash)
             buyHint = Loc.GetString("stories-blackjack-cashier-hint-cash");
 
         var cashOutHint = string.Empty;
         if (chips <= 0)
             cashOutHint = Loc.GetString("stories-blackjack-cashier-hint-no-chips");
-        else if (!valid)
-            cashOutHint = Loc.GetString("stories-blackjack-cashier-hint-amount", ("max", table.MaxChips));
-        else if (!fits)
+        else if (valid && !fits)
             cashOutHint = Loc.GetString("stories-blackjack-cashier-hint-few");
 
         return new StoriesBlackjackCashierView(
-            chips.ToString(),
-            _cash.ToString(),
-            _items.ToString(),
-            _items > 0,
-            amount < table.MaxChips,
-            amount > 0,
-            amount > 0,
-            valid && room && hasCash,
-            valid && room,
-            buyHint,
-            fits,
-            fits,
-            chips > 0,
-            cashOutHint,
-            fits,
-            Loc.GetString("stories-blackjack-cashier-held-row", ("count", _items)));
+            Chips: chips.ToString(),
+            Cash: _cash.ToString(),
+            Held: _items.ToString(),
+            ShowHeld: _items > 0,
+            CanChip: amount < table.MaxChips,
+            CanMinus: amount > 0,
+            CanReset: amount > 0,
+            CanBuyCash: valid && room && hasCash,
+            CanBuyCard: valid && room,
+            BuyHint: buyHint,
+            CanCashOut: fits,
+            CanCashOutCard: fits,
+            CanCashOutAll: chips > 0,
+            CashOutHint: cashOutHint,
+            CanWithdraw: fits,
+            BuyPrimary: chips < table.MinBet,
+            AmountHint: amountHint);
     }
 
     private void ReadHeld(BlackjackTableComponent table, out int cash, out int items)
