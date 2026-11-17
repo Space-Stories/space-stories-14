@@ -65,7 +65,7 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         RulesTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
         CashierTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
         WinsTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
-                TimerLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
+        TimerLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
         LimitsLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
         StackLabel.FontColorOverride = StoriesBlackjackPalette.Text;
 

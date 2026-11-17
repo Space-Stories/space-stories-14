@@ -17,8 +17,8 @@ namespace Content.Client._Stories.Blackjack.UI;
 [GenerateTypedNameReferences]
 public sealed partial class StoriesBlackjackSeatControl : Control
 {
-    private const int NameLength = 9;
-    private const int NameLimit = 10;
+    private const int NameLength = 5;
+    private const int NameLimit = 6;
     private const int FrameSize = 56;
     private const int FrameOffset = 8;
     private const int AvatarOffset = 14;
@@ -58,7 +58,6 @@ public sealed partial class StoriesBlackjackSeatControl : Control
         LayoutContainer.SetPosition(Caption, new Vector2(0, CaptionTop));
 
         Avatar.OverrideDirection = Direction.South;
-        Avatar.WorldRotation = Angle.Zero;
         Highlight.PanelOverride = new StyleBoxFlat
         {
             BackgroundColor = Color.Transparent,
@@ -80,7 +79,7 @@ public sealed partial class StoriesBlackjackSeatControl : Control
         Highlight.Visible = false;
         Lamp.Visible = false;
         _lampVisible = false;
-        Caption.Text = clickable ? Loc.GetString("stories-blackjack-seat-sit") : Loc.GetString("stories-blackjack-seat-free");
+        Caption.Text = clickable ? Loc.GetString("stories-blackjack-seat-sit") : string.Empty;
         Caption.FontColorOverride = clickable ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Dim;
         DefaultCursorShape = clickable ? CursorShape.Hand : CursorShape.Arrow;
         UpdateFreeFrame();

@@ -6,6 +6,6 @@
         <SpriteView Name="Avatar" SetSize="44 44" Stretch="None" Scale="1 1" MouseFilter="Ignore" />
         <PanelContainer Name="Highlight" SetSize="56 56" MouseFilter="Ignore" />
         <TextureRect Name="Lamp" SetSize="28 28" Stretch="KeepCentered" MouseFilter="Ignore" />
-        <Label Name="Caption" SetSize="72 16" Align="Center" ClipText="True" MouseFilter="Ignore" />
+        <Label Name="Caption" StyleClasses="LabelSubText" SetSize="72 16" Align="Center" ClipText="True" MouseFilter="Ignore" />
     </LayoutContainer>
 </Control>

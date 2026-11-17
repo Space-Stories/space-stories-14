@@ -1,7 +1,6 @@
 stories-blackjack-window-title = Blackjack
 stories-blackjack-window-title-prison = Blackjack (no wagers)
-stories-blackjack-seat-free = Free
-stories-blackjack-seat-sit = Sit down
+stories-blackjack-seat-sit = Sit
 stories-blackjack-seat-you = You
 stories-blackjack-ready = Ready
 stories-blackjack-not-ready = Not ready
@@ -23,13 +22,14 @@ stories-blackjack-cashier-title = Cashier
 stories-blackjack-cashier-stack = Chips on the table: { $amount }
 stories-blackjack-cashier-buy-label = Buy chips
 stories-blackjack-cashier-cashout-label = Cash out
+stories-blackjack-cashier-hand-label = Chips in hand
 stories-blackjack-cashier-amount = Amount
 stories-blackjack-cashier-buy-cash = With cash
 stories-blackjack-cashier-buy-card = By card
-stories-blackjack-cashier-deposit = Deposit from hand
+stories-blackjack-cashier-deposit = Deposit
 stories-blackjack-cashier-cashout = As cash
 stories-blackjack-cashier-cashout-card = To card
-stories-blackjack-cashier-withdraw = Take to hand
+stories-blackjack-cashier-withdraw = Take
 
 stories-blackjack-panel-dealer = Dealer
 stories-blackjack-panel-you = You

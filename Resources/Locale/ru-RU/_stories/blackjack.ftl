@@ -1,6 +1,5 @@
 stories-blackjack-window-title = Блэкджек
 stories-blackjack-window-title-prison = Блэкджек (без ставок)
-stories-blackjack-seat-free = Свободно
 stories-blackjack-seat-sit = Сесть
 stories-blackjack-seat-you = Вы
 stories-blackjack-ready = Готов
@@ -23,13 +22,14 @@ stories-blackjack-cashier-title = Касса
 stories-blackjack-cashier-stack = Фишки на столе: { $amount }
 stories-blackjack-cashier-buy-label = Купить фишки
 stories-blackjack-cashier-cashout-label = Вывести
+stories-blackjack-cashier-hand-label = Фишки в руке
 stories-blackjack-cashier-amount = Сумма
 stories-blackjack-cashier-buy-cash = За наличные
 stories-blackjack-cashier-buy-card = С карты
-stories-blackjack-cashier-deposit = Внести из руки
+stories-blackjack-cashier-deposit = Внести
 stories-blackjack-cashier-cashout = Наличными
 stories-blackjack-cashier-cashout-card = На карту
-stories-blackjack-cashier-withdraw = Забрать в руку
+stories-blackjack-cashier-withdraw = Забрать
 
 stories-blackjack-panel-dealer = Крупье
 stories-blackjack-panel-you = Вы
