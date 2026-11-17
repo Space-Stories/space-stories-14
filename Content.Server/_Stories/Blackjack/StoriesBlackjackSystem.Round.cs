@@ -24,27 +24,52 @@ public sealed partial class StoriesBlackjackSystem
         _audio.PlayPvs(comp.ChipSound, ent);
         Refresh(ent);
 
-        foreach (var other in comp.Seats)
+        if (AllBet(comp))
+            EndBetting(ent);
+    }
+
+    private bool AllBet(BlackjackTableComponent comp)
+    {
+        var any = false;
+        foreach (var seat in comp.Seats)
         {
-            if (other.Occupied && other.Bet == 0)
-                return;
+            if (!seat.Occupied)
+                continue;
+
+            if (seat.Bet == 0)
+                return false;
+
+            any = true;
         }
 
-        EndBetting(ent);
+        return any;
+    }
+
+    private int AtStake(BlackjackSeat seat)
+    {
+        var amount = seat.Bet;
+        foreach (var hand in seat.Hands)
+        {
+            if (hand.Result == BlackjackResult.None)
+                amount += hand.Bet;
+        }
+
+        return amount;
     }
 
     private void OnAction(Entity<BlackjackTableComponent> ent, ref BlackjackActionMessage args)
     {
-        if (TryGetSeat(ent.Comp, args.Actor, out var index))
+        if (args.Hand == ent.Comp.ActiveHand && TryGetSeat(ent.Comp, args.Actor, out var index))
             TryAction(ent, index, args.Action);
     }
 
-    private void OnPlayerSpoke(EntityUid uid, BlackjackPlayerComponent comp, EntitySpokeEvent args)
+    private void OnPlayerSpoke(Entity<BlackjackPlayerComponent> ent, ref EntitySpokeEvent args)
     {
+        var comp = ent.Comp;
         if (!TryComp(comp.Table, out BlackjackTableComponent? table) || table.Phase != BlackjackPhase.Turns)
             return;
 
-        if (!TryGetSeat(table, uid, out var index) || index != table.ActiveSeat)
+        if (!TryGetSeat(table, ent, out var index) || index != table.ActiveSeat)
             return;
 
         var chars = args.Message.ToLowerInvariant().ToCharArray();
@@ -55,15 +80,15 @@ public sealed partial class StoriesBlackjackSystem
         }
 
         var words = new string(chars).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        var ent = new Entity<BlackjackTableComponent>(comp.Table, table);
+        var tableEnt = new Entity<BlackjackTableComponent>(comp.Table, table);
         if (HasVoiceWord(words, "stories-blackjack-voice-split"))
-            TryAction(ent, index, BlackjackAction.Split);
+            TryAction(tableEnt, index, BlackjackAction.Split);
         else if (HasVoiceWord(words, "stories-blackjack-voice-double"))
-            TryAction(ent, index, BlackjackAction.Double);
+            TryAction(tableEnt, index, BlackjackAction.Double);
         else if (HasVoiceWord(words, "stories-blackjack-voice-stand"))
-            TryAction(ent, index, BlackjackAction.Stand);
+            TryAction(tableEnt, index, BlackjackAction.Stand);
         else if (HasVoiceWord(words, "stories-blackjack-voice-hit"))
-            TryAction(ent, index, BlackjackAction.Hit);
+            TryAction(tableEnt, index, BlackjackAction.Hit);
     }
 
     private bool HasVoiceWord(string[] words, string key)
@@ -112,7 +137,7 @@ public sealed partial class StoriesBlackjackSystem
         shoe.Size = shoe.Cards.Count;
         Say(ent, "say-shuffle");
         _audio.PlayPvs(ent.Comp.ShuffleSound, ent);
-        SetPose(ent, BlackjackPose.Shuffle, ent.Comp.StepDelay * 3f);
+        SetPose(ent, BlackjackPose.Shuffle, ent.Comp.ShufflePoseTime);
     }
 
     private bool NeedsReshuffle(Entity<BlackjackTableComponent> ent)
@@ -154,7 +179,7 @@ public sealed partial class StoriesBlackjackSystem
         for (var i = 0; i < comp.Seats.Count; i++)
         {
             var seat = comp.Seats[i];
-            if (seat.Occupied && (seat.Leaving || !TryGetEntity(seat.Player, out _)))
+            if (seat.Occupied && IsAbsent(seat))
                 Unseat(ent, i);
         }
 
@@ -289,20 +314,18 @@ public sealed partial class StoriesBlackjackSystem
         var comp = ent.Comp;
         if (deal.Seat < 0)
         {
-            var card = Draw(ent);
             if (deal.Hidden)
             {
+                var card = Draw(ent);
                 Comp<BlackjackShoeComponent>(ent).Hole = card;
                 comp.DealerHidden = true;
                 SpawnCard(ent, -1, 0, comp.DealerHand.Count, card, false);
+                AfterDeal(ent);
             }
             else
             {
-                SpawnCard(ent, -1, 0, comp.DealerHand.Count, card, true);
-                comp.DealerHand.Add(card);
+                DealerDraw(ent);
             }
-
-            AfterDeal(ent);
         }
         else if (deal.Seat < comp.Seats.Count && deal.Hand < comp.Seats[deal.Seat].Hands.Count)
         {
@@ -312,10 +335,18 @@ public sealed partial class StoriesBlackjackSystem
         Refresh(ent);
     }
 
+    private void DealerDraw(Entity<BlackjackTableComponent> ent)
+    {
+        var card = Draw(ent);
+        SpawnCard(ent, -1, 0, ent.Comp.DealerHand.Count, card, true);
+        ent.Comp.DealerHand.Add(card);
+        AfterDeal(ent);
+    }
+
     private void AfterDeal(Entity<BlackjackTableComponent> ent)
     {
         _audio.PlayPvs(ent.Comp.DealSound, ent);
-        SetPose(ent, BlackjackPose.Deal, ent.Comp.StepDelay / 2f);
+        SetPose(ent, BlackjackPose.Deal, ent.Comp.DealPoseTime);
     }
 
     private void DealNow(Entity<BlackjackTableComponent> ent, int seatIndex, BlackjackHand hand, int handIndex)
@@ -396,7 +427,7 @@ public sealed partial class StoriesBlackjackSystem
         var comp = ent.Comp;
         if (comp.ActiveSeat < 0 || comp.ActiveSeat >= comp.Seats.Count || comp.ActiveHand >= comp.Seats[comp.ActiveSeat].Hands.Count)
         {
-            StartDealer(ent);
+            NextTurn(ent);
             return;
         }
 
@@ -419,11 +450,14 @@ public sealed partial class StoriesBlackjackSystem
         if (now < comp.PhaseEnd)
             return;
 
-        seat.Missed++;
         Say(ent, "say-timeout", ("name", seat.Name));
         hand.State = BlackjackHandState.Stood;
-        if (!comp.Wager && seat.Missed >= comp.MaxMissed)
-            seat.Leaving = true;
+        if (!comp.Wager)
+        {
+            seat.Missed++;
+            if (seat.Missed >= comp.MaxMissed)
+                seat.Leaving = true;
+        }
 
         NextTurn(ent);
     }
@@ -588,10 +622,7 @@ public sealed partial class StoriesBlackjackSystem
 
         if (anyStood && BlackjackRules.DealerDraws(comp.DealerHand))
         {
-            var card = Draw(ent);
-            SpawnCard(ent, -1, 0, comp.DealerHand.Count, card, true);
-            comp.DealerHand.Add(card);
-            AfterDeal(ent);
+            DealerDraw(ent);
             active.NextStep += step;
             Refresh(ent);
             return;

@@ -44,6 +44,12 @@ public sealed partial class BlackjackTableComponent : Component
     public float StepDelay = 0.7f;
 
     [DataField]
+    public float ShufflePoseTime = 2.1f;
+
+    [DataField]
+    public float DealPoseTime = 0.35f;
+
+    [DataField]
     public float PayoutTime = 6f;
 
     [DataField]

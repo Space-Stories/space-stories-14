@@ -135,10 +135,9 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
             if (!seat.Occupied)
                 continue;
 
-            var amount = seat.Chips + seat.Bet;
+            var amount = seat.Chips + AtStake(seat);
             foreach (var hand in seat.Hands)
             {
-                amount += hand.Bet;
                 hand.Bet = 0;
             }
 

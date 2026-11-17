@@ -94,9 +94,9 @@ stories-blackjack-popup-already-seated = Вы уже сидите за стол�
 stories-blackjack-popup-done-buy = Куплено фишек: { $amount }.
 stories-blackjack-popup-done-cashout = Обменяно фишек: { $amount }.
 
-stories-blackjack-voice-hit = ещё,еще,карту,бери,давай
-stories-blackjack-voice-stand = хватит,стоп,пас,достаточно,себе
-stories-blackjack-voice-double = удвоить,удваиваю,дабл
+stories-blackjack-voice-hit = ещё,еще,карту,бери
+stories-blackjack-voice-stand = хватит,стоп,пас,достаточно
+stories-blackjack-voice-double = удвоить,удваиваю,удвоим,дабл
 stories-blackjack-voice-split = сплит,разделить,делю
 
 stories-blackjack-stack-chips = фишки казино

@@ -41,7 +41,8 @@ public sealed class BlackjackBetMessage(int amount) : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
-public sealed class BlackjackActionMessage(BlackjackAction action) : BoundUserInterfaceMessage
+public sealed class BlackjackActionMessage(BlackjackAction action, int hand) : BoundUserInterfaceMessage
 {
     public readonly BlackjackAction Action = action;
+    public readonly int Hand = hand;
 }

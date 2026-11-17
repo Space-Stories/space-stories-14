@@ -140,13 +140,7 @@ public sealed partial class StoriesBlackjackSystem
         for (var i = 0; i < count; i++)
         {
             var seat = comp.Seats[i];
-            var bet = seat.Bet;
-            foreach (var hand in seat.Hands)
-            {
-                bet += hand.Bet;
-            }
-
-            SyncPile(ent, ref props.BetPiles[i], bet, comp.BetSpots[i]);
+            SyncPile(ent, ref props.BetPiles[i], AtStake(seat), comp.BetSpots[i]);
             SyncPile(ent, ref props.StackPiles[i], seat.Chips, comp.StackSpots[i]);
         }
     }

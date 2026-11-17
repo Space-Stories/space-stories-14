@@ -84,6 +84,8 @@ public sealed partial class StoriesBlackjackSystem
         else
         {
             Unseat(ent, index);
+            if (ent.Comp.Wager && ent.Comp.Phase == BlackjackPhase.Betting && AllBet(ent.Comp))
+                EndBetting(ent);
         }
     }
 
