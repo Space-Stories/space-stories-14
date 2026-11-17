@@ -10,6 +10,9 @@ public sealed partial class AssemblyBenchOutputComponent : Component
     public EntityCoordinates Target;
 
     [DataField]
+    public EntityCoordinates Storage;
+
+    [DataField]
     public float Speed;
 
     [DataField]

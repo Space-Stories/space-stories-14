@@ -218,9 +218,11 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
             return;
 
         var xform = Transform(ent);
-        var result = Spawn(ent.Comp.Result, xform.Coordinates);
+        var rotation = xform.LocalRotation;
+        var result = Spawn(ent.Comp.Result, xform.Coordinates.Offset(rotation.RotateVec(ent.Comp.OutputStart)));
         var output = EnsureComp<AssemblyBenchOutputComponent>(result);
-        output.Target = xform.Coordinates.Offset(xform.LocalRotation.RotateVec(ent.Comp.OutputOffset));
+        output.Target = xform.Coordinates.Offset(rotation.RotateVec(ent.Comp.OutputEnd));
+        output.Storage = xform.Coordinates.Offset(rotation.RotateVec(ent.Comp.OutputStorage));
         output.Speed = ent.Comp.OutputSpeed;
         output.Range = ent.Comp.OutputRange;
     }
@@ -228,7 +230,7 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
     private void Deliver(EntityUid item, AssemblyBenchOutputComponent output)
     {
         _storages.Clear();
-        _lookup.GetEntitiesInRange(output.Target, output.Range, _storages);
+        _lookup.GetEntitiesInRange(output.Storage, output.Range, _storages);
         foreach (var storage in _storages)
         {
             if (_entityStorage.CanInsert(item, storage, storage.Comp) && _entityStorage.Insert(item, storage, storage.Comp))
