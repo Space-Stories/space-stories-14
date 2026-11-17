@@ -47,7 +47,7 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface(EntityUid own
         _panel.OnLeave += OnLeavePressed;
         _panel.OnFrame += OnPanelFrame;
 
-        _ui.StateRoot.AddChild(_panel);
+        _ui.WindowRoot.AddChild(_panel);
         LayoutContainer.SetAnchorAndMarginPreset(_panel, LayoutContainer.LayoutPreset.CenterBottom);
         LayoutContainer.SetMarginLeft(_panel, 0);
         LayoutContainer.SetMarginRight(_panel, 0);
