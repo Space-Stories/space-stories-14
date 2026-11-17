@@ -1,3 +1,4 @@
+using System.Text;
 using Content.Shared._Stories.Blackjack;
 using Content.Shared.Chat;
 using Content.Shared.Database;
@@ -72,35 +73,52 @@ public sealed partial class StoriesBlackjackSystem
         if (!TryGetSeat(table, ent, out var index) || index != table.ActiveSeat)
             return;
 
-        var chars = args.Message.ToLowerInvariant().ToCharArray();
-        for (var i = 0; i < chars.Length; i++)
-        {
-            if (!char.IsLetter(chars[i]))
-                chars[i] = ' ';
-        }
+        if (args.Message.Contains('?'))
+            return;
 
-        var words = new string(chars).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var text = NormalizeVoice(args.Message);
         var tableEnt = new Entity<BlackjackTableComponent>(comp.Table, table);
-        if (HasVoiceWord(words, "stories-blackjack-voice-split"))
-            TryAction(tableEnt, index, BlackjackAction.Split);
-        else if (HasVoiceWord(words, "stories-blackjack-voice-double"))
-            TryAction(tableEnt, index, BlackjackAction.Double);
-        else if (HasVoiceWord(words, "stories-blackjack-voice-stand"))
+        if (HasVoicePhrase(text, "stories-blackjack-voice-stand"))
             TryAction(tableEnt, index, BlackjackAction.Stand);
-        else if (HasVoiceWord(words, "stories-blackjack-voice-hit"))
+        else if (HasVoicePhrase(text, "stories-blackjack-voice-split"))
+            TryAction(tableEnt, index, BlackjackAction.Split);
+        else if (HasVoicePhrase(text, "stories-blackjack-voice-double"))
+            TryAction(tableEnt, index, BlackjackAction.Double);
+        else if (HasVoicePhrase(text, "stories-blackjack-voice-hit"))
             TryAction(tableEnt, index, BlackjackAction.Hit);
     }
 
-    private bool HasVoiceWord(string[] words, string key)
+    private static string NormalizeVoice(string message)
+    {
+        var builder = new StringBuilder(message.Length + 2);
+        builder.Append(' ');
+        var last = ' ';
+        foreach (var raw in message.ToLowerInvariant())
+        {
+            var symbol = raw == 'ё' ? 'е' : raw;
+            if (!char.IsLetter(symbol))
+                symbol = ' ';
+
+            if (symbol == last)
+                continue;
+
+            builder.Append(symbol);
+            last = symbol;
+        }
+
+        if (last != ' ')
+            builder.Append(' ');
+
+        return builder.ToString();
+    }
+
+    private bool HasVoicePhrase(string text, string key)
     {
         foreach (var variant in Loc.GetString(key).Split(','))
         {
-            var trimmed = variant.Trim();
-            foreach (var word in words)
-            {
-                if (word == trimmed)
-                    return true;
-            }
+            var phrase = NormalizeVoice(variant);
+            if (phrase.Length > 1 && text.Contains(phrase))
+                return true;
         }
 
         return false;

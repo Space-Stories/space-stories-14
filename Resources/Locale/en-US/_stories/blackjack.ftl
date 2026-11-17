@@ -105,9 +105,9 @@ stories-blackjack-popup-already-seated = You are already seated at the table.
 stories-blackjack-popup-done-buy = Chips bought: { $amount }.
 stories-blackjack-popup-done-cashout = Chips cashed out: { $amount }.
 
-stories-blackjack-voice-hit = hit,card,more
-stories-blackjack-voice-stand = stand,stay,enough
-stories-blackjack-voice-double = double
-stories-blackjack-voice-split = split
+stories-blackjack-voice-hit = hit,hit me,card,more,another,one more,deal,draw,take,gimme
+stories-blackjack-voice-stand = stand,stay,enough,stop,pass,hold,no more,no card,i am good,im good,not hit,no hit,no double,no split,dont
+stories-blackjack-voice-double = double,double down,dbl,doubling
+stories-blackjack-voice-split = split,splitting,split them
 
 stories-blackjack-stack-chips = casino chips
