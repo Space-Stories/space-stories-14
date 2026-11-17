@@ -45,7 +45,14 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
             subs.Event<BlackjackSpectateMessage>(OnSpectate);
         });
 
+        Subs.BuiEvents<BlackjackTableComponent>(BlackjackUiKey.Game, subs =>
+        {
+            subs.Event<BlackjackBetMessage>(OnBet);
+            subs.Event<BlackjackActionMessage>(OnAction);
+        });
+
         SubscribeLocalEvent<BlackjackTableComponent, BlackjackLeaveMessage>(OnLeave);
+        SubscribeLocalEvent<BlackjackPlayerComponent, EntitySpokeEvent>(OnPlayerSpoke);
     }
 
     public override void Update(float frameTime)
@@ -54,12 +61,41 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
         var now = _timing.CurTime;
         var query = EntityQueryEnumerator<ActiveBlackjackTableComponent, BlackjackTableComponent>();
-        while (query.MoveNext(out var uid, out _, out var table))
+        while (query.MoveNext(out var uid, out var active, out var table))
         {
             var ent = new Entity<BlackjackTableComponent>(uid, table);
-            if (table.Phase == BlackjackPhase.Lobby)
-                UpdateLobby(ent, now);
+            if (table.Pose != BlackjackPose.Idle && now >= active.PoseEnd)
+            {
+                table.Pose = BlackjackPose.Idle;
+                Dirty(ent);
+            }
+
+            switch (table.Phase)
+            {
+                case BlackjackPhase.Lobby:
+                    UpdateLobby(ent, now);
+                    break;
+                case BlackjackPhase.Betting:
+                    if (now >= table.PhaseEnd)
+                        EndBetting(ent);
+                    break;
+                case BlackjackPhase.Dealing:
+                    UpdateDealing(ent, active, now);
+                    break;
+                case BlackjackPhase.Turns:
+                    UpdateTurns(ent, now);
+                    break;
+                case BlackjackPhase.Dealer:
+                    UpdateDealer(ent, active, now);
+                    break;
+                case BlackjackPhase.Payout:
+                    if (now >= table.PhaseEnd)
+                        BeginRound(ent);
+                    break;
+            }
         }
+
+        UpdateSlides(frameTime);
     }
 
     private void OnMapInit(Entity<BlackjackTableComponent> ent, ref MapInitEvent args)
@@ -80,6 +116,8 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
     private void OnShutdown(Entity<BlackjackTableComponent> ent, ref ComponentShutdown args)
     {
+        DeleteProps(ent);
+
         for (var i = 0; i < ent.Comp.Seats.Count; i++)
         {
             if (TryGetEntity(ent.Comp.Seats[i].Player, out var player))
@@ -149,6 +187,7 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
 
     private void Refresh(Entity<BlackjackTableComponent> ent)
     {
+        SyncPiles(ent);
         Dirty(ent);
     }
 

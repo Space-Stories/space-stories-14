@@ -144,7 +144,7 @@ public sealed partial class StoriesBlackjackSystem
         }
 
         _ui.CloseUi(ent.Owner, BlackjackUiKey.Lobby);
-        Refresh(ent);
+        BeginRound(ent);
     }
 
     private void Unseat(Entity<BlackjackTableComponent> ent, int index)
@@ -184,6 +184,13 @@ public sealed partial class StoriesBlackjackSystem
         ent.Comp.Phase = BlackjackPhase.Idle;
         ent.Comp.ActiveSeat = -1;
         ent.Comp.DealerHand.Clear();
+        ent.Comp.DealerHidden = false;
+        ent.Comp.Pose = BlackjackPose.Idle;
+        ent.Comp.Face = BlackjackFace.Neutral;
+        ClearCards(ent);
+        var shoe = Comp<BlackjackShoeComponent>(ent);
+        shoe.Hole = null;
+        shoe.Cards.Clear();
         RemCompDeferred<ActiveBlackjackTableComponent>(ent);
         _ui.CloseUi(ent.Owner, BlackjackUiKey.Game);
     }

@@ -17,6 +17,9 @@ public sealed partial class ActiveBlackjackTableComponent : Component
     [AutoPausedField]
     public TimeSpan NextStep;
 
+    [AutoPausedField]
+    public TimeSpan PoseEnd;
+
     public Queue<BlackjackDeal> Deals = new();
 }
 
