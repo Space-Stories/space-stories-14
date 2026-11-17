@@ -42,6 +42,9 @@ public sealed partial class AssemblyBenchComponent : Component
     public float OutputRange = 0.3f;
 
     [DataField]
+    public float OutputSpeed = 1f;
+
+    [DataField]
     public SoundSpecifier? InsertSound = new SoundPathSpecifier("/Audio/Items/deconstruct.ogg");
 
     [DataField]

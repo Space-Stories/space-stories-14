@@ -10,6 +10,7 @@ using Content.Shared.Tools.Components;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -24,11 +25,13 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
     [Dependency] private INetManager _net = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedContainerSystem _container = default!;
     [Dependency] private SharedEntityStorageSystem _entityStorage = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private SharedToolSystem _tool = default!;
+    [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
 
     private readonly HashSet<Entity<EntityStorageComponent>> _storages = new();
@@ -43,6 +46,38 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
 
         Subs.BuiEvents<AssemblyBenchComponent>(AssemblyBenchUiKey.Key,
             subs => subs.Event<AssemblyBenchApplyMessage>(OnApplyMessage));
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        if (_net.IsClient)
+            return;
+
+        var query = EntityQueryEnumerator<AssemblyBenchOutputComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var output, out var xform))
+        {
+            var target = _transform.ToMapCoordinates(output.Target);
+            if (target.MapId != xform.MapID || _container.IsEntityInContainer(uid))
+            {
+                RemCompDeferred<AssemblyBenchOutputComponent>(uid);
+                continue;
+            }
+
+            var position = _transform.GetWorldPosition(xform);
+            var delta = target.Position - position;
+            var step = output.Speed * frameTime;
+            if (delta.Length() > step)
+            {
+                _transform.SetWorldPosition((uid, xform), position + delta.Normalized() * step);
+                continue;
+            }
+
+            _transform.SetWorldPosition((uid, xform), target.Position);
+            RemCompDeferred<AssemblyBenchOutputComponent>(uid);
+            Deliver(uid, output);
+        }
     }
 
     public string GetRequirement(AssemblyBenchStep step)
@@ -183,15 +218,21 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
             return;
 
         var xform = Transform(ent);
-        var output = xform.Coordinates.Offset(xform.LocalRotation.RotateVec(ent.Comp.OutputOffset));
-        var result = Spawn(ent.Comp.Result, output);
+        var result = Spawn(ent.Comp.Result, xform.Coordinates);
+        var output = EnsureComp<AssemblyBenchOutputComponent>(result);
+        output.Target = xform.Coordinates.Offset(xform.LocalRotation.RotateVec(ent.Comp.OutputOffset));
+        output.Speed = ent.Comp.OutputSpeed;
+        output.Range = ent.Comp.OutputRange;
+    }
 
+    private void Deliver(EntityUid item, AssemblyBenchOutputComponent output)
+    {
         _storages.Clear();
-        _lookup.GetEntitiesInRange(output, ent.Comp.OutputRange, _storages);
+        _lookup.GetEntitiesInRange(output.Target, output.Range, _storages);
         foreach (var storage in _storages)
         {
-            if (_entityStorage.CanInsert(result, storage, storage.Comp) && _entityStorage.Insert(result, storage, storage.Comp))
-                break;
+            if (_entityStorage.CanInsert(item, storage, storage.Comp) && _entityStorage.Insert(item, storage, storage.Comp))
+                return;
         }
     }
 
