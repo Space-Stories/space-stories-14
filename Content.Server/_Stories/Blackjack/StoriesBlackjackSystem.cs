@@ -4,8 +4,10 @@ using Content.Server.Chat.Systems;
 using Content.Server.Inventory;
 using Content.Server.Station.Systems;
 using Content.Shared._Stories.Blackjack;
+using Content.Shared.ActionBlocker;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Chat;
+using Content.Shared.Database;
 using Content.Shared.Destructible;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
@@ -21,6 +23,7 @@ namespace Content.Server._Stories.Blackjack;
 
 public sealed partial class StoriesBlackjackSystem : EntitySystem
 {
+    [Dependency] private ActionBlockerSystem _blocker = default!;
     [Dependency] private BankSystem _bank = default!;
     [Dependency] private ChatSystem _chat = default!;
     [Dependency] private IGameTiming _timing = default!;
@@ -202,10 +205,22 @@ public sealed partial class StoriesBlackjackSystem : EntitySystem
         if (amount <= 0)
             return;
 
-        if (player is { } user && !TerminatingOrDeleted(user) && TryGive(user, ent.Comp.ChipsProto, ent.Comp.ChipStack, amount))
+        if (player is { } user && CanReturnTo(ent, user) && TryGive(user, ent.Comp.ChipsProto, ent.Comp.ChipStack, amount))
+        {
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(user):player} получил {amount} фишек в руки при уходе от стола {ToPrettyString(ent):target}");
             return;
+        }
 
         var chips = SpawnAtPosition(ent.Comp.ChipsProto, new EntityCoordinates(ent, fallbackSpot));
         _stack.SetCount((chips, null), amount);
+        var who = player is { } other ? ToPrettyString(other) : "никого рядом";
+        _adminLogger.Add(LogType.Action, LogImpact.Low, $"{who} не получил {amount} фишек в руки, они лежат на полу у стола {ToPrettyString(ent):target}");
+    }
+
+    private bool CanReturnTo(Entity<BlackjackTableComponent> ent, EntityUid user)
+    {
+        return !TerminatingOrDeleted(user)
+            && _transform.InRange(Transform(user).Coordinates, Transform(ent).Coordinates, ent.Comp.ReturnRange)
+            && _blocker.CanInteract(user, ent);
     }
 }

@@ -44,7 +44,7 @@ public sealed partial class StoriesBlackjackSystem
 
                 if (seat.Chips + amount > comp.MaxChips)
                 {
-                    Fail(ent, actor, "bad-amount");
+                    Fail(ent, actor, "stack-full");
                     return;
                 }
 
@@ -68,7 +68,7 @@ public sealed partial class StoriesBlackjackSystem
 
                 if (seat.Chips + amount > comp.MaxChips)
                 {
-                    Fail(ent, actor, "bad-amount");
+                    Fail(ent, actor, "stack-full");
                     return;
                 }
 
@@ -92,7 +92,7 @@ public sealed partial class StoriesBlackjackSystem
                 amount = Math.Min(held, comp.MaxChips - seat.Chips);
                 if (amount <= 0)
                 {
-                    Fail(ent, actor, "bad-amount");
+                    Fail(ent, actor, "stack-full");
                     return;
                 }
 
@@ -103,7 +103,7 @@ public sealed partial class StoriesBlackjackSystem
             case BlackjackCashierOp.CashOut:
                 if (seat.Chips < amount)
                 {
-                    Fail(ent, actor, "no-chips");
+                    Fail(ent, actor, "no-stack");
                     return;
                 }
 
@@ -131,7 +131,7 @@ public sealed partial class StoriesBlackjackSystem
 
                 if (seat.Chips < amount)
                 {
-                    Fail(ent, actor, "no-chips");
+                    Fail(ent, actor, "no-stack");
                     return;
                 }
 
@@ -146,7 +146,7 @@ public sealed partial class StoriesBlackjackSystem
             case BlackjackCashierOp.Withdraw:
                 if (seat.Chips < amount)
                 {
-                    Fail(ent, actor, "no-chips");
+                    Fail(ent, actor, "no-stack");
                     return;
                 }
 
@@ -173,12 +173,17 @@ public sealed partial class StoriesBlackjackSystem
         _popup.PopupEntity(Loc.GetString("stories-blackjack-popup-" + key), ent, actor);
     }
 
+    private bool IsLiveStack(EntityUid held, StackComponent stack)
+    {
+        return stack.Count > 0 && !TerminatingOrDeleted(held) && !EntityManager.IsQueuedForDeletion(held);
+    }
+
     private int CountHeld(EntityUid user, ProtoId<StackPrototype> type)
     {
         var total = 0;
         foreach (var held in _hands.EnumerateHeld(user))
         {
-            if (TryComp<StackComponent>(held, out var stack) && stack.StackTypeId == type)
+            if (TryComp<StackComponent>(held, out var stack) && stack.StackTypeId == type && IsLiveStack(held, stack))
                 total += stack.Count;
         }
 
@@ -193,7 +198,7 @@ public sealed partial class StoriesBlackjackSystem
             if (left <= 0)
                 break;
 
-            if (!TryComp<StackComponent>(held, out var stack) || stack.StackTypeId != type)
+            if (!TryComp<StackComponent>(held, out var stack) || stack.StackTypeId != type || !IsLiveStack(held, stack))
                 continue;
 
             var part = Math.Min(left, stack.Count);
@@ -206,7 +211,10 @@ public sealed partial class StoriesBlackjackSystem
     {
         foreach (var held in _hands.EnumerateHeld(user))
         {
-            if (!TryComp<StackComponent>(held, out var stack) || stack.StackTypeId != type)
+            if (!TryComp<StackComponent>(held, out var stack) || stack.StackTypeId != type || !IsLiveStack(held, stack))
+                continue;
+
+            if ((long) stack.Count + amount > _stack.GetMaxCount(stack))
                 continue;
 
             _stack.SetCount((held, null), stack.Count + amount);
