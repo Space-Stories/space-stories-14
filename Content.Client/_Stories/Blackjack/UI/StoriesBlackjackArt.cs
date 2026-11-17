@@ -1,4 +1,7 @@
 using Robust.Client.Graphics;
+using Robust.Client.ResourceManagement;
+using Robust.Shared.Graphics.RSI;
+using Robust.Shared.Serialization.TypeSerializers.Implementations;
 using Robust.Shared.Utility;
 
 namespace Content.Client._Stories.Blackjack.UI;
@@ -7,6 +10,12 @@ public static class StoriesBlackjackArt
 {
     public static readonly ResPath UiSprite = new("_Stories/Interface/Blackjack/ui.rsi");
     public static readonly int[] ChipValues = [5, 25, 100, 500];
+
+    public static Texture? Icon(IResourceCache cache, string state)
+    {
+        var rsi = cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / UiSprite).RSI;
+        return rsi.TryGetState(state, out var found) ? found.GetFrame(RsiDirection.South, 0) : null;
+    }
 
     public static int FrameAt(RSI.State state, float time)
     {

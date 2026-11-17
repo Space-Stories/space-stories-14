@@ -35,6 +35,9 @@ public sealed class BlackjackCashierMessage(BlackjackCashierOp op, int amount) :
 }
 
 [Serializable, NetSerializable]
+public sealed class BlackjackOpenCashierMessage : BoundUserInterfaceMessage;
+
+[Serializable, NetSerializable]
 public sealed class BlackjackBetMessage(int amount) : BoundUserInterfaceMessage
 {
     public readonly int Amount = amount;

@@ -45,6 +45,7 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface(EntityUid own
         _panel.OnAction += SendAction;
         _panel.OnCollapse += OnCollapsePressed;
         _panel.OnLeave += OnLeavePressed;
+        _panel.OnCashier += OnCashierPressed;
         _panel.OnFrame += OnPanelFrame;
 
         _ui.WindowRoot.AddChild(_panel);

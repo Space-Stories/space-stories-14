@@ -61,6 +61,7 @@ public sealed partial class StoriesBlackjackSystem : SharedStoriesBlackjackSyste
         {
             subs.Event<BlackjackBetMessage>(OnBet);
             subs.Event<BlackjackActionMessage>(OnAction);
+            subs.Event<BlackjackOpenCashierMessage>(OnOpenCashier);
         });
 
         SubscribeLocalEvent<BlackjackTableComponent, BlackjackLeaveMessage>(OnLeave);

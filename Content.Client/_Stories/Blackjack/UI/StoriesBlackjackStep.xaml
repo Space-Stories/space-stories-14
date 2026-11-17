@@ -1,0 +1,7 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                Name="Frame">
+    <BoxContainer Orientation="Horizontal" Margin="4 2 10 2" SeparationOverride="6">
+        <TextureRect Name="Marker" MinSize="28 28" Stretch="KeepCentered" VerticalAlignment="Center" />
+        <Label Name="TextLabel" VerticalAlignment="Center" />
+    </BoxContainer>
+</PanelContainer>

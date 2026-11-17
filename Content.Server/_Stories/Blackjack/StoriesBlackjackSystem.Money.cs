@@ -17,6 +17,12 @@ public sealed partial class StoriesBlackjackSystem
         if (!comp.Wager)
             return;
 
+        if (args.Op is BlackjackCashierOp.SellHeld or BlackjackCashierOp.SellHeldCard)
+        {
+            SellHeld(ent, actor, args.Op);
+            return;
+        }
+
         if (!TryGetSeat(comp, actor, out var index))
         {
             Fail(ent, actor, "not-seated");
@@ -168,6 +174,68 @@ public sealed partial class StoriesBlackjackSystem
         Refresh(ent);
     }
 
+    private void OnOpenCashier(Entity<BlackjackTableComponent> ent, ref BlackjackOpenCashierMessage args)
+    {
+        if (!ent.Comp.Wager || !TryGetSeat(ent.Comp, args.Actor, out _))
+            return;
+
+        _ui.OpenUi(ent.Owner, BlackjackUiKey.Lobby, args.Actor);
+    }
+
+    private void SellHeld(Entity<BlackjackTableComponent> ent, EntityUid actor, BlackjackCashierOp op)
+    {
+        var comp = ent.Comp;
+        var amount = CountHeld(actor, comp.ChipStack);
+        if (amount <= 0)
+        {
+            Fail(ent, actor, "no-chips");
+            return;
+        }
+
+        if (op == BlackjackCashierOp.SellHeldCard)
+        {
+            var station = _station.GetOwningStation(ent);
+            if (station == null)
+            {
+                Fail(ent, actor, "no-station");
+                return;
+            }
+
+            if (!TryGetAccount(actor, out var account))
+            {
+                Fail(ent, actor, "no-card");
+                return;
+            }
+
+            if (!_bank.TryChangeBalance(station.Value, account, amount))
+            {
+                Fail(ent, actor, "no-card");
+                return;
+            }
+
+            TakeHeld(actor, comp.ChipStack, amount);
+        }
+        else
+        {
+            if (!TryFindStack(actor, comp.CashStack, amount, out _) && !_hands.TryGetEmptyHand(actor, out _))
+            {
+                Fail(ent, actor, "no-hand");
+                return;
+            }
+
+            TakeHeld(actor, comp.ChipStack, amount);
+            if (!TryGive(actor, comp.CashProto, comp.CashStack, amount))
+            {
+                var cash = SpawnAtPosition(comp.CashProto, Transform(actor).Coordinates);
+                _stack.SetCount((cash, null), amount);
+            }
+        }
+
+        _audio.PlayPvs(comp.ChipSound, ent);
+        _popup.PopupEntity(Loc.GetString("stories-blackjack-popup-done-cashout", ("amount", amount)), ent, actor);
+        _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(actor):player} did {op} for {amount} held chips at {ToPrettyString(ent):target}");
+    }
+
     private void Fail(Entity<BlackjackTableComponent> ent, EntityUid actor, string key)
     {
         _popup.PopupEntity(Loc.GetString("stories-blackjack-popup-" + key), ent, actor);
@@ -207,7 +275,7 @@ public sealed partial class StoriesBlackjackSystem
         }
     }
 
-    private bool TryGive(EntityUid user, EntProtoId proto, ProtoId<StackPrototype> type, int amount)
+    private bool TryFindStack(EntityUid user, ProtoId<StackPrototype> type, int amount, out Entity<StackComponent> found)
     {
         foreach (var held in _hands.EnumerateHeld(user))
         {
@@ -217,7 +285,19 @@ public sealed partial class StoriesBlackjackSystem
             if ((long) stack.Count + amount > _stack.GetMaxCount(stack))
                 continue;
 
-            _stack.SetCount((held, null), stack.Count + amount);
+            found = (held, stack);
+            return true;
+        }
+
+        found = default;
+        return false;
+    }
+
+    private bool TryGive(EntityUid user, EntProtoId proto, ProtoId<StackPrototype> type, int amount)
+    {
+        if (TryFindStack(user, type, amount, out var found))
+        {
+            _stack.SetCount((found.Owner, null), found.Comp.Count + amount);
             return true;
         }
 

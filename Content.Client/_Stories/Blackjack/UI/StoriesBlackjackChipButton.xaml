@@ -1,0 +1,5 @@
+<ui:StoriesBlackjackChipButton xmlns="https://spacestation14.io"
+                               xmlns:ui="clr-namespace:Content.Client._Stories.Blackjack.UI">
+    <TextureRect Name="ChipRect" Stretch="KeepCentered" TextureScale="2 2" />
+    <TextureRect Name="RingRect" Stretch="KeepCentered" TextureScale="2 2" Visible="False" />
+</ui:StoriesBlackjackChipButton>

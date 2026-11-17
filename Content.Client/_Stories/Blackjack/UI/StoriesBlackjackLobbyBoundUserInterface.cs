@@ -17,6 +17,7 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
     private StoriesBlackjackLobbyWindow? _window;
 
     private ResPath _tableSprite;
+    private int _mine = -1;
     private bool _seated;
     private bool _ready;
     private bool _anyReady;
@@ -33,9 +34,8 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
         _window.OnReady += () => SendMessage(new BlackjackReadyMessage(!_ready));
         _window.OnLeave += () => SendMessage(new BlackjackLeaveMessage());
         _window.OnSpectate += () => SendMessage(new BlackjackSpectateMessage());
-        _window.OnCashier += SendCashier;
-        _window.OnAmountChanged += UpdateCashierButtons;
-        _window.OnFrame += UpdateTimer;
+        _window.OnFrame += OnWindowFrame;
+        ConnectCashier(_window.Cashier);
         Update();
     }
 
@@ -57,6 +57,7 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
 
         var seats = table.Seats;
         var mine = BlackjackRules.FindSeat(seats, me);
+        _mine = mine;
 
         _seated = mine >= 0;
         _ready = _seated && seats[mine].Ready;
@@ -93,8 +94,10 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
         _window.SetStatus(StatusText(table.Phase, occupied, waiting));
         _timerSeconds = int.MinValue;
         UpdateTimer();
-        UpdateButtons(table.Phase, mine >= 0 && seats[mine].Leaving);
+        UpdateSteps(table, mine);
+        UpdateButtons(table, mine);
         UpdateRules(table);
+        ReadHeld(table, out _cash, out _items);
         UpdateCashier(table, mine);
         UpdateWins(table);
     }
@@ -108,6 +111,12 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
             return Loc.GetString("stories-blackjack-status-waiting", ("names", string.Join(", ", waiting)));
 
         return Loc.GetString("stories-blackjack-status-playing");
+    }
+
+    private void OnWindowFrame()
+    {
+        UpdateTimer();
+        UpdateHeld();
     }
 
     private void UpdateTimer()
@@ -126,14 +135,49 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
             _window.SetTimerText(Loc.GetString("stories-blackjack-status-starting", ("seconds", seconds)));
     }
 
-    private void UpdateButtons(BlackjackPhase phase, bool leaving)
+    private static bool HasChips(BlackjackTableComponent table, int mine)
+    {
+        return mine >= 0 && table.Seats[mine].Chips >= table.MinBet;
+    }
+
+    private void UpdateSteps(BlackjackTableComponent table, int mine)
+    {
+        if (_window == null)
+            return;
+
+        var show = table.Phase is BlackjackPhase.Idle or BlackjackPhase.Lobby;
+        _window.SetSteps(show);
+        if (!show)
+            return;
+
+        var readyIndex = table.Wager ? 2 : 1;
+        var current = mine < 0 ? 0 : table.Wager && !HasChips(table, mine) ? 1 : _ready ? int.MaxValue : readyIndex;
+        _window.SetStep(0, Loc.GetString("stories-blackjack-step-sit", ("n", 1)), StepState(0, current));
+        if (table.Wager)
+            _window.SetStep(1, Loc.GetString("stories-blackjack-step-buy", ("n", 2)), StepState(1, current));
+
+        _window.SetStep(readyIndex, Loc.GetString("stories-blackjack-step-ready", ("n", readyIndex + 1)), StepState(readyIndex, current));
+        if (!table.Wager)
+            _window.SetStep(2, null, StoriesBlackjackStepState.Pending);
+    }
+
+    private static StoriesBlackjackStepState StepState(int index, int current)
+    {
+        if (index < current)
+            return StoriesBlackjackStepState.Done;
+
+        return index == current ? StoriesBlackjackStepState.Current : StoriesBlackjackStepState.Pending;
+    }
+
+    private void UpdateButtons(BlackjackTableComponent table, int mine)
     {
         _window?.SetButtons(
-            _seated && phase == BlackjackPhase.Lobby,
+            _seated && table.Phase == BlackjackPhase.Lobby,
             Loc.GetString(_ready ? "stories-blackjack-not-ready" : "stories-blackjack-ready"),
+            !_ready && (!table.Wager || HasChips(table, mine)),
             _seated,
-            leaving,
-            !_seated && phase != BlackjackPhase.Idle && phase != BlackjackPhase.Lobby);
+            mine >= 0 && table.Seats[mine].Leaving,
+            !_seated && table.Phase != BlackjackPhase.Idle && table.Phase != BlackjackPhase.Lobby);
     }
 
     private void UpdateRules(BlackjackTableComponent table)
@@ -143,22 +187,6 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
             ? Loc.GetString("stories-blackjack-rules-limits", ("min", table.MinBet), ("max", table.MaxBet))
             : Loc.GetString("stories-blackjack-rules-limits-min", ("min", table.MinBet));
         _window?.SetRules(body, table.Wager, table.Wager ? limits : string.Empty);
-    }
-
-    private void UpdateCashier(BlackjackTableComponent table, int mine)
-    {
-        if (_window == null)
-            return;
-
-        var chips = mine >= 0 ? table.Seats[mine].Chips : 0;
-        _window.SetCashier(table.Wager, Loc.GetString("stories-blackjack-cashier-stack", ("amount", chips)));
-        if (table.Wager)
-            UpdateCashierButtons();
-    }
-
-    private void UpdateCashierButtons()
-    {
-        _window?.SetCashierEnabled(_seated, TryGetAmount(out _));
     }
 
     private void UpdateWins(BlackjackTableComponent table)
@@ -175,23 +203,5 @@ public sealed partial class StoriesBlackjackLobbyBoundUserInterface(EntityUid ow
         var rows = new List<KeyValuePair<string, int>>(table.Wins);
         rows.Sort((a, b) => b.Value.CompareTo(a.Value));
         _window.SetWins(true, rows);
-    }
-
-    private void SendCashier(BlackjackCashierOp op)
-    {
-        if (op == BlackjackCashierOp.Deposit)
-        {
-            SendMessage(new BlackjackCashierMessage(op, 0));
-            return;
-        }
-
-        if (TryGetAmount(out var amount))
-            SendMessage(new BlackjackCashierMessage(op, amount));
-    }
-
-    private bool TryGetAmount(out int amount)
-    {
-        amount = 0;
-        return _window != null && int.TryParse(_window.GetAmountText(), out amount) && amount >= 1;
     }
 }

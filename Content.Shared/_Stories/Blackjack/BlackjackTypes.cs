@@ -76,6 +76,8 @@ public enum BlackjackCashierOp : byte
     CashOut,
     CashOutCard,
     Withdraw,
+    SellHeld,
+    SellHeldCard,
 }
 
 [Serializable, NetSerializable]

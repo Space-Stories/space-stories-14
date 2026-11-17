@@ -111,6 +111,11 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface
         Refresh();
     }
 
+    private void OnCashierPressed()
+    {
+        SendMessage(new BlackjackOpenCashierMessage());
+    }
+
     private void OnLeavePressed()
     {
         if (MySeat() is not { } seat)
@@ -186,6 +191,7 @@ public sealed partial class StoriesBlackjackGameBoundUserInterface
         _panel.SetHeader(
             Loc.GetString(wager ? "stories-blackjack-window-title" : "stories-blackjack-window-title-prison"),
             wager && seat != null ? Loc.GetString("stories-blackjack-panel-stack", ("amount", seat.Chips)) : null,
+            wager && seat != null,
             Loc.GetString(_collapsed ? "stories-blackjack-panel-expand" : "stories-blackjack-panel-collapse"),
             Loc.GetString(seat != null ? "stories-blackjack-panel-leave" : "stories-blackjack-panel-close"),
             seat == null || !seat.Leaving);

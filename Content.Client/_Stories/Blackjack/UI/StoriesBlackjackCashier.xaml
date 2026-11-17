@@ -1,0 +1,91 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client._Stories.Blackjack.UI"
+                Name="Frame">
+    <BoxContainer Orientation="Vertical" Margin="8 6 8 8" SeparationOverride="8">
+        <Label Name="TitleLabel" Text="{Loc 'stories-blackjack-cashier-title'}" StyleClasses="LabelHeading" />
+
+        <RichTextLabel Name="LockedLabel" Text="{Loc 'stories-blackjack-cashier-locked'}" MaxWidth="290" />
+
+        <BoxContainer Name="HeldBox" Orientation="Vertical" SeparationOverride="6" Visible="False">
+            <RichTextLabel Name="HeldOnlyLabel" MaxWidth="290" />
+            <ui:StoriesBlackjackButton Name="SellHeldButton" Variant="Accent" Icon="icon-cash"
+                                       Title="{Loc 'stories-blackjack-cashier-sell-held'}"
+                                       Subtitle="{Loc 'stories-blackjack-cashier-sell-held-sub'}" />
+            <ui:StoriesBlackjackButton Name="SellHeldCardButton" Variant="Accent" Icon="icon-card"
+                                       Title="{Loc 'stories-blackjack-cashier-sell-held-card'}"
+                                       Subtitle="{Loc 'stories-blackjack-cashier-sell-held-card-sub'}" />
+        </BoxContainer>
+
+        <BoxContainer Name="SeatedBox" Orientation="Vertical" SeparationOverride="8" Visible="False">
+            <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                <Label Name="HaveLabel" Text="{Loc 'stories-blackjack-cashier-have'}" StyleClasses="LabelSubText" HorizontalAlignment="Left" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                    <ui:StoriesBlackjackBadge Name="ChipsBadge" Icon="icon-chips" Caption="{Loc 'stories-blackjack-cashier-badge-table'}" />
+                    <ui:StoriesBlackjackBadge Name="CashBadge" Icon="icon-cash" Caption="{Loc 'stories-blackjack-cashier-badge-cash'}" />
+                    <ui:StoriesBlackjackBadge Name="HeldBadge" Icon="icon-hand" Caption="{Loc 'stories-blackjack-cashier-badge-held'}" Visible="False" />
+                </BoxContainer>
+            </BoxContainer>
+
+            <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                <Label Name="AmountTitle" Text="{Loc 'stories-blackjack-cashier-amount'}" StyleClasses="LabelSubText" HorizontalAlignment="Left" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4" HorizontalAlignment="Center">
+                    <ui:StoriesBlackjackChipButton Name="Chip5" Value="5" />
+                    <ui:StoriesBlackjackChipButton Name="Chip25" Value="25" />
+                    <ui:StoriesBlackjackChipButton Name="Chip100" Value="100" />
+                    <ui:StoriesBlackjackChipButton Name="Chip500" Value="500" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <ui:StoriesBlackjackButton Name="MinusButton" Variant="Quiet" Title="−" MinWidth="40" />
+                    <LineEdit Name="AmountEdit" HorizontalExpand="True" MinHeight="36" />
+                    <ui:StoriesBlackjackButton Name="PlusButton" Variant="Quiet" Title="+" MinWidth="40" />
+                    <ui:StoriesBlackjackButton Name="ResetButton" Variant="Quiet" Title="{Loc 'stories-blackjack-cashier-reset'}" />
+                </BoxContainer>
+            </BoxContainer>
+
+            <PanelContainer Name="BuyPanel">
+                <BoxContainer Orientation="Vertical" Margin="6" SeparationOverride="4">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="2">
+                        <Label Name="BuyFrom" Text="{Loc 'stories-blackjack-cashier-spesos'}" VerticalAlignment="Center" />
+                        <TextureRect Name="BuyArrow" MinSize="28 28" Stretch="KeepCentered" VerticalAlignment="Center" />
+                        <Label Name="BuyTo" Text="{Loc 'stories-blackjack-cashier-chips'}" VerticalAlignment="Center" />
+                    </BoxContainer>
+                    <ui:StoriesBlackjackButton Name="BuyCashButton" Variant="Primary" Icon="icon-cash"
+                                               Title="{Loc 'stories-blackjack-cashier-buy-cash'}"
+                                               Subtitle="{Loc 'stories-blackjack-cashier-buy-cash-sub'}" />
+                    <ui:StoriesBlackjackButton Name="BuyCardButton" Variant="Primary" Icon="icon-card"
+                                               Title="{Loc 'stories-blackjack-cashier-buy-card'}"
+                                               Subtitle="{Loc 'stories-blackjack-cashier-buy-card-sub'}" />
+                    <RichTextLabel Name="BuyHint" MaxWidth="280" Visible="False" />
+                </BoxContainer>
+            </PanelContainer>
+
+            <PanelContainer Name="CashOutPanel">
+                <BoxContainer Orientation="Vertical" Margin="6" SeparationOverride="4">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="2">
+                        <Label Name="CashOutFrom" Text="{Loc 'stories-blackjack-cashier-chips'}" VerticalAlignment="Center" />
+                        <TextureRect Name="CashOutArrow" MinSize="28 28" Stretch="KeepCentered" VerticalAlignment="Center" />
+                        <Label Name="CashOutTo" Text="{Loc 'stories-blackjack-cashier-spesos'}" VerticalAlignment="Center" />
+                    </BoxContainer>
+                    <ui:StoriesBlackjackButton Name="CashOutButton" Variant="Accent" Icon="icon-cash"
+                                               Title="{Loc 'stories-blackjack-cashier-cashout'}"
+                                               Subtitle="{Loc 'stories-blackjack-cashier-cashout-sub'}" />
+                    <ui:StoriesBlackjackButton Name="CashOutCardButton" Variant="Accent" Icon="icon-card"
+                                               Title="{Loc 'stories-blackjack-cashier-cashout-card'}"
+                                               Subtitle="{Loc 'stories-blackjack-cashier-cashout-card-sub'}" />
+                    <ui:StoriesBlackjackButton Name="CashOutAllButton" Variant="Quiet"
+                                               Title="{Loc 'stories-blackjack-cashier-cashout-all'}" />
+                    <RichTextLabel Name="CashOutHint" MaxWidth="280" Visible="False" />
+                </BoxContainer>
+            </PanelContainer>
+
+            <BoxContainer Name="DepositBox" Orientation="Vertical" SeparationOverride="4" Visible="False">
+                <Label Name="DepositLabel" />
+                <ui:StoriesBlackjackButton Name="DepositButton" Variant="Primary" Icon="icon-chips"
+                                           Title="{Loc 'stories-blackjack-cashier-deposit'}" />
+            </BoxContainer>
+
+            <ui:StoriesBlackjackButton Name="WithdrawButton" Variant="Link" HorizontalAlignment="Center"
+                                       Title="{Loc 'stories-blackjack-cashier-withdraw'}" />
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>

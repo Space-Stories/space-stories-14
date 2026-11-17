@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Numerics;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._Stories.Blackjack;
@@ -21,7 +20,6 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
     public const int SeatCount = 5;
     private const int SeatHalf = 36;
     private const int SeatTop = 28;
-    private const int AmountDigits = 9;
 
     private static readonly Vector2[] SeatCentres =
     [
@@ -35,32 +33,32 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
     [Dependency] private IResourceCache _cache = default!;
 
     private readonly StoriesBlackjackSeatControl[] _seats = new StoriesBlackjackSeatControl[SeatCount];
+    private readonly StoriesBlackjackStep[] _steps;
 
     public event Action<int>? OnSit;
     public event Action? OnReady;
     public event Action? OnLeave;
     public event Action? OnSpectate;
-    public event Action<BlackjackCashierOp>? OnCashier;
-    public event Action? OnAmountChanged;
     public event Action? OnFrame;
+
+    public StoriesBlackjackCashier Cashier => CashierPanel;
 
     public StoriesBlackjackLobbyWindow()
     {
         IoCManager.InjectDependencies(this);
         RobustXamlLoader.Load(this);
 
+        _steps = [Step0, Step1, Step2];
+
         Backdrop.PanelOverride = new StyleBoxFlat(StoriesBlackjackPalette.Backdrop);
         TablePanel.PanelOverride = MakePanel(StoriesBlackjackPalette.Felt);
         StatusPanel.PanelOverride = MakePanel(StoriesBlackjackPalette.Gold);
         RulesPanel.PanelOverride = MakePanel(StoriesBlackjackPalette.Gold);
-        CashierPanel.PanelOverride = MakePanel(StoriesBlackjackPalette.Gold);
         WinsPanel.PanelOverride = MakePanel(StoriesBlackjackPalette.Gold);
         RulesTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
-        CashierTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
         WinsTitle.FontColorOverride = StoriesBlackjackPalette.Gold;
         TimerLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
         LimitsLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
-        StackLabel.FontColorOverride = StoriesBlackjackPalette.Text;
 
         LayoutContainer.SetPosition(TableImage, Vector2.Zero);
         for (var i = 0; i < SeatCount; i++)
@@ -76,15 +74,6 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         ReadyButton.OnPressed += _ => OnReady?.Invoke();
         LeaveButton.OnPressed += _ => OnLeave?.Invoke();
         SpectateButton.OnPressed += _ => OnSpectate?.Invoke();
-
-        AmountEdit.IsValid = text => text.Length <= AmountDigits && text.All(char.IsAsciiDigit);
-        AmountEdit.OnTextChanged += _ => OnAmountChanged?.Invoke();
-        BuyCashButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.BuyCash);
-        BuyCardButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.BuyCard);
-        DepositButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.Deposit);
-        CashOutButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.CashOut);
-        CashOutCardButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.CashOutCard);
-        WithdrawButton.OnPressed += _ => OnCashier?.Invoke(BlackjackCashierOp.Withdraw);
     }
 
     public void SetTitle(string text)
@@ -132,10 +121,24 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         TimerLabel.Text = text;
     }
 
-    public void SetButtons(bool readyVisible, string readyText, bool leaveVisible, bool leaveDisabled, bool spectateVisible)
+    public void SetSteps(bool visible)
+    {
+        StepsBox.Visible = visible;
+    }
+
+    public void SetStep(int index, string? text, StoriesBlackjackStepState state)
+    {
+        var step = _steps[index];
+        step.Visible = text != null;
+        if (text != null)
+            step.SetStep(text, state);
+    }
+
+    public void SetButtons(bool readyVisible, string readyText, bool readyPrimary, bool leaveVisible, bool leaveDisabled, bool spectateVisible)
     {
         ReadyButton.Visible = readyVisible;
-        ReadyButton.Text = readyText;
+        ReadyButton.Title = readyText;
+        ReadyButton.Variant = readyPrimary ? StoriesBlackjackButtonVariant.Primary : StoriesBlackjackButtonVariant.Quiet;
         LeaveButton.Visible = leaveVisible;
         LeaveButton.Disabled = leaveDisabled;
         SpectateButton.Visible = spectateVisible;
@@ -147,30 +150,6 @@ public sealed partial class StoriesBlackjackLobbyWindow : FancyWindow
         LimitsLabel.Visible = limitsVisible;
         if (limitsVisible)
             LimitsLabel.Text = limits;
-    }
-
-    public void SetCashier(bool visible, string stackText)
-    {
-        CashierPanel.Visible = visible;
-        if (visible)
-            StackLabel.Text = stackText;
-    }
-
-    public void SetCashierEnabled(bool seated, bool amountValid)
-    {
-        var disabled = !seated || !amountValid;
-        AmountEdit.Editable = seated;
-        DepositButton.Disabled = !seated;
-        BuyCashButton.Disabled = disabled;
-        BuyCardButton.Disabled = disabled;
-        CashOutButton.Disabled = disabled;
-        CashOutCardButton.Disabled = disabled;
-        WithdrawButton.Disabled = disabled;
-    }
-
-    public string GetAmountText()
-    {
-        return AmountEdit.Text;
     }
 
     public void SetWins(bool visible, IReadOnlyList<KeyValuePair<string, int>> rows)

@@ -1,76 +1,59 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
                       xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-                      MinSize="760 520"
+                      xmlns:ui="clr-namespace:Content.Client._Stories.Blackjack.UI"
+                      MinSize="800 580"
                       Resizable="False">
     <PanelContainer Name="Backdrop">
         <BoxContainer Orientation="Vertical">
             <BoxContainer Orientation="Horizontal" Margin="10 8 10 8" SeparationOverride="10">
-                <BoxContainer Orientation="Vertical" SeparationOverride="6" MinWidth="420">
+                <BoxContainer Orientation="Vertical" SeparationOverride="6" MinWidth="420" MaxWidth="420">
                     <PanelContainer Name="TablePanel">
                         <LayoutContainer Name="TableLayout" Margin="6" MinSize="384 260" HorizontalAlignment="Center">
                             <TextureRect Name="TableImage" SetSize="384 224" Stretch="KeepCentered" TextureScale="2 2" />
                         </LayoutContainer>
                     </PanelContainer>
+                    <BoxContainer Name="StepsBox" Orientation="Vertical" SeparationOverride="4">
+                        <ui:StoriesBlackjackStep Name="Step0" />
+                        <ui:StoriesBlackjackStep Name="Step1" />
+                        <ui:StoriesBlackjackStep Name="Step2" />
+                    </BoxContainer>
                     <PanelContainer Name="StatusPanel">
                         <BoxContainer Orientation="Vertical" Margin="8 4">
                             <RichTextLabel Name="StatusLabel" HorizontalAlignment="Center" MaxWidth="400" />
                             <Label Name="TimerLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center" Visible="False" />
                         </BoxContainer>
                     </PanelContainer>
+                    <Control VerticalExpand="True" />
                     <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                        <Button Name="ReadyButton" Text="{Loc 'stories-blackjack-ready'}" HorizontalExpand="True" MinHeight="32" Visible="False" />
-                        <Button Name="LeaveButton" Text="{Loc 'stories-blackjack-leave'}" HorizontalExpand="True" MinHeight="32" Visible="False" />
-                        <Button Name="SpectateButton" Text="{Loc 'stories-blackjack-spectate'}" HorizontalExpand="True" MinHeight="32" Visible="False" />
+                        <ui:StoriesBlackjackButton Name="ReadyButton" Variant="Primary" Icon="icon-check"
+                                                   Title="{Loc 'stories-blackjack-ready'}"
+                                                   HorizontalExpand="True" MinHeight="48" Visible="False" />
+                        <ui:StoriesBlackjackButton Name="LeaveButton" Variant="Quiet"
+                                                   Title="{Loc 'stories-blackjack-leave'}"
+                                                   MinWidth="110" MinHeight="48" Visible="False" />
+                        <ui:StoriesBlackjackButton Name="SpectateButton" Variant="Primary"
+                                                   Title="{Loc 'stories-blackjack-spectate'}"
+                                                   HorizontalExpand="True" MinHeight="48" Visible="False" />
                     </BoxContainer>
                 </BoxContainer>
-                <BoxContainer Orientation="Vertical" MinWidth="300" MaxWidth="300" SeparationOverride="6">
-                    <PanelContainer Name="RulesPanel">
-                        <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
-                            <Label Text="{Loc 'stories-blackjack-rules-title'}" StyleClasses="LabelHeading" Name="RulesTitle" />
-                            <RichTextLabel Name="RulesBody" MaxWidth="280" />
-                            <Label Name="LimitsLabel" Visible="False" />
-                        </BoxContainer>
-                    </PanelContainer>
-                    <PanelContainer Name="CashierPanel" Visible="False">
-                        <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
-                            <Label Text="{Loc 'stories-blackjack-cashier-title'}" StyleClasses="LabelHeading" Name="CashierTitle" />
-                            <Label Name="StackLabel" />
-                            <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                                <Label Text="{Loc 'stories-blackjack-cashier-amount'}" VerticalAlignment="Center" />
-                                <LineEdit Name="AmountEdit" Text="50" HorizontalExpand="True" />
+                <ScrollContainer MinSize="340 570" MaxSize="340 570" HScrollEnabled="False">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="6">
+                        <ui:StoriesBlackjackCashier Name="CashierPanel" Visible="False" />
+                        <PanelContainer Name="RulesPanel">
+                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                <Label Text="{Loc 'stories-blackjack-rules-title'}" StyleClasses="LabelHeading" Name="RulesTitle" />
+                                <RichTextLabel Name="RulesBody" MaxWidth="296" />
+                                <Label Name="LimitsLabel" Visible="False" />
                             </BoxContainer>
-                            <BoxContainer Orientation="Vertical" SeparationOverride="2">
-                                <Label Text="{Loc 'stories-blackjack-cashier-buy-label'}" StyleClasses="LabelSubText" HorizontalAlignment="Left" />
-                                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                                    <Button Name="BuyCashButton" Text="{Loc 'stories-blackjack-cashier-buy-cash'}" HorizontalExpand="True" ClipText="True" />
-                                    <Button Name="BuyCardButton" Text="{Loc 'stories-blackjack-cashier-buy-card'}" HorizontalExpand="True" ClipText="True" />
-                                </BoxContainer>
+                        </PanelContainer>
+                        <PanelContainer Name="WinsPanel" Visible="False">
+                            <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+                                <Label Text="{Loc 'stories-blackjack-wins-title'}" StyleClasses="LabelHeading" Name="WinsTitle" />
+                                <BoxContainer Name="WinsList" Orientation="Vertical" SeparationOverride="2" MinHeight="120" />
                             </BoxContainer>
-                            <BoxContainer Orientation="Vertical" SeparationOverride="2">
-                                <Label Text="{Loc 'stories-blackjack-cashier-cashout-label'}" StyleClasses="LabelSubText" HorizontalAlignment="Left" />
-                                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                                    <Button Name="CashOutButton" Text="{Loc 'stories-blackjack-cashier-cashout'}" HorizontalExpand="True" ClipText="True" />
-                                    <Button Name="CashOutCardButton" Text="{Loc 'stories-blackjack-cashier-cashout-card'}" HorizontalExpand="True" ClipText="True" />
-                                </BoxContainer>
-                            </BoxContainer>
-                            <BoxContainer Orientation="Vertical" SeparationOverride="2">
-                                <Label Text="{Loc 'stories-blackjack-cashier-hand-label'}" StyleClasses="LabelSubText" HorizontalAlignment="Left" />
-                                <BoxContainer Orientation="Horizontal" SeparationOverride="4">
-                                    <Button Name="DepositButton" Text="{Loc 'stories-blackjack-cashier-deposit'}" HorizontalExpand="True" ClipText="True" />
-                                    <Button Name="WithdrawButton" Text="{Loc 'stories-blackjack-cashier-withdraw'}" HorizontalExpand="True" ClipText="True" />
-                                </BoxContainer>
-                            </BoxContainer>
-                        </BoxContainer>
-                    </PanelContainer>
-                    <PanelContainer Name="WinsPanel" Visible="False" VerticalExpand="True">
-                        <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
-                            <Label Text="{Loc 'stories-blackjack-wins-title'}" StyleClasses="LabelHeading" Name="WinsTitle" />
-                            <ScrollContainer VerticalExpand="True" MinHeight="120" HScrollEnabled="False">
-                                <BoxContainer Name="WinsList" Orientation="Vertical" SeparationOverride="2" />
-                            </ScrollContainer>
-                        </BoxContainer>
-                    </PanelContainer>
-                </BoxContainer>
+                        </PanelContainer>
+                    </BoxContainer>
+                </ScrollContainer>
             </BoxContainer>
             <BoxContainer Orientation="Vertical">
                 <PanelContainer StyleClasses="LowDivider" />

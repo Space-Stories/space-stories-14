@@ -67,6 +67,27 @@
           0.1
         ]
       ]
+    },
+    {
+      "name": "icon-cash"
+    },
+    {
+      "name": "icon-card"
+    },
+    {
+      "name": "icon-chips"
+    },
+    {
+      "name": "icon-hand"
+    },
+    {
+      "name": "icon-check"
+    },
+    {
+      "name": "arrow-right"
+    },
+    {
+      "name": "chip-ring"
     }
   ]
 }
