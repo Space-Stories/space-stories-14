@@ -39,7 +39,7 @@ public sealed partial class StoriesAssemblyBenchCanvas : Control
     private bool _hovered;
     private Vector2? _mouse;
 
-    public int PixelScale { get; set; } = 4;
+    private const int PixelScale = 4;
 
     public event Action? OnZonePressed;
 

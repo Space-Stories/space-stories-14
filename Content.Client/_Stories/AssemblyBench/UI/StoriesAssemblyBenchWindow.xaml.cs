@@ -42,7 +42,7 @@ public sealed partial class StoriesAssemblyBenchWindow : FancyWindow
 
         ProductView.SetPrototype(view.Result);
         ProductLabel.Text = view.ResultName;
-        CompletedLabel.Text = Loc.GetString("stories-assembly-bench-completed", ("count", view.Completed));
+        CompletedLabel.Text = view.CompletedText;
 
         var rebuild = StepList.ChildCount != view.Steps.Count;
         if (rebuild)
@@ -50,12 +50,6 @@ public sealed partial class StoriesAssemblyBenchWindow : FancyWindow
 
         for (var i = 0; i < view.Steps.Count; i++)
         {
-            var state = i < view.Current
-                ? StoriesAssemblyBenchStepState.Done
-                : i == view.Current
-                    ? StoriesAssemblyBenchStepState.Current
-                    : StoriesAssemblyBenchStepState.Pending;
-
             StoriesAssemblyBenchStepRow row;
             if (rebuild)
             {
@@ -67,14 +61,12 @@ public sealed partial class StoriesAssemblyBenchWindow : FancyWindow
                 row = (StoriesAssemblyBenchStepRow) StepList.GetChild(i);
             }
 
-            row.SetStep(view.Steps[i], state);
+            row.SetStep(view.Steps[i], view.Steps[i].State);
         }
 
         Progress.MaxValue = view.Steps.Count;
         Progress.Value = view.Current;
-        ProgressLabel.Text = Loc.GetString("stories-assembly-bench-progress",
-            ("step", Math.Min(view.Current + 1, view.Steps.Count)),
-            ("total", view.Steps.Count));
+        ProgressLabel.Text = view.ProgressText;
 
         UpdateHint();
     }
@@ -96,10 +88,7 @@ public sealed partial class StoriesAssemblyBenchWindow : FancyWindow
 
         var step = view.Steps[view.Current];
         StepLabel.Text = step.Name;
-        var hint = _working
-            ? Loc.GetString("stories-assembly-bench-hint-working")
-            : Loc.GetString(step.IsTool ? "stories-assembly-bench-hint-tool" : "stories-assembly-bench-hint-insert",
-                ("item", step.Requirement));
+        var hint = _working ? view.WorkingHint : view.Hint;
         HintLabel.SetMessage(FormattedMessage.FromUnformatted(hint), StoriesAssemblyBenchPalette.Text);
     }
 
