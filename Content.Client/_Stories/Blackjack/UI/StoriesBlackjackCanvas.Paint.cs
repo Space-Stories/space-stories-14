@@ -64,9 +64,9 @@ public sealed partial class StoriesBlackjackCanvas
 
     private void DrawText(DrawingHandleScreen handle, Font font, string text, float x, float y, Color color)
     {
-        var baseline = new Vector2(MathF.Round(x), MathF.Round(y) + font.GetAscent(_u));
-        handle.DrawString(font, baseline + new Vector2(_k, _k), text, _u, StoriesBlackjackPalette.Shade.WithAlpha(0.75f));
-        handle.DrawString(font, baseline, text, _u, color);
+        var position = new Vector2(MathF.Round(x), MathF.Round(y));
+        handle.DrawString(font, position + new Vector2(_k, _k), text, _u, StoriesBlackjackPalette.Shade.WithAlpha(0.75f));
+        handle.DrawString(font, position, text, _u, color);
     }
 
     private void DrawCentred(DrawingHandleScreen handle, Font font, string text, float cx, float y, Color color)
@@ -173,14 +173,6 @@ public sealed partial class StoriesBlackjackCanvas
         }
     }
 
-    private void DrawRing(DrawingHandleScreen handle, float x, float centreY, TimeSpan now)
-    {
-        var state = _ui["turn-ring"];
-        var frame = FrameAt(state, (float) now.TotalSeconds);
-        var size = 28f * _k;
-        handle.DrawTextureRect(state.GetFrame(RsiDirection.South, frame), UIBox2.FromDimensions(MathF.Round(x), MathF.Round(centreY - size / 2f), size, size));
-    }
-
     private static int FrameAt(RSI.State state, float time)
     {
         if (state.DelayCount <= 1 || state.AnimationLength <= 0f)
@@ -198,64 +190,116 @@ public sealed partial class StoriesBlackjackCanvas
         return state.DelayCount - 1;
     }
 
-    private string TotalText(BlackjackHand hand, bool compact, out Color color)
+    private void DrawRing(DrawingHandleScreen handle, float x, float centreY, TimeSpan now)
     {
-        var total = BlackjackRules.Total(hand.Cards, out var soft);
-        color = total > BlackjackRules.Target
-            ? StoriesBlackjackPalette.Lose
-            : total == BlackjackRules.Target ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Text;
-        var key = soft && !compact ? "stories-blackjack-panel-total-soft" : "stories-blackjack-panel-total";
-        return Loc.GetString(key, ("total", total));
+        var state = _ui["turn-ring"];
+        var frame = FrameAt(state, (float) now.TotalSeconds);
+        var size = 28f * _k;
+        handle.DrawTextureRect(state.GetFrame(RsiDirection.South, frame), UIBox2.FromDimensions(MathF.Round(x), MathF.Round(centreY - size / 2f), size, size));
     }
 
-    private bool TryPlaque(BlackjackTableComponent table, BlackjackHand hand, out string text, out Color color)
+    private static Color TotalColor(int total)
     {
-        text = string.Empty;
-        color = StoriesBlackjackPalette.Text;
-        if (hand.Cards.Count == 0)
-            return false;
+        return total > BlackjackRules.Target
+            ? StoriesBlackjackPalette.Lose
+            : total == BlackjackRules.Target ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Text;
+    }
 
+    private void BuildTexts(BlackjackTableComponent table)
+    {
+        _seatTexts = new SeatText[table.Seats.Count];
+        for (var s = 0; s < table.Seats.Count; s++)
+        {
+            var seat = table.Seats[s];
+            var text = new SeatText { Name = seat.Name, Hands = new HandText[seat.Hands.Count] };
+            var bets = 0;
+            var totals = string.Empty;
+            for (var h = 0; h < seat.Hands.Count; h++)
+            {
+                var hand = seat.Hands[h];
+                var handText = new HandText();
+                text.Hands[h] = handText;
+                bets += hand.Bet;
+                if (hand.Cards.Count == 0)
+                    continue;
+
+                var total = BlackjackRules.Total(hand.Cards, out var soft);
+                handText.TotalColor = TotalColor(total);
+                handText.Compact = Loc.GetString("stories-blackjack-panel-total", ("total", total));
+                handText.Total = soft ? Loc.GetString("stories-blackjack-panel-total-soft", ("total", total)) : handText.Compact;
+                totals += (totals.Length > 0 ? " | " : string.Empty) + handText.Compact;
+                if (table.Wager && hand.Bet > 0)
+                    handText.Bet = Loc.GetString("stories-blackjack-panel-bet", ("amount", hand.Bet));
+
+                BuildPlaque(table, hand, handText);
+            }
+
+            text.Totals = totals;
+            if (table.Wager && bets > 0)
+                text.BetSum = Loc.GetString("stories-blackjack-panel-bet", ("amount", bets));
+
+            if (table.Wager && seat.Bet > 0)
+                text.Stake = Loc.GetString("stories-blackjack-panel-bet", ("amount", seat.Bet));
+
+            _seatTexts[s] = text;
+        }
+
+        _dealerText = null;
+        if (table.DealerHand.Count > 0)
+        {
+            var total = BlackjackRules.Total(table.DealerHand, out var soft);
+            _dealerText = Loc.GetString(soft ? "stories-blackjack-panel-total-soft" : "stories-blackjack-panel-total", ("total", total));
+            if (table.DealerHidden)
+                _dealerText += " + " + Loc.GetString("stories-blackjack-panel-hidden");
+
+            _dealerColor = total > BlackjackRules.Target
+                ? StoriesBlackjackPalette.Lose
+                : total == BlackjackRules.Target && !table.DealerHidden ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Text;
+        }
+    }
+
+    private static void BuildPlaque(BlackjackTableComponent table, BlackjackHand hand, HandText text)
+    {
+        var net = Math.Max(0, hand.Payout - hand.Bet);
+        text.Win = $"+{net}";
         if (hand.State == BlackjackHandState.Bust)
         {
-            text = Loc.GetString("stories-blackjack-result-bust");
-            color = StoriesBlackjackPalette.Lose;
-            return true;
+            text.Plaque = Loc.GetString("stories-blackjack-result-bust");
+            text.PlaqueColor = StoriesBlackjackPalette.Lose;
+            return;
         }
 
         if (table.Phase != BlackjackPhase.Payout)
         {
             if (hand.State != BlackjackHandState.Blackjack)
-                return false;
+                return;
 
-            text = Loc.GetString("stories-blackjack-result-blackjack-plain");
-            color = StoriesBlackjackPalette.Gold;
-            return true;
+            text.Plaque = Loc.GetString("stories-blackjack-result-blackjack-plain");
+            text.PlaqueColor = StoriesBlackjackPalette.Gold;
+            return;
         }
 
-        var net = Math.Max(0, hand.Payout - hand.Bet);
         switch (hand.Result)
         {
             case BlackjackResult.Win:
-                text = table.Wager
+                text.Plaque = table.Wager
                     ? Loc.GetString("stories-blackjack-result-win", ("amount", net))
                     : Loc.GetString("stories-blackjack-result-win-plain");
-                color = StoriesBlackjackPalette.Win;
-                return true;
+                text.PlaqueColor = StoriesBlackjackPalette.Win;
+                break;
             case BlackjackResult.Blackjack:
-                text = table.Wager
+                text.Plaque = table.Wager
                     ? Loc.GetString("stories-blackjack-result-blackjack", ("amount", net))
                     : Loc.GetString("stories-blackjack-result-blackjack-plain");
-                color = StoriesBlackjackPalette.Gold;
-                return true;
+                text.PlaqueColor = StoriesBlackjackPalette.Gold;
+                break;
             case BlackjackResult.Push:
-                text = Loc.GetString("stories-blackjack-result-push");
-                return true;
+                text.Plaque = Loc.GetString("stories-blackjack-result-push");
+                break;
             case BlackjackResult.Lose:
-                text = Loc.GetString("stories-blackjack-result-lose");
-                color = StoriesBlackjackPalette.Lose;
-                return true;
-            default:
-                return false;
+                text.Plaque = Loc.GetString("stories-blackjack-result-lose");
+                text.PlaqueColor = StoriesBlackjackPalette.Lose;
+                break;
         }
     }
 
@@ -270,7 +314,7 @@ public sealed partial class StoriesBlackjackCanvas
         DrawCentred(handle, _bold, text, rect.Left + width / 2f, rect.Top + Sx(4), color);
     }
 
-    private void DrawEffects(DrawingHandleScreen handle, int seat, int index, BlackjackHand hand, Vector2 origin, TimeSpan now)
+    private void DrawEffects(DrawingHandleScreen handle, int seat, int index, string win, Vector2 origin, TimeSpan now)
     {
         if (!_wins.TryGetValue((seat, index), out var start) || _table == null)
             return;
@@ -298,14 +342,16 @@ public sealed partial class StoriesBlackjackCanvas
 
         var rise = EaseOut(t / 1.2f) * Sx(60);
         var alpha = t < 1f ? 1f : 1f - (t - 1f) / (EffectTime - 1f);
-        var net = Math.Max(0, hand.Payout - hand.Bet);
-        DrawCentred(handle, _bold, $"+{net}", origin.X, origin.Y - Sx(28) - rise, StoriesBlackjackPalette.GoldBright.WithAlpha(Math.Clamp(alpha, 0f, 1f)));
+        DrawCentred(handle, _bold, win, origin.X, origin.Y - Sx(28) - rise, StoriesBlackjackPalette.GoldBright.WithAlpha(Math.Clamp(alpha, 0f, 1f)));
     }
 
     private void Paint(DrawingHandleScreen handle, BlackjackTableComponent table)
     {
-        _u = UIScale;
-        _k = Math.Max(1, (int) MathF.Round(_u));
+        _u = MathF.Max(UIScale, 1f);
+        _k = Math.Max(1, (int) MathF.Floor(_u + 0.001f));
+        if (_seatTexts.Length != table.Seats.Count)
+            return;
+
         var now = _timing.RealTime;
         var width = PixelSize.X;
         var centre = MathF.Round(width / 2f);
@@ -347,7 +393,7 @@ public sealed partial class StoriesBlackjackCanvas
 
     private void DrawDealer(DrawingHandleScreen handle, BlackjackTableComponent table, TimeSpan now, float centre, float width)
     {
-        DrawCentred(handle, _bold, Loc.GetString("stories-blackjack-panel-dealer"), centre, Sx(DealerLabelY), StoriesBlackjackPalette.Gold);
+        DrawCentred(handle, _bold, _dealerLabel, centre, Sx(DealerLabelY), StoriesBlackjackPalette.Gold);
 
         var known = table.DealerHand.Count;
         var count = known + (table.DealerHidden ? 1 : 0);
@@ -376,34 +422,26 @@ public sealed partial class StoriesBlackjackCanvas
             DrawCardTexture(handle, texture, x + step * i, y, 2, new CardKey(-1, 0, i, card), now, factor);
         }
 
-        if (known == 0)
+        if (_dealerText == null)
             return;
 
-        var total21 = BlackjackRules.Total(table.DealerHand, out var soft);
-        var text = Loc.GetString(soft ? "stories-blackjack-panel-total-soft" : "stories-blackjack-panel-total", ("total", total21));
-        if (table.DealerHidden)
-            text += " + " + Loc.GetString("stories-blackjack-panel-hidden");
-
-        var color = total21 > BlackjackRules.Target
-            ? StoriesBlackjackPalette.Lose
-            : total21 == BlackjackRules.Target && !table.DealerHidden ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Text;
-        DrawText(handle, _bold, text, x + total + Sx(12), y + CardHeight * cs / 2f - _bold.GetLineHeight(_u) / 2f, color);
+        DrawText(handle, _bold, _dealerText, x + total + Sx(12), y + CardHeight * cs / 2f - _bold.GetLineHeight(_u) / 2f, _dealerColor);
     }
 
     private void DrawOwn(DrawingHandleScreen handle, BlackjackTableComponent table, TimeSpan now, float centre, float width)
     {
         var seat = table.Seats[_mySeat];
+        var seatText = _seatTexts[_mySeat];
         var myTurn = table.Phase == BlackjackPhase.Turns && table.ActiveSeat == _mySeat;
-        var label = Loc.GetString("stories-blackjack-panel-you");
         var labelY = Sx(PlayerLabelY);
-        DrawCentred(handle, _bold, label, centre, labelY, StoriesBlackjackPalette.Gold);
+        DrawCentred(handle, _bold, _youLabel, centre, labelY, StoriesBlackjackPalette.Gold);
         if (myTurn)
-            DrawRing(handle, centre - TextWidth(_bold, label) / 2f - 28f * _k - Sx(4), labelY + _bold.GetLineHeight(_u) / 2f, now);
+            DrawRing(handle, centre - TextWidth(_bold, _youLabel) / 2f - 28f * _k - Sx(4), labelY + _bold.GetLineHeight(_u) / 2f, now);
 
         var count = seat.Hands.Count;
-        if (count == 0)
+        if (count == 0 || seatText.Hands.Length < count)
         {
-            DrawStake(handle, table, seat, centre);
+            DrawStake(handle, seatText, seat.Bet, centre);
             return;
         }
 
@@ -422,6 +460,7 @@ public sealed partial class StoriesBlackjackCanvas
         for (var i = 0; i < count; i++)
         {
             var hand = seat.Hands[i];
+            var handText = seatText.Hands[i];
             var handWidth = Fit(hand.Cards.Count, BigStep, 2, maxWidth, out var step);
             if (hand.Cards.Count == 0)
                 continue;
@@ -436,34 +475,34 @@ public sealed partial class StoriesBlackjackCanvas
                 DrawGlow(handle, box, now);
 
             var middle = hx + handWidth / 2f;
-            var text = TotalText(hand, false, out var color);
-            DrawCentred(handle, _bold, text, middle, Sx(PlayerTextY), color);
-            if (table.Wager && hand.Bet > 0)
-                DrawCentred(handle, _font, Loc.GetString("stories-blackjack-panel-bet", ("amount", hand.Bet)), middle, Sx(PlayerTextY) + lineHeight + Sx(1), StoriesBlackjackPalette.Gold);
+            DrawCentred(handle, _bold, handText.Total, middle, Sx(PlayerTextY), handText.TotalColor);
+            if (handText.Bet != null)
+                DrawCentred(handle, _font, handText.Bet, middle, Sx(PlayerTextY) + lineHeight + Sx(1), StoriesBlackjackPalette.Gold);
 
-            if (TryPlaque(table, hand, out var plaque, out var plaqueColor))
-                DrawPlaque(handle, plaque, plaqueColor, middle, y + cardHeight / 2f);
+            if (handText.Plaque != null)
+                DrawPlaque(handle, handText.Plaque, handText.PlaqueColor, middle, y + cardHeight / 2f);
 
-            DrawEffects(handle, _mySeat, i, hand, new Vector2(middle, y), now);
+            DrawEffects(handle, _mySeat, i, handText.Win, new Vector2(middle, y), now);
             x += handWidth + gap;
         }
     }
 
-    private void DrawStake(DrawingHandleScreen handle, BlackjackTableComponent table, BlackjackSeat seat, float centre)
+    private void DrawStake(DrawingHandleScreen handle, SeatText text, int bet, float centre)
     {
-        if (!table.Wager || seat.Bet <= 0)
+        if (text.Stake == null)
             return;
 
-        var name = seat.Bet >= 500 ? "chip-500" : seat.Bet >= 100 ? "chip-100" : seat.Bet >= 25 ? "chip-25" : "chip-5";
+        var name = bet >= 500 ? "chip-500" : bet >= 100 ? "chip-100" : bet >= 25 ? "chip-25" : "chip-5";
         var size = 56f * _k;
         var y = Sx(PlayerCardsY + 24);
         handle.DrawTextureRect(_ui[name].GetFrame(RsiDirection.South, 0), UIBox2.FromDimensions(MathF.Round(centre - size / 2f), y, size, size));
-        DrawCentred(handle, _bold, Loc.GetString("stories-blackjack-panel-bet", ("amount", seat.Bet)), centre, y + size + Sx(6), StoriesBlackjackPalette.Gold);
+        DrawCentred(handle, _bold, text.Stake, centre, y + size + Sx(6), StoriesBlackjackPalette.Gold);
     }
 
     private void DrawSlot(DrawingHandleScreen handle, BlackjackTableComponent table, int index, float x, float y, float width, TimeSpan now)
     {
         var seat = table.Seats[index];
+        var text = _seatTexts[index];
         var active = table.Phase == BlackjackPhase.Turns && table.ActiveSeat == index;
         var ring = 28f * _k;
         var nameX = x;
@@ -475,8 +514,15 @@ public sealed partial class StoriesBlackjackCanvas
             nameWidth -= ring + Sx(2);
         }
 
-        var name = FitText(active ? _bold : _font, seat.Name, nameWidth);
-        DrawText(handle, active ? _bold : _font, name, nameX, y, active ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Text);
+        var nameFont = active ? _bold : _font;
+        if (text.FitWidth != nameWidth || text.FitActive != active)
+        {
+            text.Fitted = FitText(nameFont, text.Name, nameWidth);
+            text.FitWidth = nameWidth;
+            text.FitActive = active;
+        }
+
+        DrawText(handle, nameFont, text.Fitted, nameX, y, active ? StoriesBlackjackPalette.Gold : StoriesBlackjackPalette.Text);
 
         var cardsY = y + Sx(SlotCardsOffset);
         var cardHeight = CardHeight * _k;
@@ -488,10 +534,10 @@ public sealed partial class StoriesBlackjackCanvas
         if (active)
             DrawGlow(handle, UIBox2.FromDimensions(x + Sx(2), cardsY - Sx(2), width - Sx(4), cardHeight + Sx(4)), now);
 
-        if (count == 0)
+        if (count == 0 || text.Hands.Length < count)
         {
-            if (table.Wager && seat.Bet > 0)
-                DrawCentred(handle, _small, Loc.GetString("stories-blackjack-panel-bet", ("amount", seat.Bet)), centre, cardsY + cardHeight / 2f - lineHeight / 2f, StoriesBlackjackPalette.Gold);
+            if (text.Stake != null)
+                DrawCentred(handle, _small, text.Stake, centre, cardsY + cardHeight / 2f - lineHeight / 2f, StoriesBlackjackPalette.Gold);
 
             return;
         }
@@ -505,8 +551,6 @@ public sealed partial class StoriesBlackjackCanvas
         }
 
         var hx = MathF.Max(x, MathF.Round(centre - sum / 2f));
-        var totals = string.Empty;
-        var bets = 0;
         for (var i = 0; i < count; i++)
         {
             var hand = seat.Hands[i];
@@ -515,37 +559,37 @@ public sealed partial class StoriesBlackjackCanvas
             {
                 var px = hx + ShakeX(index, i, now);
                 DrawHand(handle, index, i, hand, px, cardsY, 1, step, now);
-                DrawEffects(handle, index, i, hand, new Vector2(px + handWidth / 2f, cardsY), now);
-                totals += (totals.Length > 0 ? " | " : string.Empty) + TotalText(hand, count > 1, out _);
+                DrawEffects(handle, index, i, text.Hands[i].Win, new Vector2(px + handWidth / 2f, cardsY), now);
             }
 
-            bets += hand.Bet;
             hx += handWidth + gap;
         }
 
         if (count == 1 && seat.Hands[0].Cards.Count > 0)
-        {
-            var single = TotalText(seat.Hands[0], false, out var color);
-            DrawCentred(handle, _small, single, centre, lineY, color);
-        }
-        else if (totals.Length > 0)
-        {
-            DrawCentred(handle, _small, totals, centre, lineY, StoriesBlackjackPalette.Text);
-        }
+            DrawCentred(handle, _small, text.Hands[0].Total, centre, lineY, text.Hands[0].TotalColor);
+        else if (text.Totals.Length > 0)
+            DrawCentred(handle, _small, text.Totals, centre, lineY, StoriesBlackjackPalette.Text);
 
         lineY += lineHeight;
-        if (table.Wager && bets > 0)
+        if (text.BetSum != null)
         {
-            DrawCentred(handle, _small, Loc.GetString("stories-blackjack-panel-bet", ("amount", bets)), centre, lineY, StoriesBlackjackPalette.Gold);
+            DrawCentred(handle, _small, text.BetSum, centre, lineY, StoriesBlackjackPalette.Gold);
             lineY += lineHeight;
         }
 
         for (var i = 0; i < count; i++)
         {
-            if (!TryPlaque(table, seat.Hands[i], out var plaque, out var plaqueColor))
+            var handText = text.Hands[i];
+            if (handText.Plaque == null)
                 continue;
 
-            DrawCentred(handle, _small, FitText(_small, plaque, width), centre, lineY, plaqueColor);
+            if (handText.PlaqueFitWidth != width)
+            {
+                handText.PlaqueFitted = FitText(_small, handText.Plaque, width);
+                handText.PlaqueFitWidth = width;
+            }
+
+            DrawCentred(handle, _small, handText.PlaqueFitted, centre, lineY, handText.PlaqueColor);
             lineY += lineHeight;
         }
     }

@@ -14,18 +14,18 @@ namespace Content.Client._Stories.Blackjack.UI;
 public sealed partial class StoriesBlackjackCanvas : Control
 {
     public const int DesignWidth = 664;
-    public const int DesignHeight = 304;
+    public const int DesignHeight = 312;
 
     private const float SideWidth = 140f;
-    private const float DealerLabelY = 2f;
-    private const float DealerCardsY = 18f;
+    private const float DealerLabelY = 0f;
+    private const float DealerCardsY = 22f;
     private const float PlayerLabelY = 136f;
-    private const float PlayerCardsY = 154f;
-    private const float PlayerTextY = 268f;
+    private const float PlayerCardsY = 158f;
+    private const float PlayerTextY = 272f;
     private const float SlotTopFirst = 4f;
     private const float SlotTopSecond = 150f;
     private const float SlotTopRow = 140f;
-    private const float SlotCardsOffset = 18f;
+    private const float SlotCardsOffset = 20f;
     private const float CardWidth = 40f;
     private const float CardHeight = 56f;
     private const float BigStep = 34f;
@@ -78,6 +78,37 @@ public sealed partial class StoriesBlackjackCanvas : Control
 
     private readonly record struct CardKey(int Seat, int Hand, int Index, BlackjackCard Card);
 
+    private sealed class HandText
+    {
+        public string Total = string.Empty;
+        public string Compact = string.Empty;
+        public Color TotalColor = StoriesBlackjackPalette.Text;
+        public string? Bet;
+        public string? Plaque;
+        public Color PlaqueColor = StoriesBlackjackPalette.Text;
+        public string Win = string.Empty;
+        public string PlaqueFitted = string.Empty;
+        public float PlaqueFitWidth = -1f;
+    }
+
+    private sealed class SeatText
+    {
+        public string Name = string.Empty;
+        public string Fitted = string.Empty;
+        public float FitWidth = -1f;
+        public bool FitActive;
+        public string Totals = string.Empty;
+        public string? BetSum;
+        public string? Stake;
+        public HandText[] Hands = Array.Empty<HandText>();
+    }
+
+    private SeatText[] _seatTexts = Array.Empty<SeatText>();
+    private string? _dealerText;
+    private Color _dealerColor = StoriesBlackjackPalette.Text;
+    private string _dealerLabel = string.Empty;
+    private string _youLabel = string.Empty;
+
     public StoriesBlackjackCanvas()
     {
         IoCManager.InjectDependencies(this);
@@ -89,6 +120,14 @@ public sealed partial class StoriesBlackjackCanvas : Control
         _small = new VectorFont(_cache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf"), 10);
         MinSize = new Vector2(DesignWidth, DesignHeight);
         MouseFilter = MouseFilterMode.Ignore;
+        _dealerLabel = Loc.GetString("stories-blackjack-panel-dealer");
+        _youLabel = Loc.GetString("stories-blackjack-panel-you");
+    }
+
+    protected override Vector2 MeasureOverride(Vector2 availableSize)
+    {
+        var scale = MathF.Max(UIScale, 1f) / UIScale;
+        return new Vector2(DesignWidth, DesignHeight) * scale;
     }
 
     public void SetState(BlackjackTableComponent table, int mySeat)
@@ -174,6 +213,7 @@ public sealed partial class StoriesBlackjackCanvas : Control
         else
             PruneHands(_wins);
 
+        BuildTexts(table);
         _prevHidden = table.DealerHidden;
         _prevDealerCount = table.DealerHand.Count;
         _initialised = true;

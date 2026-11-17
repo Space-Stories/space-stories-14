@@ -15,34 +15,23 @@ namespace Content.Client._Stories.Blackjack.UI;
 [GenerateTypedNameReferences]
 public sealed partial class StoriesBlackjackPanel : PanelContainer
 {
-    private const int ChipSmall = 5;
-    private const int ChipMedium = 25;
-    private const int ChipLarge = 100;
-    private const int ChipHuge = 500;
-    private const float LockTime = 1.5f;
-    private const float LowTimer = 0.25f;
-
     private static readonly ResPath UiSprite = new("_Stories/Interface/Blackjack/ui.rsi");
 
-    [Dependency] private IGameTiming _timing = default!;
     [Dependency] private IResourceCache _cache = default!;
 
     private readonly StyleBoxFlat _barNormal = new(StoriesBlackjackPalette.Gold);
     private readonly StyleBoxFlat _barLow = new(StoriesBlackjackPalette.Lose);
-    private BlackjackTableComponent? _table;
-    private int _mySeat = -1;
-    private int _betSum;
-    private bool _collapsed;
-    private bool _locked;
-    private TimeSpan _lockUntil;
-    private BlackjackPhase _lastPhase = BlackjackPhase.Idle;
-    private int _countdown = int.MinValue;
     private bool _barLowShown;
 
-    public event Action<int>? OnBet;
-    public event Action<BlackjackAction, int>? OnAction;
+    public event Action<int>? OnChip;
+    public event Action? OnClear;
+    public event Action? OnAllIn;
+    public event Action? OnRepeat;
+    public event Action? OnPlace;
+    public event Action<BlackjackAction>? OnAction;
+    public event Action? OnCollapse;
     public event Action? OnLeave;
-    public event Action? OnClose;
+    public event Action? OnFrame;
 
     public StoriesBlackjackPanel()
     {
@@ -63,6 +52,7 @@ public sealed partial class StoriesBlackjackPanel : PanelContainer
         SumLabel.FontColorOverride = StoriesBlackjackPalette.Gold;
         TimerBar.BackgroundStyleBoxOverride = new StyleBoxFlat(StoriesBlackjackPalette.Backdrop);
         TimerBar.ForegroundStyleBoxOverride = _barNormal;
+        TimerBar.Modulate = Color.Transparent;
 
         var rsi = _cache.GetResource<RSIResource>(SpriteSpecifierSerializer.TextureRoot / UiSprite).RSI;
         Chip5.TextureNormal = rsi["chip-5"].GetFrame(RsiDirection.South, 0);
@@ -80,300 +70,111 @@ public sealed partial class StoriesBlackjackPanel : PanelContainer
         SplitButton.Text = Loc.GetString("stories-blackjack-panel-split");
         TurnLabel.Text = Loc.GetString("stories-blackjack-panel-your-turn");
 
-        Chip5.OnPressed += _ => AddChip(ChipSmall);
-        Chip25.OnPressed += _ => AddChip(ChipMedium);
-        Chip100.OnPressed += _ => AddChip(ChipLarge);
-        Chip500.OnPressed += _ => AddChip(ChipHuge);
-        ClearButton.OnPressed += _ => SetSum(0);
-        AllInButton.OnPressed += _ => SetSum(BetCap());
-        RepeatButton.OnPressed += _ => SetSum(MySeat()?.LastBet ?? 0);
-        PlaceButton.OnPressed += _ => PlaceBet();
-        HitButton.OnPressed += _ => SendAction(BlackjackAction.Hit);
-        StandButton.OnPressed += _ => SendAction(BlackjackAction.Stand);
-        DoubleButton.OnPressed += _ => SendAction(BlackjackAction.Double);
-        SplitButton.OnPressed += _ => SendAction(BlackjackAction.Split);
-        CollapseButton.OnPressed += _ =>
-        {
-            _collapsed = !_collapsed;
-            Refresh();
-        };
-        LeaveButton.OnPressed += _ =>
-        {
-            if (MySeat() != null)
-                OnLeave?.Invoke();
-            else
-                OnClose?.Invoke();
-        };
+        Chip5.OnPressed += _ => OnChip?.Invoke(5);
+        Chip25.OnPressed += _ => OnChip?.Invoke(25);
+        Chip100.OnPressed += _ => OnChip?.Invoke(100);
+        Chip500.OnPressed += _ => OnChip?.Invoke(500);
+        ClearButton.OnPressed += _ => OnClear?.Invoke();
+        AllInButton.OnPressed += _ => OnAllIn?.Invoke();
+        RepeatButton.OnPressed += _ => OnRepeat?.Invoke();
+        PlaceButton.OnPressed += _ => OnPlace?.Invoke();
+        HitButton.OnPressed += _ => OnAction?.Invoke(BlackjackAction.Hit);
+        StandButton.OnPressed += _ => OnAction?.Invoke(BlackjackAction.Stand);
+        DoubleButton.OnPressed += _ => OnAction?.Invoke(BlackjackAction.Double);
+        SplitButton.OnPressed += _ => OnAction?.Invoke(BlackjackAction.Split);
+        CollapseButton.OnPressed += _ => OnCollapse?.Invoke();
+        LeaveButton.OnPressed += _ => OnLeave?.Invoke();
     }
 
-    public static int FindSeat(BlackjackTableComponent table, NetEntity me)
+    public void SetCanvas(BlackjackTableComponent table, int mySeat)
     {
-        if (!me.IsValid())
-            return -1;
-
-        for (var i = 0; i < table.Seats.Count; i++)
-        {
-            if (table.Seats[i].Occupied && table.Seats[i].Player == me)
-                return i;
-        }
-
-        return -1;
+        Canvas.SetState(table, mySeat);
     }
 
-    public void SetState(BlackjackTableComponent table, NetEntity me)
+    public void SetHeader(string title, string? stack, string collapse, string leave, bool leaveEnabled)
     {
-        _table = table;
-        _mySeat = FindSeat(table, me);
-        _locked = false;
+        TitleLabel.Text = title;
+        StackLabel.Visible = stack != null;
+        if (stack != null)
+            StackLabel.Text = stack;
 
-        if (table.Phase != _lastPhase)
-        {
-            if (table.Phase == BlackjackPhase.Betting)
-                _betSum = 0;
-
-            _lastPhase = table.Phase;
-        }
-
-        if (MySeat() is { Bet: > 0 })
-            _betSum = 0;
-
-        Canvas.SetState(table, _mySeat);
-        Refresh();
+        CollapseButton.Text = collapse;
+        LeaveButton.Text = leave;
+        LeaveButton.Disabled = !leaveEnabled;
     }
 
-    private BlackjackSeat? MySeat()
+    public void SetCollapsed(bool collapsed, bool showTurn)
     {
-        if (_table == null || _mySeat < 0 || _mySeat >= _table.Seats.Count)
-            return null;
-
-        return _table.Seats[_mySeat];
+        Body.Visible = !collapsed;
+        TurnLabel.Visible = collapsed && showTurn;
     }
 
-    private int BetCap()
+    public void ShowStatus(string text)
     {
-        if (_table == null || MySeat() is not { } seat)
-            return 0;
-
-        return _table.MaxBet > 0 ? Math.Min(seat.Chips, _table.MaxBet) : seat.Chips;
-    }
-
-    private void AddChip(int value)
-    {
-        SetSum(_betSum + value);
-    }
-
-    private void SetSum(int value)
-    {
-        _betSum = Math.Clamp(value, 0, BetCap());
-        Refresh();
-    }
-
-    private void PlaceBet()
-    {
-        if (_locked || _table == null || _betSum < _table.MinBet || _betSum > BetCap())
-            return;
-
-        Lock();
-        OnBet?.Invoke(_betSum);
-        Refresh();
-    }
-
-    private void SendAction(BlackjackAction action)
-    {
-        if (_locked || _table == null || ActiveHand() == null)
-            return;
-
-        Lock();
-        OnAction?.Invoke(action, _table.ActiveHand);
-        Refresh();
-    }
-
-    private void Lock()
-    {
-        _locked = true;
-        _lockUntil = _timing.RealTime + TimeSpan.FromSeconds(LockTime);
-    }
-
-    private BlackjackHand? ActiveHand()
-    {
-        if (_table == null || MySeat() is not { } seat)
-            return null;
-
-        if (_table.Phase != BlackjackPhase.Turns || _table.ActiveSeat != _mySeat)
-            return null;
-
-        if (_table.ActiveHand < 0 || _table.ActiveHand >= seat.Hands.Count)
-            return null;
-
-        var hand = seat.Hands[_table.ActiveHand];
-        return hand.State == BlackjackHandState.Playing ? hand : null;
-    }
-
-    private void Refresh()
-    {
-        if (_table == null)
-            return;
-
-        var table = _table;
-        var seat = MySeat();
-        var hand = ActiveHand();
-        var wager = table.Wager;
-
-        TitleLabel.Text = Loc.GetString(wager ? "stories-blackjack-window-title" : "stories-blackjack-window-title-prison");
-        StackLabel.Visible = wager && seat != null;
-        if (seat != null)
-            StackLabel.Text = Loc.GetString("stories-blackjack-panel-stack", ("amount", seat.Chips));
-
-        CollapseButton.Text = Loc.GetString(_collapsed ? "stories-blackjack-panel-expand" : "stories-blackjack-panel-collapse");
-        LeaveButton.Text = Loc.GetString(seat != null ? "stories-blackjack-panel-leave" : "stories-blackjack-panel-close");
-        Body.Visible = !_collapsed;
-        TurnLabel.Visible = _collapsed && hand != null;
-
-        StatusLabel.Visible = false;
         BetBox.Visible = false;
         ActionBox.Visible = false;
-        _countdown = int.MinValue;
-
-        var betting = table.Phase == BlackjackPhase.Betting;
-        if (betting && wager && seat != null && seat.Bet == 0)
-        {
-            BetBox.Visible = true;
-            RefreshBet(table, seat);
-        }
-        else if (hand != null && seat != null)
-        {
-            ActionBox.Visible = true;
-            RefreshActions(table, seat, hand);
-        }
-        else
-        {
-            StatusLabel.Visible = true;
-            StatusLabel.Text = StatusText(table, seat);
-        }
-
-        UpdateTimer();
+        StatusLabel.Visible = true;
+        StatusLabel.Text = text;
     }
 
-    private void RefreshBet(BlackjackTableComponent table, BlackjackSeat seat)
+    public void SetStatusText(string text)
     {
-        var cap = BetCap();
-        _betSum = Math.Min(_betSum, cap);
-        SumLabel.Text = Loc.GetString("stories-blackjack-panel-bet", ("amount", _betSum));
-
-        SetChip(Chip5, cap);
-        SetChip(Chip25, cap);
-        SetChip(Chip100, cap);
-        SetChip(Chip500, cap);
-        PlaceButton.Disabled = _locked || _betSum < table.MinBet || _betSum > cap;
-        RepeatButton.Disabled = _locked || seat.LastBet < table.MinBet || seat.LastBet > cap;
-        AllInButton.Disabled = _locked || cap < table.MinBet || _betSum == cap;
-        ClearButton.Disabled = _locked || _betSum == 0;
+        StatusLabel.Text = text;
     }
 
-    private void SetChip(TextureButton chip, int cap)
+    public void ShowBet(string sum, bool chips, bool place, bool repeat, bool allIn, bool clear)
     {
-        var enabled = !_locked && _betSum < cap;
+        StatusLabel.Visible = false;
+        ActionBox.Visible = false;
+        BetBox.Visible = true;
+        SumLabel.Text = sum;
+        SetChip(Chip5, chips);
+        SetChip(Chip25, chips);
+        SetChip(Chip100, chips);
+        SetChip(Chip500, chips);
+        PlaceButton.Disabled = !place;
+        RepeatButton.Disabled = !repeat;
+        AllInButton.Disabled = !allIn;
+        ClearButton.Disabled = !clear;
+    }
+
+    public void ShowActions(bool hit, bool stand, bool doubleVisible, bool doubleEnabled, bool split)
+    {
+        StatusLabel.Visible = false;
+        BetBox.Visible = false;
+        ActionBox.Visible = true;
+        HitButton.Disabled = !hit;
+        StandButton.Disabled = !stand;
+        DoubleButton.Visible = doubleVisible;
+        DoubleButton.Disabled = !doubleEnabled;
+        SplitButton.Disabled = !split;
+    }
+
+    public void SetTimer(bool visible, float fraction, bool low)
+    {
+        TimerBar.Modulate = visible ? Color.White : Color.Transparent;
+        if (!visible)
+            return;
+
+        TimerBar.Value = fraction;
+        if (low == _barLowShown)
+            return;
+
+        _barLowShown = low;
+        TimerBar.ForegroundStyleBoxOverride = low ? _barLow : _barNormal;
+    }
+
+    private static void SetChip(TextureButton chip, bool enabled)
+    {
         chip.Disabled = !enabled;
         chip.Modulate = enabled ? Color.White : Color.White.WithAlpha(0.35f);
         chip.DefaultCursorShape = enabled ? Control.CursorShape.Hand : Control.CursorShape.Arrow;
-    }
-
-    private void RefreshActions(BlackjackTableComponent table, BlackjackSeat seat, BlackjackHand hand)
-    {
-        var funds = !table.Wager || seat.Chips >= hand.Bet;
-        HitButton.Disabled = _locked;
-        StandButton.Disabled = _locked;
-        DoubleButton.Visible = table.Wager;
-        DoubleButton.Disabled = _locked || !BlackjackRules.CanDouble(hand) || !funds;
-        SplitButton.Disabled = _locked || !BlackjackRules.CanSplit(seat, hand) || !funds;
-    }
-
-    private string StatusText(BlackjackTableComponent table, BlackjackSeat? seat)
-    {
-        switch (table.Phase)
-        {
-            case BlackjackPhase.Betting:
-                if (!table.Wager)
-                {
-                    _countdown = CountdownSeconds();
-                    return Loc.GetString("stories-blackjack-panel-next", ("seconds", Math.Max(_countdown, 0)));
-                }
-
-                if (seat != null && seat.Bet > 0)
-                    return Loc.GetString("stories-blackjack-panel-bet-placed", ("amount", seat.Bet));
-
-                return Loc.GetString("stories-blackjack-panel-betting");
-            case BlackjackPhase.Dealing:
-                return Loc.GetString("stories-blackjack-status-playing");
-            case BlackjackPhase.Turns:
-                if (table.ActiveSeat >= 0 && table.ActiveSeat < table.Seats.Count)
-                    return Loc.GetString("stories-blackjack-panel-turn-of", ("name", table.Seats[table.ActiveSeat].Name));
-
-                return Loc.GetString("stories-blackjack-status-playing");
-            case BlackjackPhase.Dealer:
-                return Loc.GetString("stories-blackjack-panel-dealer-turn");
-            case BlackjackPhase.Payout:
-                return Loc.GetString("stories-blackjack-panel-payout");
-            default:
-                return Loc.GetString("stories-blackjack-status-idle");
-        }
-    }
-
-    private int CountdownSeconds()
-    {
-        if (_table == null)
-            return 0;
-
-        return (int) Math.Ceiling((_table.PhaseEnd - _timing.CurTime).TotalSeconds);
-    }
-
-    private void UpdateTimer()
-    {
-        if (_table == null)
-            return;
-
-        var table = _table;
-        var show = !_collapsed
-                   && (table.Phase == BlackjackPhase.Betting || table.Phase == BlackjackPhase.Turns)
-                   && table.PhaseDuration > 0f;
-        TimerBar.Visible = show;
-        if (!show)
-            return;
-
-        var left = (float) (table.PhaseEnd - _timing.CurTime).TotalSeconds;
-        var fraction = Math.Clamp(left / table.PhaseDuration, 0f, 1f);
-        TimerBar.Value = fraction;
-        var low = fraction < LowTimer;
-        if (low != _barLowShown)
-        {
-            _barLowShown = low;
-            TimerBar.ForegroundStyleBoxOverride = low ? _barLow : _barNormal;
-        }
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
 
-        if (_table == null)
-            return;
-
-        if (_locked && _timing.RealTime >= _lockUntil)
-        {
-            _locked = false;
-            Refresh();
-            return;
-        }
-
-        UpdateTimer();
-        if (_countdown != int.MinValue)
-        {
-            var seconds = CountdownSeconds();
-            if (seconds != _countdown)
-            {
-                _countdown = seconds;
-                StatusLabel.Text = Loc.GetString("stories-blackjack-panel-next", ("seconds", Math.Max(seconds, 0)));
-            }
-        }
+        OnFrame?.Invoke();
     }
 }

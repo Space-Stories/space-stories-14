@@ -13,11 +13,11 @@
         <Label Name="TurnLabel" HorizontalAlignment="Center" Visible="False" />
         <BoxContainer Name="Body" Orientation="Vertical" SeparationOverride="4">
             <ui:StoriesBlackjackCanvas Name="Canvas" HorizontalAlignment="Center" />
-            <ProgressBar Name="TimerBar" MinHeight="6" MaxHeight="6" MinValue="0" MaxValue="1" Visible="False" />
+            <ProgressBar Name="TimerBar" MinHeight="6" MaxHeight="6" MinValue="0" MaxValue="1" />
             <BoxContainer Orientation="Vertical" MinHeight="72" VerticalAlignment="Center">
                 <Label Name="StatusLabel" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalExpand="True" />
                 <BoxContainer Name="BetBox" Orientation="Horizontal" SeparationOverride="10" VerticalAlignment="Center" Visible="False">
-                    <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="4" VerticalAlignment="Center" HorizontalAlignment="Left">
                         <TextureButton Name="Chip5" Scale="2 2" />
                         <TextureButton Name="Chip25" Scale="2 2" />
                         <TextureButton Name="Chip100" Scale="2 2" />
