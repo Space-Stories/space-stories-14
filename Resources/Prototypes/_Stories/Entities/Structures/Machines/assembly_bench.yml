@@ -4,11 +4,11 @@
   name: PDA assembly bench
   description: A workbench for assembling PDAs by hand. Honest labor for those who have plenty of time.
   components:
+  - type: Transform
+    noRot: false
   - type: Sprite
-    sprite: Structures/Machines/flatpacker.rsi
-    snapCardinals: true
-    layers:
-    - state: base
+    sprite: _Stories/Structures/Machines/pda_assembler.rsi
+    state: icon
   - type: AssemblyBench
     result: STAssembledPDA
     sprite: _Stories/Interface/AssemblyBench/pda.rsi

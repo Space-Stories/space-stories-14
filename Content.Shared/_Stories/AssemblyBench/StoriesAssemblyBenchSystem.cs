@@ -3,6 +3,8 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
+using Content.Shared.Storage.Components;
+using Content.Shared.Storage.EntitySystems;
 using Content.Shared.Tools;
 using Content.Shared.Tools.Components;
 using Content.Shared.Tools.Systems;
@@ -16,16 +18,20 @@ namespace Content.Shared._Stories.AssemblyBench;
 
 public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
 {
+    [Dependency] private EntityLookupSystem _lookup = default!;
     [Dependency] private EntityWhitelistSystem _whitelist = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
+    [Dependency] private SharedEntityStorageSystem _entityStorage = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private SharedToolSystem _tool = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
+
+    private readonly HashSet<Entity<EntityStorageComponent>> _storages = new();
 
     public override void Initialize()
     {
@@ -176,8 +182,17 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
         if (_net.IsClient)
             return;
 
-        var result = Spawn(ent.Comp.Result, Transform(ent).Coordinates);
-        _hands.PickupOrDrop(user, result, dropNear: true);
+        var xform = Transform(ent);
+        var output = xform.Coordinates.Offset(xform.LocalRotation.RotateVec(ent.Comp.OutputOffset));
+        var result = Spawn(ent.Comp.Result, output);
+
+        _storages.Clear();
+        _lookup.GetEntitiesInRange(output, ent.Comp.OutputRange, _storages);
+        foreach (var storage in _storages)
+        {
+            if (_entityStorage.CanInsert(result, storage, storage.Comp) && _entityStorage.Insert(result, storage, storage.Comp))
+                break;
+        }
     }
 
     private void UpdateUi(Entity<AssemblyBenchComponent> ent)
