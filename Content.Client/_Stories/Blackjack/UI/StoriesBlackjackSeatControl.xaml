@@ -1,0 +1,11 @@
+<Control xmlns="https://spacestation14.io"
+         MinSize="72 72"
+         MaxSize="72 72">
+    <LayoutContainer>
+        <TextureRect Name="Frame" SetSize="56 56" Stretch="KeepCentered" TextureScale="2 2" MouseFilter="Ignore" />
+        <SpriteView Name="Avatar" SetSize="44 44" Stretch="Fit" MouseFilter="Ignore" />
+        <PanelContainer Name="Highlight" SetSize="56 56" MouseFilter="Ignore" />
+        <TextureRect Name="Lamp" SetSize="28 28" Stretch="KeepCentered" MouseFilter="Ignore" />
+        <Label Name="Caption" SetSize="72 16" Align="Center" ClipText="True" MouseFilter="Ignore" />
+    </LayoutContainer>
+</Control>
