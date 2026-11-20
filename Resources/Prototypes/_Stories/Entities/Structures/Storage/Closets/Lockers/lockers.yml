@@ -36,3 +36,272 @@
     - id: MedkitFilled
     - id: STHandheldCrewMonitorCommand
     - id: STRubberStampBlueshield
+
+- type: entity
+  id: STLockerCentcomm
+  parent: LockerBase
+  name: Centcomm locker
+  components:
+  - type: Sprite
+    sprite: _Stories/Structures/Storage/closet.rsi
+  - type: Appearance
+  - type: EntityStorageVisuals
+    stateBaseClosed: centcomm
+    stateDoorOpen: centcomm_open
+    stateDoorClosed: centcomm_door
+  - type: AccessReader
+    access: [["CentralCommand"]]
+
+- type: entity
+  id: STLockerSpecialAssignments
+  parent: STLockerCentcomm
+  name: officer of special assignment's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: OSA
+    stateDoorClosed: OSA_door
+  - type: AccessReader
+    access: [["CentralCommand", "Quartermaster"]]
+
+- type: entity
+  id: STLockerLogist
+  parent: STLockerCentcomm
+  name: logist's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: logist
+    stateDoorClosed: logist_door
+  - type: AccessReader
+    access: [["CentralCommand", "Cargo"]]
+
+- type: entity
+  id: STLockerAccountant
+  parent: STLockerCentcomm
+  name: accountant's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: accountant
+    stateDoorClosed: accountant_door
+  - type: AccessReader
+    access: [["CentralCommand", "Command"]]
+
+- type: entity
+  id: STLockerMedicCentcomm
+  parent: STLockerCentcomm
+  name: locker medical Centcomm
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: mediccentcom
+    stateDoorClosed: mediccentcom_door
+  - type: AccessReader
+    access: [["CentralCommand", "Medical"]]
+
+- type: entity
+  id: STLockerEngineerCentcomm
+  parent: STLockerCentcomm
+  name: locker engineer Centcomm
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: engineercentcomm
+    stateDoorClosed: engineercentcomm_door
+  - type: AccessReader
+    access: [["CentralCommand", "Engineering"]]
+
+- type: entity
+  id: STLockerWorkerCentcomm
+  parent: STLockerCentcomm
+  name: Centcomm employee's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: workercentcomm
+    stateDoorClosed: workercentcomm_door
+  - type: AccessReader
+    access: [["CentralCommand", "Service"]]
+
+- type: entity
+  id: STLockerSecurityOfficerCentcomm
+  parent: STLockerCentcomm
+  name: Centcomm security's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: securitycentcomm
+    stateDoorClosed: securitycentcomm_door
+  - type: AccessReader
+    access: [["CentralCommand", "Security"]]
+
+- type: entity
+  id: STLockerHeadOfSecurityCentcomm
+  parent: STLockerCentcomm
+  name: Centcomm head of security's locker
+  components:
+  - type: EntityStorageVisuals
+    stateDoorClosed: headsecuritycentcomm_door
+  - type: AccessReader
+    access: [["CentralCommand", "HeadOfSecurity"]]
+
+- type: entity
+  id: STLockerOperatorCentcomm
+  parent: STLockerCentcomm
+  name: Centcom operator's locker
+  components:
+  - type: EntityStorageVisuals
+    stateDoorClosed: operator_door
+  - type: AccessReader
+    access: [["CentralCommand", "HeadOfPersonnel"]]
+
+- type: entity
+  id: STLockerRepresentativeCentcomm
+  parent: STLockerCentcomm
+  name: Centcom representative's locker
+  components:
+  - type: EntityStorageVisuals
+    stateDoorClosed: representative_door
+  - type: AccessReader
+    access: [["CentralCommand", "HeadOfPersonnel"]]
+
+- type: entity
+  id: STLockerChiefCentcomm
+  parent: STLockerCentcomm
+  name: head of the central command's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: cos
+    stateDoorOpen: cos_open
+    stateDoorClosed: cos_door
+  - type: AccessReader
+    access: [["CentralCommand", "STDSO"]]
+
+- type: entity
+  id: STLockerEmergencyResponseUnit
+  parent: STLockerCentcomm
+  name: emergency response unit locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: emergencyresponseunit
+    stateDoorOpen: emergencyresponseunit_open
+    stateDoorClosed: emergencyresponseunit_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  id: STLockerERTChaplain
+  parent: STLockerEmergencyResponseUnit
+  name: ERT chaplain's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTchaplain
+    stateDoorClosed: ERTchaplain_door
+
+- type: entity
+  id: STLockerERTEngineer
+  parent: STLockerEmergencyResponseUnit
+  name: ERT engineer's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTengineer
+    stateDoorClosed: ERTengineer_door
+
+- type: entity
+  id: STLockerERTJanitor
+  parent: STLockerEmergencyResponseUnit
+  name: ERT janitor's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTjanitor
+    stateDoorClosed: ERTjanitor_door
+
+- type: entity
+  id: STLockerERTLeader
+  parent: STLockerEmergencyResponseUnit
+  name: ERT leader's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTleader
+    stateDoorClosed: ERTleader_door
+
+- type: entity
+  id: STLockerERTMedic
+  parent: STLockerEmergencyResponseUnit
+  name: ERT medic's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTmedic
+    stateDoorClosed: ERTmedic_door
+
+- type: entity
+  id: STLockerERTSecurity
+  parent: STLockerEmergencyResponseUnit
+  name: ERT security's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: ERTsecurity
+    stateDoorClosed: ERTsecurity_door
+
+- type: entity
+  id: STLockerQuarantineService
+  parent: STLockerCentcomm
+  name: quarantine service locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: quarantineservice
+    stateDoorOpen: quarantineservice_open
+    stateDoorClosed: quarantineservice_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  id: STLockerQuarantineServiceCommander
+  parent: STLockerQuarantineService
+  name: quarantine service commander locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: quarantineservicecommander
+    stateDoorClosed: quarantineservicecommander_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  id: STLockerDepartmentSpecialOperations
+  parent: STLockerCentcomm
+  name: department of special operations locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: DSO
+    stateDoorOpen: DSO_open
+    stateDoorClosed: DSO_door
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  id: STLockerSpecialOfficer
+  parent: STLockerDepartmentSpecialOperations
+  name: special officer's locker
+  components:
+  - type: EntityStorageVisuals
+    stateDoorClosed: specialofficer_door
+  - type: AccessReader
+    access: [["STDSO", "Captain"]]
+
+- type: entity
+  id: STLockerMagistrate
+  parent: STLockerCentcomm
+  name: magistrate's locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: magistrate
+    stateDoorOpen: magistrate_open
+    stateDoorClosed: magistrate_door
+  - type: AccessReader
+    access: [["CentralCommand", "STDSO"]]
+
+- type: entity
+  id: STLockerQuadrantManagement
+  parent: STLockerCentcomm
+  name: quadrant management locker
+  components:
+  - type: EntityStorageVisuals
+    stateBaseClosed: quadrantmanagement
+    stateDoorOpen: quadrantmanagement_open
+    stateDoorClosed: quadrantmanagement_door
+  - type: AccessReader
+    access: [["CentralCommand", "STDSO"]]

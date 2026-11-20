@@ -4,3 +4,6 @@ ent-STBaseHandheldShuttleConsole = портативная консоль упр�
 ent-STPRISONHandheldShuttleConsole = портативная консоль управления шаттлом тюрьмы
     .desc = Используется, чтобы управлять шаттлом на расстоянии.
     .suffix = НЕ МАППИТЬ
+ent-STHandheldStationsControlConsole = планшет контроля активов
+    .desc = Позволяет управлять любыми корпоративнымы активами.
+    .suffix = НЕ МАППИТЬ

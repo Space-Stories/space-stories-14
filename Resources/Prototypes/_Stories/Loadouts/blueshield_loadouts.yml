@@ -12,34 +12,6 @@
   - Trinkets
   - GroupSpeciesBreathTool
 
-- type: roleLoadout
-  id: STBlueshield
-  groups:
-  - STBlueshieldHead
-  - STBlueshieldNeck
-  - STBlueshieldJumpsuit
-  - STBlueshieldOuterClothing
-  - STBlueshieldBackpack
-  - Glasses
-  - AssistiveItems
-  - Survival
-  - Trinkets
-  - GroupSpeciesBreathTool
-
-- type: roleLoadout
-  id: STJobBlueshield
-  groups:
-  - STBlueshieldHead
-  - STBlueshieldNeck
-  - STBlueshieldJumpsuit
-  - STBlueshieldOuterClothing
-  - STBlueshieldBackpack
-  - Glasses
-  - AssistiveItems
-  - Survival
-  - Trinkets
-  - GroupSpeciesBreathTool
-
 - type: loadoutGroup
   id: STBlueshieldHead
   name: stories-loadout-group-blueshield-head

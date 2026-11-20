@@ -13,7 +13,7 @@
     time: 4h
   startingGear: STJudgeGear
   icon: "STJobIconJudge"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-magistrate
   access:
   - Brig
   - Maintenance

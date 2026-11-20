@@ -6,3 +6,15 @@ ent-STPRISONClothingHeadHelmetHardsuitOfficer = шлем скафандра пе
     .desc = Шлем скафандра, обеспечивающий защиту от большинства источников повреждений.
 ent-STPRISONClothingHeadHelmetHardsuitHeadOfPrison = шлем скафандра начальника тюрьмы
     .desc = Шлем скафандра, обеспечивающий защиту от большинства источников повреждений.
+
+ent-STClothingHeadHelmetHardsuitCentcomSecurity = шлем скафандра безопасности Центком
+    .desc = Шлем скафандра, обеспечивающий защиту от большинства источников повреждений.
+ent-STClothingHeadHelmetHardsuitCentcomPersonnel = шлем скафандра Центком
+    .desc = Сбоку выгравированно "Сделано в NanoTrasen"
+ent-STClothingHeadHelmetHardsuitChiefCentcom = шлем скафандра руководящего офицера
+    .desc = шлем скафандра босса боссов
+ent-STClothingHeadHelmetHardsuitSpecialOfficer = шлем скафандра офицера спецопераций
+    .desc = крутой шлем для крутой головы.
+
+ent-STClothingHeadHelmetCBURNCommander = шлем командира РХБЗЗ
+    .desc = Огнеупорный, защищающий от давления шлем, который используют специальные подразделения зачистки.

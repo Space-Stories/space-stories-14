@@ -1,0 +1,25 @@
+- type: entity
+  parent: BaseStatue
+  id: STStatueShackledAngel
+  name: statue of an angel
+  description: A marble statue of an angel with a bare upper body and huge wings behind its back. Her wings droop downward, as if drawn to the earth by their own weight, while the lower part of her body has merged with a column, as if someone had forever chained the holy savior to the ground. Her face is frozen in an expression of eternal sorrow and hope of deliverance.
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: _Stories/Structures/Decoration/statues_x64.rsi
+    state: angel
+    drawdepth: Mobs
+    offset: "0.0,0.5"
+
+- type: entity
+  parent: BaseStatue
+  id: STStatuePrayingAngel
+  name: statue of a praying angel
+  description: 'A marble figure of a kneeling angel, head bowed and wings spread. It gives the impression of being frozen in eternal prayer or grief. At the base of the pedestal, an inscription, already barely visible and almost worn away, is engraved: "Let there be light...". Rumor has it that this statue was installed after a terrible incident at one of the stations in the sector, one that the reports would have preferred to keep quiet about.'
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: _Stories/Structures/Decoration/statues_x64.rsi
+    state: angel_praying
+    drawdepth: Mobs
+    offset: "0.0,0.5"

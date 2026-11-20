@@ -1,0 +1,13 @@
+stories-stations-control-title = Управление Активами
+stories-stations-control-alert-level-management = УПРАВЛЕНИЕ КОДАМИ:
+stories-stations-control-station = Станция:
+stories-stations-control-current-alert-level = Текущий код:
+stories-stations-control-alert-level-unknown = Неизвестно
+stories-stations-control-alert-level = Код:
+stories-stations-control-set-alert-level-button = Установить код
+stories-stations-control-evacuation-management = УПРАВЛЕНИЕ ЭВАКУАЦИЕЙ:
+stories-stations-control-evacuation-time-input = Время (не менее 2-х и не более 30-и минут):
+stories-stations-control-evacuation-time-input-place-holder = Мин:Сек, например, 4:00
+stories-stations-control-evacuation-call = Начать эвакуацию
+stories-stations-control-evacuation-recall = Прервать эвакуацию
+stories-stations-control-evacuation-countdown = Время прибытия:

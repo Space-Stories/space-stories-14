@@ -84,7 +84,7 @@
   - type: ContainerFill
     containers:
       key_slots:
-      - EncryptionKeyCentCom
+#      - EncryptionKeyCentCom #stories-balance
       - EncryptionKeyStationMaster
       - STEncryptionKeyJuridical #Stories
   - type: Sprite

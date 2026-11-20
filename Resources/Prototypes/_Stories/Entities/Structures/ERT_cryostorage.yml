@@ -1,0 +1,78 @@
+- type: entity
+  parent: CryogenicSleepUnit
+  id: STBaseERTCryostorage
+  name: ERT cryostorage
+  components:
+  - type: UserInterface
+    interfaces:
+      enum.ERTCryostorageUiKey.Key:
+        type: ERTCryostorageBoundUserInterface
+  - type: ActivatableUI
+    key: enum.ERTCryostorageUiKey.Key
+  - type: ERTCryostorage
+    titleName: stories-ert-cryostorage-ert-title
+    containerId: storage
+    options:
+    - name: stories-ert-cryostorage-ert-security
+      sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTSecurity }
+      settings: STERTSecurityEmpty
+    - name: stories-ert-cryostorage-ert-medical
+      sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTMedical }
+      settings: STERTMedicalEmpty
+    - name: stories-ert-cryostorage-ert-chaplain
+      sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTChaplain }
+      settings: STERTChaplainEmpty
+    - name: stories-ert-cryostorage-ert-engineer
+      sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTEngineer }
+      settings: STERTEngineerEmpty
+    - name: stories-ert-cryostorage-ert-janitor
+      sprite: { sprite: Interface/Misc/job_icons.rsi, state: ERTJanitor }
+      settings: STERTJanitorEmpty
+  - type: Cryostorage
+    noMindGracePeriod: 300
+  - type: ActivatableUIRequiresAccess
+  - type: AccessReader
+    access: [["STDSO"]]
+
+- type: entity
+  parent: STBaseERTCryostorage
+  id: STERTCBURNCryostorage
+  name: CBURN cryostorage
+  components:
+  - type: ERTCryostorage
+    titleName: stories-ert-cryostorage-cburn-title
+    containerId: storage
+    options:
+    - name: stories-ert-cryostorage-cburn-agent
+      sprite: { sprite: Interface/Misc/job_icons.rsi, state: CBURN }
+      settings: STCBURNAgentEmpty
+
+- type: entity
+  parent: STBaseERTCryostorage
+  id: STERTLeaderCryostorage
+  name: ERT leader cryostorage
+  components:
+  - type: ERTCryostorage
+    titleName: stories-ert-cryostorage-officer-title
+    containerId: storage
+    useOnce: false
+    options:
+    - name: stories-ert-cryostorage-ert-leader
+      sprite: { sprite: _Stories/Interface/Misc/job_icons.rsi, state: ERTLeader }
+      settings: STERTLeaderEmpty
+      requiresAdminAllow: true
+
+- type: entity
+  parent: STBaseERTCryostorage
+  id: STERTCBURNCommanderCryostorage
+  name: CBURN commander cryostorage
+  components:
+  - type: ERTCryostorage
+    titleName: stories-ert-cryostorage-officer-title
+    containerId: storage
+    useOnce: false
+    options:
+    - name: stories-ert-cryostorage-cburn-commander
+      sprite: { sprite: _Stories/Interface/Misc/job_icons.rsi, state: ERTLeader }
+      settings: STCBURNCommanderEmpty
+      requiresAdminAllow: true

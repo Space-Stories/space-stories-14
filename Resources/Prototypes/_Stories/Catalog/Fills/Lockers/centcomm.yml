@@ -1,0 +1,485 @@
+- type: entity
+  id: STLockerSpecialAssignmentsFilled
+  suffix: Filled
+  parent: STLockerSpecialAssignments
+  components:
+  - type: StorageFill
+    contents:
+    - id: BoxFolderQmClipboard
+    - id: CigarGoldCase
+    - id: ClothingHeadsetAltCentCom
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampDenied
+    - id: STBoxPrinter
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingShoesBootsMagCentcomm
+    - id: STRubberStampSpecialOfficer
+    - id: WeaponDisabler
+    - id: WeaponPistolN1984
+
+- type: entity
+  id: STLockerLogistFilled
+  suffix: Filled
+  parent: STLockerLogist
+  components:
+  - type: StorageFill
+    contents:
+    - id: AppraisalTool
+    - id: ClothingBeltUtility
+    - id: ClothingHeadsetCargo
+    - id: ClothingOuterWinterCentcom
+    - id: OxygenTankFilled
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingShoesBootsMagCentcomm
+    - id: WeaponDisabler
+
+- type: entity
+  id: STLockerAccountantFilled
+  suffix: Filled
+  parent: STLockerAccountant
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingHandsGlovesHop
+    - id: ClothingHeadsetCentCom
+    - id: ClothingOuterWinterCentcom
+    - id: OxygenTankFilled
+    - id: SpaceCash1000000
+    - id: STBoxPrinter
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: WeaponDisabler
+
+- type: entity
+  id: STLockerMedicCentcommFilled
+  suffix: Filled
+  parent: STLockerMedicCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: AdvancedJetInjector
+    - id: HandheldHealthAnalyzer
+    - id: ClothingBeltMedicalFilled
+    - id: ClothingEyesHudMedical
+    - id: ClothingHeadsetMedical
+    - id: OxygenTankFilled
+    - id: STClothingOuterHardsuitCentcomPersonnel
+
+- type: entity
+  id: STLockerEngineerCentcommFilled
+  suffix: Filled
+  parent: STLockerEngineerCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingHandsGlovesColorYellow
+    - id: ClothingHeadsetEngineering
+    - id: ClothingMaskGas
+    - id: MetalFoamGrenade
+    - id: OxygenTankFilled
+    - id: RCD
+    - id: RCDAmmo
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingShoesBootsMagCentcomm
+    - id: trayScanner
+
+- type: entity
+  id: STLockerWorkerCentcommFilled
+  suffix: Filled
+  parent: STLockerWorkerCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBeltChefFilled
+    - id: ClothingBeltPlantFilled
+    - id: ClothingEyesHudBeer
+    - id: ClothingHandsGlovesHop
+    - id: ClothingHeadsetService
+    - id: ClothingOuterArmorBasicSlim
+    - id: OxygenTankFilled
+    - id: PlantBag
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: SynthesizerInstrument
+
+- type: entity
+  id: STLockerSecurityOfficerCentcommFilled
+  suffix: Filled
+  parent: STLockerSecurityOfficerCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: BookSpaceLaw
+    - id: ClothingBeltSecurityFilled
+    - id: ClothingEyesGlassesSecurity
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadHelmetBasic
+    - id: ClothingHeadsetSecurity
+    - id: ClothingOuterArmorBasic
+    - id: ClothingShoesBootsJack
+    - id: Flash
+    - id: FlashlightSeclite
+    - id: HoloprojectorSecurity
+    - id: OxygenTankFilled
+    - id: SecurityBola
+      amount: 2
+    - id: STClothingOuterHardsuitCentcomSecutiry
+    - id: STClothingShoesBootsMagSec
+    - id: WeaponDisabler
+    - id: WeaponMeleeNeedle
+
+- type: entity
+  id: STLockerHeadOfSecurityCentcommFilled
+  suffix: Filled
+  parent: STLockerHeadOfSecurityCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBeltSecurityFilled
+    - id: ClothingEyesGlassesSecurity
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingMaskGasSwat
+    - id: ClothingOuterArmorCentcommCarapace
+    - id: ClothingShoesBootsJack
+    - id: Flash
+    - id: FlashlightSeclite
+    - id: HoloprojectorSecurity
+    - id: OxygenTankFilled
+    - id: RubberStampCentcom
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingHeadHatCentcomBeret
+    - id: STClothingNeckCloakHeadOfSecurityCentcom
+    - id: STClothingOuterHardsuitCentcomSecutiry
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingShoesBootsMagCentcomm
+    - id: STClothingShoesBootsMagSec
+    - id: WeaponEnergyMagnum
+    - id: WeaponPistolN1984
+
+- type: entity
+  id: STLockerOperatorCentcommFilled
+  suffix: Filled
+  parent: STLockerOperatorCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: BoxFolderCentComClipboard
+    - id: CigarGoldCase
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingOuterArmorCentcommCarapace
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampCentcom
+    - id: RubberStampDenied
+    - id: STBoxPrinter
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingNeckCloakOperatorCentcom
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingShoesBootsMagCentcomm
+    - id: WeaponDisabler
+    - id: WeaponPistolN1984
+
+- type: entity
+  id: STLockerRepresentativeCentcommFilled
+  suffix: Filled
+  parent: STLockerRepresentativeCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: BoxFolderCentComClipboard
+    - id: CigarGoldCase
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingNeckCloakCentcom
+    - id: ClothingOuterArmorCentcommCarapace
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampCentcom
+    - id: RubberStampDenied
+    - id: STBoxPrinter
+    - id: STBriefcaseSteel
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingShoesBootsMagCentcomm
+    - id: WeaponDisabler
+    - id: WeaponPistolN1984
+
+- type: entity
+  id: STLockerChiefCentcommFilled
+  suffix: Filled
+  parent: STLockerChiefCentcomm
+  components:
+  - type: StorageFill
+    contents:
+    - id: AccessConfigurator
+    - id: BoxFolderCentComClipboard
+    - id: CigarGoldCase
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingOuterArmorCentcommCarapace
+    - id: ClothingShoesBootsMagAdv
+    - id: DoorRemoteCustom
+    - id: MedalCase
+    - id: NukeDisk
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampCentcom
+    - id: RubberStampDenied
+    - id: STBoxPrinter
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingHandsGlovesChiefCentcom
+    - id: STClothingNeckCloakChiefCentcom
+    - id: STClothingOuterHardsuitChiefCentcom
+    - id: STHandheldStationsControlConsole
+    - id: STRubberStampChiefCentcom
+    - id: WeaponPistolN1984
+    - id: WeaponTaser
+
+- type: entity
+  id: STLockerERTChaplainFilled
+  suffix: Filled
+  parent: STLockerERTChaplain
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTChaplain
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudMedSec
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTChaplain
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTEngineerFilled
+  suffix: Filled
+  parent: STLockerERTEngineer
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTEngineer
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudDiagnostic
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTEngineer
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTJanitorFilled
+  suffix: Filled
+  parent: STLockerERTJanitor
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTJanitor
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesGlassesChemical
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTJanitor
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTLeaderFilled
+  suffix: Filled
+  parent: STLockerERTLeader
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTLeader
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTLeader
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STClothingEyesGlassesCentcom
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTMedicFilled
+  suffix: Filled
+  parent: STLockerERTMedic
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTMedical
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudMedSec
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTMedical
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerERTSecurityFilled
+  suffix: Filled
+  parent: STLockerERTSecurity
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackERTSecurity
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesHudMedSec
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitERTSecurity
+    - id: ClothingShoesBootsMagERT
+    - id: CombatKnife
+    - id: CrowbarRed
+    - id: MagazinePistol
+    - id: STRadioHandheldDSO
+    - id: WeaponPistolMk58
+
+- type: entity
+  id: STLockerQuarantineServiceFilled
+  suffix: Filled
+  parent: STLockerQuarantineService
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackDuffelCBURN
+    - id: ClothingBeltBandolier
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingEyesGlassesSecurity
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingOuterHardsuitCBURN
+    - id: ClothingShoesBootsMagERT
+    - id: PillAmbuzolPlus
+    - id: PillAmbuzol
+    - id: STRadioHandheldDSO
+    - id: WeaponLaserGun
+
+- type: entity
+  id: STLockerQuarantineServiceCommanderFilled
+  suffix: Filled
+  parent: STLockerQuarantineServiceCommander
+  components:
+  - type: StorageFill
+    contents:
+    - id: ClothingBackpackDuffelCBURN
+    - id: ClothingBeltBandolier
+    - id: ClothingBeltMilitaryWebbingERT
+    - id: ClothingHandsGlovesCombat
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingMaskGasERT
+    - id: ClothingShoesBootsMagERT
+    - id: PillAmbuzolPlus
+    - id: PillAmbuzol
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingOuterHardsuitCBURNCommander
+    - id: STRadioHandheldDSO
+    - id: WeaponAdvancedLaser
+
+- type: entity
+  id: STLockerSpecialOfficerFilled
+  suffix: Filled
+  parent: STLockerSpecialOfficer
+  components:
+  - type: StorageFill
+    contents:
+    - id: BoxFolderCentComClipboard
+    - id: BoxFolderNuclearCodes
+    - id: CigarGoldCase
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingShoesBootsMagAdv
+    - id: DoorRemoteCustom
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampDenied
+    - id: SpeedLoaderMagnumAP
+    - id: STBoxPrinter
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingNeckCloakSpecialOfficer
+    - id: STClothingOuterHardsuitSpecialOfficer
+    - id: STRubberStampSpecialOfficer
+    - id: STWeaponDerozer
+    - id: WeaponEnergyShotgun
+    - id: WeaponPulsePistol
+    - id: WeaponRevolverMatebaAP
+
+- type: entity
+  id: STLockerMagistrateFilled
+  suffix: Filled
+  parent: STLockerMagistrate
+  components:
+  - type: StorageFill
+    contents:
+    - id: BoxFolderCentComClipboard
+    - id: CigarGoldCase
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingShoesBootsMagAdv
+    - id: DoorRemoteCustom
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampDenied
+    - id: STBoxPrinter
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingHandsGlovesMagistrate
+    - id: STClothingHeadHatMagistrate
+    - id: STClothingNeckCloakMagistrate
+    - id: STClothingOuterHardsuitCentcomPersonnel
+    - id: STClothingOuterRobesMagistrate
+    - id: STClothingUniformJumpsuitMagistrate
+    - id: STGavel
+    - id: STRubberStampMagistrate
+    - id: WeaponPistolN1984
+    - id: WeaponTaser
+
+- type: entity
+  id: STLockerQuadrantManagementFilled
+  suffix: Filled
+  parent: STLockerQuadrantManagement
+  components:
+  - type: StorageFill
+    contents:
+    - id: BoxFolderCentComClipboard
+    - id: CigarGoldCase
+    - id: ClothingHandsGlovesColorWhite
+    - id: ClothingHeadsetAltCentCom
+    - id: ClothingShoesBootsLaceup
+    - id: ClothingShoesBootsMagAdv
+    - id: DoorRemoteAll
+    - id: MagazinePistolSubMachineGunIncendiary
+      amount: 3
+    - id: OxygenTankFilled
+    - id: RubberStampApproved
+    - id: RubberStampDenied
+    - id: STBoxPrinter
+    - id: STClothingEyesGlassesCentcom
+    - id: STClothingOuterHardsuitChiefCentcom
+    - id: STClothingUniformJumpsuitInternalInspector
+    - id: STRubberStampInternalInspector
+    - id: WeaponPulsePistol
+    - id: WeaponSubMachineGunAtreides
+    - id: WeaponTaser

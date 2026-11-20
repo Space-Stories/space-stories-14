@@ -17,3 +17,8 @@
   license: "CC-BY-4.0"
   copyright: "NoahBangs"
   source: "https://freesound.org/people/NoahBangs/sounds/636090/"
+
+- files: ["gavel.ogg"]
+  license: "CC-BY-SA-3.0"
+  copyright: "ZomgPonies (github)"
+  source: "https://github.com/ss220club/Paradise-SS220/commit/7fdfa9c6a7b15e35cc95391dfe7145d14b8110be"

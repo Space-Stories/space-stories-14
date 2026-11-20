@@ -1,0 +1,43 @@
+- type: job
+  id: STCBURNCommander
+  name: stories-job-name-cburn-commander
+  description: stories-job-description-cburn-commander
+  playTimeTracker: STJobCBURNCommander
+  setPreference: false
+  startingGear: STCBURNCommanderGear
+  icon: "STJobIconCBURNCommander"
+  supervisors: stories-job-supervisors-special-officer
+  accessGroups:
+  - AllAccess
+  - STPrisonAllAccess
+  access:
+  - CentralCommand
+  - STDSO
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO]
+
+- type: startingGear
+  id: STCBURNCommanderGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBrown
+    back: ClothingBackpackDuffelCBURN
+    mask: ClothingMaskGasERT
+    eyes: ClothingEyesGlassesSecurity
+    ears: ClothingHeadsetAltCentCom
+    gloves: ClothingHandsGlovesCombat
+    outerClothing: STClothingOuterHardsuitCBURNCommander
+    shoes: ClothingShoesBootsMagERT
+    id: STCBURNCommanderPDA
+    pocket2: WeaponAdvancedLaser
+    belt: ClothingBeltBandolier
+  storage:
+    back:
+    - WeaponShotgunEnforcer
+    - BoxShotgunIncendiary
+    - BoxShotgunIncendiary
+    - GrenadeFlashBang
+    - PillAmbuzol
+    - PillAmbuzol
+    - PillAmbuzol
+    - PillAmbuzolPlus

@@ -475,6 +475,16 @@
       Wood: 50
       Steel: 25
       Cloth: 25
+# Stories-Start
+  - type: ItemSlots
+    slots:
+      pen_slot:
+        name: clipboard-slot-component-slot-name-pen
+        whitelist:
+          tags:
+          - Write
+        insertOnInteract: true
+# Stories-End
 
 - type: entity
   parent: [BoxFolderCentComClipboardEmpty, BoxFolderFill]

@@ -1,0 +1,32 @@
+- type: job
+  id: STRepresentativeCentcom
+  name: stories-job-name-representative-centcom
+  description: stories-job-description-representative-centcom
+  playTimeTracker: STJobRepresentativeCentcom
+  # requirements:
+  # - !type:DepartmentTimeRequirement
+  #   department: CentralCommand
+  #   time: 20h
+  # - !type:RoleTimeRequirement
+  #   role: JobCaptain
+  #   time: 10h
+  startingGear: STRepresentativeCentcomGear
+  icon: "STJobIconCentcom"
+  supervisors: stories-job-supervisors-chief-centcom
+  accessGroups:
+  - AllAccess
+  - STPrisonAllAccess
+  access:
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, DeathRattleImplantCentcomm, RadioImplantCentcomm ]
+  whitelisted: true
+  minBankBalance: 500
+  maxBankBalance: 600
+
+- type: startingGear
+  id: STRepresentativeCentcomGear
+  equipment:
+    id: STRepresentativeCentcomPDA
+    belt: BoxFolderCentComClipboard

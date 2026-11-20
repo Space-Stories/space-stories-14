@@ -6,15 +6,16 @@
   setPreference: false
   startingGear: CBURNGear
   icon: "JobIconCBURN"
-  supervisors: job-supervisors-centcom
+  supervisors: stories-job-supervisors-special-officer # Stories-Supervisors
   accessGroups:
   - AllAccess
   - STPrisonAllAccess # Stories
   access:
   - CentralCommand
+  - STDSO # Stories
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, DeathRattleImplantCentcomm, STAdrenocorImplant ] # Stories-AdrenocorImplant
+    implants: [ MindShieldImplant, STAdrenocorImplant, STDeathRattleImplantDSO, STRadioImplantDSO] # Stories-Implants
 
 - type: startingGear
   id: CBURNGear
@@ -26,7 +27,7 @@
     ears: ClothingHeadsetAltCentCom
     gloves: ClothingHandsGlovesCombat
     outerClothing: ClothingOuterHardsuitCBURN
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: ClothingShoesBootsMagERT # Stories-Balance
     id: CBURNPDA
     pocket1: RadioHandheld
     pocket2: WeaponLaserGun

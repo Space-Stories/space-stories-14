@@ -1,0 +1,12 @@
+ent-STDoorElectronicsCentcomArmory = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+    .suffix = Центком оружейная, Закрыт
+ent-STDoorElectronicsCentcomCommand = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+    .suffix = Центком командование, Закрыт
+ent-STDoorElectronicsCentcomSecurity = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+    .suffix = Центком СБ, Закрыт
+ent-STDoorElectronicsDepartmentSpecialOperations = { ent-DoorElectronics }
+    .desc = { ent-DoorElectronics.desc }
+    .suffix = ДСО, Закрыт

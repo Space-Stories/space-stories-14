@@ -971,10 +971,12 @@
     - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTLeader
-  # Stories-ClothingWhitelist-Start
+  # Stories-BioCode-Start
   - type: ClothingWhitelist
     factionsWhitelist: null
-  # Stories-ClothingWhitelist-End
+  - type: BioCode
+    hardDefense: true
+  # Stories-BioCode-End
 
 #ERT Chaplain Hardsuit
 - type: entity
@@ -993,10 +995,11 @@
     - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTChaplain
-  # Stories-ClothingWhitelist-Start
+  # Stories-BioCode-Start
   - type: ClothingWhitelist
     factionsWhitelist: null
-  # Stories-ClothingWhitelist-End
+  - type: BioCode
+  # Stories-BioCode-End
 
 #ERT Engineer Hardsuit
 - type: entity
@@ -1017,10 +1020,11 @@
     clothingPrototype: ClothingHeadHelmetHardsuitERTEngineer
   - type: FireProtection
     reduction: 0.8
-  # Stories-ClothingWhitelist-Start
+  # Stories-BioCode-Start
   - type: ClothingWhitelist
     factionsWhitelist: null
-  # Stories-ClothingWhitelist-End
+  - type: BioCode
+  # Stories-BioCode-End
 
 #ERT Medic Hardsuit
 - type: entity
@@ -1039,10 +1043,11 @@
     - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTMedical
-  # Stories-ClothingWhitelist-Start
+  # Stories-BioCode-Start
   - type: ClothingWhitelist
     factionsWhitelist: null
-  # Stories-ClothingWhitelist-End
+  - type: BioCode
+  # Stories-BioCode-End
 
 #ERT Security Hardsuit
 - type: entity
@@ -1065,10 +1070,11 @@
     tags:
     - Hardsuit
     - WhitelistChameleon
-  # Stories-ClothingWhitelist-Start
+  # Stories-BioCode-Start
   - type: ClothingWhitelist
     factionsWhitelist: null
-  # Stories-ClothingWhitelist-End
+  - type: BioCode
+  # Stories-BioCode-End
 
 #ERT Janitor Hardsuit
 - type: entity
@@ -1087,10 +1093,11 @@
     - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTJanitor
-  # Stories-ClothingWhitelist-Start
+  # Stories-BioCode-Start
   - type: ClothingWhitelist
     factionsWhitelist: null
-  # Stories-ClothingWhitelist-End
+  - type: BioCode
+  # Stories-BioCode-End
 
 #Deathsquad
 - type: entity
@@ -1132,6 +1139,23 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitDeathsquad
+  # Stories-BioCode-Start
+  - type: BioCode
+    autoRecordDNA: true
+    allowOverwriting: false
+    hardDefense: true
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+  # Stories-BioCode-End
 
 #CBURN Hardsuit
 - type: entity
@@ -1172,6 +1196,21 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetCBURN
+  # Stories-BioCode-Start
+  - type: BioCode
+    hardDefense: true
+  - type: TimerTrigger
+    delay: 3
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: PowerSink
+    maxIntensity: 8
+    intensitySlope: 5
+    totalIntensity: 5
+    canCreateVacuum: false
+  # Stories-BioCode-End
 
 #MISC. HARDSUITS
 #Clown Hardsuit

@@ -81,3 +81,114 @@
   icon:
     sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
     state: Blueshield
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconMagistrate
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: Magistrate
+  jobName: stories-job-name-magistrate
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconChiefCentcom
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: ChiefCentcom
+  jobName: stories-job-name-chief-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconCentcom
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: Centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconSecurityOfficerCentcom
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: CentcomSecurity
+  jobName: stories-job-name-officer-security-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconMedicCentcom
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: CentcomMedic
+  jobName: stories-job-name-medic-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconEngineerCentcom
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: CentcomEngineer
+  jobName: stories-job-name-engineer-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconWorkerCentcom
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: CentcomService
+  jobName: stories-job-name-worker-centcom
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconSpecialOfficer
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: OSO
+  jobName: stories-job-name-special-officer
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconERTLeader
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: ERTLeader
+  jobName: job-name-ertleader
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconCBURNCommander
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: ERTLeader
+  jobName: stories-job-name-cburn-commander
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconSpecialAssignments
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: OSA
+  jobName: stories-job-name-officer-special-assignments
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconLogist
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: Logist
+  jobName: stories-job-name-logist
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconAccountant
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: Accountant
+  jobName: stories-job-name-accountant
+
+- type: jobIcon
+  parent: JobIcon
+  id: STJobIconInternalInspector
+  icon:
+    sprite: /Textures/_Stories/Interface/Misc/job_icons.rsi
+    state: Senior_Inspector
+  jobName: stories-job-name-internal-inspector

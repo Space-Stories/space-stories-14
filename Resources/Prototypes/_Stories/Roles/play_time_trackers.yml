@@ -1,3 +1,5 @@
+# Prison-Jobs
+
 - type: playTimeTracker
   id: STJobPrisoner
 
@@ -29,6 +31,12 @@
   id: STJobSecurityClown
 
 - type: playTimeTracker
+  id: STJobSpecialOfficer
+
+- type: playTimeTracker
+  id: STJobCBURNCommander
+
+- type: playTimeTracker
   id: STJobCommandMaid
 
 - type: playTimeTracker
@@ -36,3 +44,45 @@
 
 - type: playTimeTracker
   id: STJobBlueshield
+
+- type: playTimeTracker
+  id: STJobChiefCentcom
+
+- type: playTimeTracker
+  id: STJobOperatorCentcom
+
+- type: playTimeTracker
+  id: STJobRepresentativeCentcom
+
+- type: playTimeTracker
+  id: STJobHeadOfSecurityCentcom
+
+- type: playTimeTracker
+  id: JobGuardianNt
+
+- type: playTimeTracker
+  id: STJobSecurityOfficerCentcom
+
+- type: playTimeTracker
+  id: STJobMedicCentcom
+
+- type: playTimeTracker
+  id: STJobEngineerCentcom
+
+- type: playTimeTracker
+  id: STJobWorkerCentcom
+
+- type: playTimeTracker
+  id: STJobMagistrate
+
+- type: playTimeTracker
+  id: STJobSpecialAssignments
+
+- type: playTimeTracker
+  id: STJobLogist
+
+- type: playTimeTracker
+  id: STJobAccountant
+
+- type: playTimeTracker
+  id: STJobInternalInspector

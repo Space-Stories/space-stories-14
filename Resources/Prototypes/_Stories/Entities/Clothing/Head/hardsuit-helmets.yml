@@ -53,3 +53,122 @@
       - state: icon
     - type: Clothing
       sprite: _Stories/Clothing/Head/Hardsuits/hospsp.rsi
+
+- type: entity
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  id: STClothingHeadHelmetHardsuitCentcomSecurity
+  name: centcom officer hardsuit helmet
+  description: A modified riot helmet. Oddly comfortable.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hardsuits/centcom_security.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hardsuits/centcom_security.rsi
+  - type: PointLight
+    color: "#c4ff99"
+  - type: PressureProtection
+    highPressureMultiplier: 0.525
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+
+- type: entity
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  id: STClothingHeadHelmetHardsuitCentcomPersonnel
+  name: centcom hardsuit helmet
+  description: '"Made in NanoTrasen" is engraved on the side.'
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hardsuits/centcom_personnel.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hardsuits/centcom_personnel.rsi
+  - type: PointLight
+    color: "#c4ff99"
+  - type: PressureProtection
+    highPressureMultiplier: 0.525
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+
+- type: entity
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  id: STClothingHeadHelmetHardsuitChiefCentcom
+  name: commanding officer's hardsuit helmet
+  description: Helmet of the boss of bosses' spacesuit.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hardsuits/centcom_chief.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hardsuits/centcom_chief.rsi
+  - type: PointLight
+    color: cyan
+    radius: 5
+    energy: 4
+  - type: PressureProtection
+    highPressureMultiplier: 0.525
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.85
+        Heat: 0.85
+
+- type: entity
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  id: STClothingHeadHelmetHardsuitSpecialOfficer
+  name: special officer's hardsuit helmet
+  description: A cool helmet for a cool head.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hardsuits/special_officer.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hardsuits/special_officer.rsi
+  - type: PointLight
+    color: cyan
+    radius: 5
+    energy: 4
+  - type: PressureProtection
+    highPressureMultiplier: 0.525
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.8
+        Heat: 0.85
+
+- type: entity
+  parent: [ ClothingHeadHardsuitBase, ClothingHeadSuitWithLightBase ]
+  id: STClothingHeadHelmetCBURNCommander
+  name: CBURN commander's exosuit helmet
+  description: A pressure resistant and fireproof hood worn by special cleanup units.
+  components:
+  - type: Sprite
+    sprite: _Corvax/Clothing/Head/Hardsuits/cburn.rsi
+  - type: PointLight
+    color: orange
+  - type: PressureProtection
+    highPressureMultiplier: 0.08
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+  - type: ZombificationResistance
+    zombificationResistanceCoefficient: 0.75

@@ -57,10 +57,13 @@
     channels:
     - CentCom
     defaultChannel: CentCom
+  - type: Item
+    sprite: _Stories/Objects/Devices/encryption_keys.rsi
   - type: Sprite
+    sprite: _Stories/Objects/Devices/encryption_keys.rsi
     layers:
-    - state: crypt_blue
-    - state: nano_label
+    - state: crypt_green
+    - state: centcom_label
 
 - type: entity
   parent: [ EncryptionKey, BaseCentcommCommandContraband ]

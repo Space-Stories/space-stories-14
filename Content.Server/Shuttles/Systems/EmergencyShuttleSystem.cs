@@ -23,12 +23,14 @@ using Content.Shared.DeviceNetwork;
 using Content.Shared.DeviceNetwork.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.Localizations;
+using Content.Shared.Maps;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Events;
 using Content.Shared.Shuttles.Systems;
 using Content.Shared.Tag;
 using Content.Shared.Tiles;
 using Robust.Server.GameObjects;
+using Robust.Server.Player;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.Map.Components;
@@ -49,6 +51,7 @@ public sealed partial class EmergencyShuttleSystem : SharedEmergencyShuttleSyste
     [Dependency] private IAdminLogManager _logger = default!;
     [Dependency] private IAdminManager _admin = default!;
     [Dependency] private IGameTiming _timing = default!;
+    [Dependency] private IPrototypeManager _prototypeManager = default!;
     [Dependency] private IRobustRandom _random = default!;
     [Dependency] private SharedMapSystem _mapSystem = default!;
     [Dependency] private AccessReaderSystem _reader = default!;
@@ -58,6 +61,7 @@ public sealed partial class EmergencyShuttleSystem : SharedEmergencyShuttleSyste
     [Dependency] private DockingSystem _dock = default!;
     [Dependency] private GameTicker _ticker = default!;
     [Dependency] private IdCardSystem _idSystem = default!;
+    [Dependency] private IPlayerManager _playerManager = default!;
     [Dependency] private NavMapSystem _navMap = default!;
     [Dependency] private MapLoaderSystem _loader = default!;
     [Dependency] private MetaDataSystem _metaData = default!;
@@ -526,17 +530,29 @@ public sealed partial class EmergencyShuttleSystem : SharedEmergencyShuttleSyste
             return;
         }
 
-        if (string.IsNullOrEmpty(component.Map.ToString()))
+        if (!_prototypeManager.TryIndex<GameMapPrototype>(component.GameMap, out var gameMap)) // Stories-CentComm
+        {
+            Log.Error($"Failed to find gameMap prototype: {component.GameMap}");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(gameMap.MapPath.ToString()))
         {
             Log.Warning("No CentComm map found, skipping setup.");
             return;
         }
 
         var map = _mapSystem.CreateMap(out var mapId);
-        if (!_loader.TryLoadGrid(mapId, component.Map, out var grid))
+        if (!_loader.TryLoadGrid(mapId, gameMap.MapPath, out var grid))
         {
             Log.Error($"Failed to set up centcomm grid!");
             return;
+        }
+
+        if (_playerManager.PlayerCount >= gameMap.MinPlayers) // Stories-CentComm
+        {
+            var stationConfig = gameMap.Stations.Values.First();
+            component.StationEntity = _station.InitializeNewStation(stationConfig, new[] { grid.Value.Owner });
         }
 
         if (!Exists(map))

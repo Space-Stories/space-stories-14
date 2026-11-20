@@ -1,0 +1,7 @@
+- type: cargoAccount
+  id: STCentComm
+  name: stories-cargo-account-centcomm-name
+  code: stories-cargo-account-centcomm-code
+  color: "#0f8551"
+  radioChannel: CentCom
+  acquisitionSlip: PaperAcquisitionSlipCargo

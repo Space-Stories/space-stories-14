@@ -36,31 +36,12 @@
 
 # Please kill this
 - type: department
-  id: CentralCommand
-  name: department-CentralCommand
-  description: department-CentralCommand-description
-  color: "#0c344d"
-  roles:
-  - CentralCommandOfficial
-  - CBURN
-  - ERTLeader
-  - ERTChaplain
-  - ERTJanitor
-  - ERTMedical
-  - ERTSecurity
-  - ERTEngineer
-  - DeathSquad
-  editorHidden: true
-  weight: 120
-
-- type: department
   id: Command
   name: department-Command
   description: department-Command-description
   color: "#334E6D"
   roles:
   - Captain
-  - STGuardianNt # Stories-Guardian
   - STBlueshield # Stories-Blueshield
   - ChiefEngineer
   - ChiefMedicalOfficer
@@ -69,15 +50,17 @@
   - ResearchDirector
   - Quartermaster
   # Please kill these
-  - CentralCommandOfficial
-  - CBURN
-  - ERTLeader
-  - ERTChaplain
-  - ERTJanitor
-  - ERTMedical
-  - ERTSecurity
-  - ERTEngineer
-  - DeathSquad
+  # Stories-CentComm-Start
+  #- CentralCommandOfficial
+  #- CBURN
+  #- ERTLeader
+  #- ERTChaplain
+  #- ERTJanitor
+  #- ERTMedical
+  #- ERTSecurity
+  #- ERTEngineer
+  #- DeathSquad
+  # Stories-CentComm-End
   - STCommandMaid # Stories-Event-Restricted-Jobs
   primary: false
   weight: 100

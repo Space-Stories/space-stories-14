@@ -12,7 +12,7 @@
     ERTSecurity: 0
     ERTMedical: 0
     ERTJanitor: 0
-    CentralCommandOfficial: 0
+#    CentralCommandOfficial: 0 # Stories-Centcomm
     Passenger: 0
     Bartender: 0
     Botanist: 0

@@ -1,0 +1,20 @@
+- type: entity
+  id: STRCDAdv
+  parent: [ RCD, BaseCommandContraband ]
+  name: advanced RCD
+  description: Advanced Rapid Construction Device, similar to the one installed in cyborgs, but in a presentable case. Passively replenishes the supply of compressed matter using a built-in fabricator.
+  components:
+  - type: Sprite
+    sprite: Objects/Tools/rcd.rsi
+  - type: Clothing
+    sprite: Objects/Tools/rcd.rsi
+  - type: LimitedCharges
+    maxCharges: 30
+  - type: AutoRecharge
+    rechargeDuration: 15
+  - type: StaticPrice
+    price: 580
+  - type: Tag
+    tags:
+    - HighRiskItem
+#Продвинутое Ручное Строительное Устройство, на подобие того, что установлено в киборгов, но в презентабельном корпусе. Пассивно восполняет запас сжатой материи при помощи встроенного фабрикатора.

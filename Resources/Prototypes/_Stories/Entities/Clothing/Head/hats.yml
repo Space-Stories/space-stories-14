@@ -80,3 +80,95 @@
         Blunt: 0.85
         Slash: 0.85
         Piercing: 0.85
+
+- type: entity
+  parent: [ ClothingHeadBase, BaseCentcommContraband ]
+  id: STClothingHeadHatChiefCentcom
+  name: cap of the head of the central command
+  description: An extravagant, bizarre cap worn by the Chief of Staff of the Central Command.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hats/coshat.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hats/coshat.rsi
+  - type: Tag
+    tags:
+    - PetWearable
+    - CorgiWearable
+    - ClothMade
+    - Recyclable
+    - WhitelistChameleon
+    - HamsterWearable
+
+- type: entity
+  parent: [ ClothingHeadBase, BaseCentcommContraband ]
+  id: STClothingHeadHatCentcomBeret
+  name: Centcomm beret
+  description: A cap for real commanders.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hats/hos_centcomm_hat.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hats/hos_centcomm_hat.rsi
+  - type: Tag
+    tags:
+    - PetWearable
+    - CorgiWearable
+    - ClothMade
+    - Recyclable
+    - WhitelistChameleon
+    - HamsterWearable
+
+- type: entity
+  parent: [ ClothingHeadBase, BaseCentcommContraband ]
+  id: STClothingHeadHatSpecialOfficer
+  name: Special Operations Officer cap
+  description: She instills fear and hunger in you.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hats/special_officer.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hats/special_officer.rsi
+  - type: Tag
+    tags:
+    - PetWearable
+    - CorgiWearable
+    - ClothMade
+    - Recyclable
+    - WhitelistChameleon
+    - HamsterWearable
+
+- type: entity
+  parent: [ ClothingHeadBase, BaseCentcommContraband ]
+  id: STClothingHeadHatMagistrate
+  name: magistrate hat
+  description: a stiff, round cap with a small brim, a dangling tassel, and gold trim.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hats/magistrate.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hats/magistrate.rsi
+  - type: Tag
+    tags:
+    - PetWearable
+    - CorgiWearable
+    - ClothMade
+    - Recyclable
+    - WhitelistChameleon
+    - HamsterWearable
+
+- type: entity
+  parent: [ ClothingHeadBase, BaseCentcommContraband ]
+  id: STClothingHeadHatSpecialAssignments
+  name: officer of special assignment hat
+  description: Glory to Cargonia! Oops, wrong text.
+  components:
+  - type: Sprite
+    sprite: _Stories/Clothing/Head/Hats/OSA.rsi
+  - type: Clothing
+    sprite: _Stories/Clothing/Head/Hats/OSA.rsi
+  - type: Tag
+    tags:
+    - ClothMade
+    - Recyclable
+    - WhitelistChameleon

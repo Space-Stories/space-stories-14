@@ -19,3 +19,14 @@
       state: cpuboard
     - type: ComputerBoard
       prototype: STPRISONComputerId
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: STComputerIdCircuitboardCentcom
+  name: centcom computer id board
+  description: A computer printed circuit board for an centcom computer id.
+  components:
+    - type: Sprite
+      state: cpuboard
+    - type: ComputerBoard
+      prototype: STCentcomComputerId

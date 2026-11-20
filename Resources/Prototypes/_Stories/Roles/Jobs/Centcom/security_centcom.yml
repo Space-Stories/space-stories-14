@@ -1,0 +1,43 @@
+- type: job
+  id: STSecurityOfficerCentcom
+  name: stories-job-name-officer-security-centcom
+  description: stories-job-description-officer-security-centcom
+  playTimeTracker: STJobSecurityOfficerCentcom
+  requirements:
+  - !type:DepartmentTimeRequirement
+    department: Security
+    time: 20h
+  - !type:DepartmentTimeRequirement
+    department: Command
+    time: 10h
+  - !type:DepartmentTimeRequirement
+    department: CentralCommand
+    time: 5h
+  startingGear: STSecurityOfficerCentcomGear
+  icon: "STJobIconSecurityOfficerCentcom"
+  supervisors: job-supervisors-centcom
+  access:
+  - Security
+  - Brig
+  - Armory
+  - Maintenance
+  - External
+  - Detective
+  - Cryogenics
+  - GenpopEnter
+  - GenpopLeave
+  - CentralCommand
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant, TrackingImplant, RadioImplantCentcomm ]
+  minBankBalance: 450
+  maxBankBalance: 500
+
+- type: startingGear
+  id: STSecurityOfficerCentcomGear
+  equipment:
+    jumpsuit: STClothingUniformJumpsuitSecurityOfficerCentcom
+    eyes: ClothingEyesGlassesSecurity
+    ears: ClothingHeadsetSecurity
+    gloves: ClothingHandsGlovesCombat
+    id: STSecurityOfficerCentcomPDA

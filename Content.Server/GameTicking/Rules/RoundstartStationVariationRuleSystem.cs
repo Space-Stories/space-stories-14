@@ -40,6 +40,9 @@ public sealed partial class RoundstartStationVariationRuleSystem : GameRuleSyste
         if (HasComp<StationVariationHasRunComponent>(ev.Station))
             return;
 
+        if (!HasComp<StationEventEligibleComponent>(ev.Station)) // Stories-Centcomm
+            return;
+
         Log.Info($"Running variation rules for station {ToPrettyString(ev.Station)}");
 
         // raise the event on any passes that have been added

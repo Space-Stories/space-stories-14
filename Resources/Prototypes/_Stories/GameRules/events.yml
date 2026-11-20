@@ -290,3 +290,52 @@
     antags:
     - !type:FixedAntagCount
       proto: STShadowDemonAntag
+
+- type: entity
+  parent: BaseGameRule
+  id: STBaseERTSpawn
+  abstract: true
+  components:
+  - type: LoadMapRule
+  - type: RuleGrids
+  - type: AnnounceOnSpawn
+    message: stories-event-ert-spawn-announcement
+    sender: stories-comms-console-announcement-title-DSO
+    sound:
+      path: /Audio/_Stories/Announcements/DSO_announce.ogg
+    color: "#1D8BAD"
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnScout
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_scout.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnMedium
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_medium.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnHigh
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_high.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnHolyMedium
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_holy-medium.yml
+
+- type: entity
+  parent: STBaseERTSpawn
+  id: STERTSpawnMedical
+  components:
+  - type: LoadMapRule
+    gridPath: /Maps/_Stories/Shuttles/ERT-Spawn/ert-spawn_medical.yml

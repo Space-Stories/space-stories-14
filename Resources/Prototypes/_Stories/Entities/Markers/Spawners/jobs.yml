@@ -51,6 +51,18 @@
     - state: green
     - state: guardiannt
 
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointMagistrate
+  name: magistrate
+  components:
+  - type: SpawnPoint
+    job_id: STMagistrate
+  - type: Sprite
+    layers:
+    - state: green
+    - state: magistrate
+
 # Blueshield
 
 - type: entity
@@ -65,3 +77,152 @@
     - state: green
     - state: hos
 
+# Centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointChiefCentcom
+  name: centcom chief
+  components:
+  - type: SpawnPoint
+    job_id: STChiefCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: chief_centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointOperatorCentcom
+  name: centcom operator
+  components:
+  - type: SpawnPoint
+    job_id: STOperatorCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointRepresentativeCentcom
+  name: centcom representative
+  components:
+  - type: SpawnPoint
+    job_id: STRepresentativeCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointHeadOfSecurityCentcom
+  name: head of security of the Central Command
+  components:
+  - type: SpawnPoint
+    job_id: STHeadOfSecurityCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointSecurityOfficerCentcom
+  name: Centcom security officer
+  components:
+  - type: SpawnPoint
+    job_id: STSecurityOfficerCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: security_centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointEngineerCentcom
+  name: Centcom engineer
+  components:
+  - type: SpawnPoint
+    job_id: STEngineerCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: engineer_centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointMedicCentcom
+  name: Centcom medic
+  components:
+  - type: SpawnPoint
+    job_id: STMedicCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: doctor_centcom
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointWorkerCentcom
+  name: Centcom worker
+  components:
+  - type: SpawnPoint
+    job_id: STWorkerCentcom
+  - type: Sprite
+    layers:
+    - state: green
+    - state: worker_centcom
+
+# DSO
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointSpecialOfficer
+  name: Special Operations Officer
+  components:
+  - type: SpawnPoint
+    job_id: STSpecialOfficer
+  - type: Sprite
+    layers:
+    - state: green
+    - state: special_officer
+
+# Other departments
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointOfficerSpecialAssignments
+  name: Officer of Special Assignments
+  components:
+  - type: SpawnPoint
+    job_id: STOfficerSpecialAssignments
+  - type: Sprite
+    layers:
+    - state: green
+    - state: osa
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointLogist
+  name: logist
+  components:
+  - type: SpawnPoint
+    job_id: STLogist
+  - type: Sprite
+    layers:
+    - state: green
+    - state: logist
+
+- type: entity
+  parent: STSpawnPointJobBaseStories
+  id: STSpawnPointAccountant
+  name: accountant
+  components:
+  - type: SpawnPoint
+    job_id: STAccountant
+  - type: Sprite
+    layers:
+    - state: green
+    - state: accountant
