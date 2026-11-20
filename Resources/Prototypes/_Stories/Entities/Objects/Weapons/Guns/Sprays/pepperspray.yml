@@ -38,7 +38,7 @@
     solution: drink
   - type: Solution
     solution:
-      maxVol: 50
+      maxVol: 30
       reagents:
       - ReagentId: TearGas
-        Quantity: 50
+        Quantity: 30

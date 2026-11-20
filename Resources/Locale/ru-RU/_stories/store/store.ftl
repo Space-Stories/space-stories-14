@@ -9,3 +9,5 @@ stories-store-listing-blueshield-bogseo-desc = Оружейный кейс с п
 stories-store-listing-blueshield-blades-name = Кибернабор защитной системы
 stories-store-listing-blueshield-blades-desc = Коробка с защитными наручными лезвиями системы.
 stories-stamp-component-stamped-name-blueshield = Офицер синего щита
+stories-store-listing-blueshield-lightning-name = Модифицированный лазерный пистолет Молния
+stories-store-listing-blueshield-lightning-desc = Модифицированный лазерный пистолет с улучшенной адаптивностью.

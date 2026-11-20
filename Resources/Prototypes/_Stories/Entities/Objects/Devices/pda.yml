@@ -169,7 +169,7 @@
     id: STPartyMakerIDCard
 
 - type: entity
-  parent: BaseSecurityPDA
+  parent: BasePDA
   id: STBlueshieldPDA
   name: blueshield PDA
   description: A specialized PDA issued to the Blueshield Officer, built with high security standards.
