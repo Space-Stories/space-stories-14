@@ -1,0 +1,182 @@
+- type: entity
+  id: STBlackjackTableCard
+  name: playing card
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    sprite: _Stories/Objects/Fun/card.rsi
+    drawdepth: Items
+    noRot: true
+    scale: 0.75, 0.75
+    layers:
+    - state: Back
+      map: [ "card" ]
+  - type: BlackjackTableCard
+
+- type: entity
+  id: STBlackjackChipPile
+  name: casino chips
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    sprite: _Stories/Objects/Fun/casino_chips.rsi
+    drawdepth: Items
+    noRot: true
+    scale: 0.75, 0.75
+    layers:
+    - state: chips-1
+      map: [ "pile" ]
+  - type: BlackjackChipPile
+
+- type: entity
+  abstract: true
+  parent: [ BaseStructure, BaseMachineDestructible ]
+  id: STBlackjackTableBase
+  components:
+  - type: Transform
+    anchored: true
+    noRot: false
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      top:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.5,-0.8,1.5,0.5"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+      machine:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,0.5,0.45,0.86"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: InteractionOutline
+  - type: Sprite
+    drawdepth: Objects
+    noRot: false
+    layers:
+    - state: table
+    - state: machine-idle
+      map: [ "machine" ]
+    - state: display-neutral
+      map: [ "display" ]
+      shader: unshaded
+    - state: lamp-0
+      map: [ "lamp0" ]
+      shader: unshaded
+      visible: false
+    - state: lamp-1
+      map: [ "lamp1" ]
+      shader: unshaded
+      visible: false
+    - state: lamp-2
+      map: [ "lamp2" ]
+      shader: unshaded
+      visible: false
+    - state: lamp-3
+      map: [ "lamp3" ]
+      shader: unshaded
+      visible: false
+    - state: lamp-4
+      map: [ "lamp4" ]
+      shader: unshaded
+      visible: false
+  - type: BlackjackTable
+    seatSpots:
+    - -2,-0.1
+    - -0.85,-1.3
+    - 0,-1.3
+    - 0.85,-1.3
+    - 2,-0.1
+    cardSpots:
+    - -1.22,0.22
+    - -0.7,-0.52
+    - -0.15,-0.52
+    - 0.55,-0.52
+    - 1.22,0.22
+    cardSteps:
+    - 0,-0.1
+    - 0.1,0
+    - 0.1,0
+    - 0.1,0
+    - 0,-0.1
+    splitShifts:
+    - 0.3,0
+    - 0,0.3
+    - 0,0.3
+    - 0,0.3
+    - -0.3,0
+    betSpots:
+    - -0.98,-0.1
+    - -0.42,-0.22
+    - 0.28,-0.22
+    - 0.98,-0.3
+    - 0.98,0.1
+    stackSpots:
+    - -1.32,-0.5
+    - -0.36,-0.58
+    - 0.34,-0.58
+    - 1.04,-0.62
+    - 1.32,-0.5
+  - type: ActivatableUI
+    key: enum.BlackjackUiKey.Lobby
+  - type: UserInterface
+    interfaces:
+      enum.BlackjackUiKey.Lobby:
+        type: StoriesBlackjackLobbyBoundUserInterface
+        interactionRange: 3
+      enum.BlackjackUiKey.Game:
+        type: StoriesBlackjackGameBoundUserInterface
+        interactionRange: 3
+  - type: Speech
+    speechVerb: Robotic
+    speechSounds: Vending
+
+- type: entity
+  parent: STBlackjackTableBase
+  id: STBlackjackTable
+  name: automatic croupier
+  suffix: Station
+  description: A blackjack table with an automatic card dealer. Chips are bought right here.
+  components:
+  - type: Sprite
+    sprite: _Stories/Structures/Machines/Blackjack/dealer.rsi
+  - type: Icon
+    sprite: _Stories/Structures/Machines/Blackjack/dealer.rsi
+    state: icon
+  - type: BlackjackTable
+    cardSprite: _Stories/Interface/Blackjack/cards.rsi
+    lobbySprite: _Stories/Interface/Blackjack/lobby.rsi
+  - type: TTS
+    voice: space_core
+
+- type: entity
+  parent: STBlackjackTableBase
+  id: STBlackjackTablePrison
+  name: automatic croupier
+  suffix: Prison
+  description: A blackjack table with an automatic card dealer. Played without stakes.
+  components:
+  - type: Sprite
+    sprite: _Stories/Structures/Machines/Blackjack/dealer_prison.rsi
+  - type: Icon
+    sprite: _Stories/Structures/Machines/Blackjack/dealer_prison.rsi
+    state: icon
+  - type: BlackjackTable
+    wager: false
+    cardSprite: _Stories/Interface/Blackjack/cards_prison.rsi
+    lobbySprite: _Stories/Interface/Blackjack/lobby_prison.rsi
+  - type: TTS
+    voice: fact_core

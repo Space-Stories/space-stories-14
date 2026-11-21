@@ -1,0 +1,11 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                Name="Frame"
+                HorizontalExpand="True">
+    <BoxContainer Orientation="Vertical" Margin="6 4">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4" HorizontalAlignment="Center">
+            <TextureRect Name="IconRect" MinSize="28 28" Stretch="KeepCentered" VerticalAlignment="Center" />
+            <Label Name="ValueLabel" VerticalAlignment="Center" />
+        </BoxContainer>
+        <Label Name="CaptionLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center" />
+    </BoxContainer>
+</PanelContainer>

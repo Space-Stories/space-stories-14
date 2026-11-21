@@ -1,0 +1,48 @@
+<PanelContainer xmlns="https://spacestation14.io"
+                xmlns:ui="clr-namespace:Content.Client._Stories.Blackjack.UI"
+                Name="Frame"
+                MinWidth="680"
+                MaxWidth="680">
+    <BoxContainer Orientation="Vertical" Margin="8 6" SeparationOverride="4">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+            <Label Name="TitleLabel" StyleClasses="LabelHeading" VerticalAlignment="Center" HorizontalExpand="True" />
+            <Label Name="StackLabel" VerticalAlignment="Center" Visible="False" />
+            <ui:StoriesBlackjackButton Name="CashierButton" Variant="Accent" Title="{Loc 'stories-blackjack-panel-cashier'}" MinWidth="100" Visible="False" />
+            <ui:StoriesBlackjackButton Name="CollapseButton" Variant="Quiet" MinWidth="130" />
+            <ui:StoriesBlackjackButton Name="LeaveButton" Variant="Quiet" MinWidth="210" />
+        </BoxContainer>
+        <Label Name="TurnLabel" Text="{Loc 'stories-blackjack-panel-your-turn'}" HorizontalAlignment="Center" Visible="False" />
+        <BoxContainer Name="Body" Orientation="Vertical" SeparationOverride="4">
+            <ui:StoriesBlackjackCanvas Name="Canvas" HorizontalAlignment="Center" />
+            <ProgressBar Name="TimerBar" MinHeight="6" MaxHeight="6" MinValue="0" MaxValue="1" />
+            <BoxContainer Orientation="Vertical" MinHeight="72" VerticalAlignment="Center">
+                <Label Name="StatusLabel" HorizontalAlignment="Center" VerticalAlignment="Center" VerticalExpand="True" />
+                <BoxContainer Name="BetBox" Orientation="Horizontal" SeparationOverride="10" VerticalAlignment="Center" Visible="False">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="4" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <ui:StoriesBlackjackChipButton Name="Chip5" Value="5" />
+                        <ui:StoriesBlackjackChipButton Name="Chip25" Value="25" />
+                        <ui:StoriesBlackjackChipButton Name="Chip100" Value="100" />
+                        <ui:StoriesBlackjackChipButton Name="Chip500" Value="500" />
+                    </BoxContainer>
+                    <Label Name="SumLabel" StyleClasses="LabelHeading" MinWidth="150" HorizontalExpand="True" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4">
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                            <ui:StoriesBlackjackButton Name="PlaceButton" Variant="Primary" Title="{Loc 'stories-blackjack-panel-place'}" MinWidth="120" MinHeight="32" />
+                            <ui:StoriesBlackjackButton Name="RepeatButton" Variant="Quiet" Title="{Loc 'stories-blackjack-panel-repeat'}" MinWidth="120" MinHeight="32" />
+                        </BoxContainer>
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="4">
+                            <ui:StoriesBlackjackButton Name="AllInButton" Variant="Accent" Title="{Loc 'stories-blackjack-panel-allin'}" MinWidth="120" MinHeight="32" />
+                            <ui:StoriesBlackjackButton Name="ClearButton" Variant="Quiet" Title="{Loc 'stories-blackjack-panel-clear'}" MinWidth="120" MinHeight="32" />
+                        </BoxContainer>
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer Name="ActionBox" Orientation="Horizontal" SeparationOverride="6" HorizontalAlignment="Center" VerticalAlignment="Center" Visible="False">
+                    <ui:StoriesBlackjackButton Name="HitButton" Variant="Primary" Title="{Loc 'stories-blackjack-panel-hit'}" MinWidth="110" MinHeight="40" />
+                    <ui:StoriesBlackjackButton Name="StandButton" Variant="Accent" Title="{Loc 'stories-blackjack-panel-stand'}" MinWidth="110" MinHeight="40" />
+                    <ui:StoriesBlackjackButton Name="DoubleButton" Variant="Accent" Title="{Loc 'stories-blackjack-panel-double'}" MinWidth="120" MinHeight="40" />
+                    <ui:StoriesBlackjackButton Name="SplitButton" Variant="Accent" Title="{Loc 'stories-blackjack-panel-split'}" MinWidth="130" MinHeight="40" />
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>

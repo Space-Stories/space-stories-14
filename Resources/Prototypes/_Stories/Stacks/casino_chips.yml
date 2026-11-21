@@ -1,0 +1,5 @@
+- type: stack
+  id: STCasinoChip
+  name: stories-blackjack-stack-chips
+  icon: { sprite: /Textures/_Stories/Objects/Fun/casino_chips.rsi, state: chips-5 }
+  spawn: STCasinoChips

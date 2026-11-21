@@ -1,0 +1,10 @@
+<ui:StoriesBlackjackButton xmlns="https://spacestation14.io"
+                           xmlns:ui="clr-namespace:Content.Client._Stories.Blackjack.UI">
+    <BoxContainer Name="Content" Orientation="Horizontal" SeparationOverride="8" Margin="12 5" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextureRect Name="IconRect" MinSize="28 28" Stretch="KeepCentered" VerticalAlignment="Center" Visible="False" />
+        <BoxContainer Orientation="Vertical" VerticalAlignment="Center">
+            <Label Name="TitleLabel" HorizontalAlignment="Center" />
+            <Label Name="SubtitleLabel" StyleClasses="LabelSubText" HorizontalAlignment="Center" Visible="False" />
+        </BoxContainer>
+    </BoxContainer>
+</ui:StoriesBlackjackButton>

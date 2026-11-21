@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "license": "All rights reserved",
+  "copyright": "Created by Space Stories team for Space Stories.",
+  "size": {
+    "x": 40,
+    "y": 56
+  },
+  "states": [
+    {
+      "name": "Clubs1"
+    },
+    {
+      "name": "Clubs2"
+    },
+    {
+      "name": "Clubs3"
+    },
+    {
+      "name": "Clubs4"
+    },
+    {
+      "name": "Clubs5"
+    },
+    {
+      "name": "Clubs6"
+    },
+    {
+      "name": "Clubs7"
+    },
+    {
+      "name": "Clubs8"
+    },
+    {
+      "name": "Clubs9"
+    },
+    {
+      "name": "Clubs10"
+    },
+    {
+      "name": "Clubs11"
+    },
+    {
+      "name": "Clubs12"
+    },
+    {
+      "name": "Clubs13"
+    },
+    {
+      "name": "Diamonds1"
+    },
+    {
+      "name": "Diamonds2"
+    },
+    {
+      "name": "Diamonds3"
+    },
+    {
+      "name": "Diamonds4"
+    },
+    {
+      "name": "Diamonds5"
+    },
+    {
+      "name": "Diamonds6"
+    },
+    {
+      "name": "Diamonds7"
+    },
+    {
+      "name": "Diamonds8"
+    },
+    {
+      "name": "Diamonds9"
+    },
+    {
+      "name": "Diamonds10"
+    },
+    {
+      "name": "Diamonds11"
+    },
+    {
+      "name": "Diamonds12"
+    },
+    {
+      "name": "Diamonds13"
+    },
+    {
+      "name": "Hearts1"
+    },
+    {
+      "name": "Hearts2"
+    },
+    {
+      "name": "Hearts3"
+    },
+    {
+      "name": "Hearts4"
+    },
+    {
+      "name": "Hearts5"
+    },
+    {
+      "name": "Hearts6"
+    },
+    {
+      "name": "Hearts7"
+    },
+    {
+      "name": "Hearts8"
+    },
+    {
+      "name": "Hearts9"
+    },
+    {
+      "name": "Hearts10"
+    },
+    {
+      "name": "Hearts11"
+    },
+    {
+      "name": "Hearts12"
+    },
+    {
+      "name": "Hearts13"
+    },
+    {
+      "name": "Spades1"
+    },
+    {
+      "name": "Spades2"
+    },
+    {
+      "name": "Spades3"
+    },
+    {
+      "name": "Spades4"
+    },
+    {
+      "name": "Spades5"
+    },
+    {
+      "name": "Spades6"
+    },
+    {
+      "name": "Spades7"
+    },
+    {
+      "name": "Spades8"
+    },
+    {
+      "name": "Spades9"
+    },
+    {
+      "name": "Spades10"
+    },
+    {
+      "name": "Spades11"
+    },
+    {
+      "name": "Spades12"
+    },
+    {
+      "name": "Spades13"
+    },
+    {
+      "name": "Back"
+    }
+  ]
+}
