@@ -89,18 +89,18 @@ public sealed partial class StoriesBlackjackVisualsSystem : EntitySystem
         var target = new Entity<SpriteComponent?>(ent.Owner, sprite);
         var comp = ent.Comp;
 
-        SetState(target, "robot", comp.Pose switch
+        SetState(target, "machine", comp.Pose switch
         {
-            BlackjackPose.Deal => "robot-deal",
-            BlackjackPose.Shuffle => "robot-shuffle",
-            _ => "robot-idle",
+            BlackjackPose.Deal => "machine-deal",
+            BlackjackPose.Shuffle => "machine-shuffle",
+            _ => "machine-idle",
         });
 
-        SetState(target, "face", comp.Face switch
+        SetState(target, "display", comp.Face switch
         {
-            BlackjackFace.Happy => "face-happy",
-            BlackjackFace.Sad => "face-sad",
-            _ => "face-neutral",
+            BlackjackFace.Happy => "display-happy",
+            BlackjackFace.Sad => "display-sad",
+            _ => "display-neutral",
         });
 
         for (var i = 0; i < comp.SeatSpots.Count; i++)

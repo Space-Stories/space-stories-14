@@ -15,7 +15,7 @@
             "directions": 4
         },
         {
-            "name": "robot-idle",
+            "name": "machine-idle",
             "directions": 4,
             "delays": [
                 [
@@ -45,7 +45,7 @@
             ]
         },
         {
-            "name": "robot-deal",
+            "name": "machine-deal",
             "directions": 4,
             "delays": [
                 [
@@ -75,7 +75,7 @@
             ]
         },
         {
-            "name": "robot-shuffle",
+            "name": "machine-shuffle",
             "directions": 4,
             "delays": [
                 [
@@ -105,7 +105,7 @@
             ]
         },
         {
-            "name": "face-neutral",
+            "name": "display-neutral",
             "directions": 4,
             "delays": [
                 [
@@ -127,7 +127,7 @@
             ]
         },
         {
-            "name": "face-happy",
+            "name": "display-happy",
             "directions": 4,
             "delays": [
                 [
@@ -149,7 +149,7 @@
             ]
         },
         {
-            "name": "face-sad",
+            "name": "display-sad",
             "directions": 4,
             "delays": [
                 [

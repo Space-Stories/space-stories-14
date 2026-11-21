@@ -53,25 +53,16 @@
         - MachineMask
         layer:
         - MachineLayer
-      robot:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.4,0.55,0.4,1.4"
-        density: 190
-        mask:
-        - MachineMask
-        layer:
-        - MachineLayer
   - type: InteractionOutline
   - type: Sprite
     drawdepth: Objects
     noRot: false
     layers:
     - state: table
-    - state: robot-idle
-      map: [ "robot" ]
-    - state: face-neutral
-      map: [ "face" ]
+    - state: machine-idle
+      map: [ "machine" ]
+    - state: display-neutral
+      map: [ "display" ]
       shader: unshaded
     - state: lamp-0
       map: [ "lamp0" ]
@@ -147,9 +138,9 @@
 - type: entity
   parent: STBlackjackTableBase
   id: STBlackjackTable
-  name: robot croupier
+  name: automatic croupier
   suffix: Station
-  description: A polite robot croupier with its own blackjack table.
+  description: A blackjack table with an automatic card dealer. Chips are bought right here.
   components:
   - type: Sprite
     sprite: _Stories/Structures/Machines/Blackjack/dealer.rsi
@@ -165,9 +156,9 @@
 - type: entity
   parent: STBlackjackTableBase
   id: STBlackjackTablePrison
-  name: robot croupier
+  name: automatic croupier
   suffix: Prison
-  description: A polite robot croupier with its own blackjack table. Played without stakes.
+  description: A blackjack table with an automatic card dealer. Played without stakes.
   components:
   - type: Sprite
     sprite: _Stories/Structures/Machines/Blackjack/dealer_prison.rsi

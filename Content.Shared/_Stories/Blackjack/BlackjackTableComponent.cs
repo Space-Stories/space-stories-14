@@ -80,13 +80,13 @@ public sealed partial class BlackjackTableComponent : Component
     public List<Vector2> StackSpots = new();
 
     [DataField]
-    public Vector2 DealerSpot = new(-0.2f, 0.26f);
+    public Vector2 DealerSpot = new(-0.24f, 0.12f);
 
     [DataField]
     public Vector2 DealerStep = new(0.12f, 0f);
 
     [DataField]
-    public Vector2 ShoeSpot = new(0.62f, 0.3f);
+    public Vector2 ShoeSpot = new(0f, 0.42f);
 
     [DataField]
     public EntProtoId CardProto = "STBlackjackTableCard";
