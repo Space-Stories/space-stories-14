@@ -53,6 +53,15 @@
         - MachineMask
         layer:
         - MachineLayer
+      machine:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,0.5,0.45,0.86"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
   - type: InteractionOutline
   - type: Sprite
     drawdepth: Objects
