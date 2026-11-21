@@ -1,4 +1,3 @@
-using System.Numerics;
 using Content.Shared.Stacks;
 using Content.Shared.Tools;
 using Content.Shared.Whitelist;
@@ -34,21 +33,6 @@ public sealed partial class AssemblyBenchComponent : Component
 
     [DataField(required: true)]
     public ResPath Sprite;
-
-    [DataField]
-    public Vector2 OutputStart = new(0f, 0.2f);
-
-    [DataField]
-    public Vector2 OutputEnd = new(0f, 0.6f);
-
-    [DataField]
-    public Vector2 OutputStorage = new(0f, 1f);
-
-    [DataField]
-    public float OutputRange = 0.3f;
-
-    [DataField]
-    public float OutputSpeed = 0.4f;
 
     [DataField]
     public SoundSpecifier? InsertSound = new SoundPathSpecifier("/Audio/Items/deconstruct.ogg");

@@ -1,16 +1,14 @@
+using Content.Shared.ActionBlocker;
 using Content.Shared.Examine;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
-using Content.Shared.Storage.Components;
-using Content.Shared.Storage.EntitySystems;
 using Content.Shared.Tools;
 using Content.Shared.Tools.Components;
 using Content.Shared.Tools.Systems;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Containers;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -19,22 +17,18 @@ namespace Content.Shared._Stories.AssemblyBench;
 
 public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
 {
-    [Dependency] private EntityLookupSystem _lookup = default!;
+    [Dependency] private ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private EntityWhitelistSystem _whitelist = default!;
     [Dependency] private IGameTiming _timing = default!;
     [Dependency] private INetManager _net = default!;
     [Dependency] private IPrototypeManager _proto = default!;
     [Dependency] private SharedAudioSystem _audio = default!;
-    [Dependency] private SharedContainerSystem _container = default!;
-    [Dependency] private SharedEntityStorageSystem _entityStorage = default!;
     [Dependency] private SharedHandsSystem _hands = default!;
+    [Dependency] private SharedInteractionSystem _interaction = default!;
     [Dependency] private SharedPopupSystem _popup = default!;
     [Dependency] private SharedStackSystem _stack = default!;
     [Dependency] private SharedToolSystem _tool = default!;
-    [Dependency] private SharedTransformSystem _transform = default!;
     [Dependency] private SharedUserInterfaceSystem _ui = default!;
-
-    private readonly HashSet<Entity<EntityStorageComponent>> _storages = new();
 
     public override void Initialize()
     {
@@ -48,38 +42,6 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
             subs => subs.Event<AssemblyBenchApplyMessage>(OnApplyMessage));
     }
 
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
-
-        if (_net.IsClient)
-            return;
-
-        var query = EntityQueryEnumerator<AssemblyBenchOutputComponent, TransformComponent>();
-        while (query.MoveNext(out var uid, out var output, out var xform))
-        {
-            var target = _transform.ToMapCoordinates(output.Target);
-            if (target.MapId != xform.MapID || _container.IsEntityInContainer(uid))
-            {
-                RemCompDeferred<AssemblyBenchOutputComponent>(uid);
-                continue;
-            }
-
-            var position = _transform.GetWorldPosition(xform);
-            var delta = target.Position - position;
-            var step = output.Speed * frameTime;
-            if (delta.Length() > step)
-            {
-                _transform.SetWorldPosition((uid, xform), position + delta.Normalized() * step);
-                continue;
-            }
-
-            _transform.SetWorldPosition((uid, xform), target.Position);
-            RemCompDeferred<AssemblyBenchOutputComponent>(uid);
-            Deliver(uid, output);
-        }
-    }
-
     public string GetRequirement(AssemblyBenchStep step)
     {
         var name = _proto.Index(step.Icon).Name;
@@ -91,7 +53,10 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
 
     public bool TryApply(Entity<AssemblyBenchComponent> ent, EntityUid user, EntityUid? used)
     {
-        if (ent.Comp.Step >= ent.Comp.Steps.Count || used is not { } item)
+        if (ent.Comp.WorkEnd > _timing.CurTime)
+            return false;
+
+        if (ent.Comp.Step >= ent.Comp.Steps.Count || used is not { } item || TerminatingOrDeleted(item))
             return false;
 
         var step = ent.Comp.Steps[ent.Comp.Step];
@@ -107,7 +72,8 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
 
         if (step.Stack is { } stackType)
         {
-            if (!TryComp<StackComponent>(item, out var stack)
+            if (step.Amount <= 0
+                || !TryComp<StackComponent>(item, out var stack)
                 || stack.StackTypeId != stackType
                 || !_stack.TryUse((item, stack), step.Amount))
                 return false;
@@ -155,7 +121,14 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
 
     private void OnApplyMessage(Entity<AssemblyBenchComponent> ent, ref AssemblyBenchApplyMessage args)
     {
-        if (args.Step != ent.Comp.Step || ent.Comp.Step >= ent.Comp.Steps.Count)
+        var actor = args.Actor;
+        if (args.Step < 0
+            || args.Step != ent.Comp.Step
+            || ent.Comp.Step >= ent.Comp.Steps.Count
+            || TerminatingOrDeleted(actor)
+            || ent.Comp.WorkEnd > _timing.CurTime
+            || !_actionBlocker.CanInteract(actor, ent)
+            || !_interaction.InRangeUnobstructed(actor, ent.Owner))
             return;
 
         if (TryApply(ent, args.Actor, _hands.GetActiveItem(args.Actor)))
@@ -177,6 +150,9 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
             UpdateUi(ent);
             return;
         }
+
+        if (TerminatingOrDeleted(args.User) || args.Used is not { } tool || TerminatingOrDeleted(tool))
+            return;
 
         args.Handled = true;
         Advance(ent, args.User);
@@ -217,25 +193,7 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
         if (_net.IsClient)
             return;
 
-        var xform = Transform(ent);
-        var rotation = xform.LocalRotation;
-        var result = Spawn(ent.Comp.Result, xform.Coordinates.Offset(rotation.RotateVec(ent.Comp.OutputStart)));
-        var output = EnsureComp<AssemblyBenchOutputComponent>(result);
-        output.Target = xform.Coordinates.Offset(rotation.RotateVec(ent.Comp.OutputEnd));
-        output.Storage = xform.Coordinates.Offset(rotation.RotateVec(ent.Comp.OutputStorage));
-        output.Speed = ent.Comp.OutputSpeed;
-        output.Range = ent.Comp.OutputRange;
-    }
-
-    private void Deliver(EntityUid item, AssemblyBenchOutputComponent output)
-    {
-        _storages.Clear();
-        _lookup.GetEntitiesInRange(output.Storage, output.Range, _storages);
-        foreach (var storage in _storages)
-        {
-            if (_entityStorage.CanInsert(item, storage, storage.Comp) && _entityStorage.Insert(item, storage, storage.Comp))
-                return;
-        }
+        Spawn(ent.Comp.Result, Transform(ent).Coordinates);
     }
 
     private void UpdateUi(Entity<AssemblyBenchComponent> ent)
