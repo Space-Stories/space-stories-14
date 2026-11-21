@@ -1,0 +1,26 @@
+stories-assembly-bench-window-title = Assembly bench
+stories-assembly-bench-steps-heading = Process chart
+stories-assembly-bench-product = Product
+stories-assembly-bench-completed = Assembled on this bench: { $count }
+stories-assembly-bench-need = Needed: { $item }
+stories-assembly-bench-amount = { $item } x{ $amount }
+stories-assembly-bench-finished = Assembly complete!
+stories-assembly-bench-examine = Current step: [color=yellow]{ $step }[/color]. Needed: { $item }.
+stories-assembly-bench-progress = Step { $step } of { $total }
+stories-assembly-bench-hint-insert = Hold { $item } in your active hand and click the highlighted area.
+stories-assembly-bench-hint-tool = Hold { $item } in your active hand, click the highlighted area and stand still.
+stories-assembly-bench-hint-working = Work in progress. Hold still.
+stories-assembly-bench-flavor-left = Correctional labor program
+stories-assembly-bench-flavor-right = v1.2
+stories-assembly-bench-step-back-case = Back case
+stories-assembly-bench-step-frame = Load-bearing frame
+stories-assembly-bench-step-frame-screws = Frame fastening
+stories-assembly-bench-step-capacitor = Capacitor
+stories-assembly-bench-step-matter-bin = Matter bin
+stories-assembly-bench-step-wiring = Wiring
+stories-assembly-bench-step-wiring-trim = Wire trimming
+stories-assembly-bench-step-solder = Soldering contacts
+stories-assembly-bench-step-front-case = Front panel
+stories-assembly-bench-step-screen = Screen
+stories-assembly-bench-step-pen = Pen
+stories-assembly-bench-step-close = Case assembly

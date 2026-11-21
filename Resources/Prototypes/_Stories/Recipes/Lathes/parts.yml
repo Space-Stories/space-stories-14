@@ -1,0 +1,16 @@
+- type: latheRecipe
+  parent: BaseStockPartRecipe
+  id: STCapacitorStockPart
+  result: STCapacitorStockPart
+
+- type: latheRecipe
+  parent: BaseStockPartRecipe
+  id: STMatterBinStockPart
+  result: STMatterBinStockPart
+
+- type: latheRecipe
+  id: STPen
+  result: Pen
+  completetime: 1
+  materials:
+    Steel: 50

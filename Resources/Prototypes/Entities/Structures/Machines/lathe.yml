@@ -126,6 +126,7 @@
     staticPacks:
     - ToolsStatic
     - PartsStatic
+    - STPartsStatic # Stories-AssemblyBench
     - AtmosStatic
     - CablesStatic
     - PaperworkStatic

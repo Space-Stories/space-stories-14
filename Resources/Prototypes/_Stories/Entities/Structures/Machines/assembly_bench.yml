@@ -1,0 +1,77 @@
+- type: entity
+  parent: [ BaseMachine, BaseMachineDestructible ]
+  id: STPdaAssembler
+  name: PDA assembly bench
+  description: A workbench for assembling PDAs by hand. Honest labor for those who have plenty of time.
+  components:
+  - type: Sprite
+    sprite: _Stories/Structures/Machines/pda_assembler.rsi
+    state: icon
+  - type: AssemblyBench
+    result: STAssembledPDA
+    sprite: _Stories/Interface/AssemblyBench/pda.rsi
+    steps:
+    - id: back-case
+      name: stories-assembly-bench-step-back-case
+      icon: SheetPlastic1
+      stack: Plastic
+    - id: frame
+      name: stories-assembly-bench-step-frame
+      icon: SheetSteel1
+      stack: Steel
+    - id: frame-screws
+      name: stories-assembly-bench-step-frame-screws
+      icon: Screwdriver
+      tool: Screwing
+    - id: capacitor
+      name: stories-assembly-bench-step-capacitor
+      icon: STCapacitorStockPart
+      whitelist:
+        tags:
+        - STCapacitor
+    - id: matter-bin
+      name: stories-assembly-bench-step-matter-bin
+      icon: STMatterBinStockPart
+      whitelist:
+        tags:
+        - STMatterBin
+    - id: wiring
+      name: stories-assembly-bench-step-wiring
+      icon: CableApcStack1
+      stack: Cable
+      amount: 5
+    - id: wiring-trim
+      name: stories-assembly-bench-step-wiring-trim
+      icon: Wirecutter
+      tool: Cutting
+    - id: solder
+      name: stories-assembly-bench-step-solder
+      icon: Welder
+      tool: Welding
+      delay: 4
+      fuel: 2
+    - id: front-case
+      name: stories-assembly-bench-step-front-case
+      icon: SheetPlastic1
+      stack: Plastic
+    - id: screen
+      name: stories-assembly-bench-step-screen
+      icon: SheetGlass1
+      stack: Glass
+    - id: pen
+      name: stories-assembly-bench-step-pen
+      icon: Pen
+      whitelist:
+        tags:
+        - Pen
+    - id: close
+      name: stories-assembly-bench-step-close
+      icon: Screwdriver
+      tool: Screwing
+      delay: 4
+  - type: ActivatableUI
+    key: enum.AssemblyBenchUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.AssemblyBenchUiKey.Key:
+        type: StoriesAssemblyBenchBoundUserInterface
