@@ -11,8 +11,6 @@
 - type: latheRecipe
   id: STPen
   result: Pen
-  categories:
-  - Tools
   completetime: 1
   materials:
     Steel: 50

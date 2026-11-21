@@ -128,7 +128,7 @@ public sealed partial class StoriesAssemblyBenchSystem : EntitySystem
             || TerminatingOrDeleted(actor)
             || ent.Comp.WorkEnd > _timing.CurTime
             || !_actionBlocker.CanInteract(actor, ent)
-            || !_interaction.InRangeUnobstructed(actor, ent.Owner))
+            || !_interaction.InRangeUnobstructed(actor, ent.Owner, popup: true))
             return;
 
         if (TryApply(ent, args.Actor, _hands.GetActiveItem(args.Actor)))
